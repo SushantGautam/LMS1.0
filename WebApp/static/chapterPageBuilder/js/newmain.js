@@ -356,6 +356,124 @@ class picture {
     }
 }
 
+
+// ===========================FOR STACKED PICTURE=====================================
+
+class stackedpicture {
+    constructor(top, left, link = null, width = null, height = null) {
+        console.log(link)
+        let id = (new Date).getTime();
+        let position = {top, left, width, height};
+        let message = "";
+        if (link == null) {
+            message = `
+                <div class = "file-upload-icon">
+                    <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
+                </div>
+                <p>Drag or drop ZipFile here...</p>
+                <div class="progressc mx-auto loadingDiv" data-value='0' style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold percentcomplete">0<span class="small">%</span></div>
+                </div>
+                `
+        }
+        //let img = '';
+        if (link != null) {
+            var promise = new JSZip.external.Promise(function (resolve, reject) {
+                JSZipUtils.getBinaryContent(link, function (err, data) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+
+            promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
+                .then(function (zip) {
+                    $.each(zip.files, function (key, value) {
+                        zip.file(value.name).async("base64")
+                            .then(function (content) {
+                                    var image = new Image;
+                                    image.onload = function () {
+                                        $(`#stackedpic-${id}`).find('.stacked-images').append(this)
+                                    }
+                                    image.src = "data:image;base64," + content;
+                                },
+                                function (e) {
+                                    console.log("Error reading "
+                                        + file.name + " : "
+                                        + e.message);
+                                });
+                    })
+                })
+
+            //img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+        }
+
+        let html =
+            `<div class='stackedpic' id="stackedpic-${id}">
+            <div id="stackedpic-actions">
+                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
+              <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                
+            </div>
+            <div class="stacked-images"></div>
+            <div>
+                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
+            </form>
+            <p id="stackedpicture-drag">${message}</p>
+            </div>
+        </div>`
+
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "width": position.width,
+                "height": position.height
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+
+
+        };
+    }
+}
+
+
 // ====================================For Video==============================
 function play(id) {
     var cld = cloudinary.Cloudinary.new({cloud_name: 'nsdevil-com'});
@@ -1419,7 +1537,202 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
 
     $(".imgInp").off().change(function (e) {
         readURL(this);
+    });
+}
 
+function StackedPictureFunction(top = null, left = null, link = null, width = null, height = null) {
+    const SPic = new stackedpicture(
+        top,
+        left,
+        link,
+        width, height);
+    SPic.renderDiagram();
+
+    $('.stackedpic .fa-upload').off().unbind().click(function (e) {
+        trigger = parseInt(e.target.id) + 1;
+        $('#' + trigger).trigger('click');
+    });
+
+    $('.stackedpic .fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.stackedpic').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 150,
+        minHeight: 150,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        }
+    });
+
+    $('.stackedpic').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        //   $(this).css('border',"2px solid #39F")
+    })
+
+    $('.stackedpic').on('drop', function (e) {
+
+        e.stopPropagation();
+        e.preventDefault();
+        const files = e.originalEvent.dataTransfer.files;
+        var file = files[0];
+        upload(file, $(this));
+    });
+
+    function upload(file, element) {
+        let div = element;
+        $(div).find('.file-upload-icon').hide()
+        $(div).find('p').hide()
+        $(div).find('.loadingDiv').show();
+        const data = new FormData();
+        data.append("file-0", file);
+        data.append('chapterID', chapterID);
+        data.append('courseID', courseID);
+        data.append('type', 'stackedpic');
+        data.append('csrfmiddlewaretoken', csrf_token);
+        var options = {
+            url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+            chunk_size: 10, // MB
+            onUploadComplete: function (e, options) {
+                var request = new XMLHttpRequest()
+
+                request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
+                request.onload = function () {
+                    // Begin accessing JSON data here
+                    var data = JSON.parse(this.response)
+                    if (request.status >= 200 && request.status < 400) {
+                        console.log(data.success)
+                    } else {
+                        console.log('error')
+                    }
+                }
+                request.send()
+                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
+                    console.log('success')
+                }).fail(function () {
+                    console.log('failed')
+                })
+                div.remove()
+                let link = ''
+                $.get(`https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}`, function (data) {
+                    link = data['items'][0]['versions']['original']['url']
+                    StackedPictureFunction(
+                        $(div)[0].style.top,
+                        $(div)[0].style.left,
+                        link,
+                        $(div)[0].style.width,
+                        $(div)[0].style.height,
+                    );
+                }).fail(function () {
+                    console.log('failed')
+                })
+            },
+            onUploadProgress: function (e) {
+                $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                addprogress();
+            },
+            onUploadError: function (e) {
+                console.log(e);
+                $(".status-bar").html("Error accured while uploading");
+            }
+        };
+        uploader = new cpUploadAPI(file, options);
+        uploader.start();
+        /*
+        $.ajax({
+            url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
+            data: data,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            beforeSend: function () {
+                div.append(`<div class="loader" id="loadingDiv"></div>`)
+                $('#loadingDiv').show();
+            },
+            success: function (successdata) {
+
+                console.log(successdata.path)
+
+                var promise = new JSZip.external.Promise(function (resolve, reject) {
+                    JSZipUtils.getBinaryContent(successdata.path, function (err, data) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(data);
+                        }
+                    });
+                });
+
+                promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
+                    .then(function (zip) {
+                        $.each(zip.files, function (key, value) {
+                            zip.file(value.name).async("base64")
+                                .then(function (content) {
+                                        var img = new Image;
+                                        img.onload = function () {
+                                            document.body.appendChild(this)
+                                        }
+                                        img.src = "data:image;base64," + content;
+                                    },
+                                    function (e) {
+                                        console.log("Error reading "
+                                            + file.name + " : "
+                                            + e.message);
+                                    });
+                        })
+                    })
+                // StackedPictureFunction(
+                //     $(div)[0].style.top,
+                //     $(div)[0].style.left,
+                //     `/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}`,
+                //     $(div)[0].style.height,
+                //     $(div)[0].style.width,
+                // );
+                // div.remove();
+            },
+            error: function (data, status, errorThrown) {
+                alert(data.responseJSON.message);
+            },
+            complete: function () {
+                $('#loadingDiv').remove();
+            }
+        });
+        */
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let div = $(input).closest('.stackedpic');
+                var data = new FormData();
+                $.each(input.files, function (i, file) {
+                    data.append('file-' + i, file);
+                });
+                if ($(div).find('img').length > 0) {
+                    if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
+                        tobedeletedfiles.pic.push($(div).find('img').attr('src'));
+                    }
+                }
+                file = input.files[0]
+                upload(file, div);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(".stackedimgInp").off().change(function (e) {
+        readURL(this);
     });
 }
 
@@ -2679,14 +2992,10 @@ function dropfunction(event, ui) {
     let top = ui.helper.position().top - $('.ols-objects').height() - $('.component-container').height();
     let left = ui.helper.position().left;
 
-    $(this).removeClass("over");
+    $('#tab').removeClass("over");
     if (ui.helper.offset().top < $('#tab').offset().top) {
         top = $('#tab').position().top
     }
-
-    // if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
-    //     top = $('#tab').height() - (0.25 * $('#tab').height())
-    // }
 
     if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
         left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
@@ -2701,6 +3010,12 @@ function dropfunction(event, ui) {
             "20%", "35%");
     } else if (ui.helper.hasClass('picture')) {
         PictureFunction(
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
+            null, null, '40%', '30%'
+        );
+    } else if (ui.helper.hasClass('stacked-picture')) {
+        StackedPictureFunction(
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
             (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
             null, null, '40%', '30%'
