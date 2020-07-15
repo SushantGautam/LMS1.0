@@ -360,8 +360,7 @@ class picture {
 // ===========================FOR STACKED PICTURE=====================================
 
 class stackedpicture {
-    constructor(top, left, link = null, width = null, height = null) {
-        console.log(link)
+    constructor(top, left, link = null, rid = null, width = null, height = null) {
         let id = (new Date).getTime();
         let position = {top, left, width, height};
         let message = "";
@@ -416,9 +415,8 @@ class stackedpicture {
 
             //img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
         }
-
         let html =
-            `<div class='stackedpic' id="stackedpic-${id}">
+            `<div class='stackedpic' id="stackedpic-${id}" data-link="${link}" data-rid="${rid}">
             <div id="stackedpic-actions">
                 <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
               <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
@@ -1540,11 +1538,12 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
     });
 }
 
-function StackedPictureFunction(top = null, left = null, link = null, width = null, height = null) {
+function StackedPictureFunction(top = null, left = null, link = null, rid = null, width = null, height = null) {
     const SPic = new stackedpicture(
         top,
         left,
         link,
+        rid,
         width, height);
     SPic.renderDiagram();
 
@@ -1621,13 +1620,15 @@ function StackedPictureFunction(top = null, left = null, link = null, width = nu
                     console.log('failed')
                 })
                 div.remove()
-                let link = ''
+                let rid = options.rid;
+                // let link = ''
                 $.get(`https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}`, function (data) {
-                    link = data['items'][0]['versions']['original']['url']
+                    // link = data['items'][0]['versions']['original']['url']
                     StackedPictureFunction(
                         $(div)[0].style.top,
                         $(div)[0].style.left,
-                        link,
+                        data['items'][0]['versions']['original']['url'],
+                        rid,
                         $(div)[0].style.width,
                         $(div)[0].style.height,
                     );
@@ -3313,6 +3314,19 @@ function display(data = "", currentPage = '1') {
                                 );
                             });
                         }
+                        if (div == 'stackedpic') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                StackedPictureFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value.link,
+                                    css_value.rid,
+                                    css_value.width,
+                                    css_value.height,
+                                );
+                            });
+                        }
 
                         if (div == 'btn-div') {
                             $.each(div_value, function (css, css_value) {
@@ -3468,6 +3482,7 @@ function updateData(prev_page, prev_data) {
     var _3d = [];
     var quizdiv = [];
     var surveydiv = [];
+    var stackedpicdiv = [];
 
     const obj = $(prev_data).children();
 
@@ -3480,13 +3495,6 @@ function updateData(prev_page, prev_data) {
     $.each(obj, function (i, value) {
         if (value.classList.contains('textdiv')) {
             var clone = $(this).find('.note-editable').clone();
-            // clone.find('div').remove();
-            // $(clone).each(function(){
-            //   if($(this).find('span').css('font-size')){
-            //     let font = convertFontToREM($(this).find('span').css('font-size'))
-            //     $(this).find('span').css('font-size', font + 'em')
-            //   }
-            // })
             var content_html = clone.html();
             textdiv.push(
                 {
@@ -3507,6 +3515,18 @@ function updateData(prev_page, prev_data) {
                     'height': $(this)[0].style.height,
                     'background-image': $(this).find("img").attr('src'),
                     'link': $(this).find("iframe").attr('src')
+                }
+            );
+        }
+        if (value.classList.contains('stackedpic')) {
+            stackedpicdiv.push(
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': $(this).attr('data-link'),
+                    'rid': $(this).attr('data-rid'),
                 }
             );
         }
@@ -3634,6 +3654,7 @@ function updateData(prev_page, prev_data) {
         data.pages[prev_page] = [{
             'textdiv': textdiv,
             'pic': picdiv,
+            'stackedpic': stackedpicdiv,
             'btn-div': buttondiv,
             'pdf': pdf,
             'video': video,
