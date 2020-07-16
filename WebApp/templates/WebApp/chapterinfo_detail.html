@@ -2,7 +2,13 @@
 {% load static %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'courseinfo_list_active' %}">Course</a></li>
+    <li class="breadcrumb-item"><a href="
+    {% if object.Course_Code.Use_Flag %}
+        {% url 'courseinfo_list_active' %}
+    {% else %}
+        {% url 'courseinfo_list_inactive' %}
+    {% endif %}
+    ">Course</a></li>
     <li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Chapter_Name }}</li>
 {% endblock %}

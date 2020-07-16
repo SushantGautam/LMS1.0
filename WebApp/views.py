@@ -1,11 +1,11 @@
 import glob
 import json
+import math
 import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
-from dateutil.parser import parse
 from io import BytesIO
 from json import JSONDecodeError
 
@@ -14,6 +14,7 @@ import cloudinary.api
 import cloudinary.uploader
 import pandas as pd
 import requests
+from dateutil.parser import parse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -667,32 +668,6 @@ def ImportCsvFile(request, *args, **kwargs):
 
                     saved_id.append(obj.id)
 
-                    # This is to check if the url contains the query parameter groupmappingpk.
-                    # groupmappingpk is added to url when this function is called from groupmapping_detail.html.
-                    # # If groupmappingpk is in the url then the csv file containing all members are students only.
-                    # if request.GET.get('groupmappingpk'):
-                    #     obj.Is_Student = True
-                    # else:
-                    #     if df.iloc[i]['Teacher'] == 1:
-                    #         obj.Is_Teacher = True
-                    #     else:
-                    #         obj.Is_Teacher = False
-
-                    #     if df.iloc[i]['Student'] == 1:
-                    #         obj.Is_Student = True
-                    #     else:
-                    #         obj.Is_Student = False
-
-                    # Following is to add the new students to the group from which they were imported.
-                    # groupmappingpk contains the primary key of the group that is used to call the function.
-                    # if request.GET.get('groupmappingpk'):
-                    #     # If no group exist then raise the exception to terminate the process
-                    #     if GroupMapping.objects.filter(pk=request.GET.get('groupmappingpk')).exists():
-                    #         g = GroupMapping.objects.get(pk=request.GET.get('groupmappingpk'))
-                    #     else:
-                    #         raise Exception('Group %s does not exist' % request.GET.get('groupmappingpk'))
-                    #     obj.groupmapping_set.add(g)
-
                 except Exception as e:
                     for j in saved_id:
                         MemberInfo.objects.filter(id=j).delete()
@@ -814,6 +789,7 @@ def ImportSession(request, *args, **kwargs):
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
+        center = request.user.Center_Code
         error = ''
         saved_id = []
 
@@ -831,7 +807,7 @@ def ImportSession(request, *args, **kwargs):
                         error = "Session Name is required"
                         raise Exception
                     session_name = str(session_name)
-                    if not SessionInfo.objects.filter(Session_Name__iexact=session_name).exists():
+                    if not SessionInfo.objects.filter(Session_Name__iexact=session_name, Center_Code=center).exists():
                         # Instead of error the new session name is created
                         obj2 = SessionInfo()
                         obj2.Session_Name = session_name
@@ -850,7 +826,7 @@ def ImportSession(request, *args, **kwargs):
                     start_date = str(start_date)
                     try:
                         # start_date = datetime.strptime(start_date, '%m/%d/%Y')
-                        start_date = parse(start_date) # It accepts most of the standard date format
+                        start_date = parse(start_date)  # It accepts most of the standard date format
                     except ValueError:
                         error = "Start Date <strong>" + start_date + "</strong> is not valid. It must be in standard date format"
                         raise Exception
@@ -873,7 +849,8 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name is required"
                         raise Exception
                     student_group = str(student_group)
-                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group).exists():
+                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group,
+                                                       Center_Code=center).exists():
                         url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
@@ -897,13 +874,14 @@ def ImportSession(request, *args, **kwargs):
                     obj.End_Date = end_date
                     obj.Groups = student_group_code
                     obj.Register_Agent = request.user.username
-                    obj.Center_Code = request.user.Center_Code
+                    obj.Center_Code = center
                     obj.save()
                     saved_id.append(obj.id)
 
                     # Course Group validation and registration
                     for course in courses:
-                        if not InningGroup.objects.filter(InningGroup_Name__iexact=course).exists():
+                        course = course.strip()
+                        if not InningGroup.objects.filter(InningGroup_Name__iexact=course, Center_Code=center).exists():
                             url = str(reverse('inninggroup_list'))
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
                                                 Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
@@ -1046,13 +1024,19 @@ class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
 
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
+        courseactive = True
         if AuthCheck(request, admn=1) == 2 or CourseAuth(request, pk) == 2:
             return redirect('login')
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = CourseInfo.objects.get(pk=pk)
+            if not Obj.Use_Flag:
+                courseactive = False
             Obj.delete()
-            return redirect('courseinfo_list_active')
+            if courseactive:
+                return redirect('courseinfo_list_active')
+            else:
+                return redirect('courseinfo_list_inactive')
 
         except:
             messages.error(request,
@@ -1562,6 +1546,7 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+
 def CourseAllocationCSVImport(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
@@ -1578,6 +1563,7 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
         df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
+        center = request.user.Center_Code
         error = ''
         saved_id = []
 
@@ -1593,13 +1579,17 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                         error = "Course Allocation Name is required"
                         raise Exception
                     course_allocation_name = str(course_allocation_name)
-                    
+                    if InningGroup.objects.filter(InningGroup_Name__iexact=course_allocation_name,
+                                                  Center_Code=center).exists():
+                        error = "Course Allocation Name already exist in the center please choose another name"
+                        raise Exception
+
                     # Course Name validation
                     if not course_name:
                         error = "Course Allocation Name is required"
                         raise Exception
                     course_name = str(course_name)
-                    if not CourseInfo.objects.filter(Course_Name__iexact=course_name).exists():
+                    if not CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=center).exists():
                         error = "Course Name <strong>" + course_name + "</strong> does not exists."
                         raise Exception
                     course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
@@ -1619,13 +1609,15 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     obj.InningGroup_Name = course_allocation_name
                     obj.Course_Code = course_name_code
                     obj.Register_Agent = request.user.username
-                    obj.Center_Code = request.user.Center_Code
+                    obj.Center_Code = center
                     obj.save()
                     saved_id.append(obj.id)
 
                     # Teachers validation and registration
                     for teacher in teachers:
-                        if not MemberInfo.objects.filter(username__iexact=teacher, Is_Teacher=True).exists():
+                        teacher = teacher.strip()
+                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center,
+                                                         Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
                         teacher_code = MemberInfo.objects.get(username__iexact=teacher)
@@ -2190,6 +2182,33 @@ def save_file(request):
         path = ''
         if request.FILES['file-0']:
             media = request.FILES['file-0']
+
+            # if media_type == 'stackedpic':
+            #     if (media.size / 1024) > 102400:
+            #         return JsonResponse(data={"message": "File size exceeds 100MB"}, status=500)
+            #     if not media.name.endswith('.zip'):
+            #         return JsonResponse({'status': 'false', 'message': "Only zip files are allowed"}, status=500)
+            #     zip = zipfile.ZipFile(media)
+            #     checkflag = True
+            #     for file in zip.namelist():
+            #         # If files in zip doesn't have following extension of image
+            #         if not zip.getinfo(file).filename.lower().endswith(
+            #                 ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
+            #             checkflag = False
+            #     if not checkflag:
+            #         return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
+            #
+            #     path = settings.MEDIA_ROOT
+            #
+            #     # creates directory structure if not exists
+            #     make_directory_if_not_exists(courseID, chapterID)
+            #
+            #     storage_path = path + '/chapterBuilder/' + courseID + '/' + chapterID + '/'
+            #     # for file in zip.namelist():
+            #     #     zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
+            #     return JsonResponse(data={
+            #         "path": os.path.join(*[settings.MEDIA_URL, "chapterBuilder", courseID, chapterID, media.name])},
+            #         status=200)
             if media_type == 'pic':
                 if (media.size / 1024) > 2048:
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
@@ -3187,6 +3206,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
+                if jsondata['contents']['totalstudytime'] and chapter.mustreadtime:
+                    studytimeprogresspercent = (int(
+                        jsondata['contents']['totalstudytime']) / chapter.mustreadtime) * 100
+                else:
+                    studytimeprogresspercent = 0
                 if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
                     if int(jsondata['contents']['totalPage']) > 0 and int(
                             jsondata['contents']['currentpagenumber']) > 0:
@@ -3198,6 +3222,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                     progresspercent = 0
             else:
                 progresspercent = 0
+                studytimeprogresspercent = 0
 
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
@@ -3242,7 +3267,9 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'totalPage': int(
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
                                                                           'totalPage'] is not None else None,
-                            'progresspercent': progresspercent,
+                            'progresspercent': math.floor(progresspercent),
+                            'studytimeprogresspercent': math.floor(
+                                studytimeprogresspercent) if studytimeprogresspercent <= 100 else 100,
                             'attendance': attendance,
                         },
                         'quiz': {
@@ -3269,6 +3296,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'currentpagenumber': None,
                             'totalPage': None,
                             'progresspercent': progresspercent,
+                            'studytimeprogresspercent': studytimeprogresspercent,
                             'attendance': attendance,
                         },
                         'quiz': {
