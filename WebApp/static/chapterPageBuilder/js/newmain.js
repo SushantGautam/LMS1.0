@@ -396,14 +396,25 @@ class stackedpicture {
 
             promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
                 .then(function (zip) {
+                    // $(`#stackedpic-${id}`).find('#scroll-image').parent().parent().append(`
+                    //     `);
+                    var imageLength = 0;
                     $.each(zip.files, function (key, value) {
                         zip.file(value.name).async("base64")
                             .then(function (content) {
                                     var image = new Image;
+                                    var imageHeight = $(`#stackedpic-${id}`).height();
+                                    var imageWidth = $(`#stackedpic-${id}`).width();
+                                    imageLength ++;
                                     image.onload = function () {
-                                        $(`#stackedpic-${id}`).find('.stacked-images').append(this)
+                                        $(`#stackedpic-${id}`).find('#scroll-image').append(this)
                                     }
                                     image.src = "data:image;base64," + content;
+                                    image.height = imageHeight;
+                                    image.width = imageWidth;
+                                    image.className = 'stack';
+                                    image.style.position = 'absolute';
+                                    if(imageLength == 1) image.style.zIndex = "1";
                                 },
                                 function (e) {
                                     console.log("Error reading "
@@ -411,7 +422,12 @@ class stackedpicture {
                                         + e.message);
                                 });
                     })
-                })
+                    
+                    // Set progress bar height based on images count
+                    const progressBar = document.getElementById('progressbar');
+                    let progressHeight = 100 / imageLength;
+                    progressBar.style.height = progressHeight + '%';
+        }); 
 
             //img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
         }
@@ -422,7 +438,10 @@ class stackedpicture {
               <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 
             </div>
-            <div class="stacked-images"></div>
+            <div class="col"><div class="row">
+            <div class="col"><div id="scroll-image"></div></div>
+            <div class="col"><div id="progressbar"></div>
+            </div></div>
             <div>
                 <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                 <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
