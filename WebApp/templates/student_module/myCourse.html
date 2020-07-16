@@ -14,19 +14,39 @@ Course
         <hr class="header_hr">
         <div class="row">
             <div class="col-md-12 text-right">
-                <span> <b>Show</b> </span>
-                <label>
-                    <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
-                            id="paginate_courses">
-                        <option value="6">6</option>
-                        <option value="12">12</option>
-                        <option value="18">18</option>
-                        <option value="24">24</option>
-                        <option value="30">30</option>
-                        <option value="36">36</option>
-                    </select>
-                </label>
-                <span> <b>Entries</b> </span>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
+                        <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
+                        <a id="tableButton" style="cursor: pointer">Table View</a></b>
+                        <!-- <span class="view-inactive" style="padding-right: 10px;"><a href="
+                        {% if '/mysessions' not in request.path %}
+                            {% url 'inninginfo_list_inactive' %}
+                        {% else %}
+                            {% url 'teachers_mysession_list_inactive' %}
+                        {% endif %}
+                        ">View
+                                Inactive Sessions</a>
+                        </span> -->
+                    </h5>
+
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <span> <b>Show</b> </span>
+                    <label>
+                        <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                                id="paginate_courses">
+                            <option value="6">6</option>
+                            <option value="12">12</option>
+                            <option value="18">18</option>
+                            <option value="24">24</option>
+                            <option value="30">30</option>
+                            <option value="36">36</option>
+                        </select>
+                    </label>
+                    <span> <b>Entries</b> </span>
+
+                </div>
+               
             </div>
         </div>
         <div class="col-md-8 col-sm-6 col-xs-12">
@@ -41,6 +61,7 @@ Course
     <br><br><br>
     <div class="container" id="divID">
         {% include 'WebApp/theme/alerts.html' %}
+     <div class="col-md-12" style="display:none;padding: 0;" id="cardView">  
         {% for courses in response %}
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
             <div class="gridContentsList">
@@ -119,49 +140,154 @@ Course
                 </div>
             </div>
         </div>
+      
 
         {% endfor %}
+          <div class=" col-md-12 col-sm-12 col-xs-12 text-center">
+            {% if response.has_other_pages %}
+            <div class=" text-center">
+                <ul class="pagination">
+                    {% if response.has_previous %}
+                        <li>
+    <a href="?page={{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in response.paginator.page_range %}
+                        {% if response.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            <li>
+    <a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if response.has_next %}
+                        <li>
+    <a href="?page={{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+
+        </div>
+     </div> 
+     <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12" >
+        <div class="table-responsive" id="tableView">
+
+            <br>
+            <span class="checkboxCheckedLength"></span>
+            <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                   
+                    <td>ID</td>
+                    <td>Course Name</td>
+                    <td>Teachers</td>
+                   
+                    <td>Description</td>
+                  
+                  
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr>
+                        
+                        <td style="vertical-align: middle;">{{ forloop.counter }}</td>
+                        <td style="vertical-align: middle;">    <strong><a href="{% if '/students' in request.path %}
+                            {{ object.student_get_absolute_url }}
+                        {% else %}
+                            {{ object.get_absolute_url }}
+                        {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong></td>
+                       
+                        <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
+                            <p style="height: 30px; overflow:auto"> 
+                            Teacher(s): &nbsp;
+                            {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
+                            {{ eachTeacher.getFullName }}
+                            {% endfor%}
+            
+                            </p>
+                            {% else %}
+                            <p style="height: 30px; overflow:auto"> No Teacher </p>
+            
+            
+                    
+                        {% endif %}</td>
+                        <td style="vertical-align: middle;">
+
+                            {% if object.Course_Description %}
+                            <p style="padding-left: 10px;
+                            padding-right: 10px;
+                            line-height: 1.5em;
+                            height: 3.5em;
+                            overflow-wrap:break-word;
+                            overflow: auto;
+                            white-space: normal;
+                            text-overflow: ellipsis;">
+                            {{ object.Course_Description }}
+                            </p>
+                            {% else %}
+                            <p style="padding-left: 10px;
+                            padding-right: 10px;
+                            line-height: 1.5em;
+                            height: 3.5em;
+                            overflow-wrap:break-word;
+                            overflow: auto;
+                            white-space: normal;
+                            text-overflow: ellipsis;">
+                            No Description
+                            </p>
+                            {% endif %}
+
+
+
+                        </td>
+                       
+                       
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+     </div>
+
     </div>
 
 
 </div>
 
 
-    {% if response.has_other_pages %}
-        <div class=" text-center">
-            <ul class="pagination">
-                {% if response.has_previous %}
-                    <li>
-<a href="?page={{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
-                    </li>
-                {% else %}
-                    <li class="disabled"><span>&laquo;</span></li>
-                {% endif %}
-                {% for i in response.paginator.page_range %}
-                    {% if response.number == i %}
-                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                    {% else %}
-                        <li>
-<a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-                {% if response.has_next %}
-                    <li>
-<a href="?page={{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
-                    </li>
-                {% else %}
-                    <li class="disabled"><span>&raquo;</span></li>
-                {% endif %}
-            </ul>
-        </div>
-    {% endif %}
+  
 
 
 
 {% endblock %}
 
 {% block customjss %}
+<script>
+    document.querySelector("#cardButton").addEventListener('click', cardView);
+    document.querySelector("#tableButton").addEventListener('click', tableView);
+    function cardView() {
+        $("#cardButton").css('color', 'black');
+        $("#tableButton").css('color', 'grey');
+        document.querySelector('#cardView').style.display = "inline-block";
+        document.querySelector('#tableView').style.display = "none";
+    }
+    function tableView() {
+        $("#cardButton").css('color', 'grey');
+        $("#tableButton").css('color', 'black');
+        document.querySelector('#tableView').style.display = "block";
+        document.querySelector('#cardView').style.display = "none";
+
+    }
+
+
+</script>
     <script>
         $(document).ready(function () {
             if ('{{ request.GET.paginate_by }}') {

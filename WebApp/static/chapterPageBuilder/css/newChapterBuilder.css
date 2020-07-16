@@ -811,22 +811,6 @@ hr {
 
 }
 
-/* .cross{
-
-    background-color: red;
-    color:white;
-    position: absolute;
-    top:0;
-    right:0;
-    display: none;
-    cursor: pointer;
-} */
-
-/* .pic:hover .cross {
-   display: block;
-
-} */
-
 .pic h3 {
     font-size: 18px;
     font-weight: 700;
@@ -839,6 +823,109 @@ hr {
     font-size: 17px;
 }
 
+#pic-actions {
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: rgba(204, 204, 204, 0.3);
+    margin: 0px;
+    display: none;
+    z-index: 90;
+}
+
+#pic-actions i {
+    margin-right: 5px;
+    cursor: pointer;
+
+}
+
+.pic:hover #pic-actions {
+    opacity: 0.8;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+
+}
+
+/* ===Stackedpic== */
+
+.stackedpic {
+    width: 400px;
+    height: 200px;
+    border: 3px dashed #ddd !important;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: column wrap;
+    flex-flow: column wrap;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+
+
+}
+
+.stackedpic h3 {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 10px 0px;
+}
+
+#stackedpicture-drag {
+    opacity: 0.3;
+    font-size: 17px;
+}
+
+#stackedpic-actions {
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: rgba(204, 204, 204, 0.3);
+    margin: 0px;
+    display: none;
+    z-index: 90;
+}
+
+#stackedpic-actions i {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.stackedpic:hover #stackedpic-actions {
+    opacity: 0.8;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+
+}
+
+.stacked-images img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+}
 
 .btn-style {
 
@@ -871,38 +958,6 @@ hr {
     display:block
 }
  */
-
-#pic-actions {
-    width: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: rgba(204,204,204 , 0.3);
-    margin: 0px;
-    display: none;
-    z-index: 90;
-}
-#pic-actions i{
-    margin-right: 5px;
-    cursor: pointer;
-
-}
-
-.pic:hover #pic-actions {
-    opacity: 0.8;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-flow: row wrap;
-    flex-flow: row wrap;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: flex-start;
-
-}
 
 html {
     font-size: 14px;
@@ -1492,3 +1547,15 @@ html {
     border: 2px #79a6fb  solid;
 }
 /* End for media files */
+
+
+/* Stack image progress bar */
+#progressbar {
+    /* z-index: -1; */
+    float: right;
+    width: 15px;
+    border-radius: 10px;
+    background-color: #2d3436;
+    background-image: linear-gradient(315deg, #2d3436 0%, #d3d3d3 74%);
+    /*background: linear-gradient(to top, #fcb045, #fd1d1d, #833ab4);*/
+}
