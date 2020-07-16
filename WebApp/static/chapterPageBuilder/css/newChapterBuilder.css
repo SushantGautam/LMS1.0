@@ -1551,11 +1551,11 @@ html {
 
 /* Stack image progress bar */
 #progressbar {
-    z-index: -1;
+    /* z-index: -1; */
+    float: right;
     width: 15px;
     border-radius: 10px;
     background-color: #2d3436;
     background-image: linear-gradient(315deg, #2d3436 0%, #d3d3d3 74%);
-
     /*background: linear-gradient(to top, #fcb045, #fd1d1d, #833ab4);*/
 }
