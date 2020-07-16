@@ -1,5 +1,6 @@
 import glob
 import json
+import math
 import os
 import re
 import uuid
@@ -3205,6 +3206,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
+                if jsondata['contents']['totalstudytime'] and chapter.mustreadtime:
+                    studytimeprogresspercent = (int(
+                        jsondata['contents']['totalstudytime']) / chapter.mustreadtime) * 100
+                else:
+                    studytimeprogresspercent = 0
                 if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
                     if int(jsondata['contents']['totalPage']) > 0 and int(
                             jsondata['contents']['currentpagenumber']) > 0:
@@ -3216,6 +3222,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                     progresspercent = 0
             else:
                 progresspercent = 0
+                studytimeprogresspercent = 0
 
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
@@ -3260,7 +3267,9 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'totalPage': int(
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
                                                                           'totalPage'] is not None else None,
-                            'progresspercent': progresspercent,
+                            'progresspercent': math.floor(progresspercent),
+                            'studytimeprogresspercent': math.floor(
+                                studytimeprogresspercent) if studytimeprogresspercent <= 100 else 100,
                             'attendance': attendance,
                         },
                         'quiz': {
@@ -3287,6 +3296,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'currentpagenumber': None,
                             'totalPage': None,
                             'progresspercent': progresspercent,
+                            'studytimeprogresspercent': studytimeprogresspercent,
                             'attendance': attendance,
                         },
                         'quiz': {
