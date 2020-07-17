@@ -62,7 +62,17 @@
 
                                         {% if course.chapterinfos.count %}
                                             {% for chapter in course.chapterinfos.all %}
-                                                <td>{{ chapter.has_content }}</td>
+                                                <td>
+                                                    {% if chapter.has_content %}
+                                                        <span style="color: green" class="chaptertd hasContent"><i
+                                                                class="fa fa-check"
+                                                                aria-hidden="true"></i></span>
+                                                    {% else %}
+                                                        <span style="color: darkred" class="chaptertd"><i
+                                                                class="fa fa-times"
+                                                                aria-hidden="true"></i></span>
+                                                    {% endif %}
+                                                </td>
                                             {% endfor %}
                                             {% if course.chapterinfos.count < max_chapter_count %}
                                                 <td colspan="{{ max_chapter_count|subtract:course.chapterinfos.count }}"
@@ -74,8 +84,8 @@
                                             <td colspan="{{ max_chapter_count }}" class="nochapter"> No Chapters</td>
                                         {% endif %}
 
-                                        <td>s</td>
-                                        <td>a</td>
+                                        <td class="chaptercount totalhasContent"></td>
+                                        <td class="chaptercount totalChapters"></td>
                                         </tr>
                                     {% else %}
                                         <tr>
@@ -83,7 +93,17 @@
 
                                             {% if course.chapterinfos.count %}
                                                 {% for chapter in course.chapterinfos.all %}
-                                                    <td>{{ chapter.has_content }}</td>
+                                                    <td>
+                                                        {% if chapter.has_content %}
+                                                            <span style="color: green" class="chaptertd hasContent"><i
+                                                                    class="fa fa-check"
+                                                                    aria-hidden="true"></i></span>
+                                                        {% else %}
+                                                            <span style="color: darkred" class="chaptertd"><i
+                                                                    class="fa fa-times"
+                                                                    aria-hidden="true"></i></span>
+                                                        {% endif %}
+                                                    </td>
                                                 {% endfor %}
                                                 {% if course.chapterinfos.count < max_chapter_count %}
                                                     <td colspan="{{ max_chapter_count|subtract:course.chapterinfos.count }}"
@@ -96,8 +116,8 @@
                                                 </td>
                                             {% endif %}
 
-                                            <td>s</td>
-                                            <td>a</td>
+                                            <td class="chaptercount totalhasContent"></td>
+                                            <td class="chaptercount totalChapters"></td>
                                         </tr>
                                     {% endif %}
                                 {% endfor %}
@@ -135,6 +155,14 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('.chaptercount').each(function () {
+                if ($(this).hasClass('totalhasContent')) {
+                    $(this).text($(this).closest('tr').find('.hasContent').length)
+                } else if ($(this).hasClass('totalChapters')) {
+                    $(this).text($(this).closest('tr').find('.chaptertd').length)
+                }
+            });
+
             $('.table').DataTable({
                 dom: 'lBfrtip',
                 responsive: true,
