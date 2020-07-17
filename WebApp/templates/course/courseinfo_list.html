@@ -210,7 +210,7 @@ aria-hidden="true">
 
     <div class="container" id="divID">
         {% include 'WebApp/theme/alerts.html' %}
-      <div class="col-md-12" style="display:none;padding: 0;" id="cardView"> 
+      <div class="col-md-12"  id="cardView"> 
         {% for object in object_list %}
         <div class=" col-md-4 col-sm-6 col-xs-12" id="listCard">
         <div class="gridContentsList">
@@ -328,7 +328,7 @@ aria-hidden="true">
 
     </div> 
      <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12" >
-        <div class="table-responsive" id="tableView">
+        <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
 
             <br>
             <span class="checkboxCheckedLength"></span>
@@ -340,7 +340,8 @@ aria-hidden="true">
                     <td>Course Name</td>
                     <td>Teachers</td>
                    
-                    <td>Description</td>
+                    <td>Course Provider</td>
+                    <td>Level</td>
                   
                     <td>Action</td>
                 </tr>
@@ -370,41 +371,20 @@ aria-hidden="true">
                     
                         {% endif %}</td>
                         <td style="vertical-align: middle;">
-
-                            {% if object.Course_Description %}
-                            <p style="padding-left: 10px;
-                            padding-right: 10px;
-                            line-height: 1.5em;
-                            height: 3.5em;
-                            overflow-wrap:break-word;
-                            overflow: auto;
-                            white-space: normal;
-                            text-overflow: ellipsis;">
-                            {{ object.Course_Description }}
-                            </p>
-                            {% else %}
-                            <p style="padding-left: 10px;
-                            padding-right: 10px;
-                            line-height: 1.5em;
-                            height: 3.5em;
-                            overflow-wrap:break-word;
-                            overflow: auto;
-                            white-space: normal;
-                            text-overflow: ellipsis;">
-                            No Description
-                            </p>
-                            {% endif %}
+                            {{ object.Course_Provider }}
 
 
 
                         </td>
+                        <td style="vertical-align: middle;">
+                            {{object.Course_Level}}
+
+                        </td>
                        
                         <td class="text-center"><a class="btn btn-sm btn-info"
-                                                   href="   {% if '/mysessions' not in request.path %}
-                                    {{ object.get_absolute_url }}
-                                {% elif 'mysessions' in request.path %}
-                                    {% url 'teachers_mysession_detail' object.pk %}
-                                {% endif %}">Edit</a>
+                            href="
+                                    {{ object.get_update_url }}
+                               ">Edit</a>
                     </tr>
                 {% endfor %}
             </table>
