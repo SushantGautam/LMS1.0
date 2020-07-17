@@ -378,3 +378,7 @@ urlpatterns += (
     path('course/progress/download/<int:teacher_pk>',
          views.progress_download, name='course_progress_download'),
 )
+
+urlpatterns += (
+    path('teacher_report/', views.TeacherReport.as_view(), name='teacher_report'),
+)
