@@ -61,7 +61,7 @@ Course
     <br><br><br>
     <div class="container" id="divID">
         {% include 'WebApp/theme/alerts.html' %}
-     <div class="col-md-12" style="display:none;padding: 0;" id="cardView">  
+     <div class="col-md-12" id="cardView">  
         {% for courses in response %}
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
             <div class="gridContentsList">
@@ -177,7 +177,7 @@ Course
         </div>
      </div> 
      <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12" >
-        <div class="table-responsive" id="tableView">
+        <div class="table-responsive"  style="display:none;padding: 0;" id="tableView">
 
             <br>
             <span class="checkboxCheckedLength"></span>
@@ -189,7 +189,8 @@ Course
                     <td>Course Name</td>
                     <td>Teachers</td>
                    
-                    <td>Description</td>
+                    <td>Course Provider</td>
+                    <td>Course Level</td>
                   
                   
                 </tr>
@@ -206,7 +207,7 @@ Course
                        
                         <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
                             <p style="height: 30px; overflow:auto"> 
-                            Teacher(s): &nbsp;
+                            &nbsp;
                             {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                             {{ eachTeacher.getFullName }}
                             {% endfor%}
@@ -219,32 +220,13 @@ Course
                     
                         {% endif %}</td>
                         <td style="vertical-align: middle;">
-
-                            {% if object.Course_Description %}
-                            <p style="padding-left: 10px;
-                            padding-right: 10px;
-                            line-height: 1.5em;
-                            height: 3.5em;
-                            overflow-wrap:break-word;
-                            overflow: auto;
-                            white-space: normal;
-                            text-overflow: ellipsis;">
-                            {{ object.Course_Description }}
-                            </p>
-                            {% else %}
-                            <p style="padding-left: 10px;
-                            padding-right: 10px;
-                            line-height: 1.5em;
-                            height: 3.5em;
-                            overflow-wrap:break-word;
-                            overflow: auto;
-                            white-space: normal;
-                            text-overflow: ellipsis;">
-                            No Description
-                            </p>
-                            {% endif %}
+                            {{ object.Course_Provider }}
 
 
+
+                        </td>
+                        <td style="vertical-align: middle;">
+                            {{object.Course_Level}}
 
                         </td>
                        
