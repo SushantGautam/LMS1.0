@@ -398,14 +398,17 @@ class stackedpicture {
                 .then(function (zip) {
                     // $(`#stackedpic-${id}`).find('#scroll-image').parent().parent().append(`
                     //     `);
-                    var imageLength = 0;
+                    const progressBar = document.getElementById('progressbar');
+                    var count = 0;
+                    var imageCount = 0;
+                    var imageHeight = $(`#stackedpic-${id}`).height();
+                    var imageWidth = $(`#stackedpic-${id}`).width();
+                    imageWidth = parseFloat(imageWidth) * 0.93
                     $.each(zip.files, function (key, value) {
                         zip.file(value.name).async("base64")
                             .then(function (content) {
                                     var image = new Image;
-                                    var imageHeight = $(`#stackedpic-${id}`).height();
-                                    var imageWidth = $(`#stackedpic-${id}`).width();
-                                    imageLength ++;
+                                    count ++;
                                     image.onload = function () {
                                         $(`#stackedpic-${id}`).find('#scroll-image').append(this)
                                     }
@@ -414,41 +417,105 @@ class stackedpicture {
                                     image.width = imageWidth;
                                     image.className = 'stack';
                                     image.style.position = 'absolute';
-                                    if(imageLength == 1) image.style.zIndex = "1";
+                                    if(count == 1) image.style.zIndex = "1";
                                 },
                                 function (e) {
                                     console.log("Error reading "
                                         + file.name + " : "
                                         + e.message);
                                 });
-                    })
-                    
+                    });
+                    $.each(zip.files, function (key, value) {
+                        imageCount ++;
+                    });
                     // Set progress bar height based on images count
-                    const progressBar = document.getElementById('progressbar');
-                    let progressHeight = 100 / imageLength;
-                    progressBar.style.height = progressHeight + '%';
+                    let progressHeight = imageHeight / imageCount;
+                    progressBar.style.height = progressHeight + "px";
+                    
+                     // Index of current image which is on display 
+                    let imageIndex = 0; 
+
+                    // Object array of all the images of class stack 
+                    let images = document.getElementsByClassName('stack'); 
+
+                    // Detect mouse is over image
+                    let isMouseOverImage = false; 
+
+                    // Object of parent element containing all images 
+                    let scrollImages = document.getElementById('scroll-image');
+
+                    // current scoll co-ordinates
+                    let x, y; 
+
+                    // This function sets the scroll to x, y 
+                    function noScroll() { 
+                        window.scrollTo(x, y); 
+                    } 
+
+                    // The following event id fired once when mouse hover over the images 
+                    scrollImages.addEventListener( "mouseenter", function() { 
+                        // store the current page offset to x,y 
+                        x = window.pageXOffset; 
+                        y = window.pageYOffset; 
+                        window.addEventListener("scroll", noScroll); 
+                        isMouseOverImage = true; 
+                    }); 
+
+                    // when mouse is no longer over the images 
+                    scrollImages.addEventListener( "mouseleave", function() { 
+                        isMouseOverImage = false; 
+                        window.removeEventListener( "scroll", noScroll); 
+                    }); 
+
+                    // when mouse wheel over the images 
+                    scrollImages.addEventListener( 
+                                "wheel", function(e) { 
+                                        
+                        // check if over image or not 
+                        if (isMouseOverImage) { 
+                            let nextImageIndex = 0; 
+
+                            // finds the next image index limit scroll between first and last image
+                            if (e.deltaY > 0) {
+                                nextImageIndex = imageIndex + 1;
+                                if(nextImageIndex >= imageCount) nextImageIndex = imageIndex
+                            } else {
+                                nextImageIndex = imageIndex - 1;
+                                if(nextImageIndex < 0) nextImageIndex = 0
+                            }
+
+                            // set the z index of current image to 0
+                            images[imageIndex].style.zIndex = "0"; 
+                                
+                            // set z index of next image to 1, to appear on top of old image 
+                            images[nextImageIndex].style.zIndex = "1"; 
+                            imageIndex = nextImageIndex; 
+
+                            document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+
+                        } 
+                    }); 
         }); 
 
             //img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
         }
         let html =
             `<div class='stackedpic' id="stackedpic-${id}" data-link="${link}" data-rid="${rid}">
-            <div id="stackedpic-actions">
-                <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
-              <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                
-            </div>
-            <div class="col"><div class="row">
-            <div class="col"><div id="scroll-image"></div></div>
-            <div class="col"><div id="progressbar"></div>
-            </div></div>
-            <div>
-                <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
-            </form>
-            <p id="stackedpicture-drag">${message}</p>
-            </div>
-        </div>`
+                <div id="stackedpic-actions">
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                </div>
+                <div class="row" style="flex-grow:1;width:100%">
+                <div id="scroll-image"  style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                </div>
+                <div>
+                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                        <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
+                    </form>
+                    <p id="stackedpicture-drag">${message}</p>
+                </div>
+            </div>`
 
         this.RemoveElement = function () {
             return idss;
