@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% load model_template_relation %}
+
+{% block stylesheets %}
+    <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+        .nochapter {
+            background-color: #e3e3e3;
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Session</li>
+{% endblock %}
+{% block content %}
+    <div class="inningInfoListClass">
+        <hr class="header_hr">
+        <h2 class="tableHeader">Teacher Report</h2>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <hr class="header_hr">
+            <div class="table-responsive" id="tableView">
+
+                <br>
+                <span class="checkboxCheckedLength"></span>
+                <table class="table table-striped table-bordered bg-white nowrap" id="inning_dataTable">
+                    <thead class="thead-light bg-primary">
+                    <tr class="tableTitleRow">
+                        <th rowspan="2">S.No</th>
+                        <th rowspan="2">Course Name</th>
+                        <th rowspan="2">Teacher Name</th>
+                        <th colspan="{{ max_chapter_count }}">Chapter</th>
+                        <th rowspan="2">Chapter Contents</th>
+                        <th rowspan="2">Total Chapter</th>
+                    </tr>
+                    <tr>
+                        {% with ''|center:max_chapter_count as range %}
+                            {% for _ in range %}
+                                <th>{{ forloop.counter }}</th>
+                            {% endfor %}
+                        {% endwith %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for course in course_list %}
+                        {% if course.get_teachers_of_this_course %}
+                            <tr>
+                                <td rowspan="{{ course.get_teachers_of_this_course.count }}">{{ forloop.counter }}</td>
+                                <td rowspan="{{ course.get_teachers_of_this_course.count }}">
+                                    <a href="{{ course.get_absolute_url }}">
+                                        {{ course.Course_Name }}
+                                    </a>
+                                </td>
+                                {% for teacher in course.get_teachers_of_this_course %}
+                                    {% if forloop.first %}
+                                        <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td>
+
+                                        {% if course.chapterinfos.count %}
+                                            {% for chapter in course.chapterinfos.all %}
+                                                <td>{{ chapter.has_content }}</td>
+                                            {% endfor %}
+                                            {% if course.chapterinfos.count < max_chapter_count %}
+                                                <td colspan="{{ max_chapter_count|subtract:course.chapterinfos.count }}"
+                                                    class="nochapter">
+                                                    No Chapters
+                                                </td>
+                                            {% endif %}
+                                        {% else %}
+                                            <td colspan="{{ max_chapter_count }}" class="nochapter"> No Chapters</td>
+                                        {% endif %}
+
+                                        <td>s</td>
+                                        <td>a</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td>
+
+                                            {% if course.chapterinfos.count %}
+                                                {% for chapter in course.chapterinfos.all %}
+                                                    <td>{{ chapter.has_content }}</td>
+                                                {% endfor %}
+                                                {% if course.chapterinfos.count < max_chapter_count %}
+                                                    <td colspan="{{ max_chapter_count|subtract:course.chapterinfos.count }}"
+                                                        class="nochapter">
+                                                        No Chapters
+                                                    </td>
+                                                {% endif %}
+                                            {% else %}
+                                                <td colspan="{{ max_chapter_count }}" class="nochapter"> No Chapters
+                                                </td>
+                                            {% endif %}
+
+                                            <td>s</td>
+                                            <td>a</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="{{ course.get_absolute_url }}">
+                                        {{ course.Course_Name }}
+                                    </a>
+                                </td>
+                                <td colspan="{{ max_chapter_count|add:3 }}"> No Teacher Assigned</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block customjss %}
+    <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+    <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }]
+            });
+        });
+    </script>
+
+{% endblock customjss %}
