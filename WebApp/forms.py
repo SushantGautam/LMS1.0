@@ -356,7 +356,7 @@ class InningGroupForm(forms.ModelForm):
         self.fields['Teacher_Code'].queryset = MemberInfo.objects.filter(Is_Teacher=True, Use_Flag=True,
                                                                          Center_Code=self.request.user.Center_Code)
         self.fields['Course_Code'].queryset = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                        Use_Flag=True)
+                                                                        Use_Flag=True).order_by('Course_Name')
 
         self.fields['InningGroup_Name'].label = "Course Allocation Name"
         self.fields['Course_Code'].label = "Course Code"
@@ -381,7 +381,7 @@ class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
     """
 
     def label_from_instance(self, obj):
-        return "%s (%s)" % (obj, obj.Teacher_Code.count())
+        return "%s (%s)" % (obj.InningGroup_Name, obj.Teacher_Code.count())
 
 
 class InningInfoForm(forms.ModelForm):
@@ -403,9 +403,9 @@ class InningInfoForm(forms.ModelForm):
         self.fields['Course_Group'].queryset = InningGroup.objects.filter(Use_Flag=True,
                                                                           Center_Code=self.request.user.Center_Code)
         self.fields['Inning_Name'].queryset = SessionInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                         Use_Flag=True)
+                                                                         Use_Flag=True).order_by('Session_Name')
         self.fields['Groups'].queryset = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                     Use_Flag=True)
+                                                                     Use_Flag=True).order_by('GroupMapping_Name')
         if '/update' in self.request.path:
             del self.fields['Register_Agent']
 
