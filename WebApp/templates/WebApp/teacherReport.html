@@ -11,6 +11,11 @@
         .nochapter {
             background-color: #e3e3e3;
         }
+
+        .hiddentd {
+            display: none;
+            background-color: #721c24;
+        }
     </style>
 {% endblock %}
 
@@ -48,6 +53,55 @@
                     </thead>
                     <tbody>
                     {% for course in course_list %}
+                        {% for teacher in course.get_teachers_of_this_course %}
+                            <tr>
+                                {% if course.get_teachers_of_this_course.count == 1 %}
+                                    <td>{{ forloop.parentloop.counter }}</td>
+                                    <td> <a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
+                                {% else %}
+                                    {% if forloop.first %}
+                                        <th rowspan="{{ course.get_teachers_of_this_course.count }}">{{ forloop.parentloop.counter }}</td>
+                                        <th rowspan="{{ course.get_teachers_of_this_course.count }}"> <a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
+                                    {% endif %}
+                                {% endif %}
+                                <td><a href="{{ teacher.get_absolute_url }}">{{teacher}}</a></td>
+                                <!-- Chapter has content or not -->
+                                {% with ''|center:max_chapter_count as range %}
+                                    {% for _ in range %}
+                                        <td>
+                                            {% if chapter.has_content %}
+                                                <span style="color: green" class="chaptertd hasContent"><i
+                                                        class="fa fa-check"
+                                                        aria-hidden="true"></i></span>
+                                            {% else %}
+                                                <span style="color: darkred" class="chaptertd"><i
+                                                        class="fa fa-times"
+                                                        aria-hidden="true"></i></span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                {% endwith %}
+
+                                <td class="chaptercount totalhasContent"></td>
+                                <td class="chaptercount totalChapters"></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td> <a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
+                                <td>No Teacher Assigned</td>
+                                {% with ''|center:max_chapter_count as range %}
+                                    {% for _ in range %}
+                                        <td> - </td>
+                                    {% endfor %}
+                                {% endwith %}
+                                <td> - </td>
+                                <td> - </td>
+                            </tr>
+                        {% endfor %}
+
+
+                        {% comment %}
                         {% if course.get_teachers_of_this_course %}
                             <tr>
                                 <td rowspan="{{ course.get_teachers_of_this_course.count }}">{{ forloop.counter }}</td>
@@ -79,9 +133,23 @@
                                                     class="nochapter">
                                                     No Chapters
                                                 </td>
+                                                {% with  max_chapter_count|subtract:course.chapterinfos.count as count %}
+                                                    {% with ''|center:count as range %}
+                                                        {% for _ in range %}
+                                                            <td class="hiddentd"></td>
+                                                        {% endfor %}
+                                                    {% endwith %}
+                                                {% endwith %}
                                             {% endif %}
                                         {% else %}
                                             <td colspan="{{ max_chapter_count }}" class="nochapter"> No Chapters</td>
+                                            {% with  max_chapter_count|add:'-1' as count %}
+                                                {% with ''|center:count as range %}
+                                                    {% for _ in range %}
+                                                        <td class="hiddentd"></td>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            {% endwith %}
                                         {% endif %}
 
                                         <td class="chaptercount totalhasContent"></td>
@@ -89,6 +157,8 @@
                                         </tr>
                                     {% else %}
                                         <tr>
+                                            <td class="hiddentd"></td>
+                                            <td class="hiddentd"></td>
                                             <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td>
 
                                             {% if course.chapterinfos.count %}
@@ -110,10 +180,24 @@
                                                         class="nochapter">
                                                         No Chapters
                                                     </td>
+                                                    {% with  max_chapter_count|subtract:course.chapterinfos.count as count %}
+                                                        {% with ''|center:count as range %}
+                                                            {% for _ in range %}
+                                                                <td class="hiddentd"></td>
+                                                            {% endfor %}
+                                                        {% endwith %}
+                                                    {% endwith %}
                                                 {% endif %}
                                             {% else %}
                                                 <td colspan="{{ max_chapter_count }}" class="nochapter"> No Chapters
                                                 </td>
+                                                {% with  max_chapter_count|add:'-1' as count %}
+                                                    {% with ''|center:count as range %}
+                                                        {% for _ in range %}
+                                                            <td class="hiddentd"></td>
+                                                        {% endfor %}
+                                                    {% endwith %}
+                                                {% endwith %}
                                             {% endif %}
 
                                             <td class="chaptercount totalhasContent"></td>
@@ -130,8 +214,16 @@
                                     </a>
                                 </td>
                                 <td colspan="{{ max_chapter_count|add:3 }}"> No Teacher Assigned</td>
+                                {% with  max_chapter_count|add:2 as count %}
+                                    {% with ''|center:count as range %}
+                                        {% for _ in range %}
+                                            <td class="hiddentd"></td>
+                                        {% endfor %}
+                                    {% endwith %}
+                                {% endwith %}
                             </tr>
                         {% endif %}
+                        {% endcomment %}
                     {% endfor %}
                     </tbody>
                 </table>
