@@ -63,13 +63,9 @@
                                 {% for chapter in course.chapterinfos.all %}
                                     <td style="text-align:center">
                                         {% if chapter.has_content %}
-                                            <span style="color: green;text-align: center;" class="chaptertd hasContent"><i
-                                                    class="fa fa-check"
-                                                    aria-hidden="true"></i></span>
+                                            <span style="color: green;text-align: center;" class="chaptertd hasContent">✔</span>
                                         {% else %}
-                                            <span style="color: darkred;" class="chaptertd"><i
-                                                    class="fa fa-times"
-                                                    aria-hidden="true"></i></span>
+                                            <span style="color: darkred;" class="chaptertd">❌</span>
                                         {% endif %}
                                     </td>
                                 {% endfor %}
