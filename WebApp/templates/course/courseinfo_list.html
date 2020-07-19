@@ -57,13 +57,13 @@ aria-hidden="true">
                     {% endif %}
                 </h2>
 
-                <div class="col-md-12 text-right" style="padding-bottom: 20px ;">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
-                                <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
-                                <a id="tableButton" style="cursor: pointer">Table View</a></b>
-                                <!-- <span class="view-inactive" style="padding-right: 10px;"><a href="
+    <div class="col-md-12 text-right" style="padding-bottom: 20px ;">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
+                    <a id="cardButton" href="#card-view" style="cursor: pointer; color:black">Card View</a> &nbsp;
+                    <a id="tableButton" href="#table-view" style="cursor: pointer">Table View</a></b>
+                    <!-- <span class="view-inactive" style="padding-right: 10px;"><a href="
                                 {% if '/mysessions' not in request.path %}
                                     {% url 'inninginfo_list_inactive' %}
                                 {% else %}
@@ -358,7 +358,7 @@ aria-hidden="true">
                        
                         <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
                             <p style="height: 30px; overflow:auto"> 
-                            Teacher(s): &nbsp;
+                            
                             {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                             {{ eachTeacher.getFullName }}
                             {% endfor%}
@@ -456,8 +456,17 @@ $(document).ready(function () {
     if ('{{ request.GET.paginate_by }}') {
         $('#paginate_courses').val('{{ request.GET.paginate_by }}')
     }
+
+    if (window.location.href.indexOf("table-view") > -1) {
+        document.getElementById('tableButton').click();
+    }
+
     $('#paginate_courses').on('change', function () {
-        window.location.href = "{{ request.path }}?paginate_by=" + this.value;
+        if (window.location.href.indexOf("table-view") > -1) {
+            window.location.href = "{{ request.path }}?paginate_by=" + this.value + "#table-view";
+        } else {
+            window.location.href = "{{ request.path }}?paginate_by=" + this.value;
+        }
     })
 });
 
@@ -483,7 +492,6 @@ const truncateString = (string, maxLength = 120) => {
         $("#tableButton").css('color', 'black');
         document.querySelector('#tableView').style.display = "block";
         document.querySelector('#cardView').style.display = "none";
-
     }
 
 

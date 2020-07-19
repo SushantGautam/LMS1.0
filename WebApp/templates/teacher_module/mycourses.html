@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
-                            <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
+                            <a id="cardButton" style="cursor: pointer;color:black">Card View</a> &nbsp;
                             <a id="tableButton" style="cursor: pointer">Table View</a></b>
                             <!-- <span class="view-inactive" style="padding-right: 10px;"><a href="
                             {% if '/mysessions' not in request.path %}
@@ -255,7 +255,7 @@
                            
                             <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
                                 <p style="height: 30px; overflow:auto"> 
-                                Teacher(s): &nbsp;
+                                
                                 {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                                 {{ eachTeacher.getFullName }}
                                 {% endfor%}
