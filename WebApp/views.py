@@ -3802,3 +3802,17 @@ def get_study_time(course_id, chapter, student):
 
     data = {'study_time': study_time, 'progress': progress}
     return data
+
+
+# Teacher Report View
+class TeacherReport(TemplateView):
+    template_name = 'WebApp/teacherReport.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+
+        context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code, Use_Flag=True) 
+
+        return context

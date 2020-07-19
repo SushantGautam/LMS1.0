@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
-                            <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
+                            <a id="cardButton" style="cursor: pointer;color:black">Card View</a> &nbsp;
                             <a id="tableButton" style="cursor: pointer">Table View</a></b>
                             <!-- <span class="view-inactive" style="padding-right: 10px;"><a href="
                             {% if '/mysessions' not in request.path %}
@@ -106,7 +106,7 @@
         <br><br><br>
         <div class="container" id="divID">
             {% include 'WebApp/theme/alerts.html' %}
-         <div class="col-md-12" style="display:none;padding: 0;" id="cardView">     
+         <div class="col-md-12"  id="cardView">     
             {% for courses in response %}
                 <div class="col-md-3 col-sm-6 col-xs-12" id="listCard">
                     <div class="gridContentsList">
@@ -224,7 +224,7 @@
         </div>
         </div>
         <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12" >
-            <div class="table-responsive" id="tableView">
+            <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
     
                 <br>
                 <span class="checkboxCheckedLength"></span>
@@ -236,7 +236,9 @@
                         <td>Course Name</td>
                         <td>Teachers</td>
                        
-                        <td>Description</td>
+                       
+                        <td>Course Provider</td>
+                        <td>Course Level</td>
                       
                         <td>Action</td>
                     </tr>
@@ -253,7 +255,7 @@
                            
                             <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
                                 <p style="height: 30px; overflow:auto"> 
-                                Teacher(s): &nbsp;
+                                
                                 {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                                 {{ eachTeacher.getFullName }}
                                 {% endfor%}
@@ -266,41 +268,18 @@
                         
                             {% endif %}</td>
                             <td style="vertical-align: middle;">
-    
-                                {% if object.Course_Description %}
-                                <p style="padding-left: 10px;
-                                padding-right: 10px;
-                                line-height: 1.5em;
-                                height: 3.5em;
-                                overflow-wrap:break-word;
-                                overflow: auto;
-                                white-space: normal;
-                                text-overflow: ellipsis;">
-                                {{ object.Course_Description }}
-                                </p>
-                                {% else %}
-                                <p style="padding-left: 10px;
-                                padding-right: 10px;
-                                line-height: 1.5em;
-                                height: 3.5em;
-                                overflow-wrap:break-word;
-                                overflow: auto;
-                                white-space: normal;
-                                text-overflow: ellipsis;">
-                                No Description
-                                </p>
-                                {% endif %}
+                                {{ object.Course_Provider }}
     
     
     
                             </td>
+                            <td style="vertical-align: middle;">
+                                {{object.Course_Level}}
+    
+                            </td>
                            
                             <td class="text-center"><a class="btn btn-sm btn-info"
-                                                       href="   {% if '/mysessions' not in request.path %}
-                                        {{ object.get_absolute_url }}
-                                    {% elif 'mysessions' in request.path %}
-                                        {% url 'teachers_mysession_detail' object.pk %}
-                                    {% endif %}">Edit</a>
+                                                       href="  /teachers{{ object.get_update_url }}">Edit</a>
                         </tr>
                     {% endfor %}
                 </table>
