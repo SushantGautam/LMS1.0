@@ -2183,32 +2183,6 @@ def save_file(request):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
 
-            # if media_type == 'stackedpic':
-            #     if (media.size / 1024) > 102400:
-            #         return JsonResponse(data={"message": "File size exceeds 100MB"}, status=500)
-            #     if not media.name.endswith('.zip'):
-            #         return JsonResponse({'status': 'false', 'message': "Only zip files are allowed"}, status=500)
-            #     zip = zipfile.ZipFile(media)
-            #     checkflag = True
-            #     for file in zip.namelist():
-            #         # If files in zip doesn't have following extension of image
-            #         if not zip.getinfo(file).filename.lower().endswith(
-            #                 ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
-            #             checkflag = False
-            #     if not checkflag:
-            #         return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
-            #
-            #     path = settings.MEDIA_ROOT
-            #
-            #     # creates directory structure if not exists
-            #     make_directory_if_not_exists(courseID, chapterID)
-            #
-            #     storage_path = path + '/chapterBuilder/' + courseID + '/' + chapterID + '/'
-            #     # for file in zip.namelist():
-            #     #     zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
-            #     return JsonResponse(data={
-            #         "path": os.path.join(*[settings.MEDIA_URL, "chapterBuilder", courseID, chapterID, media.name])},
-            #         status=200)
             if media_type == 'pic':
                 if (media.size / 1024) > 2048:
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
