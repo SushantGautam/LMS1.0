@@ -67,7 +67,13 @@
 
                 <div class="center-name" style="padding: 10px 0;">
                     <span style="font-size:18px;"><b> Course Title: </b></span>
-                    <span style="font-size: 16px;">{{ course }}</span>
+                    <select id="select_course">
+                        {% for courseObj in course_list %}
+                            <option value="{{ courseObj.pk }}" {% if courseObj.pk == course.pk %}
+                                    selected {% endif %}>{{ courseObj }}</option>
+                        {% endfor %}
+                    </select>
+                    {#                    <span style="font-size: 16px;">{{ course }}</span>#}
 
                 </div>
                 <div class="session-detail" style="padding: 10px 0;">
@@ -452,6 +458,22 @@
                         window.location.href = `/teachers/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/`;
                     {% elif '/students' or '/teachers' not in request.path %}
                         window.location.href = `/courseinfo/detail/{{course.pk}}/inning/${this.value}/progress/`;
+                    {% endif %}
+                {% endif %}
+            });
+
+            $("#select_course").on("change", function () {
+                {% if 'iframe' in request.GET %}
+                    {% if '/teachers' in request.path %}
+                        window.location.href = `/teachers/courseinfo/detail/${this.value}/progress/?iframe=1`
+                    {% elif '/students' or '/teachers' not in request.path %}
+                        window.location.href = `/courseinfo/detail/${this.value}/progress/?iframe=1`;
+                    {% endif %}
+                {% else %}
+                    {% if '/teachers' in request.path %}
+                        window.location.href = `/teachers/courseinfo/detail/${this.value}/progress/`;
+                    {% elif '/students' or '/teachers' not in request.path %}
+                        window.location.href = `/courseinfo/detail/${this.value}/progress/`;
                     {% endif %}
                 {% endif %}
             });

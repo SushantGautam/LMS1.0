@@ -9,7 +9,8 @@
 
     <style>
         .nochapter {
-            background: #e6e6e6;text-align: center;
+            background: #e6e6e6;
+            text-align: center;
         }
 
         .hiddentd {
@@ -20,7 +21,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Session</li>
+    <li class="breadcrumb-item active" aria-current="page">Report</li>
 {% endblock %}
 {% block content %}
     <div class="inningInfoListClass">
@@ -55,20 +56,16 @@
                     {% for teacher in teacher_list %}
                         {% for course in teacher.get_teacher_courses.courses %}
                             <tr>
-                                <td>{{ forloop.parentloop.counter }}</td>
+                                <td></td>
                                 <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td>
                                 <td><a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
                                 <!-- Chapter has content or not -->
                                 {% for chapter in course.chapterinfos.all %}
                                     <td style="text-align:center">
                                         {% if chapter.has_content %}
-                                            <span style="color: green;text-align: center;" class="chaptertd hasContent"><i
-                                                    class="fa fa-check"
-                                                    aria-hidden="true"></i></span>
+                                            <span style="color: green;text-align: center;" class="chaptertd hasContent">✔</span>
                                         {% else %}
-                                            <span style="color: darkred;" class="chaptertd"><i
-                                                    class="fa fa-times"
-                                                    aria-hidden="true"></i></span>
+                                            <span style="color: darkred;" class="chaptertd">❌</span>
                                         {% endif %}
                                     </td>
                                 {% endfor %}
@@ -76,7 +73,7 @@
                                     {% with  max_chapter_count|subtract:course.chapterinfos.count as count %}
                                         {% with ''|center:count as range %}
                                             {% for _ in range %}
-                                                <td class="nochapter"> - </td>
+                                                <td class="nochapter"> -</td>
                                             {% endfor %}
                                         {% endwith %}
                                     {% endwith %}
@@ -117,7 +114,7 @@
                 }
             });
 
-            $('.table').DataTable({
+            var table = $('.table').DataTable({
                 dom: 'lBfrtip',
                 responsive: true,
                 buttons: [
@@ -131,6 +128,12 @@
                         fieldSeparator: '\t'
                     }]
             });
+            table.on('order.dt', function () {
+                table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                    table.cell(cell).invalidate('dom');
+                });
+            }).draw();
         });
     </script>
 

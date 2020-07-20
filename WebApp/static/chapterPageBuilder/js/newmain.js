@@ -426,76 +426,76 @@ class stackedpicture {
                                 });
                     });
                     $.each(zip.files, function (key, value) {
-                        imageCount ++;
+                        imageCount++;
                     });
                     // Set progress bar height based on images count
                     let progressHeight = imageHeight / imageCount;
                     progressBar.style.height = progressHeight + "px";
-                    
-                     // Index of current image which is on display 
-                    let imageIndex = 0; 
+
+                    // Index of current image which is on display
+                    let imageIndex = 0;
 
                     // Object array of all the images of class stack 
-                    let images = document.getElementsByClassName('stack'); 
+                    let images = document.getElementsByClassName('stack');
 
                     // Detect mouse is over image
-                    let isMouseOverImage = false; 
+                    let isMouseOverImage = false;
 
                     // Object of parent element containing all images 
                     let scrollImages = document.getElementById('scroll-image');
 
                     // current scoll co-ordinates
-                    let x, y; 
+                    let x, y;
 
                     // This function sets the scroll to x, y 
-                    function noScroll() { 
-                        window.scrollTo(x, y); 
-                    } 
+                    function noScroll() {
+                        window.scrollTo(x, y);
+                    }
 
                     // The following event id fired once when mouse hover over the images 
-                    scrollImages.addEventListener( "mouseenter", function() { 
+                    scrollImages.addEventListener("mouseenter", function () {
                         // store the current page offset to x,y 
-                        x = window.pageXOffset; 
-                        y = window.pageYOffset; 
-                        window.addEventListener("scroll", noScroll); 
-                        isMouseOverImage = true; 
-                    }); 
+                        x = window.pageXOffset;
+                        y = window.pageYOffset;
+                        window.addEventListener("scroll", noScroll);
+                        isMouseOverImage = true;
+                    });
 
                     // when mouse is no longer over the images 
-                    scrollImages.addEventListener( "mouseleave", function() { 
-                        isMouseOverImage = false; 
-                        window.removeEventListener( "scroll", noScroll); 
-                    }); 
+                    scrollImages.addEventListener("mouseleave", function () {
+                        isMouseOverImage = false;
+                        window.removeEventListener("scroll", noScroll);
+                    });
 
                     // when mouse wheel over the images 
-                    scrollImages.addEventListener( 
-                                "wheel", function(e) { 
-                                        
-                        // check if over image or not 
-                        if (isMouseOverImage) { 
-                            let nextImageIndex = 0; 
+                    scrollImages.addEventListener(
+                        "wheel", function (e) {
 
-                            // finds the next image index limit scroll between first and last image
-                            if (e.deltaY > 0) {
-                                nextImageIndex = imageIndex + 1;
-                                if(nextImageIndex >= imageCount) nextImageIndex = imageIndex
-                            } else {
-                                nextImageIndex = imageIndex - 1;
-                                if(nextImageIndex < 0) nextImageIndex = 0
+                            // check if over image or not
+                            if (isMouseOverImage) {
+                                let nextImageIndex = 0;
+
+                                // finds the next image index limit scroll between first and last image
+                                if (e.deltaY > 0) {
+                                    nextImageIndex = imageIndex + 1;
+                                    if (nextImageIndex >= imageCount) nextImageIndex = imageIndex
+                                } else {
+                                    nextImageIndex = imageIndex - 1;
+                                    if (nextImageIndex < 0) nextImageIndex = 0
+                                }
+
+                                // set the z index of current image to 0
+                                images[imageIndex].style.zIndex = "0";
+
+                                // set z index of next image to 1, to appear on top of old image
+                                images[nextImageIndex].style.zIndex = "1";
+                                imageIndex = nextImageIndex;
+
+                                document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+
                             }
-
-                            // set the z index of current image to 0
-                            images[imageIndex].style.zIndex = "0"; 
-                                
-                            // set z index of next image to 1, to appear on top of old image 
-                            images[nextImageIndex].style.zIndex = "1"; 
-                            imageIndex = nextImageIndex; 
-
-                            document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
-
-                        } 
-                    }); 
-        }); 
+                        });
+                });
 
             //img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
         }
@@ -1664,7 +1664,6 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
     })
 
     $('.stackedpic').on('drop', function (e) {
-
         e.stopPropagation();
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
@@ -1673,128 +1672,91 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
     });
 
     function upload(file, element) {
-        let div = element;
-        $(div).find('.file-upload-icon').hide()
-        $(div).find('p').hide()
-        $(div).find('.loadingDiv').show();
-        const data = new FormData();
-        data.append("file-0", file);
-        data.append('chapterID', chapterID);
-        data.append('courseID', courseID);
-        data.append('type', 'stackedpic');
-        data.append('csrfmiddlewaretoken', csrf_token);
-        var options = {
-            url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
-            chunk_size: 10, // MB
-            onUploadComplete: function (e, options) {
-                var request = new XMLHttpRequest()
 
-                request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
-                request.onload = function () {
-                    // Begin accessing JSON data here
-                    var data = JSON.parse(this.response)
-                    if (request.status >= 200 && request.status < 400) {
-                        console.log(data.success)
-                    } else {
-                        console.log('error')
-                    }
-                }
-                request.send()
-                $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
-                    console.log('success')
-                }).fail(function () {
-                    console.log('failed')
-                })
-                div.remove()
-                let rid = options.rid;
-                // let link = ''
-                $.get(`https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}`, function (data) {
-                    // link = data['items'][0]['versions']['original']['url']
-                    StackedPictureFunction(
-                        $(div)[0].style.top,
-                        $(div)[0].style.left,
-                        data['items'][0]['versions']['original']['url'],
-                        rid,
-                        $(div)[0].style.width,
-                        $(div)[0].style.height,
-                    );
-                }).fail(function () {
-                    console.log('failed')
-                })
-            },
-            onUploadProgress: function (e) {
-                $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
-                addprogress();
-            },
-            onUploadError: function (e) {
-                console.log(e);
-                $(".status-bar").html("Error accured while uploading");
-            }
-        };
-        uploader = new cpUploadAPI(file, options);
-        uploader.start();
-        /*
-        $.ajax({
-            url: save_file_url, //image url defined in chapterbuilder.html which points to WebApp/static/chapterPageBuilder/images
-            data: data,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            type: 'POST',
-            beforeSend: function () {
-                div.append(`<div class="loader" id="loadingDiv"></div>`)
-                $('#loadingDiv').show();
-            },
-            success: function (successdata) {
-
-                console.log(successdata.path)
-
-                var promise = new JSZip.external.Promise(function (resolve, reject) {
-                    JSZipUtils.getBinaryContent(successdata.path, function (err, data) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(data);
+        function handleFile(f) {
+            JSZip.loadAsync(f)                                   // 1) read the Blob
+                .then(function (zip) {
+                    acceptableFilelist = ['png', 'jpg', 'jpeg', 'bmp', 'gif']
+                    zip.forEach(function (relativePath, zipEntry) {  // 2) print entries
+                        if (!acceptableFilelist.includes(zipEntry.name.split('.').pop())) {
+                            alert("Only ['png', 'jpg', 'jpeg', 'bmp', 'gif'] are allowed");
+                            throw 500
                         }
                     });
+                    fileupload(f)
+                }, function (e) {
+                    console.log("Error reading " + f.name + ": " + e.message);
+                    alert("Error reading " + f.name + ": " + e.message);
+                    throw 500
                 });
+        }
 
-                promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
-                    .then(function (zip) {
-                        $.each(zip.files, function (key, value) {
-                            zip.file(value.name).async("base64")
-                                .then(function (content) {
-                                        var img = new Image;
-                                        img.onload = function () {
-                                            document.body.appendChild(this)
-                                        }
-                                        img.src = "data:image;base64," + content;
-                                    },
-                                    function (e) {
-                                        console.log("Error reading "
-                                            + file.name + " : "
-                                            + e.message);
-                                    });
-                        })
+
+        handleFile(file);
+
+        function fileupload(file) {
+            let div = element;
+            $(div).find('.file-upload-icon').hide()
+            $(div).find('p').hide()
+            $(div).find('.loadingDiv').show();
+            const data = new FormData();
+            data.append("file-0", file);
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'stackedpic');
+            data.append('csrfmiddlewaretoken', csrf_token);
+            var options = {
+                url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+                chunk_size: 10, // MB
+                onUploadComplete: function (e, options) {
+                    var request = new XMLHttpRequest()
+
+                    request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
+                    request.onload = function () {
+                        // Begin accessing JSON data here
+                        var data = JSON.parse(this.response)
+                        if (request.status >= 200 && request.status < 400) {
+                            console.log(data.success)
+                        } else {
+                            console.log('error')
+                        }
+                    }
+                    request.send()
+                    $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
+                        console.log('success')
+                    }).fail(function () {
+                        console.log('failed')
                     })
-                // StackedPictureFunction(
-                //     $(div)[0].style.top,
-                //     $(div)[0].style.left,
-                //     `/media/chapterBuilder/${courseID}/${chapterID}/${data.media_name}`,
-                //     $(div)[0].style.height,
-                //     $(div)[0].style.width,
-                // );
-                // div.remove();
-            },
-            error: function (data, status, errorThrown) {
-                alert(data.responseJSON.message);
-            },
-            complete: function () {
-                $('#loadingDiv').remove();
-            }
-        });
-        */
+                    div.remove()
+                    let rid = options.rid;
+                    // let link = ''
+                    $.get(`https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}`, function (data) {
+                        // link = data['items'][0]['versions']['original']['url']
+                        StackedPictureFunction(
+                            $(div)[0].style.top,
+                            $(div)[0].style.left,
+                            data['items'][0]['versions']['original']['url'],
+                            rid,
+                            $(div)[0].style.width,
+                            $(div)[0].style.height,
+                        );
+                    }).fail(function () {
+                        console.log('failed')
+                    })
+                },
+                onUploadProgress: function (e) {
+                    $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                    $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                    addprogress();
+                },
+                onUploadError: function (e) {
+                    console.log(e);
+                    $(".status-bar").html("Error accured while uploading");
+                }
+            };
+            uploader = new cpUploadAPI(file, options);
+            uploader.start();
+        }
     }
 
     function readURL(input) {
