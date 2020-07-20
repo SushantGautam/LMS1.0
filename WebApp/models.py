@@ -140,6 +140,8 @@ class MemberInfo(AbstractUser):
             if inning_info.exists():
                 courses.append(i.Course_Code)
                 session_list.append(inning_info)
+        # Remove duplicate courses
+        courses = list(set(courses))
         return {'courses': courses, 'session': session_list}
 
     @property
