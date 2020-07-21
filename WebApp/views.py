@@ -2183,32 +2183,6 @@ def save_file(request):
         if request.FILES['file-0']:
             media = request.FILES['file-0']
 
-            # if media_type == 'stackedpic':
-            #     if (media.size / 1024) > 102400:
-            #         return JsonResponse(data={"message": "File size exceeds 100MB"}, status=500)
-            #     if not media.name.endswith('.zip'):
-            #         return JsonResponse({'status': 'false', 'message': "Only zip files are allowed"}, status=500)
-            #     zip = zipfile.ZipFile(media)
-            #     checkflag = True
-            #     for file in zip.namelist():
-            #         # If files in zip doesn't have following extension of image
-            #         if not zip.getinfo(file).filename.lower().endswith(
-            #                 ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')):
-            #             checkflag = False
-            #     if not checkflag:
-            #         return JsonResponse({'status': 'false', 'message': "Not valid zip"}, status=500)
-            #
-            #     path = settings.MEDIA_ROOT
-            #
-            #     # creates directory structure if not exists
-            #     make_directory_if_not_exists(courseID, chapterID)
-            #
-            #     storage_path = path + '/chapterBuilder/' + courseID + '/' + chapterID + '/'
-            #     # for file in zip.namelist():
-            #     #     zip.extract(file, storage_path)  # extract the file to current folder if it is a text file
-            #     return JsonResponse(data={
-            #         "path": os.path.join(*[settings.MEDIA_URL, "chapterBuilder", courseID, chapterID, media.name])},
-            #         status=200)
             if media_type == 'pic':
                 if (media.size / 1024) > 2048:
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
@@ -3092,8 +3066,12 @@ def CourseProgressView(request, coursepk, inningpk=None):
     # student_data = []
     if '/teachers' in request.path:
         basefile = "teacher_module/base.html"
+        course_list = request.user.get_teacher_courses()['courses']
+
     elif '/teachers' or '/students' not in request.path:
         basefile = "base.html"
+        course_list = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+
     if coursepk:
         if '/teachers' in request.path:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
@@ -3120,6 +3098,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                 'course': courseObj,
                 'chapter_list': chapters_list,
                 'basefile': basefile,
+                'course_list': course_list,
             }
             return render(request, 'teacher_module/chapterProgress.html', context=context)
 
@@ -3131,6 +3110,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
         'inning': innings,
         'chapter_list': chapters_list,
         'basefile': basefile,
+        'course_list': course_list,
     }
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
@@ -3813,6 +3793,18 @@ class TeacherReport(TemplateView):
         context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
 
-        context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code, Use_Flag=True) 
+        context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code,
+                                                            Use_Flag=True)
 
+        return context
+
+
+class TeacherIndividualReport(TemplateView):
+    template_name = 'WebApp/teacherIndividualReport.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
+            'courses']
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
         return context

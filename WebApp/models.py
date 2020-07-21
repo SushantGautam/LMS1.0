@@ -12,11 +12,15 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
     FileField
+from django.contrib.sessions.models import Session
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.contrib.auth import user_logged_in
+from django.dispatch.dispatcher import receiver
+
 
 # from quiz.models import Quiz
 
@@ -204,6 +208,23 @@ class MemberInfo(AbstractUser):
     #     extra_fields.setdefault('is_superuser', True)
     #     return self._create_user(username, email, password, **extra_fields)
 
+class UserSession(models.Model):
+    user = models.ForeignKey(MemberInfo, on_delete=models.CASCADE)
+    session = models.OneToOneField(Session, on_delete=models.CASCADE)
+
+@receiver(user_logged_in)
+def remove_other_sessions(sender, user, request, **kwargs):
+    # remove other sessions
+    Session.objects.filter(usersession__user=user).delete()
+
+    # save current session
+    request.session.save()
+
+    # create a link from the user to the current session (for later removal)
+    UserSession.objects.get_or_create(
+        user=user,
+        session=Session.objects.get(pk=request.session.session_key)
+    )
 
 class CourseInfo(models.Model):
     Course_Name = CharField(max_length=240)
