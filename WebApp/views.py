@@ -3066,8 +3066,12 @@ def CourseProgressView(request, coursepk, inningpk=None):
     # student_data = []
     if '/teachers' in request.path:
         basefile = "teacher_module/base.html"
+        course_list = request.user.get_teacher_courses()['courses']
+
     elif '/teachers' or '/students' not in request.path:
         basefile = "base.html"
+        course_list = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+
     if coursepk:
         if '/teachers' in request.path:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
@@ -3094,6 +3098,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                 'course': courseObj,
                 'chapter_list': chapters_list,
                 'basefile': basefile,
+                'course_list': course_list,
             }
             return render(request, 'teacher_module/chapterProgress.html', context=context)
 
@@ -3105,6 +3110,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
         'inning': innings,
         'chapter_list': chapters_list,
         'basefile': basefile,
+        'course_list': course_list,
     }
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 

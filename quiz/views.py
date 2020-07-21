@@ -890,7 +890,11 @@ class GetCourseChapter(View):
 class RemoveMcqLink(View):
     def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
-        my_obj.mcquestion.remove(get_object_or_404(MCQuestion, id=self.kwargs['qn_id']))
+        if my_obj.question_count() > 1:
+            my_obj.mcquestion.remove(get_object_or_404(MCQuestion, id=self.kwargs['qn_id']))
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'At least one question must be available in quiz.')
         return HttpResponseRedirect(
             reverse(
                 'quiz_detail',
@@ -902,7 +906,11 @@ class RemoveMcqLink(View):
 class RemoveTfqLink(View):
     def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
-        my_obj.tfquestion.remove(get_object_or_404(TF_Question, id=self.kwargs['qn_id']))
+        if my_obj.question_count() > 1:
+            my_obj.tfquestion.remove(get_object_or_404(TF_Question, id=self.kwargs['qn_id']))
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'At least one question must be available in quiz.')
         return HttpResponseRedirect(
             reverse(
                 'quiz_detail',
@@ -914,7 +922,11 @@ class RemoveTfqLink(View):
 class RemoveSaqLink(View):
     def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
-        my_obj.saquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
+        if my_obj.question_count() > 1:
+            my_obj.saquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'At least one question must be available in quiz.')
         return HttpResponseRedirect(
             reverse(
                 'quiz_detail',
