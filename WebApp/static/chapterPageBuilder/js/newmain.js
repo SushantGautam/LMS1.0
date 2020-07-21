@@ -408,7 +408,7 @@ class stackedpicture {
                         zip.file(value.name).async("base64")
                             .then(function (content) {
                                     var image = new Image;
-                                    count ++;
+                                    count++;
                                     image.onload = function () {
                                         $(`#stackedpic-${id}`).find('#scroll-image').append(this)
                                     }
@@ -417,7 +417,7 @@ class stackedpicture {
                                     image.width = imageWidth;
                                     image.className = 'stack';
                                     image.style.position = 'absolute';
-                                    if(count == 1) image.style.zIndex = "1";
+                                    if (count == 1) image.style.zIndex = "1";
                                 },
                                 function (e) {
                                     console.log("Error reading "
@@ -1674,19 +1674,56 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
     function upload(file, element) {
 
         function handleFile(f) {
+            // Check if file size is greater than 100 MB
+            if (f.size > 104857600) {
+                alert("Error reading " + f.name + ": File is too large. Only 100 MB is allowed");
+                throw 500
+            }
+
+            // Read Zip file
             JSZip.loadAsync(f)                                   // 1) read the Blob
                 .then(function (zip) {
+                    let folderstoremove = []
                     acceptableFilelist = ['png', 'jpg', 'jpeg', 'bmp', 'gif']
+                    if (Object.keys(zip.files).length < 1) {
+                        alert("Error! Zip file is empty.");
+                        throw 500
+                    }
+
                     zip.forEach(function (relativePath, zipEntry) {  // 2) print entries
+                        // Check if files in zip are of valid format
                         if (!acceptableFilelist.includes(zipEntry.name.split('.').pop())) {
                             alert("Only ['png', 'jpg', 'jpeg', 'bmp', 'gif'] are allowed");
                             throw 500
                         }
+
+                        if (zipEntry._data.uncompressedSize > (2 * 1024 * 1024)) {
+                            alert("Filename " + zipEntry.name + " is greater than 2 MB.");
+                            throw 500
+                        }
+
+                        // Check if zip has directories, if yes remove directory from zip before upload
+                        if (zipEntry.name.split('/').length > 0) {
+                            // if (!folderstoremove.includes(zipEntry.name.split('/')[0])) {
+                            //     folderstoremove.push(zipEntry.name.split('/')[0])
+                            // }
+
+                            alert('Directories in zip are not allowed. Only Files must be inside zip.')
+                            throw 500
+                        }
                     });
+
+                    // if (folderstoremove.length > 0) {
+                    //     alert('Directories in zip are not allowed. Only Files must be inside zip.')
+                    //     $.each(folderstoremove, function (index) {
+                    //         zip.remove(folderstoremove)
+                    //     });
+                    // }
+
                     fileupload(f)
                 }, function (e) {
-                    console.log("Error reading " + f.name + ": " + e.message);
-                    alert("Error reading " + f.name + ": " + e.message);
+                    console.log("Error reading " + f.name + ": Is this zip file? Only zip files are allowed.");
+                    alert("Error reading " + f.name + ": Is this zip file? Only zip files are allowed.");
                     throw 500
                 });
         }
