@@ -12,6 +12,32 @@
     <head>
         <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
         <style>
+            /* Stack image progress bar */
+            #progressbar {
+                float: right;
+                width: 15px;
+                border-radius: 10px;
+                background-color: #2d3436;
+                background-image: linear-gradient(315deg, #2d3436 0%, #d3d3d3 74%);
+            }
+            /* ===Stackedpic== */
+
+            .stackedpic {
+                width: 400px;
+                height: 200px;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-flow: column wrap;
+                flex-flow: column wrap;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+                -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+            }
+
             .examiframeholder {
                 height: 100vh;
                 width: 100%;
@@ -1074,9 +1100,9 @@
                                                                 $(`#stackedpic-${id}`).find('#scroll-image').append(this)
                                                             }
                                                             image.src = "data:image;base64," + content;
-                                                            image.height = imageHeight;
-                                                            image.width = imageWidth;
                                                             image.className = 'stack';
+                                                            image.style.height = '100%';
+                                                            image.style.width = '95%';
                                                             image.style.position = 'absolute';
                                                             if (count == 1) image.style.zIndex = "1";
                                                         },
@@ -1161,12 +1187,10 @@
                                     $('#page' + key).append(`
                                             <div class = "stackedpic" id="stackedpic-${id}" style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
                                             <div class = "spinnner" style = 'position:relative'>
-                                                <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%">
-
-                                                </div>
+                                                <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
                                             </div>
-                                            <div class="row" style="flex-grow:1;width:100%">
-                                                <div id="scroll-image"  style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                                            <div class="row" style="display:flex;flex-grow:1;width:100%">
+                                                <div id="scroll-image" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
                                                 <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
                                             </div>
                                            </div>
