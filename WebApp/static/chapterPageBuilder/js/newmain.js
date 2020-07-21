@@ -413,10 +413,11 @@ class stackedpicture {
                                         $(`#stackedpic-${id}`).find('#scroll-image').append(this)
                                     }
                                     image.src = "data:image;base64," + content;
-                                    image.height = imageHeight;
-                                    image.width = imageWidth;
                                     image.className = 'stack';
+                                    image.style.height = '100%';
+                                    image.style.width = '95%';
                                     image.style.position = 'absolute';
+                                    image.style.objectFit = 'cover';
                                     if(count == 1) image.style.zIndex = "1";
                                 },
                                 function (e) {
@@ -506,15 +507,16 @@ class stackedpicture {
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div class="row" style="flex-grow:1;width:100%">
-                <div id="scroll-image"  style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
-                <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                    <div id="scroll-image" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                    <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                    <div style="margin:auto">
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                            <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
+                        </form>
+                        <p id="stackedpicture-drag">${message}</p>
+                    </div>
                 </div>
-                <div>
-                    <form id="form1" enctype="multipart/form-data" action="/" runat="server">
-                        <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
-                    </form>
-                    <p id="stackedpicture-drag">${message}</p>
-                </div>
+                
             </div>`
 
         this.RemoveElement = function () {
