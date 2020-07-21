@@ -1,11 +1,11 @@
 import glob
 import json
+import math
 import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
-from dateutil.parser import parse
 from io import BytesIO
 from json import JSONDecodeError
 
@@ -14,6 +14,7 @@ import cloudinary.api
 import cloudinary.uploader
 import pandas as pd
 import requests
+from dateutil.parser import parse
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
@@ -825,7 +826,7 @@ def ImportSession(request, *args, **kwargs):
                     start_date = str(start_date)
                     try:
                         # start_date = datetime.strptime(start_date, '%m/%d/%Y')
-                        start_date = parse(start_date) # It accepts most of the standard date format
+                        start_date = parse(start_date)  # It accepts most of the standard date format
                     except ValueError:
                         error = "Start Date <strong>" + start_date + "</strong> is not valid. It must be in standard date format"
                         raise Exception
@@ -848,7 +849,8 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name is required"
                         raise Exception
                     student_group = str(student_group)
-                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group, Center_Code=center).exists():
+                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group,
+                                                       Center_Code=center).exists():
                         url = str(reverse('groupmapping_list'))
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
@@ -1022,13 +1024,19 @@ class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
 
 def CourseInfoDeleteView(request, pk):
     if request.method == 'POST':
+        courseactive = True
         if AuthCheck(request, admn=1) == 2 or CourseAuth(request, pk) == 2:
             return redirect('login')
         try:
             # return self.delete(request, *args, **kwargs)
             Obj = CourseInfo.objects.get(pk=pk)
+            if not Obj.Use_Flag:
+                courseactive = False
             Obj.delete()
-            return redirect('courseinfo_list_active')
+            if courseactive:
+                return redirect('courseinfo_list_active')
+            else:
+                return redirect('courseinfo_list_inactive')
 
         except:
             messages.error(request,
@@ -1538,6 +1546,7 @@ class GroupMappingListView(ListView):
     def get_queryset(self):
         return GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code)
 
+
 def CourseAllocationCSVImport(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
@@ -1571,10 +1580,10 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                         raise Exception
                     course_allocation_name = str(course_allocation_name)
                     if InningGroup.objects.filter(InningGroup_Name__iexact=course_allocation_name,
-                                                   Center_Code=center).exists():
+                                                  Center_Code=center).exists():
                         error = "Course Allocation Name already exist in the center please choose another name"
                         raise Exception
-                    
+
                     # Course Name validation
                     if not course_name:
                         error = "Course Allocation Name is required"
@@ -1607,7 +1616,8 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     # Teachers validation and registration
                     for teacher in teachers:
                         teacher = teacher.strip()
-                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center, Is_Teacher=True).exists():
+                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center,
+                                                         Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
                         teacher_code = MemberInfo.objects.get(username__iexact=teacher)
@@ -2172,6 +2182,7 @@ def save_file(request):
         path = ''
         if request.FILES['file-0']:
             media = request.FILES['file-0']
+
             if media_type == 'pic':
                 if (media.size / 1024) > 2048:
                     return JsonResponse(data={"message": "File size exceeds 2MB"}, status=500)
@@ -3055,8 +3066,12 @@ def CourseProgressView(request, coursepk, inningpk=None):
     # student_data = []
     if '/teachers' in request.path:
         basefile = "teacher_module/base.html"
+        course_list = request.user.get_teacher_courses()['courses']
+
     elif '/teachers' or '/students' not in request.path:
         basefile = "base.html"
+        course_list = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+
     if coursepk:
         if '/teachers' in request.path:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
@@ -3083,6 +3098,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
                 'course': courseObj,
                 'chapter_list': chapters_list,
                 'basefile': basefile,
+                'course_list': course_list,
             }
             return render(request, 'teacher_module/chapterProgress.html', context=context)
 
@@ -3094,6 +3110,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
         'inning': innings,
         'chapter_list': chapters_list,
         'basefile': basefile,
+        'course_list': course_list,
     }
     return render(request, 'teacher_module/chapterProgress.html', context=context)
 
@@ -3169,6 +3186,11 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
+                if jsondata['contents']['totalstudytime'] and chapter.mustreadtime:
+                    studytimeprogresspercent = (int(
+                        jsondata['contents']['totalstudytime']) / chapter.mustreadtime) * 100
+                else:
+                    studytimeprogresspercent = 0
                 if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
                     if int(jsondata['contents']['totalPage']) > 0 and int(
                             jsondata['contents']['currentpagenumber']) > 0:
@@ -3180,6 +3202,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                     progresspercent = 0
             else:
                 progresspercent = 0
+                studytimeprogresspercent = 0
 
             student_quiz = Quiz.objects.filter(chapter_code=chapter)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
@@ -3224,7 +3247,9 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'totalPage': int(
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
                                                                           'totalPage'] is not None else None,
-                            'progresspercent': progresspercent,
+                            'progresspercent': math.floor(progresspercent),
+                            'studytimeprogresspercent': math.floor(
+                                studytimeprogresspercent) if studytimeprogresspercent <= 100 else 100,
                             'attendance': attendance,
                         },
                         'quiz': {
@@ -3251,6 +3276,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'currentpagenumber': None,
                             'totalPage': None,
                             'progresspercent': progresspercent,
+                            'studytimeprogresspercent': studytimeprogresspercent,
                             'attendance': attendance,
                         },
                         'quiz': {
@@ -3756,3 +3782,29 @@ def get_study_time(course_id, chapter, student):
 
     data = {'study_time': study_time, 'progress': progress}
     return data
+
+
+# Teacher Report View
+class TeacherReport(TemplateView):
+    template_name = 'WebApp/teacherReport.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+
+        context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code,
+                                                            Use_Flag=True)
+
+        return context
+
+
+class TeacherIndividualReport(TemplateView):
+    template_name = 'WebApp/teacherIndividualReport.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
+            'courses']
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        return context

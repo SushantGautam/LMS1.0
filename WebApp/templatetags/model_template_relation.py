@@ -76,3 +76,7 @@ def getAssignmentsScore(assignmentObj, userObj):
         'total_score': total_score,
         'total_score_obtained': total_score_obtained if total_score_obtained else 0,
     }
+
+@register.filter
+def subtract(value, arg):
+    return value - arg

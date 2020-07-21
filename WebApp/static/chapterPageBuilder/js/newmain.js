@@ -356,6 +356,210 @@ class picture {
     }
 }
 
+
+// ===========================FOR STACKED PICTURE=====================================
+
+class stackedpicture {
+    constructor(top, left, link = null, rid = null, width = null, height = null) {
+        let id = (new Date).getTime();
+        let position = {top, left, width, height};
+        let message = "";
+        if (link == null) {
+            message = `
+                <div class = "file-upload-icon">
+                    <img src = "/static/chapterPageBuilder/images/uploadIcon.png" height = "100%" width = "100%"></img>
+                </div>
+                <p>Drag or drop ZipFile here...</p>
+                <div class="progressc mx-auto loadingDiv" data-value='0' style="display:none">
+                <span class="progress-left">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <span class="progress-right">
+                            <span class="progress-barc border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                <div class="h2 font-weight-bold percentcomplete">0<span class="small">%</span></div>
+                </div>
+                `
+        }
+        //let img = '';
+        if (link != null) {
+            var promise = new JSZip.external.Promise(function (resolve, reject) {
+                JSZipUtils.getBinaryContent(link, function (err, data) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+
+            promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
+                .then(function (zip) {
+                    // $(`#stackedpic-${id}`).find('#scroll-image').parent().parent().append(`
+                    //     `);
+                    const progressBar = document.getElementById('progressbar');
+                    var count = 0;
+                    var imageCount = 0;
+                    var imageHeight = $(`#stackedpic-${id}`).height();
+                    var imageWidth = $(`#stackedpic-${id}`).width();
+                    imageWidth = parseFloat(imageWidth) * 0.93
+                    $.each(zip.files, function (key, value) {
+                        zip.file(value.name).async("base64")
+                            .then(function (content) {
+                                    var image = new Image;
+                                    count ++;
+                                    image.onload = function () {
+                                        $(`#stackedpic-${id}`).find('#scroll-image').append(this)
+                                    }
+                                    image.src = "data:image;base64," + content;
+                                    image.className = 'stack';
+                                    image.style.height = '100%';
+                                    image.style.width = '95%';
+                                    image.style.position = 'absolute';
+                                    image.style.objectFit = 'cover';
+                                    if(count == 1) image.style.zIndex = "1";
+                                },
+                                function (e) {
+                                    console.log("Error reading "
+                                        + file.name + " : "
+                                        + e.message);
+                                });
+                    });
+                    $.each(zip.files, function (key, value) {
+                        imageCount++;
+                    });
+                    // Set progress bar height based on images count
+                    let progressHeight = imageHeight / imageCount;
+                    progressBar.style.height = progressHeight + "px";
+
+                    // Index of current image which is on display
+                    let imageIndex = 0;
+
+                    // Object array of all the images of class stack 
+                    let images = document.getElementsByClassName('stack');
+
+                    // Detect mouse is over image
+                    let isMouseOverImage = false;
+
+                    // Object of parent element containing all images 
+                    let scrollImages = document.getElementById('scroll-image');
+
+                    // current scoll co-ordinates
+                    let x, y;
+
+                    // This function sets the scroll to x, y 
+                    function noScroll() {
+                        window.scrollTo(x, y);
+                    }
+
+                    // The following event id fired once when mouse hover over the images 
+                    scrollImages.addEventListener("mouseenter", function () {
+                        // store the current page offset to x,y 
+                        x = window.pageXOffset;
+                        y = window.pageYOffset;
+                        window.addEventListener("scroll", noScroll);
+                        isMouseOverImage = true;
+                    });
+
+                    // when mouse is no longer over the images 
+                    scrollImages.addEventListener("mouseleave", function () {
+                        isMouseOverImage = false;
+                        window.removeEventListener("scroll", noScroll);
+                    });
+
+                    // when mouse wheel over the images 
+                    scrollImages.addEventListener(
+                        "wheel", function (e) {
+
+                            // check if over image or not
+                            if (isMouseOverImage) {
+                                let nextImageIndex = 0;
+
+                                // finds the next image index limit scroll between first and last image
+                                if (e.deltaY > 0) {
+                                    nextImageIndex = imageIndex + 1;
+                                    if (nextImageIndex >= imageCount) nextImageIndex = imageIndex
+                                } else {
+                                    nextImageIndex = imageIndex - 1;
+                                    if (nextImageIndex < 0) nextImageIndex = 0
+                                }
+
+                                // set the z index of current image to 0
+                                images[imageIndex].style.zIndex = "0";
+
+                                // set z index of next image to 1, to appear on top of old image
+                                images[nextImageIndex].style.zIndex = "1";
+                                imageIndex = nextImageIndex;
+
+                                document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+
+                            }
+                        });
+                });
+
+            //img = `<img src = '${pic}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
+        }
+        let html =
+            `<div class='stackedpic' id="stackedpic-${id}" data-link="${link}" data-rid="${rid}">
+                <div id="stackedpic-actions">
+                    <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                </div>
+                <div class="row" style="flex-grow:1;width:100%">
+                    <div id="scroll-image" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                    <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                    <div style="margin:auto">
+                        <form id="form1" enctype="multipart/form-data" action="/" runat="server">
+                            <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
+                        </form>
+                        <p id="stackedpicture-drag">${message}</p>
+                    </div>
+                </div>
+                
+            </div>`
+
+        this.RemoveElement = function () {
+            return idss;
+        }
+        this.renderDiagram = function () {
+            // dom includes the html,css code with draggable property
+
+            let dom = $(html).css({
+                "position": "absolute",
+                "top": position.top,
+                "left": position.left,
+                "width": position.width,
+                "height": position.height
+            }).draggable({
+                //Constraint   the draggable movement only within the canvas of the editor
+                containment: "#tabs-for-download",
+                scroll: false,
+                cursor: "move",
+                snap: ".gridlines",
+                snapMode: 'inner',
+                cursorAt: {bottom: 0},
+                stop: function () {
+                    var l = positionConvert($(this).position().left, parseFloat($('#tabs-for-download').width())) + "%";
+                    var t = positionConvert($(this).position().top, parseFloat($('#tabs-for-download').height())) + "%";
+                    var h = positionConvert($(this).height(), parseFloat($('#tabs-for-download').height())) + "%";
+                    var w = positionConvert($(this).width(), parseFloat($('#tabs-for-download').width())) + "%";
+                    $(this).css("left", l);
+                    $(this).css("top", t);
+                    $(this).css("height", h);
+                    $(this).css("width", w);
+                }
+            });
+
+            var a = document.getElementsByClassName("current")[0];
+            $('#' + a.id).append(dom);
+
+
+        };
+    }
+}
+
+
 // ====================================For Video==============================
 function play(id) {
     var cld = cloudinary.Cloudinary.new({cloud_name: 'nsdevil-com'});
@@ -1419,7 +1623,204 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
 
     $(".imgInp").off().change(function (e) {
         readURL(this);
+    });
+}
 
+function StackedPictureFunction(top = null, left = null, link = null, rid = null, width = null, height = null) {
+    const SPic = new stackedpicture(
+        top,
+        left,
+        link,
+        rid,
+        width, height);
+    SPic.renderDiagram();
+
+    $('.stackedpic .fa-upload').off().unbind().click(function (e) {
+        trigger = parseInt(e.target.id) + 1;
+        $('#' + trigger).trigger('click');
+    });
+
+    $('.stackedpic .fa-trash').click(function (e) {
+        $('#' + e.currentTarget.id).parent().parent().remove();
+    });
+
+    $('.stackedpic').resizable({
+        containment: $('#tabs-for-download'),
+        grid: [20, 20],
+        autoHide: true,
+        minWidth: 150,
+        minHeight: 150,
+        stop: function (e, ui) {
+            // var parent = ui.element.parent();
+            ui.element.css({
+                width: positionConvert(ui.element.width(), $('#tabs-for-download').width()) + "%",
+                height: positionConvert(ui.element.height(), $('#tabs-for-download').height()) + "%"
+            });
+        }
+    });
+
+    $('.stackedpic').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        //   $(this).css('border',"2px solid #39F")
+    })
+
+    $('.stackedpic').on('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const files = e.originalEvent.dataTransfer.files;
+        var file = files[0];
+        upload(file, $(this));
+    });
+
+    function upload(file, element) {
+
+        function handleFile(f) {
+            // Check if file size is greater than 100 MB
+            if (f.size > 104857600) {
+                alert("Error reading " + f.name + ": File is too large. Only 100 MB is allowed");
+                throw 500
+            }
+
+            // Read Zip file
+            JSZip.loadAsync(f)                                   // 1) read the Blob
+                .then(function (zip) {
+                    let folderstoremove = []
+                    acceptableFilelist = ['png', 'jpg', 'jpeg', 'bmp', 'gif']
+                    if (Object.keys(zip.files).length < 1) {
+                        alert("Error! Zip file is empty.");
+                        throw 500
+                    }
+
+                    zip.forEach(function (relativePath, zipEntry) {  // 2) print entries
+                        // Check if files in zip are of valid format
+                        if (!acceptableFilelist.includes(zipEntry.name.split('.').pop())) {
+                            alert("Only ['png', 'jpg', 'jpeg', 'bmp', 'gif'] are allowed");
+                            throw 500
+                        }
+
+                        if (zipEntry._data.uncompressedSize > (2 * 1024 * 1024)) {
+                            alert("Filename " + zipEntry.name + " is greater than 2 MB.");
+                            throw 500
+                        }
+
+                        // Check if zip has directories, if yes remove directory from zip before upload
+                        if (zipEntry.name.split('/').length > 0) {
+                            // if (!folderstoremove.includes(zipEntry.name.split('/')[0])) {
+                            //     folderstoremove.push(zipEntry.name.split('/')[0])
+                            // }
+
+                            alert('Directories in zip are not allowed. Only Files must be inside zip.')
+                            throw 500
+                        }
+                    });
+
+                    // if (folderstoremove.length > 0) {
+                    //     alert('Directories in zip are not allowed. Only Files must be inside zip.')
+                    //     $.each(folderstoremove, function (index) {
+                    //         zip.remove(folderstoremove)
+                    //     });
+                    // }
+
+                    fileupload(f)
+                }, function (e) {
+                    console.log("Error reading " + f.name + ": Is this zip file? Only zip files are allowed.");
+                    alert("Error reading " + f.name + ": Is this zip file? Only zip files are allowed.");
+                    throw 500
+                });
+        }
+
+
+        handleFile(file);
+
+        function fileupload(file) {
+            let div = element;
+            $(div).find('.file-upload-icon').hide()
+            $(div).find('p').hide()
+            $(div).find('.loadingDiv').show();
+            const data = new FormData();
+            data.append("file-0", file);
+            data.append('chapterID', chapterID);
+            data.append('courseID', courseID);
+            data.append('type', 'stackedpic');
+            data.append('csrfmiddlewaretoken', csrf_token);
+            var options = {
+                url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
+                chunk_size: 10, // MB
+                onUploadComplete: function (e, options) {
+                    var request = new XMLHttpRequest()
+
+                    request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
+                    request.onload = function () {
+                        // Begin accessing JSON data here
+                        var data = JSON.parse(this.response)
+                        if (request.status >= 200 && request.status < 400) {
+                            console.log(data.success)
+                        } else {
+                            console.log('error')
+                        }
+                    }
+                    request.send()
+                    $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
+                        console.log('success')
+                    }).fail(function () {
+                        console.log('failed')
+                    })
+                    div.remove()
+                    let rid = options.rid;
+                    // let link = ''
+                    $.get(`https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}`, function (data) {
+                        // link = data['items'][0]['versions']['original']['url']
+                        StackedPictureFunction(
+                            $(div)[0].style.top,
+                            $(div)[0].style.left,
+                            data['items'][0]['versions']['original']['url'],
+                            rid,
+                            $(div)[0].style.width,
+                            $(div)[0].style.height,
+                        );
+                    }).fail(function () {
+                        console.log('failed')
+                    })
+                },
+                onUploadProgress: function (e) {
+                    $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
+                    $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                    addprogress();
+                },
+                onUploadError: function (e) {
+                    console.log(e);
+                    $(".status-bar").html("Error accured while uploading");
+                }
+            };
+            uploader = new cpUploadAPI(file, options);
+            uploader.start();
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let div = $(input).closest('.stackedpic');
+                var data = new FormData();
+                $.each(input.files, function (i, file) {
+                    data.append('file-' + i, file);
+                });
+                if ($(div).find('img').length > 0) {
+                    if ($('#tabs-for-download').find('img[src$="' + $(div).find('img').attr('src') + '"]').length == 1) {
+                        tobedeletedfiles.pic.push($(div).find('img').attr('src'));
+                    }
+                }
+                file = input.files[0]
+                upload(file, div);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(".stackedimgInp").off().change(function (e) {
+        readURL(this);
     });
 }
 
@@ -2679,14 +3080,10 @@ function dropfunction(event, ui) {
     let top = ui.helper.position().top - $('.ols-objects').height() - $('.component-container').height();
     let left = ui.helper.position().left;
 
-    $(this).removeClass("over");
+    $('#tab').removeClass("over");
     if (ui.helper.offset().top < $('#tab').offset().top) {
         top = $('#tab').position().top
     }
-
-    // if (ui.helper.offset().top + (0.25 * $('#tab').height()) > $('#tab').height()) {
-    //     top = $('#tab').height() - (0.25 * $('#tab').height())
-    // }
 
     if (ui.helper.offset().left + (0.20 * $('#tab').width()) > $('#tab').width() && !ui.helper.hasClass('button')) {   // 0.25 is multiplied to sum the height of element to the current pointer position
         left = $('#tab').width() - (0.40 * $('#tab').width()) + sidebarWidth
@@ -2701,6 +3098,12 @@ function dropfunction(event, ui) {
             "20%", "35%");
     } else if (ui.helper.hasClass('picture')) {
         PictureFunction(
+            (positionConvert(top, $('#tabs-for-download').height())) + '%',
+            (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
+            null, null, '40%', '30%'
+        );
+    } else if (ui.helper.hasClass('stacked-picture')) {
+        StackedPictureFunction(
             (positionConvert(top, $('#tabs-for-download').height())) + '%',
             (positionConvert(left - sidebarWidth, $('#tabs-for-download').width())) + '%',
             null, null, '40%', '30%'
@@ -2998,6 +3401,19 @@ function display(data = "", currentPage = '1') {
                                 );
                             });
                         }
+                        if (div == 'stackedpic') {
+                            $.each(div_value, function (css, css_value) {
+                                css_string = JSON.stringify(css_value)
+                                StackedPictureFunction(
+                                    css_value.tops,
+                                    css_value.left,
+                                    css_value.link,
+                                    css_value.rid,
+                                    css_value.width,
+                                    css_value.height,
+                                );
+                            });
+                        }
 
                         if (div == 'btn-div') {
                             $.each(div_value, function (css, css_value) {
@@ -3153,6 +3569,7 @@ function updateData(prev_page, prev_data) {
     var _3d = [];
     var quizdiv = [];
     var surveydiv = [];
+    var stackedpicdiv = [];
 
     const obj = $(prev_data).children();
 
@@ -3165,13 +3582,6 @@ function updateData(prev_page, prev_data) {
     $.each(obj, function (i, value) {
         if (value.classList.contains('textdiv')) {
             var clone = $(this).find('.note-editable').clone();
-            // clone.find('div').remove();
-            // $(clone).each(function(){
-            //   if($(this).find('span').css('font-size')){
-            //     let font = convertFontToREM($(this).find('span').css('font-size'))
-            //     $(this).find('span').css('font-size', font + 'em')
-            //   }
-            // })
             var content_html = clone.html();
             textdiv.push(
                 {
@@ -3192,6 +3602,18 @@ function updateData(prev_page, prev_data) {
                     'height': $(this)[0].style.height,
                     'background-image': $(this).find("img").attr('src'),
                     'link': $(this).find("iframe").attr('src')
+                }
+            );
+        }
+        if (value.classList.contains('stackedpic')) {
+            stackedpicdiv.push(
+                {
+                    'tops': $(this)[0].style.top,
+                    'left': $(this)[0].style.left,
+                    'width': $(this)[0].style.width,
+                    'height': $(this)[0].style.height,
+                    'link': $(this).attr('data-link'),
+                    'rid': $(this).attr('data-rid'),
                 }
             );
         }
@@ -3319,6 +3741,7 @@ function updateData(prev_page, prev_data) {
         data.pages[prev_page] = [{
             'textdiv': textdiv,
             'pic': picdiv,
+            'stackedpic': stackedpicdiv,
             'btn-div': buttondiv,
             'pdf': pdf,
             'video': video,

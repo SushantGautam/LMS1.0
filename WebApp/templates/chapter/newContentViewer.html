@@ -12,6 +12,32 @@
     <head>
         <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
         <style>
+            /* Stack image progress bar */
+            #progressbar {
+                float: right;
+                width: 15px;
+                border-radius: 10px;
+                background-color: #2d3436;
+                background-image: linear-gradient(315deg, #2d3436 0%, #d3d3d3 74%);
+            }
+            /* ===Stackedpic== */
+
+            .stackedpic {
+                width: 400px;
+                height: 200px;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-flow: column wrap;
+                flex-flow: column wrap;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                align-items: center;
+                -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+            }
+
             .examiframeholder {
                 height: 100vh;
                 width: 100%;
@@ -300,7 +326,7 @@
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Chat ' class="icon-for-chat">
                 <i style="color: white;" class="chat-icon closechatopen fa far fa-comment" id="closechatopen"></i>
-                <span class="unread-chat-count"  style="display:none;"> </span>
+                <span class="unread-chat-count" style="display:none;"> </span>
             </li>
             <li data-toggle="tooltip" data-placement="right" title='Video Call' class="icon-for-video">
                 <i style="color: white;" class="fa fa-video icon-video closechatopen1 "></i>
@@ -419,27 +445,29 @@
                     <i class="fa fa-bars"></i>
                 </li>
                 {% if not ifteacher %}
-                <li class="user-image-padding">
-                <li>
-                 {% endif %}   
-                    <div class="green-online"></div>
+                    <li class="user-image-padding">
+                    <li>
+                {% endif %}
+                <div class="green-online"></div>
                 </li>
                 <span style="color: white;">  Online</span>&nbsp;
                 <li class="online-number">1</li>&nbsp;
                 {% if not ifteacher %}
-                <div class="chat-user-image">
-                </div>
+                    <div class="chat-user-image">
+                    </div>
                 {% endif %}
                 </li>
                 {% if not ifteacher %}
-                <li class="name-user"></li>
+                    <li class="name-user"></li>
                 {% endif %}
                 {% if ifteacher %}
-                <li id="QuickQuiz" class="quiz-quick" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                    <li id="QuickQuiz" class="quiz-quick" data-toggle="modal" data-target="#quiz_create_popup"> Quick
+                        Quiz
                         <i class="fa fa-pencil" style="color:black"></i>
                     </li>
 
-                <li id="QuickSurvey" class="survey-quick" data-toggle="modal" data-target="#survey_content_modal">Quick
+                    <li id="QuickSurvey" class="survey-quick" data-toggle="modal" data-target="#survey_content_modal">
+                        Quick
                         Survey
 
                         <i class="fa fa-pencil" style="color: black;"></i>
@@ -539,10 +567,10 @@
                             'tileview', 'videobackgroundblur', 'download',
                             //HIDDEN OPTIONS  NOT USED IGNORE
                             // 'e2ee', 'security',
-                                    // 'hangup',
-                                    // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
-                                    // 'mute-everyone',
-                                ];
+                            // 'hangup',
+                            // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
+                            // 'mute-everyone',
+                        ];
                         let settingsSection = ['devices'];
                         const domain = 'meet.jit.si';
 
@@ -553,7 +581,7 @@
                         {% endif %}
 
                         const options = {
-                            roomName: 'UBLCloud-{{ chapter.id }}'+ window.location.hostname,
+                            roomName: 'UBLCloud-{{ chapter.id }}' + window.location.hostname,
                             width: "100%",
                             height: "100%",
                             parentNode: document.querySelector('#UBL-meet'),
@@ -572,17 +600,17 @@
                                 SHOW_JITSI_WATERMARK: 0,
                                 SHOW_WATERMARK_FOR_GUESTS: false,
                                 userInfo: {
-                                    displayName: '{{ user }}',  
+                                    displayName: '{{ user }}',
                                     email: '{{ user.email }}',
 
                                 },
-                            TOOLBAR_BUTTONS: toolbarButtons,
+                                TOOLBAR_BUTTONS: toolbarButtons,
 
-                            SETTINGS_SECTIONS: settingsSection,
+                                SETTINGS_SECTIONS: settingsSection,
 
-                            SHOW_CHROME_EXTENSION_BANNER: false,
-                            SHOW_PROMOTIONAL_CLOSE_PAGE: false,
-                            MOBILE_APP_PROMO: false,
+                                SHOW_CHROME_EXTENSION_BANNER: false,
+                                SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+                                MOBILE_APP_PROMO: false,
                             },
                         };
                         const api = new JitsiMeetExternalAPI(domain, options);
@@ -621,6 +649,9 @@
 <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
 <script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
 <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
+
+<script src="{% static 'chapterPageBuilder/js/jszip.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/jszip-utils.min.js' %}"></script>
 
 <script src="{% static 'js/modernizr.js' %}"></script>
 
@@ -974,6 +1005,138 @@
                                 }
 
                                 // $('#page' + key).append(css_value.div);
+                            });
+                        }
+
+                        if (div == 'stackedpic') {
+                            $.each(div_value, function (css, css_value) {
+                                if (css_value.hasOwnProperty('link')) {
+                                    let id = (new Date).getTime();
+                                    var promise = new JSZip.external.Promise(function (resolve, reject) {
+                                        JSZipUtils.getBinaryContent(css_value.link, function (err, data) {
+                                            if (err) {
+                                                reject(err);
+                                            } else {
+                                                resolve(data);
+                                            }
+                                        });
+                                    });
+
+                                    promise.then(JSZip.loadAsync)                     // 2) chain with the zip promise
+                                        .then(function (zip) {
+                                            // $(`#stackedpic-${id}`).find('#scroll-image').parent().parent().append(`
+                                            //     `);
+                                            const progressBar = document.getElementById('progressbar');
+                                            var count = 0;
+                                            var imageCount = 0;
+                                            var imageHeight = $(`#stackedpic-${id}`).height();
+                                            var imageWidth = $(`#stackedpic-${id}`).width();
+                                            imageWidth = parseFloat(imageWidth) * 0.93
+                                            $.each(zip.files, function (key, value) {
+                                                zip.file(value.name).async("base64")
+                                                    .then(function (content) {
+                                                            var image = new Image;
+                                                            count++;
+                                                            image.onload = function () {
+                                                                $(`#stackedpic-${id}`).find('#scroll-image').append(this)
+                                                            }
+                                                            image.src = "data:image;base64," + content;
+                                                            image.className = 'stack';
+                                                            image.style.height = '100%';
+                                                            image.style.width = '95%';
+                                                            image.style.position = 'absolute';
+                                                            if (count == 1) image.style.zIndex = "1";
+                                                        },
+                                                        function (e) {
+                                                            console.log("Error reading "
+                                                                + file.name + " : "
+                                                                + e.message);
+                                                        });
+                                            });
+                                            $.each(zip.files, function (key, value) {
+                                                imageCount++;
+                                            });
+                                            // Set progress bar height based on images count
+                                            let progressHeight = imageHeight / imageCount;
+                                            progressBar.style.height = progressHeight + "px";
+
+                                            // Index of current image which is on display
+                                            let imageIndex = 0;
+
+                                            // Object array of all the images of class stack
+                                            let images = document.getElementsByClassName('stack');
+
+                                            // Detect mouse is over image
+                                            let isMouseOverImage = false;
+
+                                            // Object of parent element containing all images
+                                            let scrollImages = document.getElementById('scroll-image');
+
+                                            // current scoll co-ordinates
+                                            let x, y;
+
+                                            // This function sets the scroll to x, y
+                                            function noScroll() {
+                                                window.scrollTo(x, y);
+                                            }
+
+                                            // The following event id fired once when mouse hover over the images
+                                            scrollImages.addEventListener("mouseenter", function () {
+                                                // store the current page offset to x,y
+                                                x = window.pageXOffset;
+                                                y = window.pageYOffset;
+                                                window.addEventListener("scroll", noScroll);
+                                                isMouseOverImage = true;
+                                            });
+
+                                            // when mouse is no longer over the images
+                                            scrollImages.addEventListener("mouseleave", function () {
+                                                isMouseOverImage = false;
+                                                window.removeEventListener("scroll", noScroll);
+                                            });
+
+                                            // when mouse wheel over the images
+                                            scrollImages.addEventListener(
+                                                "wheel", function (e) {
+
+                                                    // check if over image or not
+                                                    if (isMouseOverImage) {
+                                                        let nextImageIndex = 0;
+
+                                                        // finds the next image index limit scroll between first and last image
+                                                        if (e.deltaY > 0) {
+                                                            nextImageIndex = imageIndex + 1;
+                                                            if (nextImageIndex >= imageCount) nextImageIndex = imageIndex
+                                                        } else {
+                                                            nextImageIndex = imageIndex - 1;
+                                                            if (nextImageIndex < 0) nextImageIndex = 0
+                                                        }
+
+                                                        // set the z index of current image to 0
+                                                        images[imageIndex].style.zIndex = "0";
+
+                                                        // set z index of next image to 1, to appear on top of old image
+                                                        images[nextImageIndex].style.zIndex = "1";
+                                                        imageIndex = nextImageIndex;
+
+                                                        document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+
+                                                    }
+                                                });
+                                        });
+
+                                    $('#page' + key).append(`
+                                            <div class = "stackedpic" id="stackedpic-${id}" style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
+                                            <div class = "spinnner" style = 'position:relative'>
+                                                <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
+                                            </div>
+                                            <div class="row" style="display:flex;flex-grow:1;width:100%">
+                                                <div id="scroll-image" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                                                <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                                            </div>
+                                           </div>
+                                        `);
+                                }
                             });
                         }
 
@@ -1364,7 +1527,7 @@
     });
 
 
-    function changePage(page_number) {        
+    function changePage(page_number) {
         if (!x.matches) {
             if (page_number >= parseInt($('#totalpages').text())) {
                 $('#next-btn').css('visibility', 'hidden')
@@ -1382,7 +1545,7 @@
         Layout(x)
         $('#currentpage').text(parseInt(page_number));
         getProgressWidth();
-        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();          
+        document.querySelector("#thumbnail-slider > div.owl-stage-outer > div > div:nth-child(" + page_number + ") > div").scrollIntoView();
 
         localStorage.setItem("ChapterPageNumber_{{chapter.id}}", page_number); //save page number
 

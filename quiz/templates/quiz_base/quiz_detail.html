@@ -1,4 +1,6 @@
 {% load i18n %}
+
+{% include 'WebApp/theme/alerts.html' %}
 <div class="edit-buttons" style="float:right">
     <div class="col-md-12">
         <div class="col-md-6">
@@ -255,7 +257,7 @@
     <a href="#esqn_list" data-toggle="collapse">
 
         <p class="exam-results text-center">
-            
+
                     <span class="exam-results"> <i class="fa fa-align-right  "></i>&nbsp;LIST OF SHORT ANSWER QUESTIONS  {% if quiz.has_saqs %}<span class="fa fa-chevron-down"
                         style="color:white"></span>{% endif %}</span>
 
@@ -340,4 +342,3 @@
     </div>
 </div>
 
-  

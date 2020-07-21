@@ -5,7 +5,13 @@
     | Course Detail
 {% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'teacher_mycourses_list_active' %}">My Courses</a></li>
+    <li class="breadcrumb-item"><a href="
+        {% if object.Use_Flag %}
+            {% url 'teacher_mycourses_list_active' %}
+        {% else %}
+            {% url 'teacher_mycourses_list_inactive' %}
+        {% endif %}
+    ">My Courses</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Course_Name }}</li>
 {% endblock %}
 
