@@ -3070,7 +3070,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
 
     elif '/teachers' or '/students' not in request.path:
         basefile = "base.html"
-        course_list = CourseInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True)
+        course_list = CourseInfo.objects.filter(Center_Code=request.user.Center_Code)
 
     if coursepk:
         if '/teachers' in request.path:

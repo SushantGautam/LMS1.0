@@ -404,13 +404,23 @@ class stackedpicture {
                     var imageHeight = $(`#stackedpic-${id}`).height();
                     var imageWidth = $(`#stackedpic-${id}`).width();
                     imageWidth = parseFloat(imageWidth) * 0.93
+
+                    var orderedzipfiles = {};
+                    Object.keys(zip.files).sort((sortAlphaNum)).forEach(function (key) {
+                        orderedzipfiles[key] = zip.files[key];
+                    });
+                    let firstvalue = orderedzipfiles[Object.keys(orderedzipfiles)[0]].name;
+
                     $.each(zip.files, function (key, value) {
                         zip.file(value.name).async("base64")
                             .then(function (content) {
                                     var image = new Image;
-                                    count ++;
+                                    count++;
                                     image.onload = function () {
                                         $(`#stackedpic-${id}`).find('#scroll-image').append(this)
+                                        if (Object.keys(zip.files).length == $('#scroll-image img').length) {
+                                            sortImageElements()
+                                        }
                                     }
                                     image.src = "data:image;base64," + content;
                                     image.className = 'stack';
@@ -418,7 +428,12 @@ class stackedpicture {
                                     image.style.width = '95%';
                                     image.style.position = 'absolute';
                                     image.style.objectFit = 'cover';
-                                    if(count == 1) image.style.zIndex = "1";
+                                    // if(count == 1) image.style.zIndex = "1";
+                                    image.setAttribute('data-name', value.name);
+
+                                    if (value.name == firstvalue) {
+                                        image.style.zIndex = "1";
+                                    }
                                 },
                                 function (e) {
                                     console.log("Error reading "
@@ -426,6 +441,12 @@ class stackedpicture {
                                         + e.message);
                                 });
                     });
+
+                    function sortImageElements() {
+                        var result = $('#scroll-image img').sort(sortAlphaNumElem);
+                        $('#scroll-image').html(result);
+                    }
+
                     $.each(zip.files, function (key, value) {
                         imageCount++;
                     });
@@ -436,39 +457,39 @@ class stackedpicture {
                     // Index of current image which is on display
                     let imageIndex = 0;
 
-                    // Object array of all the images of class stack 
+                    // Object array of all the images of class stack
                     let images = document.getElementsByClassName('stack');
 
                     // Detect mouse is over image
                     let isMouseOverImage = false;
 
-                    // Object of parent element containing all images 
+                    // Object of parent element containing all images
                     let scrollImages = document.getElementById('scroll-image');
 
                     // current scoll co-ordinates
                     let x, y;
 
-                    // This function sets the scroll to x, y 
+                    // This function sets the scroll to x, y
                     function noScroll() {
                         window.scrollTo(x, y);
                     }
 
-                    // The following event id fired once when mouse hover over the images 
+                    // The following event id fired once when mouse hover over the images
                     scrollImages.addEventListener("mouseenter", function () {
-                        // store the current page offset to x,y 
+                        // store the current page offset to x,y
                         x = window.pageXOffset;
                         y = window.pageYOffset;
                         window.addEventListener("scroll", noScroll);
                         isMouseOverImage = true;
                     });
 
-                    // when mouse is no longer over the images 
+                    // when mouse is no longer over the images
                     scrollImages.addEventListener("mouseleave", function () {
                         isMouseOverImage = false;
                         window.removeEventListener("scroll", noScroll);
                     });
 
-                    // when mouse wheel over the images 
+                    // when mouse wheel over the images
                     scrollImages.addEventListener(
                         "wheel", function (e) {
 
@@ -1685,7 +1706,6 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
             // Read Zip file
             JSZip.loadAsync(f)                                   // 1) read the Blob
                 .then(function (zip) {
-                    let folderstoremove = []
                     acceptableFilelist = ['png', 'jpg', 'jpeg', 'bmp', 'gif']
                     if (Object.keys(zip.files).length < 1) {
                         alert("Error! Zip file is empty.");
@@ -1705,22 +1725,11 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
                         }
 
                         // Check if zip has directories, if yes remove directory from zip before upload
-                        if (zipEntry.name.split('/').length > 0) {
-                            // if (!folderstoremove.includes(zipEntry.name.split('/')[0])) {
-                            //     folderstoremove.push(zipEntry.name.split('/')[0])
-                            // }
-
+                        if (zipEntry.name.split('/').length > 1) {
                             alert('Directories in zip are not allowed. Only Files must be inside zip.')
                             throw 500
                         }
                     });
-
-                    // if (folderstoremove.length > 0) {
-                    //     alert('Directories in zip are not allowed. Only Files must be inside zip.')
-                    //     $.each(folderstoremove, function (index) {
-                    //         zip.remove(folderstoremove)
-                    //     });
-                    // }
 
                     fileupload(f)
                 }, function (e) {
@@ -4118,3 +4127,29 @@ $(document).ready(function () {
     });
 });
 
+var reA = /[^a-zA-Z]/g;
+var reN = /[^0-9]/g;
+
+function sortAlphaNumElem(a, b) {
+    var aA = $(a).attr('data-name').replace(reA, "");
+    var bA = $(b).attr('data-name').replace(reA, "");
+    if (aA === bA) {
+        var aN = parseInt($(a).attr('data-name').replace(reN, ""), 10);
+        var bN = parseInt($(b).attr('data-name').replace(reN, ""), 10);
+        return aN === bN ? 0 : aN > bN ? 1 : -1;
+    } else {
+        return aA > bA ? 1 : -1;
+    }
+}
+
+function sortAlphaNum(a, b) {
+    var aA = a.replace(reA, "");
+    var bA = b.replace(reA, "");
+    if (aA === bA) {
+        var aN = parseInt(a.replace(reN, ""), 10);
+        var bN = parseInt(b.replace(reN, ""), 10);
+        return aN === bN ? 0 : aN > bN ? 1 : -1;
+    } else {
+        return aA > bA ? 1 : -1;
+    }
+}
