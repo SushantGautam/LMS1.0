@@ -453,7 +453,6 @@ class ChooseMCQForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
-        print(my_obj.id)
         super().__init__(*args, **kwargs)
         self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
             queryset=MCQuestion.objects.filter(course_code=my_obj.course_code),
@@ -461,6 +460,15 @@ class ChooseMCQForm(forms.ModelForm):
             widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
         )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        mq = cleaned_data.get("mcquestion")
+        if not mq or len(mq) == 0:
+            if not (self.instance.has_saqs() or self.instance.has_tfqs()):
+                raise forms.ValidationError(
+                    "Quiz must have atleast one question.", code=500
+                )
+        return cleaned_data
 
 class ChooseTFQForm(forms.ModelForm):
     class Meta:
@@ -481,6 +489,15 @@ class ChooseTFQForm(forms.ModelForm):
             widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
         )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        tf = cleaned_data.get("tfquestion")
+        if not tf or len(tf) == 0:
+            if not (self.instance.has_saqs() or self.instance.has_mcqs()):
+                raise forms.ValidationError(
+                    "Quiz must have atleast one question.", code=500
+                )
+        return cleaned_data
 
 class ChooseSAQForm(forms.ModelForm):
     class Meta:
@@ -500,3 +517,13 @@ class ChooseSAQForm(forms.ModelForm):
             required=False,
             widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        sa = cleaned_data.get("saquestion")
+        if not sa or len(sa) == 0:
+            if not (self.instance.has_tfqs() or self.instance.has_mcqs()):
+                raise forms.ValidationError(
+                    "Quiz must have atleast one question.", code=500
+                )
+        return cleaned_data
