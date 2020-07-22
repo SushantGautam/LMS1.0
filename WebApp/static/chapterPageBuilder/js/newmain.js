@@ -1705,14 +1705,14 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
                         }
 
                         // Check if zip has directories, if yes remove directory from zip before upload
-                        if (zipEntry.name.split('/').length > 0) {
-                            // if (!folderstoremove.includes(zipEntry.name.split('/')[0])) {
-                            //     folderstoremove.push(zipEntry.name.split('/')[0])
-                            // }
+                        // if (zipEntry.name.split('/').length > 0) {
+                        //     // if (!folderstoremove.includes(zipEntry.name.split('/')[0])) {
+                        //     //     folderstoremove.push(zipEntry.name.split('/')[0])
+                        //     // }
 
-                            alert('Directories in zip are not allowed. Only Files must be inside zip.')
-                            throw 500
-                        }
+                        //     alert('Directories in zip are not allowed. Only Files must be inside zip.')
+                        //     throw 500
+                        // }
                     });
 
                     // if (folderstoremove.length > 0) {
