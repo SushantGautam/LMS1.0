@@ -1685,7 +1685,6 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
             // Read Zip file
             JSZip.loadAsync(f)                                   // 1) read the Blob
                 .then(function (zip) {
-                    let folderstoremove = []
                     acceptableFilelist = ['png', 'jpg', 'jpeg', 'bmp', 'gif']
                     if (Object.keys(zip.files).length < 1) {
                         alert("Error! Zip file is empty.");
@@ -1705,22 +1704,11 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
                         }
 
                         // Check if zip has directories, if yes remove directory from zip before upload
-                        if (zipEntry.name.split('/').length > 0) {
-                            // if (!folderstoremove.includes(zipEntry.name.split('/')[0])) {
-                            //     folderstoremove.push(zipEntry.name.split('/')[0])
-                            // }
-
+                        if (zipEntry.name.split('/').length > 1) {
                             alert('Directories in zip are not allowed. Only Files must be inside zip.')
                             throw 500
                         }
                     });
-
-                    // if (folderstoremove.length > 0) {
-                    //     alert('Directories in zip are not allowed. Only Files must be inside zip.')
-                    //     $.each(folderstoremove, function (index) {
-                    //         zip.remove(folderstoremove)
-                    //     });
-                    // }
 
                     fileupload(f)
                 }, function (e) {
