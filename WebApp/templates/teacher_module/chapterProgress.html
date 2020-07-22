@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'vendorsx/select2/dist/css/select2.min.css' %}">
 
     <style>
         .highcharts-figure, .highcharts-data-table table {
@@ -348,6 +349,8 @@
 {% block customjss %}
     {#    <script src="https://code.highcharts.com/highcharts.js"></script>#}
     <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'vendorsx/select2/dist/js/select2.min.js' %}"></script>
+
     <!-- Highchart for Quiz Achievement -->
     <script>
         $(document).ready(function () {
@@ -882,5 +885,8 @@
                 }
             });
         })
+
+        $('#select_course').select2()
+        $('#select_session').select2()
     </script>
 {% endblock %}
