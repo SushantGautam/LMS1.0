@@ -1048,6 +1048,7 @@
                                                             image.onload = function () {
                                                                 $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
                                                                 if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
+                                                                    $(`#stackedpic-${id}`).find(".spinnner").remove()
                                                                     sortImageElements()
                                                                 }
                                                             }
@@ -1148,7 +1149,7 @@
 
                                     $('#page' + key).append(`
                                             <div class = "stackedpic" id="stackedpic-${id}" style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                            <div class = "spinnner" style = 'position:relative'>
+                                            <div class = "spinnner" style = 'position:relative; z-index: 2'>
                                                 <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
                                             </div>
                                             <div class="row" style="display:flex;flex-grow:1;width:100%">
