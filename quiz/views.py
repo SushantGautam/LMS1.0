@@ -1062,7 +1062,7 @@ class UpdateQuestions(UpdateView):
         return old_context
 
 
-class QuizMCQChoosePrevious(UpdateView):
+class QuizMCQChoosePrevious(AjaxableResponseMixin, UpdateView):
     model = Quiz
     form_class = ChooseMCQForm
     template_name = 'ajax_quiz/mcquestion_choose_ajax.html'
@@ -1079,7 +1079,7 @@ class QuizMCQChoosePrevious(UpdateView):
         )
 
 
-class QuizTFQChoosePrevious(UpdateView):
+class QuizTFQChoosePrevious(AjaxableResponseMixin, UpdateView):
     model = Quiz
     form_class = ChooseTFQForm
     template_name = 'ajax_quiz/tfquestion_choose_ajax.html'
@@ -1096,7 +1096,7 @@ class QuizTFQChoosePrevious(UpdateView):
         )
 
 
-class QuizSAQChoosePrevious(UpdateView):
+class QuizSAQChoosePrevious(AjaxableResponseMixin, UpdateView):
     model = Quiz
     form_class = ChooseSAQForm
     template_name = 'ajax_quiz/saquestion_choose_ajax.html'
