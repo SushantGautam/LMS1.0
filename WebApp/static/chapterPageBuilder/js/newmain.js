@@ -398,7 +398,7 @@ class stackedpicture {
                 .then(function (zip) {
                     // $(`#stackedpic-${id}`).find('#scroll-image').parent().parent().append(`
                     //     `);
-                    const progressBar = document.getElementById('progressbar');
+                    const progressBar = document.getElementById('progressbar-' + id);
                     var count = 0;
                     var imageCount = 0;
                     var imageHeight = $(`#stackedpic-${id}`).height();
@@ -417,8 +417,8 @@ class stackedpicture {
                                     var image = new Image;
                                     count++;
                                     image.onload = function () {
-                                        $(`#stackedpic-${id}`).find('#scroll-image').append(this)
-                                        if (Object.keys(zip.files).length == $('#scroll-image img').length) {
+                                        $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
+                                        if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
                                             sortImageElements()
                                         }
                                     }
@@ -443,8 +443,8 @@ class stackedpicture {
                     });
 
                     function sortImageElements() {
-                        var result = $('#scroll-image img').sort(sortAlphaNumElem);
-                        $('#scroll-image').html(result);
+                        var result = $('#scroll-image-' + id + ' img').sort(sortAlphaNumElem);
+                        $('#scroll-image-' + id).html(result);
                     }
 
                     $.each(zip.files, function (key, value) {
@@ -458,13 +458,13 @@ class stackedpicture {
                     let imageIndex = 0;
 
                     // Object array of all the images of class stack
-                    let images = document.getElementsByClassName('stack');
+                    let images = document.getElementById('scroll-image-' + id).getElementsByClassName("stack");
 
                     // Detect mouse is over image
                     let isMouseOverImage = false;
 
                     // Object of parent element containing all images
-                    let scrollImages = document.getElementById('scroll-image');
+                    let scrollImages = document.getElementById('scroll-image-' + id);
 
                     // current scoll co-ordinates
                     let x, y;
@@ -513,7 +513,7 @@ class stackedpicture {
                                 images[nextImageIndex].style.zIndex = "1";
                                 imageIndex = nextImageIndex;
 
-                                document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+                                document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
 
                             }
                         });
@@ -528,8 +528,8 @@ class stackedpicture {
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div class="row" style="flex-grow:1;width:100%">
-                    <div id="scroll-image" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
-                    <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                    <div id="scroll-image-${id}" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                    <div style="width:100%;max-width:4%"><div class="progressbar" id="progressbar-${id}"></div></div>
                     <div style="margin:auto">
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                             <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
@@ -1482,6 +1482,9 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         data.append('type', 'pic');
         data.append('csrfmiddlewaretoken', csrf_token);
         // file = input.files[0]
+        $(div).find('.file-upload-icon').hide()
+        $(div).find('p').hide()
+        $(div).find('.loadingDiv').show();
         var options = {
             url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
             chunk_size: 10, // MB
@@ -1522,8 +1525,8 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                 );
             },
             onUploadProgress: function (e) {
-                $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                 addprogress();
             },
             onUploadError: function (e) {
@@ -1572,13 +1575,6 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
                     onUploadComplete: function (e, options) {
-                        // var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!${options.rid}"
-                        //  frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
-                        // div.find('#loadingDiv').remove();
-                        // div.find('p').remove();
-                        // div.find('.file-upload-icon').remove();
-                        // // div.find('.progress').remove();
-                        // div.append(html);
                         var request = new XMLHttpRequest()
 
                         request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
@@ -1753,6 +1749,9 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
             data.append('courseID', courseID);
             data.append('type', 'stackedpic');
             data.append('csrfmiddlewaretoken', csrf_token);
+            $(div).find('.file-upload-icon').hide()
+            $(div).find('p').hide()
+            $(div).find('.loadingDiv').show();
             var options = {
                 url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                 chunk_size: 10, // MB
@@ -1793,8 +1792,8 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
                     })
                 },
                 onUploadProgress: function (e) {
-                    $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                    $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                    $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                    $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                     addprogress();
                 },
                 onUploadError: function (e) {
