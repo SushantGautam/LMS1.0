@@ -65,7 +65,6 @@ class MemberInfoForm(forms.ModelForm):
 
         Accordion(
             AccordionGroup('Basic Information',
-
                            Div(
                                Field(
                                    'Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),

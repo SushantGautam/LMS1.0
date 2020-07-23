@@ -1,113 +1,77 @@
 {% extends "base.html" %}
 {% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Members</li>
+{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="jumbothon text-center bg-thansparent">
-        <h1>List of Members</h1>
-    </div>
-    <br>
-
-    <div class="panel panel-default">
-        <div class="table-responsive">
-            <table data-toggle="data-table" class="table table-striped" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>S. No.</th>
-                        <th>Username</th>
-                        <th>Member ID</th>
-                        <th>Full Name</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Gender</th>
-                        <th>Student</th>
-                        <th>Teacher</th>
-                        <th>Temporary Address</th>
-                        <th>Permanent Address</th>
-                        <th>Birthdate</th>
-                        <th>Type</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>S. No.</th>
-                        <th>Username</th>
-                        <th>Member ID</th>
-                        <th>Full Name</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Gender</th>
-                        <th>Student</th>
-                        <th>Teacher</th>
-                        <th>Temporary Address</th>
-                        <th>Permanent Address</th>
-                        <th>Birthdate</th>
-                        <th>Type</th>
-                        <th>Action</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    {% for object in object_list %}
-                    {% if object.id != request.user.id %}
-                    <tr>
-                        <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
-                        <td style="vertical-align: middle;"><b><a
-                                    href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
-                        <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
-                        <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-                        <td>{{ object.first_name }}</td>
-                        <td>{{ object.last_name }}</td>
-                        <td style="vertical-align: middle;">{{ object.email }}</td>
-                        <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
-                        <td style="vertical-align: middle;">
-                            {{ object.get_Member_Gender_display }}
-                        </td>
-                        <td>
-                            {% if object.Is_Student == True %}
-                            1
-                            {% else %}
-                            0
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if object.Is_Teacher == True %}
-                            1
-                            {% else %}
-                            0
-                            {% endif %}
-                        </td>
-                        <td>{{ object.Member_Temporary_Address }}</td>
-                        <td>{{ object.Member_Permanent_Address }}</td>
-                        <td>{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
-                        <td style="vertical-align: middle;">
-                            {% if object.Is_Teacher == True and object.Is_Student == True %}
-                            Teacher, Student
-                            {% elif object.Is_Teacher == True %}
-                            Teacher
-                            {% elif object.Is_Student == True %}
-                            Student
-                            {% else %}
-                            Not Assigned
-                            {% endif %}
-                        </td>
-                        <td class="text-center"><a class="btn btn-sm btn-info"
-                                href="{{ object.get_update_url }}">Edit</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<div class="page-header">
+    <div class="page-title">
+        <h2>List of Members</h2>
     </div>
 </div>
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
+        <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">Create new Member</a>
+    </div>
+
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped" cellspacing="0" width="100%" id="members_list_table">
+        <thead>
+            <tr>
+                <th>S. No.</th>
+                <th>Username</th>
+                <th>Member ID</th>
+                <th>Full Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Student</th>
+                <th>Teacher</th>
+                <th>Temporary Address</th>
+                <th>Permanent Address</th>
+                <th>Birthdate</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <!-- <tfoot>
+            <tr>
+                <th>S. No.</th>
+                <th>Username</th>
+                <th>Member ID</th>
+                <th>Full Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Student</th>
+                <th>Teacher</th>
+                <th>Temporary Address</th>
+                <th>Permanent Address</th>
+                <th>Birthdate</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+        </tfoot> -->
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block javascript %}
 <script>
     $(document).ready(function () {
-        var table_main = $('.table').DataTable({
+        var table_main = $('#members_list_table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
             responsive: true,

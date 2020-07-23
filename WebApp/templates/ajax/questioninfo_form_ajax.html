@@ -1,5 +1,4 @@
 {% load static %}
-<<<<<<< HEAD
 {% load crispy_forms_tags %}
 
 {{ form.media }}
@@ -23,65 +22,24 @@
         {{ form.Question_Media_File|as_crispy_field }}
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-=======
-<div>
-    <form method="post" id="ajaxquestioninfoform" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            <div class="form-control-material static">
-                <input type="text" name="Question_Title" maxlength="500" id="id_Question_Title"
-                    class="textinput textInput form-control" required>
-                <label for="id_Question_Title" class="font-weight-bold">Question Title *</label>
-            </div>
-        </div>
-        <div class="form-group gapping">
-            <label for="id_Question_Description" class="font-weight-bold">Question Description</label>
-            <textarea name="Question_Description" id="id_Question_Description" class="form-control" rows="5"></textarea>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="form-group form-control-material static gapping">
-                    <input name="Question_Score" type="number" class="form-control" id="id_Question_Score" required>
-                    <label for="id_Question_Score" class="font-weight-bold">Question Score *</label>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for="id_Answer_Type" class="font-weight-bold" style="line-height: 30px;">Answer
-                        Type *</label><br>
-                    <select name="Answer_Type" id="id_Answer_Type" style="width: 100%;height:30px" required>
-                        <option value="S">Short Answer</option>
-                        <option value="F">File Upload</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="gapping">
-            <div style="margin-bottom: 10px;" class="font-weight-bold">Question Media File</div>
-            {{form.Question_Media_File}}
-        </div>
->>>>>>> NewUI
         <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
             class="select form-control">
         <div class="text-center gapping">
             <button class="btn btn-success" type="submit">Submit</button>
         </div>
-    </form>
+</form>
 </div>
 
 <!-- <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script> -->
 <script>
-<<<<<<< HEAD
     var postURL;
     {% if object %}
-        postURL = `/questioninfo/edit/{{object.pk}}/ajax/`
+    postURL = `/questioninfo/edit/{{object.pk}}/ajax/`
     {% else %}
-        postURL = `{% url 'questioninfo_create_ajax' %}`
+    postURL = `{% url 'questioninfo_create_ajax' %}`
     {% endif %}
     var submitted = false
-=======
->>>>>>> NewUI
     $("#ajaxquestioninfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         var formdata = new FormData();
@@ -96,7 +54,7 @@
         formdata.append("Register_Agent", $('#id_Register_Agent').val());
         formdata.append("Assignment_Code", $('#id_Assignment_Code').val());
         {% if object %}
-            formdata.append("clear", $('#Question_Media_File-clear_id').prop('checked'));
+        formdata.append("clear", $('#Question_Media_File-clear_id').prop('checked'));
         {% endif %}
         // console.log($('#id_Question_Title').val());
 

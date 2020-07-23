@@ -48,7 +48,7 @@
                                     <label for="Member_BirthDate">Date of Birth</label>
                                     <input name="Member_BirthDate" type="date" class="form-control"
                                         id="id_Member_BirthDate" max="9999-12-31"
-                                        value="{{ user.Member_BirthDate|date:'m/d/Y' }}" required>
+                                        value="{{ user.Member_BirthDate|date:'Y-m-d' }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
