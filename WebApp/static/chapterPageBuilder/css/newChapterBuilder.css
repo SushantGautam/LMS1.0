@@ -1550,7 +1550,7 @@ html {
 
 
 /* Stack image progress bar */
-#progressbar {
+.progressbar {
     /* z-index: -1; */
     float: right;
     width: 15px;
