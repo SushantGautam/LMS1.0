@@ -1482,6 +1482,9 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         data.append('type', 'pic');
         data.append('csrfmiddlewaretoken', csrf_token);
         // file = input.files[0]
+        $(div).find('.file-upload-icon').hide()
+        $(div).find('p').hide()
+        $(div).find('.loadingDiv').show();
         var options = {
             url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
             chunk_size: 10, // MB
@@ -1522,8 +1525,8 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                 );
             },
             onUploadProgress: function (e) {
-                $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                 addprogress();
             },
             onUploadError: function (e) {
@@ -1572,13 +1575,6 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                     chunk_size: 10, // MB
                     onUploadComplete: function (e, options) {
-                        // var html = `<iframe style="width:100%;height:100%;" src="//www.cincopa.com/media-platform/iframe.aspx?fid=A8AAAoODp5Za!${options.rid}"
-                        //  frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>`;
-                        // div.find('#loadingDiv').remove();
-                        // div.find('p').remove();
-                        // div.find('.file-upload-icon').remove();
-                        // // div.find('.progress').remove();
-                        // div.append(html);
                         var request = new XMLHttpRequest()
 
                         request.open('GET', `https://api.cincopa.com/v2/gallery.add_item.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&rid=${options.rid}`, true)
@@ -1753,6 +1749,9 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
             data.append('courseID', courseID);
             data.append('type', 'stackedpic');
             data.append('csrfmiddlewaretoken', csrf_token);
+            $(div).find('.file-upload-icon').hide()
+            $(div).find('p').hide()
+            $(div).find('.loadingDiv').show();
             var options = {
                 url: "https://media.cincopa.com/post.jpg?uid=1453562&d=AAAAcAg-tYBAAAAAAoAxx3O&hash=zrlp2vrnt51spzlhtyl3qxlglcs1ulnl&addtofid=0",
                 chunk_size: 10, // MB
@@ -1793,8 +1792,8 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
                     })
                 },
                 onUploadProgress: function (e) {
-                    $("#loadingDiv").attr('data-value', parseInt(e.percentComplete));
-                    $("#percentcomplete").html(parseInt(e.percentComplete) + '%');
+                    $(div).find('.loadingDiv').attr('data-value', parseInt(e.percentComplete));
+                    $(div).find('.percentcomplete').html(parseInt(e.percentComplete) + '%');
                     addprogress();
                 },
                 onUploadError: function (e) {
