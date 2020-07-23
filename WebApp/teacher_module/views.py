@@ -3,6 +3,8 @@ import json
 import os
 import shutil
 from datetime import datetime, timedelta
+from io import BytesIO
+import pandas as pd
 
 from django.conf import settings
 # from django.core.checks import messages
@@ -2325,3 +2327,63 @@ def Meet(request, ):
         meetcode *= ord(i)
     print(meetcode)
     return render(request, 'teacher_module/meet.html', {"meetcode": meetcode})
+
+
+def QuizMarkingCSV(request, quiz_pk):
+    quiz = Quiz.objects.get(pk=int(quiz_pk))
+    quiz_sittings = Sitting.objects.filter(quiz=quiz)
+    total_score = quiz.get_max_score
+    column_names = ['Student Username', 'Start Datetime', 'End Datetime']
+
+    mcquestions = quiz.mcquestion.all()
+    for i,mcquestion in enumerate(mcquestions):
+        question_name = "MCQ" + str(i + 1)
+        answer_name = "Check"
+        column_names.append(question_name)
+        column_names.append(answer_name)
+    
+    tfquestions = quiz.tfquestion.all()
+    for i,tfquestion in enumerate(tfquestions):
+        question_name = "TFQ" + str(i + 1)
+        answer_name = "Check"
+        column_names.append(question_name)
+        column_names.append(answer_name)
+    
+    saquestions = quiz.saquestion.all()
+    for i,saquestion in enumerate(saquestions):
+        question_name = "SAQ" + str(i + 1)
+        answer_name = "Check"
+        column_names.append(question_name)
+        column_names.append(answer_name)
+
+
+    # file_path = os.path.join(settings.STATIC_ROOT, "download")
+    # Path(file_path).mkdir(parents=True, exist_ok=True)
+    # file_path = os.path.join(file_path,"all_course_progress.xlsx")
+    # # df = pd.read_excel(file_path, sheet_name = "학생 학습 현황")
+    df = pd.DataFrame(columns=column_names)
+
+    # students = MemberInfo.objects.filter(pk__in=quiz_sittings.values_list('user',flat=True).distinct())
+    for quiz_sitting in quiz_sittings:
+        start_date = ''
+        end_date = ''
+        if quiz_sitting.start:
+            start_date = quiz_sitting.start.replace(tzinfo=None)
+        if quiz_sitting.end:
+            end_date = quiz_sitting.end.replace(tzinfo=None)   
+        new_row = {'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
+                   'Score': total_score}
+        
+
+        # append row to the dataframe
+        df = df.append(new_row, ignore_index=True)
+    # df.to_excel(file_path)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.index += 1
+        df.index.name = 'S.N.'
+        df.to_excel(writer, sheet_name=str(quiz.title))
+        writer.save()
+        return HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')

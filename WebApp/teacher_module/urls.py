@@ -226,6 +226,9 @@ urlpatterns += (
          name='teacher_activate_quiz'),
     path('deactivate_quiz/<int:pk>/', quizViews.DeactivateQuiz.as_view(),
          name='teacher_deactivate_quiz'),
+     
+    # URL for quiz marking download    
+    path('quiz/marking/exportcsv/<int:quiz_pk>', views.QuizMarkingCSV, name='quiz_marking_csv'),
 )
 
 urlpatterns += (
