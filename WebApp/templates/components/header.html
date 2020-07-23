@@ -14,7 +14,10 @@
                 </li>
                 <li class="nav-item">
                     <div>
-                        <img src="{{ user.Center_Code.Center_Logo.url }}" alt="Center Logo" height="40" style="padding-left: 1.2em;">
+                        {% if user.Center_Code.Center_Logo %}
+                        <img src="{{ user.Center_Code.Center_Logo.url }}" alt="Center Logo" height="40"
+                            style="padding-left: 1.2em;">
+                        {% endif %}
                         <span style="padding-left: 1em;">{{ user.Center_Code }}</span>
                     </div>
                     <!-- <div class="header-search-form">
