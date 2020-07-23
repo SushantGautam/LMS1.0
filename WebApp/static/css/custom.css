@@ -20,3 +20,24 @@
 .align-items-center {
   align-items: center;
 }
+
+/* Change in theme layout */
+.layout-wrapper .content-wrapper .content-body .content {
+  padding-top: 80px;
+}
+.header {
+  padding-top: 10px;
+  padding: 15px;
+}
+
+
+/* Breadcrumb custom style */
+.breadcrumb-item.active{
+  font-weight:bold;
+}
+.breadcrumb-item+.breadcrumb-item::before{
+  content:">";
+}
+.breadcrumb{
+  background-color:inherit;
+}
