@@ -398,7 +398,7 @@ class stackedpicture {
                 .then(function (zip) {
                     // $(`#stackedpic-${id}`).find('#scroll-image').parent().parent().append(`
                     //     `);
-                    const progressBar = document.getElementById('progressbar');
+                    const progressBar = document.getElementById('progressbar-' + id);
                     var count = 0;
                     var imageCount = 0;
                     var imageHeight = $(`#stackedpic-${id}`).height();
@@ -417,8 +417,8 @@ class stackedpicture {
                                     var image = new Image;
                                     count++;
                                     image.onload = function () {
-                                        $(`#stackedpic-${id}`).find('#scroll-image').append(this)
-                                        if (Object.keys(zip.files).length == $('#scroll-image img').length) {
+                                        $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
+                                        if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
                                             sortImageElements()
                                         }
                                     }
@@ -443,8 +443,8 @@ class stackedpicture {
                     });
 
                     function sortImageElements() {
-                        var result = $('#scroll-image img').sort(sortAlphaNumElem);
-                        $('#scroll-image').html(result);
+                        var result = $('#scroll-image-' + id + ' img').sort(sortAlphaNumElem);
+                        $('#scroll-image-' + id).html(result);
                     }
 
                     $.each(zip.files, function (key, value) {
@@ -458,13 +458,13 @@ class stackedpicture {
                     let imageIndex = 0;
 
                     // Object array of all the images of class stack
-                    let images = document.getElementsByClassName('stack');
+                    let images = document.getElementById('scroll-image-' + id).getElementsByClassName("stack");
 
                     // Detect mouse is over image
                     let isMouseOverImage = false;
 
                     // Object of parent element containing all images
-                    let scrollImages = document.getElementById('scroll-image');
+                    let scrollImages = document.getElementById('scroll-image-' + id);
 
                     // current scoll co-ordinates
                     let x, y;
@@ -513,7 +513,7 @@ class stackedpicture {
                                 images[nextImageIndex].style.zIndex = "1";
                                 imageIndex = nextImageIndex;
 
-                                document.getElementById("progressbar").setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+                                document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
 
                             }
                         });
@@ -528,8 +528,8 @@ class stackedpicture {
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
                 </div>
                 <div class="row" style="flex-grow:1;width:100%">
-                    <div id="scroll-image" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
-                    <div style="width:100%;max-width:4%"><div id="progressbar"></div></div>
+                    <div id="scroll-image-${id}" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                    <div style="width:100%;max-width:4%"><div class="progressbar" id="progressbar-${id}"></div></div>
                     <div style="margin:auto">
                         <form id="form1" enctype="multipart/form-data" action="/" runat="server">
                             <input type='file' accept=".zip,.rar,.7zip" name="userImage" style="display:none" id=${id + 1} class="stackedimgInp" />
