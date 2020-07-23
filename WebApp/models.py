@@ -214,7 +214,7 @@ class UserSession(models.Model):
 
 @receiver(user_logged_in)
 def remove_other_sessions(sender, user, request, **kwargs):
-    if not (user.Is_Teacher or user.Is_CenterAdmin):
+    if not user.Is_Teacher and not user.Is_CenterAdmin:
         # remove other sessions
         Session.objects.filter(usersession__user=user).delete()
 

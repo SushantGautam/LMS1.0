@@ -3,6 +3,8 @@ import json
 import os
 import shutil
 from datetime import datetime, timedelta
+from io import BytesIO
+import pandas as pd
 
 from django.conf import settings
 # from django.core.checks import messages
@@ -2325,3 +2327,84 @@ def Meet(request, ):
         meetcode *= ord(i)
     print(meetcode)
     return render(request, 'teacher_module/meet.html', {"meetcode": meetcode})
+
+
+def QuizMarkingCSV(request, quiz_pk):
+    quiz = Quiz.objects.get(pk=int(quiz_pk))
+    quiz_sittings = Sitting.objects.filter(quiz=quiz)
+    total_score = quiz.get_max_score
+
+    mcquestions = quiz.mcquestion.all()
+    tfquestions = quiz.tfquestion.all()
+    saquestions = quiz.saquestion.all()
+
+    # Deining column names
+    column_names = ['Student Username', 'Start Datetime', 'End Datetime']
+    answer_name = "O/X"
+    for i,mcquestion in enumerate(mcquestions):
+        question_name = "MCQ" + str(i + 1)
+        column_names.append(question_name)
+        column_names.append(answer_name + " M" + str(i + 1))
+    for i,tfquestion in enumerate(tfquestions):
+        question_name = "TFQ" + str(i + 1)
+        column_names.append(question_name)
+        column_names.append(answer_name + " T" + str(i + 1))
+    for i,saquestion in enumerate(saquestions):
+        question_name = "SAQ" + str(i + 1)
+        column_names.append(question_name)
+        column_names.append(answer_name + " S" + str(i + 1))
+    column_names.extend(["Total Score(TS)","MCQ OS","TFQ OS","SAQ OS","Total OS", "Percentage"])
+
+    df = pd.DataFrame(columns=column_names)
+
+    for quiz_sitting in quiz_sittings:
+        start_date = ''
+        end_date = ''
+        # flag = True
+        if quiz_sitting.start:
+            start_date = quiz_sitting.start.replace(tzinfo=None)
+        if quiz_sitting.end:
+            end_date = quiz_sitting.end.replace(tzinfo=None)   
+        new_row = {'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
+                   'Total Score(TS)': total_score, 'Total OS': quiz_sitting.current_score, 'Percentage': quiz_sitting.get_percent_correct}
+        
+        user_answers = json.loads(quiz_sitting.user_answers)
+        totalmcq_score = 0
+        totaltfq_score = 0
+        for i,mcquestion in enumerate(mcquestions):
+            question_name = "MCQ" + str(i + 1)
+            question_name_value = user_answers.get(str(mcquestion.id))
+            new_row[question_name] = question_name_value
+            if mcquestion.check_if_correct(question_name_value):
+                new_row[answer_name + " M" + str(i + 1)] = "✔"
+                totalmcq_score += mcquestion.score
+            else:
+                new_row[answer_name + " M" + str(i + 1)] = "❌"
+        for i,tfquestion in enumerate(tfquestions):
+            question_name = "TFQ" + str(i + 1)
+            question_name_value = user_answers.get(str(tfquestion.id))
+            new_row[question_name] = question_name_value
+            if tfquestion.check_if_correct(question_name_value):
+                new_row[answer_name + " T" + str(i + 1)] = "✔"
+                totaltfq_score += tfquestion.score
+            else:
+                new_row[answer_name + " T" + str(i + 1)] = "❌"
+        for i,saquestion in enumerate(saquestions):
+            question_name = "SAQ" + str(i + 1)
+            question_name_value = user_answers.get(str(saquestion.id))
+            new_row[question_name] = question_name_value
+            new_row[answer_name + " S" + str(i + 1)] = saquestion.score
+        
+        new_row['MCQ OS'] = totalmcq_score
+        new_row['TFQ OS'] = totaltfq_score
+        # append row to the dataframe
+        df = df.append(new_row, ignore_index=True)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.index += 1
+        df.index.name = 'S.N.'
+        df.to_excel(writer, sheet_name=str(quiz.title))
+        writer.save()
+        return HttpResponse(b.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
