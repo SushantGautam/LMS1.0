@@ -1567,6 +1567,6 @@ html {
     border-top: 5px solid #5a738e;
     width: 30px;
     height: 30px;
-    -webkit-animation: spin 2s linear infinite; /* Safari */
-    animation: spin 2s linear infinite;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spinner-border 1s linear infinite;
 }
