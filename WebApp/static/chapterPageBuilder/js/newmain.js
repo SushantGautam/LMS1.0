@@ -386,7 +386,7 @@ class stackedpicture {
         let spinnerElem = '';
         if (link != null) {
             spinnerElem = `
-                        <div class = "spinnner" style = 'position:relative; z-index: 2'>
+                        <div class = "spinnner" style = 'z-index: 2'>
                                                 <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
                                             </div>
                         `
