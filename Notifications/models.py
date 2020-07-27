@@ -11,6 +11,43 @@ from Notifications.signals import notify
 from WebApp.models import MemberInfo
 
 
+class NotificationQuerySet(models.query.QuerySet):
+    ''' Notification QuerySet '''
+
+    def unread(self, include_deleted=False):
+        """Return only unread items in the current queryset"""
+        return self.filter(unread=True)
+
+    def read(self, include_deleted=False):
+        """Return only read items in the current queryset"""
+        return self.filter(unread=False)
+
+    def mark_all_as_read(self, recipient=None):
+        """Mark as read any unread messages in the current queryset.
+
+        Optionally, filter these by recipient first.
+        """
+        # We want to filter out read ones, as later we will store
+        # the time they were marked as read.
+        qset = self.unread(True)
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+
+        return qset.update(unread=False)
+
+    def mark_all_as_unread(self, recipient=None):
+        """Mark as unread any read messages in the current queryset.
+
+        Optionally, filter these by recipient first.
+        """
+        qset = self.read(True)
+
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+
+        return qset.update(unread=True)
+
+
 class Notification(models.Model):
     start_notification_date = models.DateTimeField(default=timezone.now)
     end_notification_date = models.DateTimeField(blank=True, null=True)
@@ -23,7 +60,7 @@ class Notification(models.Model):
 
     creator = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, blank=False, related_name='notification_creator')
     recipient = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, blank=False,
-                                  related_name='notification_recipeint')
+                                  related_name='notifications')
 
     target_content_type = models.ForeignKey(
         ContentType,
@@ -41,6 +78,7 @@ class Notification(models.Model):
     action_object = GenericForeignKey('action_object_content_type', 'action_object_object_id')
 
     timestamp = models.DateTimeField(default=timezone.now)
+    objects = NotificationQuerySet.as_manager()
 
     class Meta:
         ordering = ('-timestamp',)

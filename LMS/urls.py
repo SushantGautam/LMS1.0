@@ -118,7 +118,8 @@ urlpatterns += (
     path('api/v1/<int:chapterID>/chat_history/', views.getChatMessageHistoryApi, name='getChatHistory'),
 )
 
-# import notifications.urls
-# urlpatterns += (
-#     url('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
-# )
+import Notifications.urls
+
+urlpatterns += (
+    url('^inbox/notifications/', include(Notifications.urls, namespace='Notifications')),
+)
