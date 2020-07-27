@@ -6,7 +6,9 @@
 
 
 
-<h2>{% trans "List of complete exams" %}</h2>
+<br>
+<h3>{% trans 'Marking List of Individual Quiz' %} ({{ quiz }}) </h3>
+<hr><br>
 {% if sitting_list %}
 
 <table id="MarkingList" class="table table-striped table-bordered bg-white nowrap">
@@ -16,7 +18,7 @@
         <td>{% trans "Quiz" %}</td>
         <td>{% trans "Completed" %}</td>
         <td>{% trans "Score" %}(%)</td>
-        <td></td>
+        <!-- <td></td> -->
         
 
     </thead>
@@ -27,7 +29,7 @@
                 <td><input type="text" name="user_filter" /></td>
                 <td><input type="text" name="quiz_filter" /></td>
                 <td></td>
-                <td></td>
+                <!-- <td></td> -->
                 <td>
                     <button type="submit" class="btn btn-default">{% trans "Filter" %}</button>
                 </td>
@@ -39,22 +41,20 @@
         {% for sitting in sitting_list %}
 
         <tr>
-            <td>{{ sitting.user }}</td>
+            <td><a href="
+                {% if '/teachers' in request.path %}
+                    {% url 'teacher_quiz_marking_detail' pk=sitting.id %} 
+                    {% else %}
+                    {% url 'quiz_marking_detail' pk=sitting.id %} 
+                    {% endif %}
+                " style="font-weight: bold;">{{ sitting.user }}</a></td>
             <td>{{ sitting.quiz }}</td>
             <td>{{ sitting.end|date }}</td>
             <td>{{ sitting.get_percent_correct }}</td>
            
-            <td>
-                    <a href="
-                    {% if '/teachers' in request.path %}
-                        {% url 'teacher_quiz_marking_detail' pk=sitting.id %} 
-                        {% else %}
-                        {% url 'quiz_marking_detail' pk=sitting.id %} 
-                        {% endif %}
-                    ">
+            <!-- <td>
                         {% trans "View details" %}
-                    </a>
-                </td>
+                </td> -->
         </tr>
 
         {% endfor %}
@@ -63,5 +63,5 @@
 
 </table>
 {% else %}
-<p>{% trans "There are no matching quizzes" %}.</p>
+<p>{% trans "There are no matching markings" %}.</p>
 {% endif %}
