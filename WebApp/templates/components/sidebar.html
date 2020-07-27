@@ -31,14 +31,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" data-menu-target="#quiz">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="help-circle"></i>
-                                </span>
-                                <span>Quiz</span>
-                            </a>
-                        </li>
-                        <li>
                             <a href="#" data-menu-target="#session">
                                 <span class="menu-tab-icon">
                                     <i data-feather="align-justify"></i>
@@ -47,11 +39,11 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" data-menu-target="#achievement">
+                            <a href="#" data-menu-target="#quiz">
                                 <span class="menu-tab-icon">
-                                    <i data-feather="award"></i>
+                                    <i data-feather="help-circle"></i>
                                 </span>
-                                <span>Achievement</span>
+                                <span>Quiz</span>
                             </a>
                         </li>
                         <li>
@@ -68,6 +60,14 @@
                                     <i data-feather="clipboard"></i>
                                 </span>
                                 <span>Survey</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" data-menu-target="#achievement">
+                                <span class="menu-tab-icon">
+                                    <i data-feather="archive"></i>
+                                </span>
+                                <span>Miscellaneous</span>
                             </a>
                         </li>
                     </ul>
@@ -120,21 +120,6 @@
                             </a>
                         </li>
                     </ul>
-                    <ul id="quiz">
-                        <li class="navigation-divider">Quiz</li>
-                        <li>
-                            <a  href="{% url 'quiz_list' %}">
-                                <span class="nav-link-icon" data-feather="help-circle"></span>
-                                <span>Quiz List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a  href="{% url 'quiz_exam_list' %}">
-                                <span class="nav-link-icon" data-feather="book-open"></span>
-                                <span>Quiz Exam</span>
-                            </a>
-                        </li>
-                    </ul>
                     <ul id="session">
                         <li class="navigation-divider">Sessions</li>
                         <li>
@@ -157,8 +142,20 @@
                         </li>
                         
                     </ul>
-                    <ul id="achievement">
-                        <li class="navigation-divider"></li>
+                    <ul id="quiz">
+                        <li class="navigation-divider">Quiz</li>
+                        <li>
+                            <a  href="{% url 'quiz_list' %}">
+                                <span class="nav-link-icon" data-feather="help-circle"></span>
+                                <span>Quiz List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a  href="{% url 'quiz_exam_list' %}">
+                                <span class="nav-link-icon" data-feather="book-open"></span>
+                                <span>Quiz Exam</span>
+                            </a>
+                        </li>
                     </ul>
 
                     <ul id="forum">
@@ -188,6 +185,26 @@
                                     <i data-feather="layers"></i>
                                 </span>
                                 <span>Survey List</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul id="achievement">
+                        <li class="navigation-divider">Miscellaneous</li>
+                        <li>
+                            <a href="{% url 'inbox_list' %}">
+                                <span class="nav-link-icon">
+                                    <i data-feather="mail"></i>
+                                </span>
+                                <span>Mail</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'surveylist' %}">
+                                <span class="nav-link-icon">
+                                    <i data-feather="file-text"></i>
+                                </span>
+                                <span>Teacher Report</span>
                             </a>
                         </li>
                     </ul>

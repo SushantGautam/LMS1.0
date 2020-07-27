@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">Home</a></li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row app-block">
+
+    <!-- Mail SideBar -->
+    <div class="col-md-3 app-sidebar">
+       <div class="card">
+          <div class="card-body">
+             <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#compose">
+             <i class="ti-plus mr-2"></i> Compose Email
+             </button>
+          </div>
+          <div class="app-sidebar-menu">
+             <div class="list-group list-group-flush">
+                <a href="" class="list-group-item active d-flex align-items-center">
+                <i class="ti-email list-group-icon mr-2"></i>Inbox
+                <span class="small ml-auto">14</span>
+                </a>
+                <a href="" class="list-group-item">
+                <i class="ti-check list-group-icon mr-2"></i>Send
+                </a>
+                <a href="" class="list-group-item">
+                <i class="ti-pencil-alt list-group-icon mr-2"></i>Draft
+                </a>
+                <a href="" class="list-group-item d-flex align-items-center">
+                <i class="ti-star list-group-icon mr-2"></i>Starred
+                <span class="small ml-auto">10</span>
+                </a>
+                <a href="" class="list-group-item">
+                <i class="ti-info-alt list-group-icon mr-2"></i>Spam
+                </a>
+                <a href="" class="list-group-item d-flex align-items-center">
+                <i class="ti-trash list-group-icon mr-2"></i>Trash
+                <span class="small ml-auto">2</span>
+                </a>
+             </div>
+             <div class="card-body">
+                <h6 class="mb-0">Labels</h6>
+             </div>
+             <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item d-flex align-items-center">
+                <span class="text-warning fa fa-circle mr-2"></span>
+                Theme Support
+                <span class="small ml-auto">5</span>
+                </a>
+                <a href="#" class="list-group-item d-flex align-items-center">
+                <span class="text-success fa fa-circle mr-2"></span>
+                Freelance
+                </a>
+                <a href="#" class="list-group-item d-flex align-items-center">
+                <span class="text-danger fa fa-circle mr-2"></span>
+                Social
+                </a>
+                <a href="#" class="list-group-item d-flex align-items-center">
+                <span class="text-info fa fa-circle mr-2"></span>
+                Friends
+                </a>
+                <a href="#" class="list-group-item d-flex align-items-center">
+                <span class="text-secondary fa fa-circle mr-2"></span>
+                Coding
+                </a>
+             </div>
+          </div>
+       </div>
+    </div>
+    <!-- Mail SideBar END -->
+
+    <div class="col-md-9 app-content">
+       <div class="app-content-overlay"></div>
+       <div class="app-action">
+          <div class="action-left">
+             <div class="custom-control custom-checkbox mr-3">
+                <input type="checkbox" class="custom-control-input" id="customCheckAll">
+                <label class="custom-control-label" for="customCheckAll"></label>
+             </div>
+             <ul class="list-inline">
+                <li class="list-inline-item mb-0">
+                   {% block mail_action %}
+                    <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
+                    With selected
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Mark as read</a>
+                        <a class="dropdown-item" href="#">Mark as unread</a>
+                        <a class="dropdown-item" href="#">Spam</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                    </div>
+                   {% endblock %}
+                </li>
+                <li class="list-inline-item mb-0">
+                   {% block mail_order %}
+                    <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
+                    Order by
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#">Date</a>
+                        <a class="dropdown-item" href="#">From</a>
+                        <a class="dropdown-item" href="#">Subject</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Size</a>
+                    </div>
+                   {% endblock %}
+                </li>
+             </ul>
+          </div>
+          <div class="action-right">
+             <form class="d-flex mr-3">
+                <a href="#" class="app-sidebar-menu-button btn btn-outline-light">
+                <i data-feather="menu" class="width-15 height-15"></i>
+                </a>
+                <div class="input-group">
+                   <input type="text" class="form-control" placeholder="Email search"
+                      aria-describedby="button-addon1">
+                   <div class="input-group-append">
+                      <button class="btn" type="button" id="button-addon1">
+                      <i class="ti-search"></i>
+                      </button>
+                   </div>
+                </div>
+             </form>
+             <div class="app-pager d-flex align-items-center">
+                <div class="mr-3">1-50 of 253</div>
+                <nav aria-label="Page navigation example">
+                   <ul class="pagination">
+                      <li class="page-item">
+                         <a class="page-link" href="#" aria-label="Previous">
+                         <i class="ti-arrow-left"></i>
+                         </a>
+                      </li>
+                      <li class="page-item">
+                         <a class="page-link" href="#" aria-label="Next">
+                         <i class="ti-arrow-right"></i>
+                         </a>
+                      </li>
+                   </ul>
+                </nav>
+             </div>
+          </div>
+       </div>
+       <div class="card card-body app-content-body">
+          <div class="app-lists">
+             <ul class="list-group list-group-flush">
+                
+                {% block mail_list %}
+                {% endblock %}
+                
+             </ul>
+          </div>
+          <!-- end::app-lists -->
+          <!-- begin:app-detail -->
+          <div class="card app-detail">
+              {% block mail_detail %}
+              {% endblock %}
+          </div>
+       </div>
+    </div>
+ </div>
+
+ <!-- Mail Compose Popup Model -->
+ <div class="modal fade" tabindex="-1" role="dialog" id="compose">
+    <div class="modal-dialog" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title">Compose Email</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <i class="ti-close"></i>
+             </button>
+          </div>
+          <div class="modal-body">
+             <div class="d-flex justify-content-between m-b-20">
+                <div>
+                   <a href="#" data-toggle="tooltip" title=""
+                      class="btn btn-outline-light mr-2"
+                      data-original-title="Keep">
+                   <i class="ti-save"></i>
+                   </a>
+                   <a href="#" data-toggle="tooltip" title=""
+                      class="btn btn-outline-danger mr-2"
+                      data-original-title="Delete">
+                   <i class="ti-trash"></i>
+                   </a>
+                </div>
+             </div>
+             <form>
+                <div class="form-group">
+                   <input type="text" class="form-control tagsinput" placeholder="To"
+                      value="example@test.com.tr" required>
+                </div>
+                <div class="form-group">
+                   <input type="text" class="form-control" placeholder="Subject" required>
+                </div>
+                <div class="form-group">
+                   <div class="custom-file">
+                      <input type="file" class="custom-file-input" multiple id="customFileLangHTML">
+                      <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files">Voeg
+                      je document toe</label>
+                   </div>
+                </div>
+                <div>
+                   <div class="compose-quill-editor mb-3"></div>
+                   <div class="d-flex justify-content-between">
+                      <div class="compose-quill-toolbar">
+                         <span class="ql-formats mr-0">
+                         <button class="ql-bold"></button>
+                         <button class="ql-italic"></button>
+                         <button class="ql-underline"></button>
+                         <button class="ql-link"></button>
+                         <button class="ql-image"></button>
+                         </span>
+                      </div>
+                      <button class="btn btn-primary">Send</button>
+                   </div>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+ </div>
+{% endblock %}
