@@ -2358,7 +2358,7 @@ def Meet(request, ):
 
 def QuizMarkingCSV(request, quiz_pk):
     quiz = Quiz.objects.get(pk=int(quiz_pk))
-    quiz_sittings = Sitting.objects.filter(quiz=quiz)
+    quiz_sittings = Sitting.objects.filter(quiz=quiz, complete=True)
     total_score = quiz.get_max_score
 
     mcquestions = quiz.mcquestion.all()
@@ -2432,6 +2432,9 @@ def QuizMarkingCSV(request, quiz_pk):
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
         df.index += 1
         df.index.name = 'S.N.'
-        df.to_excel(writer, sheet_name=str(quiz.title))
+        sheet_name = str(quiz.title)
+        if len(sheet_name) > 28:
+            sheet_name = sheet_name[:27] + ' ..'
+        df.to_excel(writer, sheet_name=sheet_name)
         writer.save()
         return HttpResponse(b.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
