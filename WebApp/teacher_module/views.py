@@ -16,6 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -836,13 +837,34 @@ class QuizUserProgressView(TemplateView):
         return context
 
 
-class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
+class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
+    model = Quiz
+    template_name = 'teacher_quiz/marking_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarkingList, self).get_context_data(**kwargs)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        context['quiz_list'] = context['quiz_list'].filter(
+                                            cent_code=self.request.user.Center_Code,
+                                            course_code__in=innings_Course_Code
+                                        )
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            q.count = sittings.count()
+            q.complete_count = sittings.filter(complete=True).count()
+            q.student_count = sittings.annotate(Count('user', distinct=True)).count()
+            q.student_complete_count = sittings.filter(complete=True).annotate(Count('user', distinct=True)).count()
+        
+        return context
+
+class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_list.html'
 
     def get_queryset(self):
-        queryset = super(QuizMarkingList, self).get_queryset() \
-            .filter(complete=True)
+        queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
+        quiz_id = int(self.kwargs['quiz_id'])
+        queryset = queryset.filter(quiz__id = quiz_id)
 
         user_filter = self.request.GET.get('user_filter')
         if user_filter:
@@ -854,6 +876,11 @@ class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixi
 
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarking, self).get_context_data(**kwargs)
+        quiz_id = int(self.kwargs['quiz_id'])
+        context['quiz'] = Quiz.objects.get(id = quiz_id)
+        return context
 
 class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
     model = Sitting
