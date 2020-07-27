@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'survey',
     'decorator_include',
     'django_summernote',
+    'Notifications',
 ]
 
 MIDDLEWARE = [

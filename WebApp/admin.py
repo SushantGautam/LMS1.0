@@ -4,6 +4,7 @@ from django_summernote.admin import SummernoteModelAdmin
 from import_export.admin import ImportExportModelAdmin, ExportMixin
 from import_export.resources import ModelResource
 
+from Notifications.models import Notification
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
     InningManager, Attendance, Notice, NoticeView
@@ -17,7 +18,7 @@ class CenterInfoAdminForm(forms.ModelForm):
 
 class CenterInfoAdmin(admin.ModelAdmin):
     form = CenterInfoAdminForm
-    list_display = ['Center_Name', 'Center_Logo', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent']
+    list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent']
 
 
 admin.site.register(CenterInfo, CenterInfoAdmin)
@@ -293,3 +294,4 @@ class NoticeViewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(NoticeView, NoticeViewAdmin)
+admin.site.register(Notification)
