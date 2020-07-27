@@ -850,6 +850,11 @@ class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
                                         )
         for q in context['quiz_list']:
             sittings = Sitting.objects.filter(quiz=q)
+            if not sittings:
+                context['quiz_list'] = context['quiz_list'].exclude(id=q.id)
+
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
             q.count = sittings.count()
             q.complete_count = sittings.filter(complete=True).count()
             q.student_count = sittings.annotate(Count('user', distinct=True)).count()
@@ -2398,6 +2403,7 @@ def QuizMarkingCSV(request, quiz_pk):
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0
         totaltfq_score = 0
+
         for i,mcquestion in enumerate(mcquestions):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
@@ -2437,4 +2443,6 @@ def QuizMarkingCSV(request, quiz_pk):
             sheet_name = sheet_name[:27] + ' ..'
         df.to_excel(writer, sheet_name=sheet_name)
         writer.save()
-        return HttpResponse(b.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response = HttpResponse(b.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'QuizMarking_'+ sheet_name + '.xlsx"'
+        return response
