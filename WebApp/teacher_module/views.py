@@ -2402,9 +2402,9 @@ def QuizMarkingCSV(request, quiz_pk):
                    'Total Score(TS)': total_score, 'Total OS': quiz_sitting.current_score, 'Percentage': quiz_sitting.get_percent_correct}
         
         user_answers = json.loads(quiz_sitting.user_answers)
-        totalmcq_score = 0
-        totaltfq_score = 0
-        totalsaq_score = 0
+        totalmcq_score = 0.0
+        totaltfq_score = 0.0
+        totalsaq_score = 0.0
 
         for i,mcquestion in enumerate(mcquestions):
             question_name = "MCQ" + str(i + 1)
@@ -2437,7 +2437,7 @@ def QuizMarkingCSV(request, quiz_pk):
             score_list = str(quiz_sitting.score_list).split(',')
             new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
             if str(score_list[score_index]).isnumeric():
-                totalsaq_score += int(score_list[score_index])
+                totalsaq_score += float(score_list[score_index])
         
         new_row['MCQ OS'] = totalmcq_score
         new_row['TFQ OS'] = totaltfq_score
