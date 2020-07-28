@@ -2436,7 +2436,7 @@ def QuizMarkingCSV(request, quiz_pk):
             score_index = user_ans.count('": "', 0, end_index)
             score_list = str(quiz_sitting.score_list).split(',')
             new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
-            if str(score_list[score_index]).isnumeric():
+            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
                 totalsaq_score += float(score_list[score_index])
         
         new_row['MCQ OS'] = totalmcq_score
