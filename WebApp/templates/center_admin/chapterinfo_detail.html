@@ -62,7 +62,7 @@
             {% endif %}
         </div>
         <div class="my-5">
-            <h4 class="text-primary">List of Assignments</h4>
+            <h4 class="text-primary mb-4">List of Assignments</h4>
             {% if object.Use_Flag is False %}
             <p style="color:red">Note: Chapter is inactive, therefore assignments are not assigned to students.
             </p>
@@ -113,7 +113,7 @@
                     {% elif object.End_Date and todays_date > object.End_Date|date:"Y-m-d" %}
                     <span class="text-danger"><b>Expired</b></span>
                     {% else %}
-                    <span class="text-primary"><b>Active</b></span>
+                    <span class="text-success"><b>Active</b></span>
                     {% endif %}
                 </p>
                 <p>
