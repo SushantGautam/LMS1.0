@@ -5,8 +5,8 @@ import re
 import shutil
 from datetime import datetime, timedelta
 from io import BytesIO
-import pandas as pd
 
+import pandas as pd
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
@@ -489,6 +489,8 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
         context['Assignment'] = assignmentinfoObj
         context['session_list'] = session_list
         context['inning'] = innings
+        context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
+
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
