@@ -572,6 +572,12 @@ class Quiz(models.Model):
 
     def has_saqs(self):
         return (self.saquestion.count() > 0)
+    
+    def has_sittings(self):
+        if Sitting.objects.filter(quiz=self):
+            return True
+        return False
+
 
     # def get_questions(self):
     #    return self.question_set.all()

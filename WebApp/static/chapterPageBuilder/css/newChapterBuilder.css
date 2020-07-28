@@ -1559,3 +1559,14 @@ html {
     background-image: linear-gradient(315deg, #2d3436 0%, #d3d3d3 74%);
     /*background: linear-gradient(to top, #fcb045, #fd1d1d, #833ab4);*/
 }
+
+/* loader */
+.loadspin {
+    border: 5px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 5px solid #5a738e;
+    width: 30px;
+    height: 30px;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spinner-border 1s linear infinite;
+}
