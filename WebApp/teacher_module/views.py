@@ -2399,7 +2399,7 @@ def QuizMarkingCSV(request, quiz_pk):
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)   
         new_row = {'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
-                   'Total Score(TS)': total_score, 'Total OS': quiz_sitting.current_score, 'Percentage': quiz_sitting.get_percent_correct}
+                   'Total Score(TS)': total_score, 'Total OS': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
         
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0

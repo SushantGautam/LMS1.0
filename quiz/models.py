@@ -820,6 +820,14 @@ class Sitting(models.Model):
         return [int(n) for n in self.question_order.split(',') if n]
 
     @property
+    def get_score_correct(self):
+        score = 0.0
+        for n in self.score_list.split(','):
+            if (n != "") and (n != " ") and (n != "not_graded"):
+                score += float(n)
+        return score
+
+    @property
     def get_percent_correct(self):
         # dividend = float(self.current_score)
         dividend = 0
