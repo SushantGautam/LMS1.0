@@ -2439,6 +2439,7 @@ def QuizMarkingCSV(request, quiz_pk):
         df.index += 1
         df.index.name = 'S.N.'
         sheet_name = str(quiz.title)
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '',sheet_name) # remove special characters
         if len(sheet_name) > 28:
             sheet_name = sheet_name[:27] + ' ..'
         df.to_excel(writer, sheet_name=sheet_name)
