@@ -218,15 +218,18 @@ urlpatterns += (
          name='teacher_saquestion_delete'),
 
     path('quiz/quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
-    path('quiz/marking/', views.QuizMarkingList.as_view(),
-         name='teacher_quiz_marking'),
-    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(),
-         name='teacher_quiz_marking_detail'),
     path('activate_quiz/<int:pk>/', quizViews.ActivateQuiz.as_view(),
          name='teacher_activate_quiz'),
     path('deactivate_quiz/<int:pk>/', quizViews.DeactivateQuiz.as_view(),
          name='teacher_deactivate_quiz'),
-     
+
+    #Quiz Marking
+    path('quiz/marking/', views.QuizMarkingList.as_view(),
+          name='teacher_quiz_marking'),
+    path('quiz/marking/<int:quiz_id>', views.QuizMarking.as_view(),
+          name='teacher_individual_quiz_marking'),
+    path('quiz/marking/detail/<int:pk>/', views.QuizMarkingDetail.as_view(),
+         name='teacher_quiz_marking_detail'),
     # URL for quiz marking download    
     path('quiz/marking/exportcsv/<int:quiz_pk>', views.QuizMarkingCSV, name='quiz_marking_csv'),
 )

@@ -385,11 +385,9 @@ class stackedpicture {
         //let img = '';
         let spinnerElem = '';
         if (link != null) {
-            spinnerElem = `
-                        <div class = "spinnner" style = 'z-index: 2'>
-                                                <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
-                                            </div>
-                        `
+            spinnerElem = `<div class = "spinner" style = 'z-index: 2'>
+                            <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
+                        </div>`
             var promise = new JSZip.external.Promise(function (resolve, reject) {
                 JSZipUtils.getBinaryContent(link, function (err, data) {
                     if (err) {
@@ -425,8 +423,8 @@ class stackedpicture {
                                     image.onload = function () {
                                         $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
                                         if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
-                                            $(`#stackedpic-${id}`).find(".spinnner").remove()
-                                            sortImageElements()
+                                            sortImageElements();
+                                            $(`#stackedpic-${id}`).find(".spinner").remove();
                                         }
                                     }
                                     image.src = "data:image;base64," + content;

@@ -1,6 +1,7 @@
 # from django.core.checks import messages
 import json
 import os
+import re
 import shutil
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -16,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -836,13 +838,39 @@ class QuizUserProgressView(TemplateView):
         return context
 
 
-class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
+class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
+    model = Quiz
+    template_name = 'teacher_quiz/marking_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarkingList, self).get_context_data(**kwargs)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        context['quiz_list'] = context['quiz_list'].filter(
+                                            cent_code=self.request.user.Center_Code,
+                                            course_code__in=innings_Course_Code
+                                        )
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            if not sittings:
+                context['quiz_list'] = context['quiz_list'].exclude(id=q.id)
+
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            q.count = sittings.count()
+            q.complete_count = sittings.filter(complete=True).count()
+            q.student_count = sittings.annotate(Count('user', distinct=True)).count()
+            q.student_complete_count = sittings.filter(complete=True).annotate(Count('user', distinct=True)).count()
+        
+        return context
+
+class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_list.html'
 
     def get_queryset(self):
-        queryset = super(QuizMarkingList, self).get_queryset() \
-            .filter(complete=True)
+        queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
+        quiz_id = int(self.kwargs['quiz_id'])
+        queryset = queryset.filter(quiz__id = quiz_id)
 
         user_filter = self.request.GET.get('user_filter')
         if user_filter:
@@ -854,6 +882,11 @@ class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixi
 
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarking, self).get_context_data(**kwargs)
+        quiz_id = int(self.kwargs['quiz_id'])
+        context['quiz'] = Quiz.objects.get(id = quiz_id)
+        return context
 
 class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
     model = Sitting
@@ -2331,7 +2364,7 @@ def Meet(request, ):
 
 def QuizMarkingCSV(request, quiz_pk):
     quiz = Quiz.objects.get(pk=int(quiz_pk))
-    quiz_sittings = Sitting.objects.filter(quiz=quiz)
+    quiz_sittings = Sitting.objects.filter(quiz=quiz, complete=True)
     total_score = quiz.get_max_score
 
     mcquestions = quiz.mcquestion.all()
@@ -2371,6 +2404,7 @@ def QuizMarkingCSV(request, quiz_pk):
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0
         totaltfq_score = 0
+
         for i,mcquestion in enumerate(mcquestions):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
@@ -2405,6 +2439,12 @@ def QuizMarkingCSV(request, quiz_pk):
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
         df.index += 1
         df.index.name = 'S.N.'
-        df.to_excel(writer, sheet_name=str(quiz.title))
+        sheet_name = str(quiz.title)
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '',sheet_name) # remove special characters
+        if len(sheet_name) > 28:
+            sheet_name = sheet_name[:27] + ' ..'
+        df.to_excel(writer, sheet_name=sheet_name)
         writer.save()
-        return HttpResponse(b.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response = HttpResponse(b.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'QuizMarking_'+ sheet_name + '.xlsx"'
+        return response
