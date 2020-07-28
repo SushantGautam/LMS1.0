@@ -157,6 +157,9 @@
                         <table class="table table-bordered table-striped">
                             <tr>
                                 <td>
+                                    <h4><b>Course Allocation Name</b></h4>
+                                </td>
+                                <td>
                                     <h4><b>Courses</b></h4>
                                 </td>
                                 <td>
@@ -181,9 +184,20 @@
                                                 {% else %}
                                                     {% url 'teachers_inninggroup_detail' groups.pk %}
                                                 {% endif %}
-                                                ">{{ groups }}</a></td>
-                                    <td>{% for teachers in groups.Teacher_Code.all %}
-                                        {{ teachers }}<br>{% endfor %}
+                                                ">{{ groups.InningGroup_Name }}</a></td>
+                                    <td>
+                                        <a href="
+                                                {% if not '/mysession' in request.path %}
+                                                    {{ groups.Course_Code.get_absolute_url }}
+                                                {% else %}
+                                                    {{ groups.Course_Code.teacher_get_absolute_url }}
+                                                {% endif %}">
+                                            {{ groups }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% for teachers in groups.Teacher_Code.all %}
+                                            {{ teachers }}<br>{% endfor %}
                                     </td>
                                 </tr>
                             {% endfor %}
