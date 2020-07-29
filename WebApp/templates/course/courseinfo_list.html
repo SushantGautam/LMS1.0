@@ -182,7 +182,18 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="row">
 
-
+            <div class="col-md-8 col-sm-6 col-xs-12">
+                <form method="get" id="searchCourseForm">
+                    <div class="col-md-4">
+                        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+                               class="form-control"/>
+                    </div>
+                    <button class="btn btn-default" type="submit">
+                        <i class="fa fa-search"></i>&nbsp;Search
+                    </button>
+                </form>
+            </div>
+            {% comment %}
             {% if 'teachers' in request.path %}
                 <div class="col-md-8 col-sm-6 col-xs-12">
                     <form method="get" action="">
@@ -222,7 +233,7 @@
                     </form>
                 </div>
             {% endif %}
-
+        {% endcomment %}
 
             <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
                 {% if 'students' not in request.path %}
@@ -717,5 +728,23 @@
         };
 
         document.addEventListener('DOMContentLoaded', init, false);
+
+        $('#searchCourseForm').on('submit', function (e) {
+            e.preventDefault()
+            let queryString = $(this).find('input[name=query]').val().toLowerCase()
+            $('.listcard').css('display', 'none')
+            if (!queryString || queryString === "") {
+                $('#pagination').css('display', 'block')
+                init.call()
+            } else {
+                $('.listcard').each(function () {
+                    if ($(this).find('.card-title').text().toLowerCase().includes(queryString)) {
+                        $(this).css('display', 'block')
+                    }
+                    $('#pagination').css('display', 'none')
+                })
+            }
+
+        })
 
     </script>
