@@ -69,25 +69,66 @@
             </div>
         </div>
     </div>
-    <div class="session-detail form-inline" style="padding: 10px 0;">
-        <span style="font-size:18px"><b> Session: </b></span>
-        <select id="select_session" class="form-control" style="width: 30%;">
-            {% for x in session_list %}
-                {% for session in x %}
-                    <option value="{{ session.pk }}"
-                            {% if session.pk == inning.pk %}
+
+    <div class="row">
+        <div class="session-detail form-inline" style="padding: 10px 0;">
+            <div class="col col-md-6">
+                <span style="font-size:18px"><b> Course: </b></span> {{ Assignment.Course_Code }}
+            </div>
+
+            <div class="col col-md-6">
+                <span style="font-size:18px"><b> Session: </b></span>
+                <select id="select_session" class="form-control" style="width: 30%;">
+                    {% for x in session_list %}
+                        {% for session in x %}
+                            <option value="{{ session.pk }}"
+                                    {% if session.pk == inning.pk %}
+                                    selected
+                                    {% endif %}
+                            > {{ session }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                    <option value="-1"
+                            {% if not inning %}
                             selected
                             {% endif %}
-                    > {{ session }}</option>
-                {% endfor %}
-            {% endfor %}
-            <option value="-1"
-                    {% if not inning %}
-                    selected
-                    {% endif %}
-            > All Sessions
-            </option>
-        </select>
+                    > All Sessions
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="course-detail form-inline" style="padding: 10px 0;">
+            <div class="col col-md-6">
+                <span style="font-size:18px"><b> Chapter: </b></span>
+                <select id="select_chapter" class="form-control" style="width: 30%;">
+                    {% for chapter in chapter_list %}
+
+                        <option value="{{ chapter.pk }}"
+                                {% if chapter.pk == Assignment.Chapter_Code.pk %}
+                                selected
+                                {% endif %}>{{ chapter }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col col-md-6">
+                <span style="font-size:18px"><b> Assignment: </b></span>
+                <select id="select_assignment" class="form-control" style="width: 30%;">
+                    {% for chapter in chapter_list %}
+                        {% for assignment in chapter.assignmentinfos.all %}
+                            <option value="{{ assignment.pk }}" data-chapter="{{ chapter.pk }}"
+                                    {% if assignment.pk == Assignment.pk %}
+                                    selected
+                                    {% endif %}>{{ assignment }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" id="change_assignment_button" class="btn btn-info">Go</button>
+        </div>
     </div>
     {% if questions %}
         <div style="padding-bottom: 10px;">
@@ -291,6 +332,24 @@
             })
         }
 
+        $('#select_chapter').change(function () {
+            $('#select_assignment option').hide();
+            $('#select_assignment option[data-chapter="' + $(this).val() + '"]').show();
+            // add this code to select 1'st of streets automaticaly
+            // when city changed
+            if ($('#select_assignment option[data-chapter="' + $(this).val() + '"]').length) {
+                $('#select_assignment option[data-chapter="' + $(this).val() + '"]').first().prop('selected', true);
+            }
+                // in case if there's no corresponding street:
+            // reset select element
+            else {
+                $('#select_assignment').val('');
+            }
+        });
+
+        $('#change_assignment_button').on('click', function () {
+            window.location.href = "/teachers/assignment_answers/" + $('#select_assignment').val();
+        })
 
     </script>
     <script type="text/javascript">
@@ -382,11 +441,17 @@
 
 
 
+
+
+
                         {% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
                                 data: {
                                     'question_id': q_id,
                                     'assignment_id': '
+
+
+
 
 
 

@@ -448,7 +448,7 @@
 
 
     </script>
-    {% if request.user.is_superuser %}
+    {% if request.user.Is_CenterAdmin or request.user.Is_Teacher %}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.12.0/babel.min.js"></script>
         <div id="moderation-modal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
