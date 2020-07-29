@@ -51,7 +51,7 @@
                     <div class="form-group">
                         <label for="id_Course_Provider">Course Rating</label>
                         <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
-                            value="{{ object.Course_Level }}">
+                            value="{{ object.Course_Level }}" min="1" max="5">
                     </div>
                     {% if 'edit' in request.path %}
                     <div class="form-group">

@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+<li class="breadcrumb-item" aria-current="page">{{ object.username }}</li>
+{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="jumbothon text-center bg-thansparent">
-        <h1>Member Information</h1>
+    <div class="page-header">
+        <div class="page-title d-block text-center">
+            <h2>Member Information</h2>
+        </div>
     </div>
     <br>
     <table class="table table-striped table-bordered">
