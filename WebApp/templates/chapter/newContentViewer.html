@@ -380,7 +380,7 @@
     {% endif %}
 
 
-    <div id="container" class="container12">
+    <div id="container" class="container12 noRightClick">
 
         <div id="page-contents" class="page-contents"></div>
 
@@ -1477,6 +1477,11 @@
             }
         }
     }
+
+    // Disable right click
+    $('.noRightClick').bind('contextmenu', function(e) {
+        return false;
+    }); 
 
 
     function setThumbnails() {

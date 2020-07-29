@@ -959,7 +959,7 @@ class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
 
 class CourseInfoListView(ListView):
     model = CourseInfo
-    paginate_by = 6
+    # paginate_by = 6
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.GET.get('paginate_by'):
