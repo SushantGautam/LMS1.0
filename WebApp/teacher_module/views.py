@@ -47,7 +47,7 @@ from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, \
     QuizBasicInfoForm
-from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question
+from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question, Answer
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
@@ -2388,7 +2388,7 @@ def QuizMarkingCSV(request, quiz_pk):
         question_name = "SAQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " S" + str(i + 1))
-    column_names.extend(["Total Score(TS)","MCQ OS","TFQ OS","SAQ OS","Total OS", "Percentage"])
+    column_names.extend(["MCQ OS","TFQ OS","SAQ OS","Total OS","Total Score(TS)", "Percentage"])
 
     df = pd.DataFrame(columns=column_names)
 
@@ -2401,16 +2401,18 @@ def QuizMarkingCSV(request, quiz_pk):
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)   
         new_row = {'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
-                   'Total Score(TS)': total_score, 'Total OS': quiz_sitting.current_score, 'Percentage': quiz_sitting.get_percent_correct}
+                   'Total Score(TS)': total_score, 'Total OS': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
         
         user_answers = json.loads(quiz_sitting.user_answers)
-        totalmcq_score = 0
-        totaltfq_score = 0
+        totalmcq_score = 0.0
+        totaltfq_score = 0.0
+        totalsaq_score = 0.0
 
         for i,mcquestion in enumerate(mcquestions):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
-            new_row[question_name] = question_name_value
+            ans_value = Answer.objects.get(id=int(question_name_value)).content
+            new_row[question_name] = ans_value
             if mcquestion.check_if_correct(question_name_value):
                 new_row[answer_name + " M" + str(i + 1)] = "✔"
                 totalmcq_score += mcquestion.score
@@ -2429,10 +2431,19 @@ def QuizMarkingCSV(request, quiz_pk):
             question_name = "SAQ" + str(i + 1)
             question_name_value = user_answers.get(str(saquestion.id))
             new_row[question_name] = question_name_value
-            new_row[answer_name + " S" + str(i + 1)] = saquestion.score
+
+            user_ans = str(quiz_sitting.user_answers)
+            saq_id = '"' + str(saquestion.id) + '":'
+            end_index = user_ans.find(saq_id)
+            score_index = user_ans.count('": "', 0, end_index)
+            score_list = str(quiz_sitting.score_list).split(',')
+            new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
+            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
+                totalsaq_score += float(score_list[score_index])
         
         new_row['MCQ OS'] = totalmcq_score
         new_row['TFQ OS'] = totaltfq_score
+        new_row['SAQ OS'] = totalsaq_score
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
     # return HttpResponse("<h4>Student All Course Progress download</h4>")
