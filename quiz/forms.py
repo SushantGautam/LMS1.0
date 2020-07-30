@@ -265,7 +265,7 @@ class QuizForm2(forms.ModelForm):
             ),
             HTML('''<hr size="10">'''),
 
-            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
+            HTML('''<label class=quiz-add-label >Quiz Type</label>'''),
             Row(
                 Column('pre_test', css_class='form-group col-md-4 mb-0'),
                 Column('post_test', css_class='form-group col-md-4 mb-0'),

@@ -8,16 +8,16 @@
         </div>
         <div class="col-md-6 text-right ">
           
-                          <a class="btn btn-white qts-button " href="
+                          <a class="btn btn-info qts-button " href="
                             {% if '/teachers' in request.path %}
                                         {% url 'teacher_quiz_update_info' quiz.id %}
                                         {% else %}
                                         {% url 'quiz_update_info' quiz.id %}
-                                        {% endif %}">Edit</a>
+                                        {% endif %}"><i class="fa fa-pencil"></i> &nbsp; Edit</a>
 
-                            <a class="btn btn-white qts-button "href="
+                            <a class="btn btn-danger qts-button "href="
                             {% url 'quiz_delete' quiz.id %}
-                              ">Delete</a>            
+                              "> <i class="fa fa-trash"></i> &nbsp; Delete</a>            
              
             
         </div>
@@ -67,17 +67,21 @@
                 <td><p>Status</p></td>
                 <td>
                     {% if quiz.draft is True %}
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <span class="text-danger">Inactive</span>
-                            </div>
-                            <div class="col-md-6">
-                                <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
-                                    <input type="hidden" value="{{ request.path }}" name="redirect-url">
-                                    <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
-                                        class="confirm-activate">
-                                </form>
-                            </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="row">
+
+                            
+                                <div class="col-md-4 col-sm-6">
+                                    <span class="text-danger">Inactive</span>
+                                </div>
+                                <div class="col-md-8 col-sm-6" >
+                                    <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+                                        <input type="hidden" value="{{ request.path }}" name="redirect-url">
+                                        <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
+                                            class="confirm-activate">
+                                    </form>
+                                </div>
+                          </div> 
                         </div>
                     {% endif %}
                     {% if quiz.draft is False %}
@@ -96,85 +100,6 @@
                     {% endif %}
                 </td>
 
-<<<<<<< HEAD
-<table class="table table-bordered ">
-
-    <tbody>
-    <tr>
-        <td><p>Quiz</p></td>
-        <td><p>{{ quiz.title }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Description</p></td>
-        <td><p>{{ quiz.description }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Course </p></td>
-        <td><p>{{ quiz.course_code }}</p></td>
-    </tr>
-    <tr>
-        <td><p> Chapter</p></td>
-        <td><p> {{ quiz.chapter_code }}</p></td>
-
-    </tr>
-    <tr>
-        <td><p>Type of quiz</p></td>
-        <td><p>{% if quiz.pre_test %}Pre Test <br>{% endif %}
-            {% if quiz.post_test %}Post Test <br>{% endif %}
-            {% if quiz.exam_paper %}Exam <br>{% endif %}</p></td>
-    </tr>
-    <tr>
-        <td><p>Url</p></td>
-        <td><p>{{ quiz.url }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Quiz Feature</p></td>
-        <td>
-            <p>
-                {% if quiz.random_order %}Random Order <br>{% endif %}
-                {% if quiz.single_attempt %}Single Attempt <br>{% endif %}
-                {% if quiz.negative_marking %}Negative Marking - {{ quiz.negative_percentage }}% <br>{% endif %}
-            </p>
-        </td>
-
-    </tr>
-    <tr>
-        <td><p>Status</p></td>
-        <td>
-            {% if quiz.draft is True %}
-                <div class="col-md-12">
-                    <div class="col-md-6">
-                        <span class="text-danger">Inactive</span>
-                    </div>
-                    <div class="col-md-6">
-                        <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
-                            <input type="hidden" value="{{ request.path }}" name="redirect-url">
-                            <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
-                                   class="confirm-activate">
-                        </form>
-                    </div>
-                </div>
-            {% endif %}
-            {% if quiz.draft is False %}
-                <div class="col-md-12">
-                    <div class="col-md-6">
-                        <span class="text-success">Active</span>
-                    </div>
-                    <div class="col-md-6">
-                        <form action="{% url 'deactivate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
-                            <input type="hidden" value="{{ request.path }}" name="redirect-url">
-                            <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
-                                   class="confirm-deactivate">
-                        </form>
-                    </div>
-                </div>
-            {% endif %}
-        </td>
-
-
-    </tr>
-=======
->>>>>>> NewUI
 
             </tr>
 

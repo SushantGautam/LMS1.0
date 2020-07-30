@@ -106,15 +106,20 @@
       <div class="form-group">
         {{ wizard.form.non_field_errors }}
         <div class="col-md-12 questions-wrapper panel" style="padding-top: 15px;">
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">Multiple Choice Question</label>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="quiz-add-label" for="">Multiple Choice Question</label>
+            </div>
+            <div class="col-md-6 questions-only text-right">
+              <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
+              <button type="button" class="btn btn-info btn-sm qts-button" id="mcq_create_button" data-toggle="modal"
+                      data-target="#question_form_popup" style="margin-bottom: 10px;">Add MCQ question
+              </button>
+            </div>
+            
           </div>
-          <div class="col-md-6 questions-only text-right">
-            <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
-            <button type="button" class="btn btn-default btn-xs qts-button" id="mcq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup" style="margin-bottom: 10px;">Add MCQ question
-            </button>
-          </div>
+
+        
           <div class="col-md-12" style="width: 100%;">
             {{ wizard.form.mcquestion }}
             {{ wizard.form.mcquestion.help_text }}
@@ -127,16 +132,21 @@
       </div>
       <div class="form-group">
         <div class="col-md-12 questions-wrapper panel"  style="padding-top: 15px;">
+          <div class="row">
+               
           <div class="col-md-6">
             <label class="quiz-add-label" for="">True False Question</label>
           </div>
           <div class="col-md-6 questions-only text-right">
             <!-- <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a> -->
-            <button type="button" class="btn qts-button btn-default btn-xs" id="tfq_create_button" data-toggle="modal"
+            <button type="button" class="btn qts-button btn-info btn-sm" id="tfq_create_button" data-toggle="modal"
                     data-target="#question_form_popup"style="margin-bottom: 10px;">Add T/F question
             </button>
 
           </div>
+
+          </div>
+
           <div class="col-md-12">
             {{ wizard.form.tfquestion }}
             {{ wizard.form.tfquestion.help_text }}
@@ -149,16 +159,20 @@
       </div>
       <div class="form-group">
         <div class="col-md-12 questions-wrapper panel" style="padding-top: 15px;">
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">Short Type Question</label>
-          </div>
-          <div class="col-md-6 questions-only text-right">
-            <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
-            <button type="button" class="btn qts-button btn-default btn-xs" id="saq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup"style="margin-bottom: 10px;">Add SA question
-            </button>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="quiz-add-label" for="">Short Type Question</label>
+            </div>
+            <div class="col-md-6 questions-only text-right">
+              <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
+              <button type="button" class="btn qts-button btn-info btn-sm" id="saq_create_button" data-toggle="modal"
+                      data-target="#question_form_popup"style="margin-bottom: 10px;">Add SA question
+              </button>
+  
+            </div>
 
           </div>
+        
           <div class="col-md-12">
             {{ wizard.form.saquestion }}
             {{ wizard.form.saquestion.help_text }}
@@ -172,16 +186,19 @@
     {% endif %}
     <input type="hidden" id="wizard_goto_input">
     <div class="col-md-12 submitforquiz" style="padding-bottom: 15px;">
-      <div class="col-md-4"></div>
-      <div class="col-md-4 text-center">
-        <div class="quiz-admin-btn">
-          <button id="" class="btn btn-info btn-sm ripple " type="submit">Submit</button>
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 text-center">
+          <div class="quiz-admin-btn">
+            <button id="" class="btn btn-info btn-sm ripple " type="submit">Submit</button>
+          </div>
+        </div>
+        <div class="col-md-4 button-place text-right">
+          <button id="step_3_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq btn-light">Previous
+          </button>
         </div>
       </div>
-      <div class="col-md-4 button-place text-right">
-        <button id="step_3_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq">Previous
-        </button>
-      </div>
+     
     </div>
 
   </form>

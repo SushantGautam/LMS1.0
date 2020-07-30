@@ -76,7 +76,7 @@
     <button class="btn btn-primary" type="submit">Submit</button>
 </form>
 
-{% block customjss %}
+{% block javascript %}
     <script>
         function cloneMore(selector, prefix) {
             var newElement = $(selector).clone(true);
@@ -226,4 +226,4 @@
         $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
         $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow-y", "scroll");
     </script>
-{% endblock customjss %}
+{% endblock javascript %}
