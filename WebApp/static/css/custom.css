@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+
 .select2-container .select2-selection--single {
   height: 2.45em !important;
   border: 1px solid #ced4da !important;
@@ -38,6 +39,4 @@
 .breadcrumb-item+.breadcrumb-item::before{
   content:">";
 }
-.breadcrumb{
-  background-color:inherit;
-}
+ 
