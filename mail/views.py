@@ -1,18 +1,14 @@
 from WebApp.models import MemberInfo
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 
-from .forms import DraftUpdateForm, MailReceiverForm, MailForm, ReplyForm
+from .forms import DraftUpdateForm, MailForm, ReplyForm
 
 from mail.models import Mail
 from mail.models import MailReceiver
-
-
-# def MailList(request):
-#     return render(request, 'mail/index.html')
 
 
 class MailListView(ListView):
@@ -83,21 +79,21 @@ class MailListView(ListView):
         context['trash_count'] = MailReceiver.objects.filter(mail_deleted=True, receiver=self.request.user).count()
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
-        context['general_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                     mail_deleted=False, mail_spam=False,
-                                                                     mail__label='GR').count()
-        context['support_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                     mail_deleted=False, mail_spam=False,
-                                                                     mail__label='SP').count()
-        context['assignment_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                        mail_deleted=False, mail_spam=False,
-                                                                        mail__label='AS').count()
-        context['exam_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                  mail_deleted=False, mail_spam=False,
-                                                                  mail__label='EX').count()
-        context['practical_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                       mail_deleted=False, mail_spam=False,
-                                                                       mail__label='PR').count()
+        context['glc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='GR').count()
+        context['slc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='SP').count()
+        context['alc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='AS').count()
+        context['elc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='EX').count()
+        context['plc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='PR').count()
         return context
 
 
@@ -151,21 +147,21 @@ class MailDraftView(ListView):
         context['trash_count'] = MailReceiver.objects.filter(mail_deleted=True).count()
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
-        context['general_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                     mail_deleted=False, mail_spam=False,
-                                                                     mail__label='GR').count()
-        context['support_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                     mail_deleted=False, mail_spam=False,
-                                                                     mail__label='SP').count()
-        context['assignment_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                        mail_deleted=False, mail_spam=False,
-                                                                        mail__label='AS').count()
-        context['exam_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                  mail_deleted=False, mail_spam=False,
-                                                                  mail__label='EX').count()
-        context['practical_label_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                                       mail_deleted=False, mail_spam=False,
-                                                                       mail__label='PR').count()
+        context['glc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='GR').count()
+        context['slc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='SP').count()
+        context['alc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='AS').count()
+        context['elc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='EX').count()
+        context['plc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
+                                                     mail_deleted=False, mail_spam=False,
+                                                     mail__label='PR').count()
 
         return context
 

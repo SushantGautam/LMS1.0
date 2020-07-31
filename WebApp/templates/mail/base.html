@@ -26,12 +26,16 @@
              <div class="list-group list-group-flush">
                 <a href="{% url 'mail_list' %}?email_type=inbox"
                    class="list-group-item
-                   {% if 'inbox' in request.get_full_path %}
+                   {#{% if 'inbox' in request.get_full_path %}#}
+                   {% if 'inbox' == email_type %}
                      bg-primary
                     {% endif %}
                    d-flex align-items-center">
                 <i class="ti-email list-group-icon mr-2 text-primary"></i>Inbox
-                <span class="small ml-auto">{{ inbox_count }}</span>
+                <span class="small ml-auto">{% if inbox_count %}
+                    {{ inbox_count }}
+                    {%else%} {%endif%}
+                </span>
                 </a>
 
                 <a href="{% url 'mail_send_list' %}?email_type=send"
@@ -56,17 +60,18 @@
                     bg-primary
                     {% endif %}              ">
                 <i class="fa fa-star mr-2 text-warning"></i>Starred
-                <span class="small ml-auto">{{ starred_count }}</span>
+                <span class="small ml-auto">
+                    {%if starred_count %}{{ starred_count }} {%else%} {%endif%}</span>
                 </a>
 
-                 <a href="{% url 'mail_send_list' %}?email_type=starred_outbox"
-                    class="list-group-item d-flex align-items-center
-                     {% if 'starred_outbox' in request.get_full_path %}
-                    bg-primary
-                    {% endif %} ">
-                     <i class="mr-2 fa fa-star text-warning"></i>Send Starred
-                     <span class="small ml-auto"></span>
-                 </a>
+<!--                 <a href="{% url 'mail_send_list' %}?email_type=starred_outbox"-->
+<!--                    class="list-group-item d-flex align-items-center-->
+<!--            #         {% if 'starred_outbox' in request.get_full_path %}-->
+<!--                    bg-primary-->
+<!--          #          {% endif %} ">-->
+<!--                     <i class="mr-2 fa fa-star text-warning"></i>Send Starred-->
+<!--                     <span class="small ml-auto"></span>-->
+<!--                 </a>-->
 
 
                 <a href="{% url 'mail_list' %}?email_type=spam"
@@ -85,17 +90,17 @@
                             bg-primary
                             {% endif %} ">
                 <i class="ti-trash list-group-icon mr-2 text-danger"></i>Trash
-                <span class="small ml-auto">{{ trash_count }}</span>
+                <span class="small ml-auto">{% if trash_count %}{{ trash_count }} {%else%} {%endif%}</span>
                 </a>
 
-                 <a href="{% url 'mail_send_list' %}?email_type=outbox_delete"
-                   class="list-group-item d-flex align-items-center
-                {% if 'outbox_delete' in request.get_full_path %}
-                            bg-primary
-                            {% endif %} ">
-                <i class="ti-trash list-group-icon mr-2 text-danger"></i>Send Trash
-                <span class="small ml-auto"></span>
-                </a>
+<!--                 <a href="{% url 'mail_send_list' %}?email_type=outbox_delete"-->
+<!--                   class="list-group-item d-flex align-items-center-->
+<!--             #   {% if 'outbox_delete' in request.get_full_path %}-->
+<!--                            bg-primary-->
+<!--                  #          {% endif %} ">-->
+<!--                <i class="ti-trash list-group-icon mr-2 text-danger"></i>Send Trash-->
+<!--                <span class="small ml-auto"></span>-->
+<!--                </a>-->
 
              </div>
              <div class="card-body">
@@ -108,7 +113,7 @@
                 {% if 'general' in request.get_full_path %} bg-dark {% endif %} ">
                    <span class="text-secondary fa fa-circle mr-2"></span>
                     General
-                    <span class="small ml-auto">{{ general_label_count }}</span>
+                    <span class="small ml-auto">{% if glc %}{{ glc }}{%else%} {%endif%}</span>
                 </a>
 
 
@@ -117,7 +122,7 @@
                    {% if 'support' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-warning fa fa-circle mr-2"></span>
                     Support
-                    <span class="small ml-auto">{{ support_label_count }}</span>
+                    <span class="small ml-auto">{% if slc %}{{ slc }} {%else%} {%endif%}</span>
                 </a>
 
 
@@ -126,7 +131,7 @@
                    {% if 'assignment' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-success fa fa-circle mr-2"></span>
                     Assignment
-                    <span class="small ml-auto">{{ assignment_label_count }}</span>
+                    <span class="small ml-auto">{%if alc %}{{ alc }} {%else%} {%endif%}</span>
                 </a>
 
 
@@ -135,7 +140,7 @@
                  {% if 'exam' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-info fa fa-circle mr-2"></span>
                     Examination
-                    <span class="small ml-auto">{{ exam_label_count }}</span>
+                    <span class="small ml-auto"> {%if elc %}{{ elc }} {%else%} {%endif%}</span>
                 </a>
 
                 <a href="{% url 'mail_list' %}?email_type=practical"
@@ -143,7 +148,7 @@
                  {% if 'practical' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-danger fa fa-circle mr-2"></span>
                     Practical
-                    <span class="small ml-auto">{{ practical_label_count }}</span>
+                    <span class="small ml-auto">{% if plc %}{{ plc }} {%else%} {%endif%}</span>
                 </a>
 
              </div>
