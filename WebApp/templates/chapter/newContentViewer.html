@@ -777,15 +777,16 @@
         'wrapAround': true
     });
 
-    // $('a').on('click', 'img', function(){
-    //     console.log('hdjsf')
-    //     if($(this).hasAttribute('data-lightbox')){
-    //         return false;
-    //     }
-    // }).dblclick(function () {
-    //     window.location = this.href;
-    //     return false;
-    // });
+    $('a').on('click', 'img', function () {
+        debugger
+        console.log('hdjsf')
+        if ($(this).hasAttribute('data-lightbox')) {
+            return false;
+        }
+    }).dblclick(function () {
+        window.location = this.href;
+        return false;
+    });
     document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
@@ -1045,19 +1046,31 @@
                                                             var image = new Image;
                                                             count++;
                                                             image.onload = function () {
-                                                                $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
+                                                                var createA = document.createElement('a');
+                                                                createA.setAttribute('href', "data:image;base64," + content);
+                                                                createA.setAttribute('data-toggle', "lightbox");
+                                                                createA.setAttribute('data-name', value.name);
+                                                                createA.setAttribute('data-remote', "data:image;base64," + content);
+                                                                createA.setAttribute('data-lightbox', "stacked" + id);
+                                                                $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(createA)
+                                                                createA.appendChild(this)
                                                                 if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
                                                                     sortImageElements();
                                                                     $(`#stackedpic-${id}`).find(".spinnner").remove();
                                                                 }
                                                             }
+                                                            image.onerror = function () {
+                                                                console.log("Error occurred while loading image");
+                                                            };
                                                             image.src = "data:image;base64," + content;
                                                             image.className = 'stack';
                                                             image.style.height = '100%';
                                                             image.style.width = '95%';
                                                             image.style.position = 'absolute';
+                                                            image.style.objectFit = 'cover';
                                                             {#if (count == 1) image.style.zIndex = "1";#}
                                                             image.setAttribute('data-name', value.name);
+                                                            image.setAttribute('data-lightbox', 'stackedpic' + id);
                                                             if (value.name == firstvalue) {
                                                                 image.style.zIndex = "1";
                                                             }
@@ -1070,7 +1083,7 @@
                                             });
 
                                             function sortImageElements() {
-                                                var result = $('#scroll-image-' + id + ' img').sort(sortAlphaNumElem);
+                                                var result = $('#scroll-image-' + id + ' a').sort(sortAlphaNumElem);
                                                 $('#scroll-image-' + id).html(result);
                                             }
 
