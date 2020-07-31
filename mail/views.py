@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 
 from .forms import DraftUpdateForm, MailReceiverForm, MailForm, ReplyForm
 
@@ -26,12 +26,16 @@ class MailListView(ListView):
         email_type = self.request.GET.get('email_type', "inbox")
         if email_type == "inbox":
             queryset = queryset.filter(Q(receiver=self.request.user) & Q(mail_deleted=False) & Q(mail_spam=False))
+
+        if email_type == "received_starred":
+            queryset = queryset.filter(
+                receiver=self.request.user, mail_deleted=False, mail_starred=True, mail_spam=False)
         # if email_type == "starred":
         #   queryset = queryset.filter(
         #     Q(receiver=self.request.user) & Q(mail_deleted=False) & Q(mail_starred=True) & Q(mail_spam=False))
         if email_type == "spam":
             queryset = queryset.filter(Q(receiver=self.request.user) & Q(mail_deleted=False) & Q(mail_spam=True))
-        if email_type == "trash":
+        if email_type == "received_trash":
             queryset = queryset.filter(Q(receiver=self.request.user) | Q(mail__sender=self.request.user))
             queryset = queryset.filter(mail_deleted=True)
         queryset = queryset.filter(receiver=self.request.user)
@@ -71,11 +75,11 @@ class MailListView(ListView):
         context['inbox_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=False,
                                                              mail_spam=False, mail_viewed=False).count()
         context['starred_count'] = MailReceiver.objects.filter(Q(mail_starred=True, mail_deleted=False,
-                                                                 receiver=self.request.user) | Q(
+                                                                 mail_spam=False, receiver=self.request.user) | Q(
             mail__sender_starred=True, mail__sender_delete=False,
             mail__sender=self.request.user)).count()
-        # context['starred_count'] = MailReceiver.objects.filter(mail_starred=True, mail_deleted=False,
-        #                                                        receiver=self.request.user).count()
+        context['starred_count'] = MailReceiver.objects.filter(mail_starred=True, mail_deleted=False,
+                                                               receiver=self.request.user).count()
         context['trash_count'] = MailReceiver.objects.filter(mail_deleted=True, receiver=self.request.user).count()
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
@@ -104,13 +108,19 @@ class MailDraftView(ListView):
 
     def get_queryset(self):
         email_type = self.request.GET.get('email_type', "send")
-        queryset = Mail.objects.order_by('-created_date')
+        queryset = Mail.objects.order_by('-created_date').filter(sender_delete_p=False)
         if email_type == "send":
             queryset = queryset.filter(sender=self.request.user, reply_to__isnull=True)
             queryset = queryset.filter(sender_delete=False, mail_draft=False)
         if email_type == "draft":
             queryset = queryset.filter(sender=self.request.user)
-            queryset = queryset.filter(mail_draft=True)
+            queryset = queryset.filter(mail_draft=True, sender_delete=False)
+        if email_type == "outbox_delete":
+            queryset = queryset.filter(sender=self.request.user, reply_to__isnull=True, sender_delete=True)
+
+        if email_type == "starred_outbox":
+            queryset = queryset.filter(sender=self.request.user, reply_to__isnull=True, sender_delete=False,
+                                       sender_starred=True)
 
         search = self.request.GET.get('search', "")
         queryset = queryset.filter(Q(sender__username__icontains=search) | Q(body__icontains=search) | Q(
@@ -133,11 +143,11 @@ class MailDraftView(ListView):
         context['inbox_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=False,
                                                              mail_spam=False, mail_viewed=False).count()
         # context['starred_count'] = MailReceiver.objects.filter(Q(mail_starred=True, mail_deleted=False,
-        #                                                        receiver=self.request.user) | Q(
-        #  mail__sender_starred=True, mail__sender_delete=False,
-        # mail__sender=self.request.user)).count()
-        # context['starred_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_starred=True,
-        #                                                       mail_deleted=False).count()
+        #                                                          mail_spam=False, receiver=self.request.user) | Q(
+        #     mail__sender_starred=True, mail__sender_delete=False,
+        #     mail__sender=self.request.user)).count()
+        context['starred_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_starred=True,
+                                                               mail_deleted=False).count()
         context['trash_count'] = MailReceiver.objects.filter(mail_deleted=True).count()
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
@@ -187,8 +197,11 @@ class DraftUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['user_list'] = MemberInfo.objects.all().exclude(id=self.request.user.id)
+        context['user_list'] = MemberInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code
+        ).exclude(id=self.request.user.id)
         context['label_list'] = Mail.LABEL_CHOICES
+        context['email_type'] = self.request.GET['email_type']
 
         return context
 
@@ -224,12 +237,18 @@ class MailDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['label_list'] = Mail.LABEL_CHOICES
+        context['email_type'] = self.request.GET['email_type']
         return context
 
 
 class SendDetailView(DetailView):
     model = Mail
     template_name = "mail/send_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['email_type'] = self.request.GET['email_type']
+        return context
 
 
 class MailMultipleCreate(View):
@@ -259,8 +278,8 @@ class MailMultipleCreate(View):
             mail_obj.mail = m_obj
             mail_obj.save()
 
-        email_type = self.request.GET.get("email_type", "inbox")
-        return redirect(reverse('mail_list') + '?email_type=' + email_type)
+        # email_type = self.request.GET.get("email_type", "inbox")
+        return redirect(reverse('mail_send_list') + '?email_type=send')
 
 
 class ReplyCreateView(CreateView):
@@ -281,6 +300,24 @@ class ReplyCreateView(CreateView):
         # self.object.reply_to = get_object_or_404(Mail, pk=self.kwargs['pk'])
         self.object.save()
         return r
+
+
+def MailDeleteView(request, pk):
+    mail = get_object_or_404(Mail, pk=pk)
+    mail.sender_delete_p = True
+    mail.save()
+    email_type = request.GET.get('email_type', "")
+    return redirect(reverse('mail_send_list') + '?email_type=' + email_type)
+
+
+class MailReceiverDeleteView(DeleteView):
+    model = MailReceiver
+    success_url = reverse_lazy('mail_list')
+
+    def get_success_url(self):
+        surl = super().get_success_url()
+        print(surl, self.request.GET['email_type'])
+        return surl + "?email_type=" + self.request.GET['email_type']
 
 
 def mail_starred(request, pk):

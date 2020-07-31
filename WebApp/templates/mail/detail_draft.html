@@ -7,7 +7,7 @@
         <a class="app-detail-close-button btn btn-outline-light mr-3 email_back_button" href="">
             <i class="ti-arrow-left"></i>
         </a>
-            <a href="#" class="btn btn-outline-danger ml-2" data-toggle="tooltip" style="float:right;"
+            <a href="{%url 'sender_delete' object.pk%}?email_type={{email_type}}" class="btn btn-outline-danger ml-2" data-toggle="tooltip" style="float:right;"
                title="Dispose">
                 <i class="ti-trash"></i>
             </a>
@@ -48,11 +48,8 @@
             <div class="form-group">
                 <select name="label" class="form-control select2-example">
                     {%for label in label_list%}
-                            <option value="{{label.0}}"
-
-                            >{{label.1}}
-
-                            </option>
+                            <option value="{{label.0}}" {% if label.0 == object.label %} selected {% endif %} >
+                                {{label.1}}</option>
                     {%endfor%}
                 </select>
             </div>
@@ -61,9 +58,9 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" name = "file_upload"
 
-                           multiple id="customFileLangHTMLDraft" value="{% if object.file %}{{ object.file.url }}{% endif %}">
+                           multiple id="customFileLangHTMLDraft" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
                     <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files">
-                        {% if object.file %}{{ object.file.name }}{% endif %}</label>
+                        {{ object.get_file_upload_name }}</label>
                 </div>
             </div>
             <div>

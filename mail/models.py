@@ -18,6 +18,7 @@ class Mail(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     sender_starred = models.BooleanField(default=False)
     sender_delete = models.BooleanField(default=False)
+    sender_delete_p = models.BooleanField(default=False)
     mail_draft = models.BooleanField(default=False)
     # related fields
     sender = models.ForeignKey(MemberInfo, on_delete=models.DO_NOTHING, related_name="mail_sender")
