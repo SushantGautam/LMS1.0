@@ -192,7 +192,7 @@
                     <ul id="achievement">
                         <li class="navigation-divider">Miscellaneous</li>
                         <li>
-                            <a href="{% url 'inbox_list' %}">
+                            <a href="{% url 'mail_list' %}">
                                 <span class="nav-link-icon">
                                     <i data-feather="mail"></i>
                                 </span>
@@ -214,15 +214,15 @@
 {% endif %}
 
 <script>
-    $(function () {
-        var current = location.pathname;
-        $('#nav li a').each(function () {
-            var $this = $(this);
+    //$(function () {
+    //    var current = location.pathname;
+    //    $('#nav li a').each(function () {
+    //        var $this = $(this);
             // if the current path is like this link, make it active
-            if ($this.attr('href').indexOf(current) !== -1) {
-                $this.addClass('active');
-            }
-        })
-    })
+    //        if ($this.attr('href').indexOf(current) !== -1) {
+    //            $this.addClass('active');
+    //        }
+    //    })
+    //})
 </script>
 <!-- /sidebar menu -->
