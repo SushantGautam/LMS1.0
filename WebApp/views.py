@@ -1414,6 +1414,7 @@ def InningInfoDeleteView(request, pk):
 
 class InningGroupListView(ListView):
     model = InningGroup
+    template_name = 'center_admin/inninggroup_list.html'
 
     # Send data only related to the center
     def get_queryset(self):
