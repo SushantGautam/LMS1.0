@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 .select2-container .select2-selection--single {
   height: 2.45em !important;
   border: 1px solid #ced4da !important;
@@ -31,12 +30,20 @@
   padding: 15px;
 }
 
-
 /* Breadcrumb custom style */
-.breadcrumb-item.active{
-  font-weight:bold;
+.breadcrumb-item.active {
+  font-weight: bold;
 }
-.breadcrumb-item+.breadcrumb-item::before{
-  content:">";
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">";
 }
- 
+
+/* .bg-primary-gradient-reverse {
+  background: linear-gradient(230deg, #939dd5, #5c6bc0) !important;
+  color: white !important;
+} */
+
+.dt-buttons {
+  display: block;
+  text-align: center !important;
+}

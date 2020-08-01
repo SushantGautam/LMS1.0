@@ -5,26 +5,33 @@
 <li class="breadcrumb-item active" aria-current="page">Members</li>
 {% endblock %}
 {% block content %}
-<div class="page-header">
-    <div class="page-title">
-        <h2>List of Members</h2>
-    </div>
-</div>
 <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-12">
-
+        <h2 class="text-primary">List of Members</h2>
     </div>
     <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
         <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">Create new Member</a>
     </div>
-
 </div>
 
+<div class="card px-2 bg-primary-gradient mt-3">
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12 py-3">
+            <a class="mx-4" id="all_button" href="#">All</a>
+            <a class="mx-4" id="teacher_button" href="#">Teacher</a>
+            <a class="mx-4" id="student_button" href="#">Student</a>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew py-3">
+            <a class="pull-right text-white" href="{% url 'memberinfo_list_inactive' %}">View
+                Blocked Members</a>
+        </div>
+    </div>
+</div>
 <div class="table-responsive">
     <table class="table table-striped" cellspacing="0" width="100%" id="members_list_table">
         <thead>
             <tr>
-                <th>S. No.</th>
+                <th class="text-center">S. No.</th>
                 <th>Username</th>
                 <th>Member ID</th>
                 <th>Full Name</th>
@@ -39,7 +46,7 @@
                 <th>Permanent Address</th>
                 <th>Birthdate</th>
                 <th>Type</th>
-                <th>Action</th>
+                <th class="text-center">Action</th>
             </tr>
         </thead>
         <!-- <tfoot>
@@ -69,35 +76,131 @@
 </div>
 {% endblock %}
 {% block javascript %}
-<script>
+<!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
+
+<script type="text/javascript">
+    $("#all_button").css("color", "white");
+    $("#student_button").css("color", "black");
+    $("#teacher_button").css("color", "black");
+    $(".button-info").click(function () {
+        $("ul.info-text").toggle();
+    });
+
+    $(document).on('click', '.confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
+        if (ans == true) {
+            $.ajax({
+                url: '{% url 'memberinfo_delete' pk='000123' %}'.replace('000123', this.id),
+                method: 'post',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function () {
+                    location.reload();
+                }
+            })
+            $(`#delete_form${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
+    setTimeout(function () {
+        $('#message').fadeOut('slow');
+    }, 3000);
+
     $(document).ready(function () {
+
+        // ServerSide export all data from "https://stackoverflow.com/a/57335685"
+
+        /* For Export Buttons available inside jquery-datatable "server side processing" - Start
+        - due to "server side processing" jquery datatble doesn't support all data to be exported
+        - below function makes the datatable to export all records when "server side processing" is on */
+
+        function newexportaction(e, dt, button, config) {
+            var self = this;
+            var oldStart = dt.settings()[0]._iDisplayStart;
+            dt.one('preXhr', function (e, s, data) {
+                // Just this once, load all data from the server...
+                data.start = 0;
+                data.length = -1; // if value is >100 :: only 100 data will be displayed
+                dt.one('preDraw', function (e, settings) {
+                    // Call the original action function
+                    if (button[0].className.indexOf('buttons-copy') >= 0) {
+                        $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                        $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+                            $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+                        $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+                            $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+                            $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+                        $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+                            $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+                            $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                    } else if (button[0].className.indexOf('buttons-print') >= 0) {
+                        $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                    }
+                    dt.one('preXhr', function (e, s, data) {
+                        // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                        // Set the property to what it was before exporting.
+                        settings._iDisplayStart = oldStart;
+                        data.start = oldStart;
+                    });
+                    // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                    setTimeout(dt.ajax.reload, 0);
+                    // Prevent rendering of the full data to the DOM
+                    return false;
+                });
+            });
+            // Requery the server with the new one-time export settings
+            dt.ajax.reload();
+        };
+        //For Export Buttons available inside jquery-datatable "server side processing" - End
+
         var table_main = $('#members_list_table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
             responsive: true,
             processing: true,
             serverSide: true,
-
             ajax: "{% url 'memberinfo_listajax' %}",
             language: {
                 "infoFiltered": "",
             },
             order: [],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
             buttons: [
                 {
                     extend: 'csv',
+                    title: 'Member List',
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     exportOptions: {
                         columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-                    }
+                    },
+                    action: newexportaction,
+
                 },
                 {
                     text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
                 },
                 {
                     extend: 'print',
+                    title: 'Member List',
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
-                    fieldSeparator: '\t'
+                    fieldSeparator: '\t',
+                    action: newexportaction,
                 }],
             "columnDefs": [
                 {
@@ -109,10 +212,77 @@
                     "orderable": false,
                     "targets": [0, 3, 11, 12, 13, 14, 15]
                 }
-
             ]
-
         });
+
+
+        $("#student_button").bind("click", function () {
+            $("#student_button").css("color", "white");
+            $("#teacher_button").css("color", "black");
+            $("#all_button").css("color", "black");
+            table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
+        });
+        $("#teacher_button").bind("click", function () {
+            $("#student_button").css("color", "black");
+            $("#teacher_button").css("color", "white");
+            $("#all_button").css("color", "black");
+            table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlyteachers=true").load();
+        });
+
+        $("#all_button").bind("click", function () {
+            $("#all_button").css("color", "white");
+            $("#student_button").css("color", "black");
+            $("#teacher_button").css("color", "black");
+            table_main.ajax.url("{% url 'memberinfo_listajax' %}").load();
+        });
+
+
+        $('#form_import_csv').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($('form').get(0));
+            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+            formData.append("csrfmiddlewaretoken", csrf);
+            if ($('#id_import_csv').val()) {
+                $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
+                $('#submitcsv').attr('disabled', true);
+                $('.closeImportCSV').attr('disabled', true);
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'csv_import_ajax' %}",  // URL to your view that serves new info
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $('.import-message').addClass(response.class);
+                        $('.import-message').removeClass(response.rmclass);
+                        $('.import-message').html(response.message);
+                    },
+                    error: function () {
+                        $('.import-message').addClass('text-danger');
+                        $('.import-message').removeClass('text-sucess');
+                        $('.import-message').html("Error while processing data please try again and verify the format.");
+                    },
+                    complete: function () {
+                        $('#submitspinner').html(``);
+                        $('#submitcsv').attr('disabled', false);
+                        $('.closeImportCSV').attr('disabled', false);
+                    }
+                });
+            } else {
+                $('.import-message').addClass('text-danger');
+                $('.import-message').html("Please upload a csv file with defined format.");
+            }
+        });
+
+    });
+
+
+    $('.closeImportCSV').click(function () {
+        window.location.reload();
     })
+
 </script>
+
 {% endblock %}
