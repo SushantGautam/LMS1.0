@@ -8,7 +8,7 @@ from django.utils import timezone
 from model_utils import Choices
 
 from Notifications.signals import notify
-from WebApp.models import MemberInfo
+from WebApp.models import MemberInfo, InningInfo
 
 
 class NotificationQuerySet(models.query.QuerySet):
@@ -59,8 +59,12 @@ class Notification(models.Model):
     unread = models.BooleanField(default=True, blank=False, db_index=True)
 
     creator = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, blank=False, related_name='notification_creator')
-    recipient = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, blank=False,
+    recipient = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, blank=True, null=True,
                                   related_name='notifications')
+
+    target_audience = models.ForeignKey(InningInfo, on_delete=models.CASCADE, blank=True, null=True,
+                                        related_name='pending_notifications')
+    is_sent = models.BooleanField(default=True)
 
     target_content_type = models.ForeignKey(
         ContentType,
@@ -123,7 +127,8 @@ def notify_handler(verb, **kwargs):
     """
     # Pull the options out of kwargs
     kwargs.pop('signal', None)
-    recipient = kwargs.pop('recipient')
+    recipient = kwargs.pop('recipient', None)
+    target_audience = kwargs.pop('target_audience', None)
     creator = kwargs.pop('sender')
     optional_objs = [
         (kwargs.pop(opt, None), opt)
@@ -133,44 +138,78 @@ def notify_handler(verb, **kwargs):
     description = kwargs.pop('description', None)
 
     start_notification_date = kwargs.pop('start_notification_date', timezone.now())
+    if not start_notification_date or start_notification_date < timezone.now():
+        start_notification_date = timezone.now()
     end_notification_date = kwargs.pop('end_notification_date', None)
     timestamp = kwargs.pop('timestamp', timezone.now())
 
     level = kwargs.pop('level', Notification.LEVELS.info)
 
-    # Check if User or Group
-    if isinstance(recipient, Group):
-        recipients = recipient.user_set.all()
-    elif isinstance(recipient, (QuerySet, list)):
-        recipients = recipient
-    else:
-        recipients = [recipient]
-
     new_notifications = []
 
-    for recipient in recipients:
-        newnotify = Notification.objects.create(
-            start_notification_date=start_notification_date,
-            end_notification_date=end_notification_date,
-            level=level,
-            verb=str(verb),
-            description=description,
+    # Check if User or Group
+    if recipient:
+        if isinstance(recipient, Group):
+            recipients = recipient.user_set.all()
+        elif isinstance(recipient, (QuerySet, list)):
+            recipients = recipient
+        else:
+            recipients = [recipient]
 
-            creator=creator,
-            recipient=recipient,
+        for recipient in recipients:
+            newnotify = Notification.objects.create(
+                start_notification_date=start_notification_date,
+                end_notification_date=end_notification_date,
+                level=level,
+                verb=str(verb),
+                description=description,
 
-            timestamp=timestamp,
-        )
+                creator=creator,
+                recipient=recipient,
 
-        # Set optional objects
-        for obj, opt in optional_objs:
-            if obj is not None:
-                setattr(newnotify, '%s_object_id' % opt, obj.pk)
-                setattr(newnotify, '%s_content_type' % opt,
-                        ContentType.objects.get_for_model(obj))
+                timestamp=timestamp,
+            )
 
-        newnotify.save()
-        new_notifications.append(newnotify)
+            # Set optional objects
+            for obj, opt in optional_objs:
+                if obj is not None:
+                    setattr(newnotify, '%s_object_id' % opt, obj.pk)
+                    setattr(newnotify, '%s_content_type' % opt,
+                            ContentType.objects.get_for_model(obj))
+
+            newnotify.save()
+            new_notifications.append(newnotify)
+
+    if target_audience:
+        if isinstance(target_audience, (QuerySet, list)):
+            target_audiences = target_audience
+        else:
+            target_audiences = [target_audience]
+
+        for target_audience in target_audiences:
+            newnotify = Notification.objects.create(
+                start_notification_date=start_notification_date,
+                end_notification_date=end_notification_date,
+                level=level,
+                verb=str(verb),
+                description=description,
+
+                creator=creator,
+                target_audience=target_audience if target_audience else None,
+                is_sent=False,
+
+                timestamp=timestamp,
+            )
+
+            # Set optional objects
+            for obj, opt in optional_objs:
+                if obj is not None:
+                    setattr(newnotify, '%s_object_id' % opt, obj.pk)
+                    setattr(newnotify, '%s_content_type' % opt,
+                            ContentType.objects.get_for_model(obj))
+
+            newnotify.save()
+            new_notifications.append(newnotify)
 
     return new_notifications
 
