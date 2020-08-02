@@ -2,7 +2,6 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-# Create your models here.
 from django.db.models import QuerySet
 from django.utils import timezone
 from model_utils import Choices
@@ -11,15 +10,19 @@ from Notifications.signals import notify
 from WebApp.models import MemberInfo, InningInfo
 
 
+# Create your models here.
+
 class NotificationQuerySet(models.query.QuerySet):
     ''' Notification QuerySet '''
 
     def unread(self, include_deleted=False):
+        filterForUnsent()
         """Return only unread items in the current queryset"""
-        return self.filter(unread=True)
+        return self.filter(unread=True, is_sent=True)
 
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
+        filterForUnsent(self.all())
         return self.filter(unread=False)
 
     def mark_all_as_read(self, recipient=None):
@@ -216,3 +219,26 @@ def notify_handler(verb, **kwargs):
 
 # connect the signal
 notify.connect(notify_handler, dispatch_uid='Notifications.models.Notification')
+
+
+def filterForUnsent(qset=Notification.objects.all()):
+    tobesent = qset.filter(is_sent=False, start_notification_date__lte=timezone.now())
+    if tobesent.exists():
+        for notification in tobesent:
+            createStudentNotification(notification)
+            notification.is_sent = True
+            notification.unread = False
+            notification.save()
+
+
+def createStudentNotification(instance):
+    print(instance.pk, instance.target_audience)
+    notify.send(
+        start_notification_date=instance.start_notification_date,
+        end_notification_date=instance.end_notification_date,
+        sender=instance.creator,
+        recipients=instance.target_audience.Groups.Students.all(),
+        verb=instance.verb,
+        description=instance.description,
+        action_object=instance.action_object,
+    )
