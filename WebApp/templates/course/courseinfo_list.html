@@ -8,21 +8,18 @@
             vertical-align: middle;
             border-radius: 4px;
             padding: 1px 2px 4px 2px;
-            border-top: 1px solid #AEAEAE;
+            
             border-bottom: 1px solid #FFFFFF;
-            background-color: #DADADA;
-            background-image: -webkit-linear-gradient(top, #DBDBDB, #E2E2E2);
-            background-image: -moz-linear-gradient(top, #DBDBDB, #E2E2E2);
-            background-image: -ms-linear-gradient(top, #DBDBDB, #E2E2E2);
-            background-image: -o-linear-gradient(top, #DBDBDB, #E2E2E2);
-            background-image: linear-gradient(top, #DBDBDB, #E2E2E2);
+            
+           
+            margin-top: 20px;
         }
 
         #pagination a, #pagination i {
             display: inline-block;
             vertical-align: middle;
             width: 22px;
-            color: #7D7D7D;
+            color: white;
             text-align: center;
             font-size: 10px;
             padding: 3px 0 2px 0;
@@ -36,16 +33,12 @@
         #pagination a {
             margin: 0 2px 0 2px;
             border-radius: 4px;
-            border: 1px solid #E3E3E3;
+          
             cursor: pointer;
-            box-shadow: inset 0 1px 0 0 #FFF, 0 1px 2px #666;
-            text-shadow: 0 1px 1px #FFF;
-            background-color: #E6E6E6;
-            background-image: -webkit-linear-gradient(top, #F3F3F3, #D7D7D7);
-            background-image: -moz-linear-gradient(top, #F3F3F3, #D7D7D7);
-            background-image: -ms-linear-gradient(top, #F3F3F3, #D7D7D7);
-            background-image: -o-linear-gradient(top, #F3F3F3, #D7D7D7);
-            background-image: linear-gradient(top, #F3F3F3, #D7D7D7);
+          
+           
+            background-color: #337ab7;
+  
         }
 
         #pagination i {
@@ -179,50 +172,15 @@
     <hr class="header_hr">
 
 
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="row">
+    
 
-            <div class="col-md-8 col-sm-6 col-xs-12">
-                <form method="get" id="searchCourseForm">
-                    <div class="col-md-4">
-                        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
-                               class="form-control"/>
-                    </div>
-                    <button class="btn btn-default" type="submit">
-                        <i class="fa fa-search"></i>&nbsp;Search
-                    </button>
-                </form>
-            </div>
-            {% comment %}
-            {% if 'teachers' in request.path %}
+    <div class="container" id="cardView">
+        {% include 'WebApp/theme/alerts.html' %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+    
                 <div class="col-md-8 col-sm-6 col-xs-12">
-                    <form method="get" action="">
-                        <div class="col-md-4">
-                            <input type="text" name="teacher_coursequery" placeholder="Search Course"
-                                   value="{{ request.GET.query }}"
-                                   class="form-control"/>
-                        </div>
-                        <button class="btn btn-default" type="submit">
-                            <i class="fa fa-search"></i>&nbsp;Search
-                        </button>
-                    </form>
-                </div>
-            {% elif 'students' in request.path %}
-                <div class="col-md-8 col-sm-6 col-xs-12">
-                    <form method="get" action="">
-                        <div class="col-md-4">
-                            <input type="text" name="coursequery" placeholder="Search Course"
-                                   value="{{ request.GET.query }}"
-                                   class="form-control"/>
-                        </div>
-                        <button class="btn btn-default" type="submit">
-                            <i class="fa fa-search"></i>&nbsp;Search
-                        </button>
-                    </form>
-                </div>
-            {% else %}
-                <div class="col-md-8 col-sm-6 col-xs-12">
-                    <form method="get" action="">
+                    <form method="get" id="searchCourseForm">
                         <div class="col-md-4">
                             <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
                                    class="form-control"/>
@@ -232,62 +190,99 @@
                         </button>
                     </form>
                 </div>
-            {% endif %}
-        {% endcomment %}
-
-            <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
-                {% if 'students' not in request.path %}
-                    <!-- {% if '/active' in request.path %}
-                            <a href="{% url 'courseinfo_list_inactive' %}">
-                                <button class="text-right btn btn-default btn-sm" style="float:right">
-                                    View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
-                                </button>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'courseinfo_list_active' %}">
-                                <button class="text-right btn btn-default btn-sm" style="float:right">
-                                    View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
-                                </button>
-                            </a>
-                        {% endif %} -->
-                    {% if '/active' in request.path %}
-                        <a class="btn btn-success btn-sm" style="float: right;" href="
-                    {% if '/teachers' in request.path %}
-                        {% url 'teacher_courseinfo_create' %}
-                    {% else %}
-                        {% url 'courseinfo_create' %}
-                    {% endif %}">Create new Course</a>
-                        <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal"
-                           data-target="#exampleModal1"
-                           id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
-                    {% endif %}
-
+                {% comment %}
+                {% if 'teachers' in request.path %}
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <form method="get" action="">
+                            <div class="col-md-4">
+                                <input type="text" name="teacher_coursequery" placeholder="Search Course"
+                                       value="{{ request.GET.query }}"
+                                       class="form-control"/>
+                            </div>
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search"></i>&nbsp;Search
+                            </button>
+                        </form>
+                    </div>
+                {% elif 'students' in request.path %}
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <form method="get" action="">
+                            <div class="col-md-4">
+                                <input type="text" name="coursequery" placeholder="Search Course"
+                                       value="{{ request.GET.query }}"
+                                       class="form-control"/>
+                            </div>
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search"></i>&nbsp;Search
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <form method="get" action="">
+                            <div class="col-md-4">
+                                <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+                                       class="form-control"/>
+                            </div>
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search"></i>&nbsp;Search
+                            </button>
+                        </form>
+                    </div>
                 {% endif %}
-                <div style="float: right; margin-right:10px">
-
-
-                    <span> <b>Show</b> </span>
-                    <label>
-                        <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
-                                id="paginate_courses">
-                            <option value="6">6</option>
-                            <option value="12">12</option>
-
-                            <option value="30">30</option>
-                            <option value="60">60</option>
-                        </select>
-                    </label>
-                    <span> <b> entries </b> </span></div>
-
+            {% endcomment %}
+    
+                <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+                    {% if 'students' not in request.path %}
+                        <!-- {% if '/active' in request.path %}
+                                <a href="{% url 'courseinfo_list_inactive' %}">
+                                    <button class="text-right btn btn-default btn-sm" style="float:right">
+                                        View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
+                                    </button>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'courseinfo_list_active' %}">
+                                    <button class="text-right btn btn-default btn-sm" style="float:right">
+                                        View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                                    </button>
+                                </a>
+                            {% endif %} -->
+                        {% if '/active' in request.path %}
+                            <a class="btn btn-success btn-sm" style="float: right;" href="
+                        {% if '/teachers' in request.path %}
+                            {% url 'teacher_courseinfo_create' %}
+                        {% else %}
+                            {% url 'courseinfo_create' %}
+                        {% endif %}">Create new Course</a>
+                            <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal"
+                               data-target="#exampleModal1"
+                               id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+                        {% endif %}
+    
+                    {% endif %}
+                    <div style="float: right; margin-right:10px">
+    
+    
+                        <span> <b>Show</b> </span>
+                        <label>
+                            <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                                    id="paginate_courses">
+                                <option value="6">6</option>
+                                <option value="12">12</option>
+    
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                            </select>
+                        </label>
+                        <span> <b> entries </b> </span></div>
+    
+                </div>
+    
             </div>
-
         </div>
-    </div>
-    <br/><br/><br/>
-
-    <div class="container" id="divID">
-        {% include 'WebApp/theme/alerts.html' %}
-        <div class="col-md-12" id="cardView">
+        <br/><br/><br/>
+        <div class="col-md-12" id="divID">
+           
             {% for object in object_list %}
                 <div class=" col-md-4 col-sm-6 col-xs-12 listcard" id="listCard">
                     <div class="gridContentsList">
@@ -375,18 +370,125 @@
 
             {% endfor %}
 
-            <div class=" col-md-12 col-sm-12 col-xs-12 text-center" id="pagination">
-
-            </div>
+           
 
         </div>
+        <div class=" col-md-12 col-sm-12 col-xs-12 text-center" id="pagination">
+
+        </div>
+    </div>  
         <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
             <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
 
                 <br>
                 <span class="checkboxCheckedLength"></span>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="row">
+            
+                        <div class="col-md-8 col-sm-6 col-xs-12">
+                            <!-- <form method="get" id="searchCourseForm">
+                                <div class="col-md-4">
+                                    <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+                                           class="form-control"/>
+                                </div>
+                                <button class="btn btn-default" type="submit">
+                                    <i class="fa fa-search"></i>&nbsp;Search
+                                </button>
+                            </form> -->
+                        </div>
+                        {% comment %}
+                        {% if 'teachers' in request.path %}
+                            <!-- <div class="col-md-8 col-sm-6 col-xs-12">
+                                <form method="get" action="">
+                                    <div class="col-md-4">
+                                        <input type="text" name="teacher_coursequery" placeholder="Search Course"
+                                               value="{{ request.GET.query }}"
+                                               class="form-control"/>
+                                    </div>
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="fa fa-search"></i>&nbsp;Search
+                                    </button>
+                                </form>
+                            </div> -->
+                        {% elif 'students' in request.path %}
+                            <div class="col-md-8 col-sm-6 col-xs-12">
+                                <!-- <form method="get" action="">
+                                    <div class="col-md-4">
+                                        <input type="text" name="coursequery" placeholder="Search Course"
+                                               value="{{ request.GET.query }}"
+                                               class="form-control"/>
+                                    </div>
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="fa fa-search"></i>&nbsp;Search
+                                    </button>
+                                </form> -->
+                            </div>
+                        {% else %}
+                            <div class="col-md-8 col-sm-6 col-xs-12">
+                                <form method="get" action="">
+                                    <div class="col-md-4">
+                                        <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
+                                               class="form-control"/>
+                                    </div>
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="fa fa-search"></i>&nbsp;Search
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endcomment %}
+            
+                        <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+                            {% if 'students' not in request.path %}
+                                <!-- {% if '/active' in request.path %}
+                                        <a href="{% url 'courseinfo_list_inactive' %}">
+                                            <button class="text-right btn btn-default btn-sm" style="float:right">
+                                                View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
+                                            </button>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'courseinfo_list_active' %}">
+                                            <button class="text-right btn btn-default btn-sm" style="float:right">
+                                                View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
+                                            </button>
+                                        </a>
+                                    {% endif %} -->
+                                {% if '/active' in request.path %}
+                                    <a class="btn btn-success btn-sm" style="float: right;" href="
+                                {% if '/teachers' in request.path %}
+                                    {% url 'teacher_courseinfo_create' %}
+                                {% else %}
+                                    {% url 'courseinfo_create' %}
+                                {% endif %}">Create new Course</a>
+                                    <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal"
+                                       data-target="#exampleModal1"
+                                       id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+                                {% endif %}
+            
+                            {% endif %}
+                            <!-- <div style="float: right; margin-right:10px">
+            
+            
+                                <span> <b>Show</b> </span>
+                                <label>
+                                    <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                                            id="paginate_courses">
+                                        <option value="6">6</option>
+                                        <option value="12">12</option>
+            
+                                        <option value="30">30</option>
+                                        <option value="60">60</option>
+                                    </select>
+                                </label>
+                                <span> <b> entries </b> </span></div> -->
+            
+                        </div>
+            
+                    </div>
+                </div>
+                <br/><br/><br/>
                 {% if object_list %}
-                    <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable">
+                    <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable" style="width: 100%!important;">
                         <thead class="thead-light bg-primary">
                         <tr class="tableTitleRow">
 
