@@ -1195,6 +1195,7 @@
                                                     // check if over image or not
                                                     if (isMouseOverImage) {
                                                         let nextImageIndex = 0;
+                                                        let progressBar = document.getElementById("progressbar-" + id);
 
                                                         // finds the next image index limit scroll between first and last image
                                                         if (e.deltaY > 0) {
@@ -1212,7 +1213,7 @@
                                                         images[nextImageIndex].style.zIndex = "1";
                                                         imageIndex = nextImageIndex;
 
-                                                        document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+                                                        progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" +  progressHeight + "px");
 
                                                     }
                                                 });
