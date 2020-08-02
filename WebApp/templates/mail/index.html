@@ -392,6 +392,27 @@
           <div class="text-nowrap pl-3">
 
              <ul class="list-inline">
+                 {% if 'mail_outbox' in request.get_full_path %}
+                 <li class="list-inline-item mb-0">
+                    {%if email.label == 'GR'%}
+                  <i class="fa fa-circle text-secondary"></i>
+                     {%endif%}
+                     {%if email.label == 'SP'%}
+                  <i class="fa fa-circle text-warning"></i>
+                     {%endif%}
+                     {%if email.label == 'AS'%}
+                  <i class="fa fa-circle text-success"></i>
+                      {%endif%}
+                     {%if email.label == 'EX'%}
+                  <i class="fa fa-circle text-info"></i>
+                     {%endif%}
+                     {%if email.label == 'PR'%}
+                <i class="fa fa-circle text-danger"></i>
+                     {%endif%}
+                </li>
+
+                 {%else%}
+
                 <li class="list-inline-item mb-0">
                     {%if email.mail.label == 'GR'%}
                   <i class="fa fa-circle text-secondary"></i>
@@ -409,6 +430,8 @@
                 <i class="fa fa-circle text-danger"></i>
                      {%endif%}
                 </li>
+
+                 {%endif%}
              </ul>
 
           </div>
