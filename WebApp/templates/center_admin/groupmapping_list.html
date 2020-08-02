@@ -9,16 +9,15 @@
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item active" aria-current="page">Session</li>
+<li class="breadcrumb-item active" aria-current="page">Student Group</li>
 {% endblock %}
 {% block content %}
 <!-- Model for Import CSV file -->
-<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+                <h4 class="modal-title"><b>CSV File Import</b>
                 </h4>
                 <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
@@ -27,27 +26,25 @@
             <div class="modal-body" id="import_csv_body">
                 <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <label for="id_import_csv">Choose the CSV file to Import Session Data</label>
-                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br>
-                    <a target="_blank" class="text-center" href="{% static 'importSession_sample.csv' %}">
+                    <label for="id_import_csv">Choose the CSV file to Import Student Group Data</label>
+                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv">
+                    <a target="_blank" class="text-center" href="{% static 'importStudentGroup_sample.csv' %}">
                         <h4 class="mt-4"><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
                     </a>
 
-                    <p class="button-info" style="cursor:pointer;color:#222"><b>Read Detail
+                    <p class="button-info mt-4" style="cursor:pointer;color:#222"><b>Read Detail
                             Info...</b></p>
                     <ul class="info-text" style="display:none;background:azure;">
-                        <li>- Session Name (required)</li>
-                        <li>- Start date and End date should be in excel date format (required)</li>
-                        <li>- Start date shouldn't be greater than end date</li>
-                        <li>- Student Group Name should already be registered (required) </li>
-                        <li>- Teacher Course Allocation Name should already be registered (required)</li>
-                        <li>- Teacher Course Allocation Name should be seperated by comma</li>
+                        <li>- Username is Student username to be added to group (required)</li>
+                        <li>- Group is name of group where student will be added (required)</li>
+                        <li>- All Students account should have already been registered as Member</li>
+                        <li>- If error occur in one group only that group will not be created </li>
                     </ul>
 
                     <div class="import-message"></div>
-                    <div class="text-center mt-4">
-                        <button class="btn btn-success" id="submitcsv" type="submit">
-                            <span id="submitspinner"></span>Submit File
+                    <div class="text-center mt-3">
+                        <button class="btn btn-success" type="submit">Submit
+                            File
                         </button>
                         <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close">Close
                         </button>
@@ -58,13 +55,42 @@
     </div>
 </div>
 <!-- End of model -->
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        <h2 class="text-primary">Registered Student Groups</h2>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
+        <a class="btn btn-primary pull-right" href="{% url 'groupmapping_create' %}">Create New Group</a>
+    </div>
+</div>
 
-{% include 'inning/inninginfo_list.html' %}
+<div class="table-responsive mt-4">
+    <table class="table table-striped nowrap">
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Group Name</th>
+                <th>No. of Student Enrolled</th>
+                <th>Use Flag</th>
+                {#                    <td>Students</td>#}
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><b><a href="{{ object.get_absolute_url }}">{{ object.GroupMapping_Name }}</a></b></td>
+                <td>{{ object.Students.count }}</td>
+                <td>{{ object.Use_Flag }}</td>
+                {#                        <td>{{ object.memberinfo_id }}</td>#}
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
-
-
-
 {% block javascript %}
 <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
@@ -81,13 +107,14 @@
         $('.table').DataTable({
             dom: 'lBfrtip',
             responsive: true,
+            stateSave: true,
             buttons: [
                 {
                     extend: 'csv',
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
                 },
                 {
-                    text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
+                    text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-cloud-download"></i> Import from CSV </span>'
                 },
                 {
                     extend: 'print',
@@ -95,11 +122,13 @@
                     fieldSeparator: '\t'
                 }]
         });
+    });
 
-        $(".button-info").click(function () {
-            $("ul.info-text").toggle();
-        });
+    $(".button-info").click(function () {
+        $("ul.info-text").toggle();
+    });
 
+    $(document).ready(function () {
         $('#form_import_csv').submit(function (e) {
             e.preventDefault();
             var formData = new FormData($('form').get(0));
@@ -107,61 +136,46 @@
             csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
             formData.append("csrfmiddlewaretoken", csrf);
             if ($('#id_import_csv').val()) {
-                $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
-                $('#submitcsv').attr('disabled', true);
-                $('.closeImportCSV').attr('disabled', true);
+                $('.import-message').append('<div class="se-pre-con-ajax"></div>');
                 $.ajax({
                     type: "POST",
-                    url: "{% url 'csv_import_inninginfo' %}",  // URL to your view that serves new info
+                    url: "{% url 'csv_import_student_group' %}",  // URL to your view that serves new info
                     data: formData,
                     cache: false,
                     processData: false,
                     contentType: false,
+                    tryCount: 0,
+                    retryLimit: 3,
                     success: function (response) {
                         $('.import-message').addClass(response.class);
                         $('.import-message').removeClass(response.rmclass);
                         $('.import-message').html(response.message);
+                        if (response.class == "text-success") {
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
                     },
-                    error: function () {
-                        $('.import-message').addClass('text-danger');
-                        $('.import-message').removeClass('text-sucess');
-                        $('.import-message').html("Error while processing data please try again and verify the format.");
+                    error: function (request, status, error) {
+                        if (request.status == 503) {
+                            $('.import-message').addClass('text-danger');
+                            $('.import-message').removeClass('text-sucess');
+                            $('.import-message').html("Service Unavialable at the moment but your data may be added in background");
+                        } else {
+                            $('.import-message').addClass('text-danger');
+                            $('.import-message').removeClass('text-sucess');
+                            $('.import-message').html("Error while processing data please try again and verify the format.");
+                        }
                     },
                     complete: function () {
-                        $('#submitspinner').html(``);
-                        $('#submitcsv').attr('disabled', false);
-                        $('.closeImportCSV').attr('disabled', false);
-                    }
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    },
                 });
             } else {
                 $('.import-message').addClass('text-danger');
                 $('.import-message').html("Please upload a csv file with defined format.");
             }
         });
-
-        $('.closeImportCSV').click(function () {
-            window.location.reload();
-        });
     });
 </script>
-<script>
-    document.querySelector("#cardButton").addEventListener('click', cardView);
-    document.querySelector("#tableButton").addEventListener('click', tableView);
-    function cardView() {
-        $("#cardButton").css('color', 'black');
-        $("#tableButton").css('color', 'grey');
-        document.querySelector('#cardView').style.display = "inline-block";
-        document.querySelector('#tableView').style.display = "none";
-    }
-    function tableView() {
-        $("#cardButton").css('color', 'grey');
-        $("#tableButton").css('color', 'black');
-        document.querySelector('#tableView').style.display = "inline-block";
-        document.querySelector('#cardView').style.display = "none";
-
-    }
-
-
-</script>
-
 {% endblock %}
