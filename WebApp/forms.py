@@ -370,7 +370,7 @@ class InningGroupForm(forms.ModelForm):
         if inninggroupname.exists():
             if self.instance.id:
                 if inninggroupname.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
-                    if inninggroupname.get(pk=self.instance.id).Course_Code.Course_Name == name:
+                    if inninggroupname.get(pk=self.instance.id).InningGroup_Name == name:
                         return cleaned_data
             raise forms.ValidationError('Course Allocation Name already Exists')
 
