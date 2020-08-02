@@ -151,6 +151,10 @@ def notify_handler(verb, **kwargs):
     new_notifications = []
 
     # Check if User or Group
+
+    if not recipient and not target_audience:
+        raise ValueError
+
     if recipient:
         if isinstance(recipient, Group):
             recipients = recipient.user_set.all()
@@ -232,12 +236,11 @@ def filterForUnsent(qset=Notification.objects.all()):
 
 
 def createStudentNotification(instance):
-    print(instance.pk, instance.target_audience)
     notify.send(
         start_notification_date=instance.start_notification_date,
         end_notification_date=instance.end_notification_date,
         sender=instance.creator,
-        recipients=instance.target_audience.Groups.Students.all(),
+        recipient=instance.target_audience.Groups.Students.all(),
         verb=instance.verb,
         description=instance.description,
         action_object=instance.action_object,
