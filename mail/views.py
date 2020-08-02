@@ -113,7 +113,7 @@ class MailListView(ListView):
         return context
 
 
-class MailDraftView(ListView):
+class MailSendDraftListView(ListView):
     model = Mail
     paginate_by = 10
     template_name = "mail/index.html"
@@ -189,21 +189,7 @@ class MailDraftView(ListView):
 
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
-        context['glc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='GR').count()
-        context['slc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='SP').count()
-        context['alc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='AS').count()
-        context['elc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='EX').count()
-        context['plc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='PR').count()
+
 
         return context
 
@@ -303,21 +289,7 @@ class StarView(ListView):
         context['trash_count'] = m_trash_count + mr_trash_count
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
-        context['glc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='GR').count()
-        context['slc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='SP').count()
-        context['alc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='AS').count()
-        context['elc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='EX').count()
-        context['plc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='PR').count()
+
         context['star_mail'] = MailReceiver.mail_starred
         return context
 
@@ -419,21 +391,7 @@ class TrashView(ListView):
         context['trash_count'] = m_trash_count + mr_trash_count
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
-        context['glc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='GR').count()
-        context['slc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='SP').count()
-        context['alc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='AS').count()
-        context['elc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='EX').count()
-        context['plc'] = MailReceiver.objects.filter(receiver=self.request.user, mail_viewed=False,
-                                                     mail_deleted=False, mail_spam=False,
-                                                     mail__label='PR').count()
+
         context['star_mail'] = MailReceiver.mail_starred
         return context
 
@@ -612,7 +570,10 @@ def mail_deleted(request, pk):
         mail.mail_deleted = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    return redirect(reverse('mail_list') + '?email_type=' + email_type)
+    if email_type == "trash":
+        return redirect(reverse('trash_list') + '?email_type=' + email_type)
+    else:
+        return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def mail_send(request, pk):

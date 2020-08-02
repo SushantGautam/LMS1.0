@@ -54,15 +54,6 @@
                 <i class="ti-pencil-alt list-group-icon mr-2 text-secondary"></i>Draft
                 </a>
 
-<!--       #         <a href="{% url 'mail_list' %}?email_type=received_starred"-->
-<!--                   class="list-group-item d-flex align-items-center-->
-<!--       #            {% if 'received_starred' in request.get_full_path %}-->
-<!--                    bg-primary-->
-<!--       #             {% endif %}              ">-->
-<!--                <i class="fa fa-star mr-2 text-warning"></i>Starred-->
-<!--                <span class="small ml-auto">-->
-<!--       #             {%if starred_count %}{{ starred_count }} {%else%} {%endif%}</span>-->
-<!--                </a>-->
 
 
 
@@ -76,14 +67,6 @@
                     {%if starred_count %}{{ starred_count }} {%else%} {%endif%}
                    </span>
                 </a>
-<!--        #         <a href="{% url 'mail_send_list' %}?email_type=starred_outbox"-->
-<!--                    class="list-group-item d-flex align-items-center-->
-<!--            #         {% if 'starred_outbox' in request.get_full_path %}-->
-<!--                    bg-primary-->
-<!--          #          {% endif %} ">-->
-<!--                     <i class="mr-2 fa fa-star text-warning"></i>Send Starred-->
-<!--                     <span class="small ml-auto"></span>-->
-<!--                 </a>-->
 
 
                 <a href="{% url 'mail_list' %}?email_type=spam"
@@ -105,15 +88,6 @@
                 <span class="small ml-auto">{% if trash_count %}{{ trash_count }} {%else%} {%endif%}</span>
                 </a>
 
-<!--                 <a href="{% url 'mail_send_list' %}?email_type=outbox_delete"-->
-<!--                   class="list-group-item d-flex align-items-center-->
-<!--             #   {% if 'outbox_delete' in request.get_full_path %}-->
-<!--                            bg-primary-->
-<!--                  #          {% endif %} ">-->
-<!--                <i class="ti-trash list-group-icon mr-2 text-danger"></i>Send Trash-->
-<!--                <span class="small ml-auto"></span>-->
-<!--                </a>-->
-
              </div>
               {% if 'mail_detail' in request.get_full_path or 'send_detail' in request.get_full_path or 'mail_draft_detail' in request.get_full_path %}
               {% else %}
@@ -127,7 +101,9 @@
                 {% if 'general' in request.get_full_path %} bg-dark {% endif %} ">
                    <span class="text-secondary fa fa-circle mr-2"></span>
                     General
+                    {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{% if glc %}{{ glc }}{%else%} {%endif%}</span>
+                    {%endif%}
                 </a>
 
 
@@ -136,7 +112,9 @@
                    {% if 'support' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-warning fa fa-circle mr-2"></span>
                     Support
+                    {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{% if slc %}{{ slc }} {%else%} {%endif%}</span>
+                    {%endif%}
                 </a>
 
 
@@ -145,7 +123,9 @@
                    {% if 'assignment' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-success fa fa-circle mr-2"></span>
                     Assignment
+                    {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{%if alc %}{{ alc }} {%else%} {%endif%}</span>
+                    {%endif%}
                 </a>
 
 
@@ -154,7 +134,9 @@
                  {% if 'exam' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-info fa fa-circle mr-2"></span>
                     Examination
+                    {%if email_type == 'inbox'%}
                     <span class="small ml-auto"> {%if elc %}{{ elc }} {%else%} {%endif%}</span>
+                    {%endif%}
                 </a>
 
                 <a href="{% url label_url_name %}?email_type={{ email_type }}&label_type=practical"
@@ -162,7 +144,9 @@
                  {% if 'practical' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-danger fa fa-circle mr-2"></span>
                     Practical
+                    {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{% if plc %}{{ plc }} {%else%} {%endif%}</span>
+                    {%endif%}
                 </a>
 
              </div>

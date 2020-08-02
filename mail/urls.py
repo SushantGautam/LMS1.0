@@ -1,14 +1,14 @@
 from django.urls import path
-from mail.views import MailListView, MailDetailView, ReplyCreateView, MailMultipleCreate, MailDraftView, SendDetailView, \
-    mail_spam, mail_starred, sender_starred, mail_deleted, sender_delete, mail_send, mail_viewed, mail_unread, \
-    DraftUpdateView, DraftCreateView, MailDeleteView, MailReceiverDeleteView, StarView, TrashView
+from mail.views import MailListView, MailDetailView, ReplyCreateView, MailMultipleCreate, MailSendDraftListView, \
+    SendDetailView, DraftUpdateView, DraftCreateView, MailDeleteView, MailReceiverDeleteView, StarView, TrashView, \
+    mail_spam, mail_starred, sender_starred, mail_deleted, sender_delete, mail_send, mail_viewed, mail_unread
 
 from mail import views
 
 urlpatterns = (
     # path('', views.MailList, name='inbox_list'),
     path('', MailListView.as_view(), name='mail_list'),
-    path('mail_outbox', MailDraftView.as_view(), name='mail_send_list'),
+    path('mail_outbox', MailSendDraftListView.as_view(), name='mail_send_list'),
     path('mail_starred', StarView.as_view(), name='star_list'),
     path('mail_trashed', TrashView.as_view(), name='trash_list'),
 
