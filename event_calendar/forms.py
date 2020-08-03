@@ -7,3 +7,17 @@ class CalendarEventForm(ModelForm):
     class Meta:
         model = CalendarEvent
         fields = ['title', 'event_type', 'date_start', 'date_end', 'description', 'participants']
+
+
+class CalendarEventUpdateForm(ModelForm):
+    class Meta:
+        model = CalendarEvent
+        fields = ['date_start', 'date_end']
+
+
+
+
+
+
+
+

@@ -2,9 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 
-from event_calendar.forms import CalendarEventForm
+from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
 
 
@@ -31,6 +31,18 @@ class EventCreateView(CreateView):
         self.object = form.save(commit=False)
         self.object.register_agent = self.request.user
         return super().form_valid(form)
+
+
+class EventUpdateView(UpdateView):
+    model = CalendarEvent
+    template_name = 'event_calendar/index.html'
+    form_class = CalendarEventUpdateForm
+    success_url = reverse_lazy('event_calendar')
+
+    def form_invalid(self, form):
+        print(form.errors)
+        raise Exception
+        return super().form_invalid(form)
 
 
 class EventListView(ListView):

@@ -31,6 +31,24 @@
                     <h6 class="card-title mb-2">Events</h6>
                     <p class="text-muted">Drag and drop your event</p>
                     <div class="list-group mb-3" id="external-events">
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-success" data-icon="car"></i> Holidays
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-danger" data-icon="users"></i> Travel
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-info" data-icon="coffee"></i> Friend
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-warning" data-icon="diamond"></i> Company
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-primary" data-icon="glass"></i> Team Assing
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-secondary" data-icon="glass"></i> Family
+                        </div>
                     </div>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="drop-remove" checked="">
@@ -206,16 +224,32 @@
                 {% for event in object_list %}
                     {
                         title: '{{ event.title }}',
-                        start: '{{ event.date_start.isoformat }}',
-                        end: '{{ event.date_end.isoformat }}',
+                        id: '{{ event.pk }}',
+                        start: '{{ event.date_start.date.isoformat }}',
+                        end: '{{ event.date_end.date.isoformat }}',
                         className: 'bg-primary',
-                        description: `{{ event.description }}`,
+                        //icon: "user-o",
+                        {#//description: `{{ event.description }}`,#}
+                        description: 'sdfsdf',
                     },
                 {% endfor %}
             ];
 
             $('#external-events .fc-event').each(function () {
+                // store data so the calendar knows to render an event upon drop
+                $(this).data('event', {
+                    title: $.trim($(this).text()), // use the element's text as the event title
+                    stick: true, // maintain when user navigates (see docs on the renderEvent method),
+                    color: $(this).find('i').css("color"),
+                    icon: $(this).find('i').data('icon')
+                });
 
+                // make the event draggable using jQuery UI
+                $(this).draggable({
+                    zIndex: 999,
+                    revert: true,      // will cause the event to go back to its
+                    revertDuration: 0  //  original position after the drag
+                });
             });
 
             let calendar = new FullCalendar.Calendar($('#calendar-demo'), {
@@ -225,10 +259,17 @@
                     right: 'month,agendaWeek,agendaDay,listMonth'
                 },
                 editable: true,
+                droppable: true,
+                drop: function () {
+                    // is the "remove after drop" checkbox checked?
+                    if ($('#drop-remove').is(':checked')) {
+                        // if so, remove the element from the "Draggable Events" list
+                        $(this).remove();
+                    }
+                },
                 eventStartEditable: true,
                 eventResizableFromStart: true,
                 eventDurationEditable: true,
-                droppable: true,
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: events,
@@ -249,9 +290,11 @@
                 },
                 eventResize: function (info) {
                     console.log("event resized", info);
+                    handle_event_change(info);
                 },
                 eventDrop: function (info) {
                     console.log("event dragged", info);
+                    handle_event_change(info);
                 },
                 eventReceive: function (info) {
                     console.log("event received", info);
@@ -262,39 +305,62 @@
             calendar.render();
         });
 
+        function handle_event_change(info) {
+            //// obtain event data
+            let post_data = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                date_start: iso_to_django(info.start._d),
+                date_end: iso_to_django(info.end._d),
+            }
+            //// make ajax request to change the related object in the database
+            $.ajax({
+                url: "{% url 'event_calendar_update' pk=12345%}".replace("12345", info.id.toString()), // URL to your view that serves new info
+                type: 'POST', // GET or POST
+                data: post_data,
+                success: function (response) {
+                   //// on success, notify user about success
+                   alert("Event change success !!!");
+                },
+                error: function () {
+                    console.log('Error in posting form');
+                    alert("Can't change event !!!");
+                },
+                complete: function () {
+                }
+            });
+
+        }
+
+        function iso_to_django(date_obj) {
+            let mo = (date_obj.getUTCMonth() + 1).toString();       // month starts form zero
+            let y = date_obj.getUTCFullYear().toString();
+            let d = date_obj.getUTCDate().toString();
+            let h = date_obj.getUTCHours().toString();
+            let mi = date_obj.getUTCMinutes().toString();
+            return y + "-" + mo + "-" + d + " " + h + ":" + mi;
+        }
+
     </script>
 
     <script>
-    //// Calendar Event Create Form Submit:
-    $("#calendar_event_form").submit(function (e) {
-        //// Convert date and time inputs to UTC and required format for django:
+        //// Calendar Event Create Form Submit:
+        $("#calendar_event_form").submit(function (e) {
+            //// Convert date and time inputs to UTC and required format for django:
 
-        let d_end = new Date($("#event-end-date").val() + " " + $("#event-end-time").val());
-        let d_start = new Date($("#event-start-date").val() + " " + $("#event-start-time").val());
+            let d_end = new Date($("#event-end-date").val() + " " + $("#event-end-time").val());
+            let d_start = new Date($("#event-start-date").val() + " " + $("#event-start-time").val());
 
-        let end_month = (d_end.getUTCMonth() + 1).toString();       // month starts form zero
-        let end_year = d_end.getUTCFullYear().toString();
-        let end_day = d_end.getUTCDate().toString();
-        let end_hour = d_end.getUTCHours().toString();
-        let end_min = d_end.getUTCMinutes().toString();
+            //// Using one of django's default format: '%Y-%m-%d %H:%M', '2006-10-25 14:30':
+            $("#id_date_end").val(iso_to_django(d_end));
+            $("#id_date_start").val(iso_to_django(d_start));
 
-        let start_month = (d_start.getUTCMonth() + 1).toString();       // month starts form zero
-        let start_year = d_start.getUTCFullYear().toString();
-        let start_day = d_start.getUTCDate().toString();
-        let start_hour = d_start.getUTCHours().toString();
-        let start_min = d_start.getUTCMinutes().toString();
-
-        //// Using one of django's default format: '%Y-%m-%d %H:%M', '2006-10-25 14:30':
-        $("#id_date_end").val(end_year + "-" + end_month + "-" + end_day + " " + end_hour + ":" + end_min);
-        $("#id_date_start").val(start_year + "-" + start_month + "-" + start_day + " " + start_hour + ":" + start_min);
-
-        //// Validation Here:
-        let is_valid = true;
-        if (!is_valid){
-            e.preventDefault();
-            return false;
-        }
-    })
+            //// Validation Here:
+            let is_valid = true;
+            if (!is_valid) {
+                e.preventDefault();
+                return false;
+            }
+        })
     </script>
 
 
