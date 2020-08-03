@@ -115,3 +115,47 @@ def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
 
 
 post_save.connect(ChapterInfoCreate_handler, sender=ChapterInfo)
+
+
+def ChapterInfoDelete_handler(sender, instance, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    verb = 'deleted'
+
+    notify.send(
+        sender=request.user,
+        verb=verb,
+        recipient=MemberInfo.objects.filter(Center_Code=instance.Course_Code.Center_Code, Use_Flag=True,
+                                            Is_CenterAdmin=True),
+        description='{} deleted chapter {} from Course {}'.format(request.user, instance.Chapter_Name,
+                                                                  instance.Course_Code.Course_Name),
+        action_object=instance,
+    )
+
+    '''
+        Check if the chapter belonging to course is associated with any innings.
+        If yes, add Session to notification table (target_audience).
+        When the Notification start date is less than current time, send notification to all students in that session
+        and delete the current object holding session information.
+    '''
+
+    if InningInfo.objects.filter(
+            Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+        notify.send(
+            sender=request.user,
+            target_audience=InningInfo.objects.filter(
+                Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+            verb=verb,
+            description='{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
+                                                                    instance.Course_Code.Course_Name),
+            action_object=instance,
+        )
+
+
+post_delete.connect(ChapterInfoDelete_handler, sender=ChapterInfo)

@@ -22,8 +22,8 @@ class NotificationQuerySet(models.query.QuerySet):
 
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
-        filterForUnsent(self.all())
-        return self.filter(unread=False)
+        filterForUnsent()
+        return self.filter(unread=False, is_sent=True)
 
     def mark_all_as_read(self, recipient=None):
         """Mark as read any unread messages in the current queryset.
