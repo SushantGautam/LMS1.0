@@ -29,7 +29,7 @@
 </div>
 <div class="table-responsive">
     <table class="table table-striped" cellspacing="0" width="100%" id="members_list_table">
-        <thead>
+        <thead class="thead-light">
             <tr>
                 <th class="text-center">S. No.</th>
                 <th>Username</th>
@@ -99,7 +99,7 @@
         ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
         if (ans == true) {
             $.ajax({
-                url: '{% url 'memberinfo_delete' pk='000123' %}'.replace('000123', this.id),
+                url: "{% url 'memberinfo_delete' pk='000123' %}".replace('000123', this.id),
                 method: 'post',
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',

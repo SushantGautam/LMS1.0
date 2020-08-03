@@ -37,17 +37,15 @@
 .breadcrumb-item + .breadcrumb-item::before {
   content: ">";
 }
-.breadcrumb{
+.breadcrumb {
   display: flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
- 
   margin-bottom: 1rem;
   list-style: none;
-
-  background-color: #c3c8e7!important;
-  border-radius: 50px!important;;
-  padding: 10px!important;;
+  /* background-color: #c3c8e7 !important; */
+  /* border-radius: 50px !important; */
+  padding: 10px !important;
 }
 
 /* .bg-primary-gradient-reverse {

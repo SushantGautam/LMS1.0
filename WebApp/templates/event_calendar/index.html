@@ -31,24 +31,6 @@
                     <h6 class="card-title mb-2">Events</h6>
                     <p class="text-muted">Drag and drop your event</p>
                     <div class="list-group mb-3" id="external-events">
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-success" data-icon="car"></i> Holidays
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-danger" data-icon="users"></i> Travel
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-info" data-icon="coffee"></i> Friend
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-warning" data-icon="diamond"></i> Company
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-primary" data-icon="glass"></i> Team Assing
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-secondary" data-icon="glass"></i> Family
-                        </div>
                     </div>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="drop-remove" checked="">
@@ -81,11 +63,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form autocomplete="off">
+                    <form id="calendar_event_form" method="post"
+                          action="{% url 'event_calendar_create' %}" autocomplete="off">
+                        {% csrf_token %}
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Title</label>
                             <div class="col-sm-9">
-                                <input id="event-title" type="text" class="form-control" placeholder="Title">
+                                <input id="id_title" type="text" name="title" class="form-control" placeholder="Title">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -93,14 +77,14 @@
                             <div class="col-sm-9">
                                 <div class="mt-2" id="event-type">
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline1" name="customRadioInline1"
-                                               class="custom-control-input">
+                                        <input type="radio" id="customRadioInline1" name="event_type"
+                                               class="custom-control-input" value="AP">
                                         <label class="custom-control-label"
                                                for="customRadioInline1">Appointment</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="customRadioInline2" name="customRadioInline1"
-                                               class="custom-control-input">
+                                        <input type="radio" id="customRadioInline2" name="event_type"
+                                               class="custom-control-input" value="MT">
                                         <label class="custom-control-label" for="customRadioInline2">Meeting</label>
                                     </div>
                                 </div>
@@ -117,6 +101,7 @@
                                 <input id="event-start-time" type="text" class="form-control create-event-demo"
                                        placeholder="Time">
                             </div>
+                            <input type="hidden" name="date_start" id="id_date_start">
                         </div>
                         <div class="form-group row row-sm">
                             <label class="col-sm-3 col-form-label">End</label>
@@ -128,6 +113,7 @@
                                 <input id="event-end-time" type="text" class="form-control create-event-demo"
                                        placeholder="Time">
                             </div>
+                            <input type="hidden" name="date_end" id="id_date_end">
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Participate</label>
@@ -156,7 +142,9 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Description</label>
                             <div class="col-sm-9">
-                                <textarea id="event-desc" class="form-control" rows="6"></textarea>
+                                <textarea id="id_description" name="description" class="form-control" rows="6">
+
+                                </textarea>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -215,95 +203,32 @@
             var date = new Date();
 
             var events = [
-                //{
-                //    title: 'Travel',
-                //    start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-01',
-                //    constraint: 'businessHours',
-                //    className: 'bg-danger',
-                //    icon: "camera",
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //},
-                //{
-                //    title: 'Team Assing',
-                //    start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-01',
-                //    end: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-05',
-                //    constraint: 'availableForMeeting',
-                //    className: 'bg-primary',
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //},
-                //{
-                //    title: 'Friend',
-                //   start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-07',
-                //    end: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-09',
-                //    className: 'bg-info',
-                //    icon: "user-o",
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //},
-                //{
-                //    title: 'Holidays',
-                //    start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-09',
-                //    className: 'bg-success',
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //},
-                //{
-                //    title: 'Company',
-                //    start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-12',
-                //    end: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-17',
-                //    className: 'bg-secondary',
-                //    icon: "building-o",
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //},
-                //{
-                //    id: 'availableForMeeting',
-                //    start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-12',
-                //    end: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-16',
-                //    rendering: 'background',
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //},
-                //{
-                //    start: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-20',
-                //    end: date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-25',
-                //    overlap: false,
-                //    rendering: 'background',
-                //    color: '#ff9f89',
-                //    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-                //}
+                {% for event in object_list %}
+                    {
+                        title: '{{ event.title }}',
+                        start: '{{ event.date_start.isoformat }}',
+                        end: '{{ event.date_end.isoformat }}',
+                        className: 'bg-primary',
+                        description: `{{ event.description }}`,
+                    },
+                {% endfor %}
             ];
 
             $('#external-events .fc-event').each(function () {
 
-                // store data so the calendar knows to render an event upon drop
-                $(this).data('event', {
-                    title: $.trim($(this).text()), // use the element's text as the event title
-                    stick: true, // maintain when user navigates (see docs on the renderEvent method),
-                    color: $(this).find('i').css("color"),
-                    icon: $(this).find('i').data('icon')
-                });
-
-                // make the event draggable using jQuery UI
-                $(this).draggable({
-                    zIndex: 999,
-                    revert: true,      // will cause the event to go back to its
-                    revertDuration: 0  //  original position after the drag
-                });
-
             });
 
-            $('#calendar-demo').fullCalendar({
+            let calendar = new FullCalendar.Calendar($('#calendar-demo'), {
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay,listMonth'
                 },
                 editable: true,
+                eventStartEditable: true,
+                eventResizableFromStart: true,
+                eventDurationEditable: true,
                 droppable: true,
-                drop: function () {
-                    // is the "remove after drop" checkbox checked?
-                    if ($('#drop-remove').is(':checked')) {
-                        // if so, remove the element from the "Draggable Events" list
-                        $(this).remove();
-                    }
-                },
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: events,
@@ -322,9 +247,56 @@
                     modal.find('.event-body').html(event.description);
                     modal.modal();
                 },
+                eventResize: function (info) {
+                    console.log("event resized", info);
+                },
+                eventDrop: function (info) {
+                    console.log("event dragged", info);
+                },
+                eventReceive: function (info) {
+                    console.log("event received", info);
+                },
+
             });
+
+            calendar.render();
         });
+
     </script>
+
+    <script>
+    //// Calendar Event Create Form Submit:
+    $("#calendar_event_form").submit(function (e) {
+        //// Convert date and time inputs to UTC and required format for django:
+
+        let d_end = new Date($("#event-end-date").val() + " " + $("#event-end-time").val());
+        let d_start = new Date($("#event-start-date").val() + " " + $("#event-start-time").val());
+
+        let end_month = (d_end.getUTCMonth() + 1).toString();       // month starts form zero
+        let end_year = d_end.getUTCFullYear().toString();
+        let end_day = d_end.getUTCDate().toString();
+        let end_hour = d_end.getUTCHours().toString();
+        let end_min = d_end.getUTCMinutes().toString();
+
+        let start_month = (d_start.getUTCMonth() + 1).toString();       // month starts form zero
+        let start_year = d_start.getUTCFullYear().toString();
+        let start_day = d_start.getUTCDate().toString();
+        let start_hour = d_start.getUTCHours().toString();
+        let start_min = d_start.getUTCMinutes().toString();
+
+        //// Using one of django's default format: '%Y-%m-%d %H:%M', '2006-10-25 14:30':
+        $("#id_date_end").val(end_year + "-" + end_month + "-" + end_day + " " + end_hour + ":" + end_min);
+        $("#id_date_start").val(start_year + "-" + start_month + "-" + start_day + " " + start_hour + ":" + start_min);
+
+        //// Validation Here:
+        let is_valid = true;
+        if (!is_valid){
+            e.preventDefault();
+            return false;
+        }
+    })
+    </script>
+
 
 {% endblock %}
 

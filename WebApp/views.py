@@ -870,6 +870,7 @@ def ImportSession(request, *args, **kwargs):
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
+        center = request.user.Center_Code
         error = ''
         saved_id = []
 
@@ -880,27 +881,100 @@ def ImportSession(request, *args, **kwargs):
                     start_date = df.iloc[i]['(*)Start Date']
                     end_date = df.iloc[i]['(*)End Date']
                     student_group = df.iloc[i]['(*)Student Group Name']
-                    courses = df.iloc[i]['(*)Courses']
+                    courses = df.iloc[i]['(*)Course Allocation Name']
 
+                    # Session Name validation
+                    if not session_name:
+                        error = "Session Name is required"
+                        raise Exception
+                    session_name = str(session_name)
+                    if not SessionInfo.objects.filter(Session_Name__iexact=session_name, Center_Code=center).exists():
+                        # Instead of error the new session name is created
+                        obj2 = SessionInfo()
+                        obj2.Session_Name = session_name
+                        obj2.Center_Code = request.user.Center_Code
+                        obj2.save()
+                        # url = str(reverse('sessioninfo_list'))
+                        # error = "Session Name <strong>" + session_name + """</strong> does not exists.
+                        #                     Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
+                        # raise Exception
+                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
+
+                    # Start date and End date Validation
+                    if not start_date:
+                        error = "Start date is required"
+                        raise Exception
+                    start_date = str(start_date)
+                    try:
+                        # start_date = datetime.strptime(start_date, '%m/%d/%Y')
+                        start_date = parse(start_date)  # It accepts most of the standard date format
+                    except ValueError:
+                        error = "Start Date <strong>" + start_date + "</strong> is not valid. It must be in standard date format"
+                        raise Exception
+                    if not end_date:
+                        error = "End date is required"
+                        raise Exception
+                    end_date = str(end_date)
+                    try:
+                        # end_date = datetime.strptime(end_date, '%m/%d/%Y')
+                        end_date = parse(end_date)
+                    except ValueError:
+                        error = "End Date <strong>" + end_date + "</strong> is not valid. It must be in standard date format"
+                        raise Exception
+                    if start_date >= end_date:
+                        error = "Start Date can't be greater than End Date"
+                        raise Exception
+
+                    # Student Group Name validation
+                    if not student_group:
+                        error = "Student Group Name is required"
+                        raise Exception
+                    student_group = str(student_group)
+                    if not GroupMapping.objects.filter(GroupMapping_Name__iexact=student_group,
+                                                       Center_Code=center).exists():
+                        url = str(reverse('groupmapping_list'))
+                        error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
+                                            Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
+                        raise Exception
+                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
+
+                    # Courses validation
                     if not courses:
                         error = "At least 1 course is required"
-                        raise Exception            
+                        raise Exception
+                    courses = str(courses)
+                    try:
+                        courses = courses.split(',')
+                    except:
+                        error = "Error in course list format. Seperate multiple course by comma"
+                        raise Exception
 
                     obj = InningInfo()
-                    obj.Inning_Name = session_name
+                    obj.Inning_Name = session_name_code
                     obj.Start_Date = start_date
                     obj.End_Date = end_date
-                    obj.Groups = student_group
-                    obj.Course_Group = courses
+                    obj.Groups = student_group_code
                     obj.Register_Agent = request.user.username
-                    obj.Center_Code = request.user.Center_Code
+                    obj.Center_Code = center
                     obj.save()
                     saved_id.append(obj.id)
+
+                    # Course Group validation and registration
+                    for course in courses:
+                        course = course.strip()
+                        if not InningGroup.objects.filter(InningGroup_Name__iexact=course, Center_Code=center).exists():
+                            url = str(reverse('inninggroup_list'))
+                            error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
+                                                Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
+                            raise Exception
+                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
+                        obj.Course_Group.add(course_code)
 
                 except Exception as e:
                     for j in saved_id:
                         InningInfo.objects.filter(id=j).delete()
-                    msg = error + " Problem in " + str(i + 1) + "th row of data while uploading<br>"
+                    msg = error + "<br>Problem in " + str(i + 1) + "th row of data while uploading<br>" + "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
             error = "The uploaded excel has no data to register"
@@ -908,6 +982,7 @@ def ImportSession(request, *args, **kwargs):
             error = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": error, "class": "text-success",
                                   "rmclass": "text-danger"})
+
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
@@ -1411,6 +1486,70 @@ def InningInfoDeleteView(request, pk):
             messages.error(request, "Cannot delete inning")
             return redirect('inninginfo_detail', pk=pk)
 
+def InningInfoDeleteViewChecked(request):
+    if request.method == 'POST':
+        print(request.POST.getlist('inning_id[]'))
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningInfo.objects.filter(pk__in=request.POST.getlist('inning_id[]'))
+            Obj.delete()
+            if '/inactive' in request.path:
+                return redirect('inninginfo_list_inactive')
+            else:
+                return redirect('inninginfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete inning")
+            return JsonResponse({}, status=500)
+
+
+def InningInfoEditViewChecked(request):
+    if request.method == 'POST':
+        inning_list = []
+        startdateerror = enddateerror = False
+        student_groupObj = start_Date = end_Date = None
+
+        if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
+            start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+        if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
+            end_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+
+        inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
+            student_groupObj = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
+        for inning in inninginfo_list:
+            if start_Date and not end_Date:
+                if inning.End_Date.replace(tzinfo=None) < start_Date:
+                    startdateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+            if not start_Date and end_Date:
+                if inning.Start_Date.replace(tzinfo=None) > end_Date:
+                    enddateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+
+        if startdateerror or enddateerror:
+            return JsonResponse({
+                'message': "Start date is greater than end date in the following.",
+                'inning_list': inning_list,
+            }, status=500)
+
+        if student_groupObj:
+            inninginfo_list.update(Groups=student_groupObj)
+        if start_Date:
+            inninginfo_list.update(Start_Date=start_Date)
+        if end_Date:
+            inninginfo_list.update(End_Date=end_Date)
+
+        if '/inactive' in request.path:
+            return redirect('inninginfo_list_inactive')
+        else:
+            return redirect('inninginfo_list')
+
 
 class InningGroupListView(ListView):
     model = InningGroup
@@ -1506,6 +1645,7 @@ class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
 
 class GroupMappingListView(ListView):
     model = GroupMapping
+    template_name = 'center_admin/groupmapping_list.html'
 
     # Send data only related to the center
     def get_queryset(self):
@@ -1513,90 +1653,167 @@ class GroupMappingListView(ListView):
             Center_Code=self.request.user.Center_Code)
 
 
+def CourseAllocationCSVImport(request, *args, **kwargs):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/course_allocation'
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name, media)
+        path = os.path.join(path, filename)
+
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
+        center = request.user.Center_Code
+        error = ''
+        saved_id = []
+
+        if not df.empty:
+            for i in range(len(df)):
+                try:
+                    course_allocation_name = df.iloc[i]['(*)Course Allocation Name']
+                    course_name = df.iloc[i]['(*)Course Name']
+                    teachers = df.iloc[i]['(*)Teachers Username']
+
+                    # Course Allocation Name validation
+                    if not course_allocation_name:
+                        error = "Course Allocation Name is required"
+                        raise Exception
+                    course_allocation_name = str(course_allocation_name)
+                    if InningGroup.objects.filter(InningGroup_Name__iexact=course_allocation_name,
+                                                  Center_Code=center).exists():
+                        error = "Course Allocation Name already exist in the center please choose another name"
+                        raise Exception
+
+                    # Course Name validation
+                    if not course_name:
+                        error = "Course Allocation Name is required"
+                        raise Exception
+                    course_name = str(course_name)
+                    if not CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=center).exists():
+                        error = "Course Name <strong>" + course_name + "</strong> does not exists."
+                        raise Exception
+                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
+
+                    # Teachers validation
+                    if not teachers:
+                        error = "At least 1 teacher is required"
+                        raise Exception
+                    teachers = str(teachers)
+                    try:
+                        teachers = teachers.split(',')
+                    except:
+                        error = "Error in teachers list format. Seperate multiple teacher by comma"
+                        raise Exception
+
+                    obj = InningGroup()
+                    obj.InningGroup_Name = course_allocation_name
+                    obj.Course_Code = course_name_code
+                    obj.Register_Agent = request.user.username
+                    obj.Center_Code = center
+                    obj.save()
+                    saved_id.append(obj.id)
+
+                    # Teachers validation and registration
+                    for teacher in teachers:
+                        teacher = teacher.strip()
+                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center,
+                                                         Is_Teacher=True).exists():
+                            error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
+                            raise Exception
+                        teacher_code = MemberInfo.objects.get(username__iexact=teacher)
+                        obj.Teacher_Code.add(teacher_code)
+
+                except Exception as e:
+                    for j in saved_id:
+                        InningGroup.objects.filter(id=j).delete()
+                    msg = error + "<br>Problem in " + str(i + 1) + "th row of data while uploading<br>" + "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+        else:
+            error = "The uploaded excel has no data to register"
+        if not error:
+            error = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": error, "class": "text-success",
+                                  "rmclass": "text-danger"})
+
+
 def GroupMappingCSVImport(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
         media = request.FILES['import_csv']
         center_id = request.user.Center_Code.id
-        file_name = uuid.uuid4()
+
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
         extension = media.name.split('.')[-1]
-        new_file_name = str(file_name) + '.' + str(extension)
-        path = 'media/import_csv/student_group' + str(center_id)
-
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/student_group'
         fs = FileSystemStorage(location=path)
-        filename = fs.save(new_file_name + '.' + extension, media)
+        filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
-        df = pd.read_csv(path,
-                         encoding='utf-8')  # delimiter=';|,', engine='python',
-        df = df.dropna(how='all')
 
+        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        df = df.dropna(how='all')
+        df = df.replace(pd.np.nan, '', regex=True)
         reg_agent = request.user.username
         center = request.user.Center_Code
-        err_msg = []
-        msg = []
-        try:
-            groups = df['Group'].unique()
-        except Exception as e:
-            return JsonResponse(
-                data={
-                    "message":
-                    "There is no Column <b>Group</b> in the input file",
-                    "class": "text-danger",
-                    "rmclass": "text-success"
-                })
-        for i in range(len(groups)):
-            try:
-                flag = 0
-                obj = GroupMapping()
-                obj.GroupMapping_Name = groups[i]
-                obj.Register_Agent = reg_agent
-                obj.Center_Code = center
-                students = df[df['Group'] == groups[i]].reset_index(drop=True)
-                obj.save()
-                for j in range(len(students)):
-                    if MemberInfo.objects.filter(
-                            username=students['Username'][j]).exists():
-                        obj_student = MemberInfo.objects.get(
-                            username=students['Username'][j])
-                        obj.Students.add(obj_student)
-                    else:
-                        # obj_create = MemberInfo()
-                        # obj_create.username = students['Username'][j]
-                        # obj_create.Center_Code = center
-                        # obj_create.save()
-                        # obj.Students.add(obj_student)
-                        err_msg.append(
-                            "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>"
-                            .format(groups[i], students['Username'][j]))
-                        flag = 1
-                        break
+        error = ''
+        saved_id = []
 
-                if flag == 1:
-                    obj.delete()
-                    if msg:
-                        err_msg = err_msg + msg
-                        msg.clear()
-                else:
-                    msg.append(
-                        "<div class='text-success'>Student Group: <b>{}</b> created</div>"
-                        .format(groups[i]))
-                    if err_msg:
-                        err_msg = err_msg + msg
-                        msg.clear()
+        if not df.empty:
+            try:
+                groups = df['(*)Group Name'].unique()
             except Exception as e:
-                err_msg.append(
-                    "Student Group: <b>{}</b> can't be created<br> {}".format(
-                        groups[i], e))
-    if err_msg:
-        return JsonResponse(data={
-            "message": err_msg,
-            "class": "text-danger",
-            "rmclass": "text-success"
-        })
-    return JsonResponse(data={
-        "message": msg,
-        "class": "text-success",
-        "rmclass": "text-danger"
-    })
+                return JsonResponse(
+                    data={"message": "There is no data in column <b>(*)Group Name</b> in the file",
+                          "class": "text-danger",
+                          "rmclass": "text-success"})
+
+            for i in range(len(groups)):
+                try:
+                    group_name = str(groups[i])
+                    students = df[df['(*)Group Name'] == groups[i]].reset_index(drop=True)
+
+                    if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name,
+                                                   Center_Code=request.user.Center_Code).exists():
+                        error = "Student Group Name already exist in the center please choose another name"
+                        raise Exception
+
+                    obj = GroupMapping()
+                    obj.GroupMapping_Name = group_name
+                    obj.Register_Agent = reg_agent
+                    obj.Center_Code = center
+                    obj.save()
+                    saved_id.append(obj.id)
+
+                    for j in range(len(students)):
+                        student = students['(*)Student Username'][j]
+                        if not student:
+                            error = "Student Username not present"
+                            raise Exception
+                        student = str(student)
+                        if MemberInfo.objects.filter(username=student, Center_Code=center, Is_Student=True).exists():
+                            obj_student = MemberInfo.objects.get(username=student)
+                            obj.Students.add(obj_student)
+                        else:
+                            error = "Student Username <b>{}</b> not found<br>".format(student)
+                            raise Exception
+
+                except Exception as e:
+                    for k in saved_id:
+                        GroupMapping.objects.filter(id=k).delete()
+                    msg = error + ". Can't Upload data, Problem while registering group <b>" + str(
+                        group_name) + "<b><br>" + str(e)
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+            else:
+                error = "The uploaded excel has no data to register"
+        if not error:
+            error = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": error, "class": "text-success", "rmclass": "text-danger"})
 
 
 class GroupMappingCreateView(CreateView):
