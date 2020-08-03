@@ -59,19 +59,28 @@
     </div>
     <div class="app-detail-action-right">
         <div>
+
+            {%if email_type == 'trash'%}
+             <a href="{% url 'sender_delete' object.pk %}?email_type={{email_type}}"
+               class="btn btn-outline-success ml-2 "
+               data-toggle="tooltip"
+               title="Recover Email">
+                <i class="ti-reload"></i>
+            </a>
+            {%else%}
             <a href="#"
-               class="btn btn-outline-light reply_redirect"
+               class="btn btn-outline-primary reply_redirect "
                data-toggle="tooltip"
                title="Reply">
                 <i class="ti-back-right"></i>
             </a>
-
             <a href="{% url 'sender_delete' object.pk %}?email_type={{email_type}}"
-               class="btn btn-outline-danger ml-2"
+               class="btn btn-outline-danger ml-2 "
                data-toggle="tooltip"
                title="Dispose">
                 <i class="ti-trash"></i>
             </a>
+            {%endif%}
         </div>
     </div>
 </div>
@@ -94,12 +103,16 @@
                     </div>
                 </div>
                 <div class="ml-auto">
-                    <a href="#" data-toggle="tooltip" title="Attachment" class="mr-2">
+                    {%if object.attachment%}
+                    <a href="{{ MEDIA_URL }}{{ object.attachment.url }}" data-toggle="tooltip" title="{{ object.get_file_upload_name }}" class="mr-2">
                         <i class="fa fa-paperclip"></i>
                     </a>
-                    <a href="#" class="mr-2">
+                    {%endif%}
+                    {%if object.sender_starred%}
+                    <a href="{% url 'sender_starred' object.pk %}?email_type={{email_type}}" class="mr-2">
                         <i class=" fa fa-star font-size-16 text-warning "></i>
                     </a>
+                    {%endif%}
 
                     <span class="text-muted" id="card_content_viewed_date">{{ object.created_date }}</span>
                 </div>
@@ -147,11 +160,13 @@
                 </div>
 
                 <div class="ml-auto">
-                    <a href="#" data-toggle="tooltip" title="Attachment" class="mr-2">
+                    {% if reply.attachment%}
+                    <a href="{{ MEDIA_URL }}{{ reply.attachment.url }}" data-toggle="tooltip" title="{{ reply.get_file_upload_name}}" class="mr-2">
                         <i class="fa fa-paperclip"></i>
                     </a>
-                    <a href="#" class="mr-2">
-                        <i class=" fa fa-star font-size-16 text-warning "></i>
+                    {%endif%}
+                  <a href="#" data-toggle="tooltip"  class="mr-2">
+                        <i class="fa fa-reply"></i>
                     </a>
 
                     <span class="text-muted" id="card_content_viewed_date{{reply.pk}}">{{ reply.created_date }}</span>

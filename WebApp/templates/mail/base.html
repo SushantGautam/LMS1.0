@@ -696,13 +696,12 @@ $(".card_display_email").click(function(){
 //Show Reply Page
     $(".reply_view").click(function(){
 
-        //$(".card app-detail").addClass("show");
-        //card app-detail show
+
         let email_el_id = "#email_list_li" + $(this).attr('data-email_id');
-        console.log(email_el_id);
-        //console.log()
         $("#email_list_li" + $(this).attr('data-email_id')).click();
 
+  //  let email_id = $(this).attr('list_email_id');
+   // get_url = "{% url 'mail_detail' pk=1234 %}?email_type={{email_type}}&".replace('1234', email_id);
     });
 
 
