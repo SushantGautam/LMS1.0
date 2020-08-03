@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -30,7 +31,12 @@ class EventCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.register_agent = self.request.user
-        return super().form_valid(form)
+        self.object.save()
+        if self.request.GET.get("return", None) == "json":
+            response = {'pk': self.object.pk}
+            return JsonResponse(response)
+        else:
+            return super().form_valid(form)
 
 
 class EventUpdateView(UpdateView):

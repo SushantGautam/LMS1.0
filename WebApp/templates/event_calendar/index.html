@@ -224,13 +224,12 @@
                 {% for event in object_list %}
                     {
                         title: '{{ event.title }}',
-                        id: '{{ event.pk }}',
-                        start: '{{ event.date_start.date.isoformat }}',
-                        end: '{{ event.date_end.date.isoformat }}',
+                        id: 'event_id_{{ event.pk }}',
+                        start: '{{ event.date_start.isoformat }}',
+                        end: '{{ event.date_end.isoformat }}',
                         className: 'bg-primary',
                         //icon: "user-o",
-                        {#//description: `{{ event.description }}`,#}
-                        description: 'sdfsdf',
+                        description: `{{ event.description }}`,
                     },
                 {% endfor %}
             ];
@@ -252,7 +251,7 @@
                 });
             });
 
-            let calendar = new FullCalendar.Calendar($('#calendar-demo'), {
+            $('#calendar-demo').fullCalendar({
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -288,48 +287,116 @@
                     modal.find('.event-body').html(event.description);
                     modal.modal();
                 },
-                eventResize: function (info) {
-                    console.log("event resized", info);
-                    handle_event_change(info);
+                eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+                    console.log("event resized", event);
+                    if (event.id) {
+                        console.log("event update", event.id);
+                        update_event(event, delta, revertFunc, jsEvent, ui, view);
+                    } else {
+                        console.log("event create", event.id);
+                        create_event(event, delta, revertFunc, jsEvent, ui, view);
+                    }
                 },
-                eventDrop: function (info) {
-                    console.log("event dragged", info);
-                    handle_event_change(info);
+                eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
+                    console.log("event dragged", event);
+                    if (event.id) {
+                        console.log("event update", event.id);
+                        update_event(event, delta, revertFunc, jsEvent, ui, view);
+                    } else {
+                        console.log("event create", event.id);
+                        create_event(event, delta, revertFunc, jsEvent, ui, view);
+                    }
                 },
-                eventReceive: function (info) {
-                    console.log("event received", info);
+                eventReceive: function (event, delta, revertFunc, jsEvent, ui, view) {
+                    console.log("event received", event);
+                    if (event.id) {
+                        console.log("event update", event.id);
+                        update_event(event, delta, revertFunc, jsEvent, ui, view);
+                    } else {
+                        console.log("event create", event.id);
+                        create_event(event, delta, revertFunc, jsEvent, ui, view);
+                    }
                 },
 
             });
 
-            calendar.render();
-        });
-
-        function handle_event_change(info) {
+            function update_event(event, delta, revertFunc, jsEvent, ui, view) {
             //// obtain event data
+            let start_date = iso_to_django(event.start._d);
+            let end_date = null;
+            if (event.end) {
+                end_date = iso_to_django(event.end._d);
+            } else {
+                end_date = start_date;
+            }
             let post_data = {
                 csrfmiddlewaretoken: '{{ csrf_token }}',
-                date_start: iso_to_django(info.start._d),
-                date_end: iso_to_django(info.end._d),
+                date_start: start_date,
+                date_end: end_date,
             }
             //// make ajax request to change the related object in the database
             $.ajax({
-                url: "{% url 'event_calendar_update' pk=12345%}".replace("12345", info.id.toString()), // URL to your view that serves new info
+                url: "{% url 'event_calendar_update' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")), // URL to your view that serves new info
                 type: 'POST', // GET or POST
                 data: post_data,
                 success: function (response) {
-                   //// on success, notify user about success
-                   alert("Event change success !!!");
+                    //// on success, notify user about success
+                    alert("Event change success !!!");
                 },
                 error: function () {
                     console.log('Error in posting form');
                     alert("Can't change event !!!");
+                    revertFunc();
+
                 },
                 complete: function () {
                 }
             });
-
         }
+
+        function create_event(event, delta, revertFunc, jsEvent, ui, view) {
+            //// obtain event data
+            let start_date = iso_to_django(event.start._d);
+            let end_date = null;
+            if (event.end) {
+                end_date = iso_to_django(event.end._d);
+            } else {
+                end_date = start_date;
+            }
+            let post_data = {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                title: event.title,
+                description: event.description,
+                event_type: "AP",
+                date_start: start_date,
+                date_end: end_date,
+            }
+            //// make ajax request to change the related object in the database
+            $.ajax({
+                url: "{% url 'event_calendar_create' %}?return=json", // URL to your view that serves new info
+                type: 'POST', // GET or POST
+                data: post_data,
+                success: function (response) {
+                    //// on success, notify user about success
+                    alert("Event Create Success !!!");
+                    console.log(response['pk']);
+                    event.id="event_id_" + response['pk'];
+                    $('#calendar-demo').fullCalendar('updateEvent', event);
+                },
+                error: function () {
+                    console.log('Error in posting form');
+                    alert("Can't change event !!!");
+                    event.id="remove_event"
+                    $('#calendar-demo').fullCalendar('updateEvent', event);
+                    $('#calendar-demo').fullCalendar('removeEvents', ["remove_event",]);
+                },
+                complete: function () {
+                }
+            });
+        }
+        });
+
+
 
         function iso_to_django(date_obj) {
             let mo = (date_obj.getUTCMonth() + 1).toString();       // month starts form zero
