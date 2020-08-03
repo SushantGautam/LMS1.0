@@ -31,24 +31,6 @@
                     <h6 class="card-title mb-2">Events</h6>
                     <p class="text-muted">Drag and drop your event</p>
                     <div class="list-group mb-3" id="external-events">
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-success" data-icon="car"></i> Holidays
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-danger" data-icon="users"></i> Travel
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-info" data-icon="coffee"></i> Friend
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-warning" data-icon="diamond"></i> Company
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-primary" data-icon="glass"></i> Team Assing
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-secondary" data-icon="glass"></i> Family
-                        </div>
                     </div>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="drop-remove" checked="">
@@ -220,7 +202,17 @@
 
             var date = new Date();
 
-            var events = [];
+            var events = [
+                {% for event in object_list %}
+                    {
+                        title: '{{ event.title }}',
+                        start: '{{ event.date_start.isoformat }}',
+                        end: '{{ event.date_end.isoformat }}',
+                        className: 'bg-primary',
+                        description: `{{ event.description }}`,
+                    },
+                {% endfor %}
+            ];
 
             $('#external-events .fc-event').each(function () {
 
