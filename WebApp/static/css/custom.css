@@ -4,7 +4,9 @@
   height: 2.45em !important;
   border: 1px solid #ced4da !important;
 }
-
+.select2-selection--multiple {
+  height: 2.55em !important;
+}
 .select2-container--default
   .select2-selection--single
   .select2-selection__rendered {
@@ -16,7 +18,9 @@
   .select2-selection__arrow {
   top: 7px !important;
 }
-
+.select2-search__field {
+  margin-top: 0px !important;
+}
 .align-items-center {
   align-items: center;
 }

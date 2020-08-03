@@ -65,14 +65,13 @@
 </div>
 
 <div class="table-responsive mt-4">
-    <table class="table table-striped nowrap">
+    <table class="table table-striped">
         <thead class="thead-light">
             <tr>
                 <th>ID</th>
                 <th>Group Name</th>
                 <th>No. of Student Enrolled</th>
                 <th>Use Flag</th>
-                {#                    <td>Students</td>#}
             </tr>
         </thead>
         <tbody>
@@ -82,7 +81,6 @@
                 <td><b><a href="{{ object.get_absolute_url }}">{{ object.GroupMapping_Name }}</a></b></td>
                 <td>{{ object.Students.count }}</td>
                 <td>{{ object.Use_Flag }}</td>
-                {#                        <td>{{ object.memberinfo_id }}</td>#}
 
             </tr>
             {% endfor %}
@@ -92,7 +90,7 @@
 
 {% endblock %}
 {% block javascript %}
-<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
 <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
@@ -101,7 +99,7 @@
 <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
 
 <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
 <script type="text/javascript">
     $(document).ready(function () {
         $('.table').DataTable({
