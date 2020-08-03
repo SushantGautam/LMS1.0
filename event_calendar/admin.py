@@ -11,7 +11,19 @@ class EventCalendarAdminForm(forms.ModelForm):
 
 class EventCalendarAdmin(admin.ModelAdmin):
     form = EventCalendarAdminForm
-    list_display = ('pk', 'title', 'event_type', 'date_start', 'date_end', 'register_agent')
+
+    def start_time(self, obj):
+        return obj.date_start.strftime("%d %b %Y %H:%M:%S")
+
+    def end_time(self, obj):
+        return obj.date_end.strftime("%d %b %Y %H:%M:%S")
+
+    start_time.admin_order_field = 'date_start'
+    start_time.short_description = 'Start Date'
+    end_time.admin_order_field = 'date_end'
+    end_time.short_description = 'End Date'
+
+    list_display = ('pk', 'title', 'event_type', 'start_time', 'end_time', 'register_agent')
     search_fields = ('description', 'register_agent', 'title')
 
 
