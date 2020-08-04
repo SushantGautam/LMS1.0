@@ -531,7 +531,7 @@ class stackedpicture {
                 <div id="stackedpic-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
-                    <span  data-toggle="tooltip" data-placement="bottom"  title='Help'><i class="fas fa-info-circle" id=${id}></i></span>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Help'><i class="fas fa-info-circle info-button" id=${id}></i></span>
                 </div>
                 ${spinnerElem}
                 <div class="row" style="flex-grow:1;width:100%">
@@ -1659,9 +1659,14 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
         width, height);
     SPic.renderDiagram();
 
+
     $('.stackedpic .fa-upload').off().unbind().click(function (e) {
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
+    });
+
+    $('.stackedpic .info-button').off().unbind().click(function (e) {
+        $('#info-modal').modal('toggle');
     });
 
     $('.stackedpic .fa-trash').click(function (e) {
