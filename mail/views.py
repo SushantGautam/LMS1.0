@@ -70,6 +70,14 @@ class MailListView(ListView):
             Center_Code=self.request.user.Center_Code
         ).exclude(id=self.request.user.id)
 
+        context['teacher_list'] = MemberInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code, Is_Teacher=True
+        ).exclude(id=self.request.user.id)
+
+        context['student_list'] = MemberInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code, Is_Student=True
+        ).exclude(id=self.request.user.id)
+
         m_star_qs = Mail.objects.filter(sender=self.request.user, sender_starred=True, sender_delete=False,
                                         sender_delete_p=False)
         mr_star_qs = MailReceiver.objects.filter(receiver=self.request.user, mail_starred=True, mail_deleted=False)
