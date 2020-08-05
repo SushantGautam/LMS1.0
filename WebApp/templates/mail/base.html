@@ -247,8 +247,9 @@
                         <i class="fa fa-ellipsis-h"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right  ">
-                                <a class="dropdown-item  student_recipient" href="#">Student</a>
-                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>
+<!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
+<!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
+                                <a class="dropdown-item all_recipient " href="#">All </a>
                                 <a class="dropdown-item all_stu_recipient" href="#">All Students</a>
                                <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>
                         </div>
@@ -256,7 +257,19 @@
 
 
 
+
              </div>
+              <div>
+
+                  <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Teacher</a>
+                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Student</a>
+
+
+
+
+
+              </div>
+              <br>
              <form method="POST" class="email_compose_form" id="email_submit_form"
                           action="mail_create"
                           enctype="multipart/form-data">
@@ -389,6 +402,9 @@
                 $(".ql-editor").focus();
 
         {% endif %}
+
+
+
 
     });
 
@@ -526,6 +542,19 @@
                 return null;
             }
         }
+
+
+
+        if (sel_option === "all_recipients") {
+
+                return state.text.replace("__student__", "").replace("__teacher__", "");
+
+        }
+
+
+
+
+
         return state.text.replace("__student__", "").replace("__teacher__", "");
     };
 
@@ -788,50 +817,67 @@ $(".card_display_email").click(function(){
 
 
 
+// Email Compose Student Label
+ $("#student_recipient").click(function(){
+
+    if ($("#teacher_recipient").hasClass("btn-success")){
+           $("#teacher_recipient").removeClass("btn-success");
+           $("#teacher_recipient").addClass("btn-light");
+           $("#student_recipient").removeClass("btn-light");
+           $("#student_recipient").addClass("btn-success");
+        // $("#teacher_recipient").toggleClass("btn-success btn-light");
+        }
+
+     // $("#student_recipient").toggleClass("btn-light btn-success");
 
 
- // $(".teacher_recipient").click(function(){
+    if ($(this).hasClass("btn-success")){
+        $(".teacher_list").hide(); // css('display','block');
+        $(".student_list").show(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_student");
+        console.log("btn-success");
 
- //   $(".teacher_list").show(); // css('display','block');
- //   $(".student_list").hide(); //css('display','none');
- //   $(".user_list").hide(); // css('display','none');
-  //  $("recipient_selector").hide();
-
-
-
- //   console.log(" teacher list shown");
-
-  //  });
+    }
 
 
-
- $(".student_recipient").click(function(){
-
-    $(".select2-example-user").val("");
-    $(".select2-example-user").trigger('change');
-
-
-   $(".teacher_list").hide(); // css('display','block');
-   $(".student_list").show(); //css('display','none');
-   $(".user_list").hide(); // css('display','none');
-   $("input[name='user_select_option']").val("single_student");
-   $(".recipient_selector").click();
-
-   console.log(" teacher list shown");
 
   });
 
 
 
-$(".teacher_recipient").click(function () {
-    $(".select2-example-user").val("");
-    $(".select2-example-user").trigger('change');
-    $(".teacher_list").show(); // css('display','block');
-    $(".student_list").hide(); //css('display','none');
-    $(".user_list").hide(); // css('display','none');
-    $("input[name='user_select_option']").val("single_teacher");
-    $(".recipient_selector").click();
+
+// Email Compose Teacher Label
+$("#teacher_recipient").click(function () {
+
+    if ($("#student_recipient").hasClass("btn-success")){
+              $("#student_recipient").removeClass("btn-success");
+              $("#student_recipient").addClass("btn-light");
+              $("#teacher_recipient").removeClass("btn-light");
+              $("#teacher_recipient").addClass("btn-success");
+            //  $("#student_recipient").toggleClass("btn-success btn-light");
+        }
+
+   // $("#teacher_recipient").toggleClass("btn-success btn-light");
+
+
+    if ($(this).hasClass("btn-success")){
+        $(".teacher_list").show(); // css('display','block');
+        $(".student_list").hide(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_teacher");
+        console.log("btn-success");
+
+    }
+
+
+
 });
+
+
+
+
+
 
 
 
@@ -878,9 +924,47 @@ $(".all_tea_recipient").click(function () {
 
 });
 
+
+
+$(".all_recipient").click(function () {
+    $("input[name='user_select_option']").val("all_recipients");
+
+    let old_sel = [];
+    $(".select2-example-user").val("");
+    $(".select2-example-user").trigger('change');
+    {% for u in user_list %}
+
+    if (!old_sel.includes('{{u.pk}}')){
+         old_sel.push('{{ u.pk }}');
+    }
+
+    {% endfor %}
+    console.log(old_sel);
+    $(".select2-example-user").val(old_sel);
+    $(".select2-example-user").trigger('change');
+    $(".recipient_selector").click();
+
+
+});
+
+
+// Email Compose On Click
 $(".comp_eml").click(function(){
     $("input[name='user_select_option']").val("");
     $(".select2-example-user").trigger('change');
+
+
+
+// Recipient Teacher List Auto Selected
+    if ( $("#teacher_recipient").hasClass("btn-success")){
+
+        $(".teacher_list").show(); // css('display','block');
+        $(".student_list").hide(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_teacher");
+        console.log("btn-success");
+
+    }
 
 })
 

@@ -245,6 +245,9 @@
         {% endfor %}
 
         <!--   #  object.mail.pk-->
+
+        {% if "email_type=trash" in request.get_full_path %}
+        {% else %}
         <div class="card-body">
             <h6 class="mb-3 font-size-11 text-uppercase">Reply</h6>
             <form method="POST" action="{% url 'reply_create'%}" id="reply_form" enctype="multipart/form-data">
@@ -272,6 +275,8 @@
                 </div>
             </form>
         </div>
+        {% endif %}
     </div>
 </div>
+
 {% endblock %}

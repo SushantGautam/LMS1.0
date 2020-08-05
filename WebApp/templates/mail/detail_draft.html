@@ -7,10 +7,22 @@
         <a class="app-detail-close-button btn btn-outline-light mr-3 email_back_button" href="">
             <i class="ti-arrow-left"></i>
         </a>
-            <a href="{%url 'sender_delete' object.pk%}?email_type={{email_type}}" class="btn btn-outline-danger ml-2" data-toggle="tooltip" style="float:right;"
-               title="Dispose">
-                <i class="ti-trash"></i>
-            </a>
+
+        <a href="#" data-toggle="tooltip" title=""
+           id="draft_email_create"
+           class="btn btn-outline-primary mr-3"
+           data-original-title="Keep">
+            <i class="ti-save"></i>
+        </a>
+
+        <a href="{%url 'sender_delete' object.pk%}?email_type={{email_type}}" class="btn btn-outline-danger ml-2" data-toggle="tooltip" style="float:right;"
+           title="Dispose">
+            <i class="ti-trash"></i>
+        </a>
+
+
+
+
     </div>
 </div>
 <div class="app-detail-article draft_article">

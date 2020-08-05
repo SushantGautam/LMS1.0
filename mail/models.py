@@ -11,6 +11,8 @@ def file_name(instance, filename):
 
 
 class Mail(models.Model):
+
+    receiver_list = models.CharField(max_length=1000, blank=True, null=True)
     LABEL_CHOICES = (('GR', 'General'), ('SP', 'Support'), ('AS', 'Assignment'), ('EX', 'Examination'),
                      ('PR', 'Practical'))
     subject = models.CharField(max_length=100, blank=True, null=True)
