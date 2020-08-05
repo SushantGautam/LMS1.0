@@ -5,17 +5,9 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 
+from WebApp.models import MemberInfo
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
-
-
-class CalendarIndex(TemplateView):
-    template_name = 'event_calendar/index.html'
-
-    def get_context_data(self):
-        context = super().get_context_data()
-        context['form'] = CalendarEventForm()
-        return context
 
 
 class EventCreateView(CreateView):
@@ -54,6 +46,17 @@ class EventUpdateView(UpdateView):
 class EventListView(ListView):
     model = CalendarEvent
     template_name = "event_calendar/index.html"
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['user_list'] = users
+        # context['teacher_list'] = users.filter(Is_Teacher=True)
+        # context['student_list'] = users.filter(Is_Student=True)
+        return context
+
+
+
 
 
 
