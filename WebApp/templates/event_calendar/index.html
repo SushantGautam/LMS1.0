@@ -35,27 +35,14 @@
                     <p class="text-muted">Drag and drop your event</p>
                     <div class="list-group mb-3" id="external-events">
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-success" data-icon="car"></i> Holidays
+                            <i class="fa fa-circle text-success" data-icon="car"></i> Holiday
                         </div>
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-danger" data-icon="users"></i> Travel
+                            <i class="fa fa-circle text-danger" data-icon="users"></i> Meeting
                         </div>
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-info" data-icon="coffee"></i> Friend
+                            <i class="fa fa-circle text-warning" data-icon="building"></i> Program
                         </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-warning" data-icon="diamond"></i> Company
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-primary" data-icon="glass"></i> Team Assing
-                        </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-secondary" data-icon="glass"></i> Family
-                        </div>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="drop-remove" checked="">
-                        <label class="custom-control-label" for="drop-remove">Remove after drop</label>
                     </div>
                 </div>
             </div>
@@ -90,7 +77,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Title</label>
                             <div class="col-sm-9">
-                                <input id="id_title" type="text" name="title" class="form-control" placeholder="Title">
+                                <input id="id_title" type="text" name="title" value="Program" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -99,14 +86,30 @@
                                 <div class="mt-2" id="event-type">
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="customRadioInline1" name="event_type"
-                                               class="custom-control-input" value="AP">
-                                        <label class="custom-control-label"
-                                               for="customRadioInline1">Appointment</label>
+                                               class="custom-control-input" value="PR" checked>
+                                        <label class="custom-control-label" for="customRadioInline1">Program</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="customRadioInline2" name="event_type"
-                                               class="custom-control-input" value="MT">
+                                               class="custom-control-input" value="ME">
                                         <label class="custom-control-label" for="customRadioInline2">Meeting</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="customRadioInline3" name="event_type"
+                                               class="custom-control-input" value="HO">
+                                        <label class="custom-control-label" for="customRadioInline3">Holiday</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">All Day Event</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="all-day">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="is_all_day" class="custom-control-input"
+                                               id="id_is_all_day" checked>
+                                        <label class="custom-control-label" for="id_is_all_day"></label>
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +121,7 @@
                                        class="form-control create-event-datepicker"
                                        placeholder="Date">
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 datetime_dynamic">
                                 <input id="event-start-time" type="text" class="form-control create-event-demo"
                                        placeholder="Time">
                             </div>
@@ -130,7 +133,7 @@
                                 <input id="event-end-date" type="text" class="form-control create-event-datepicker"
                                        placeholder="Date">
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4 datetime_dynamic">
                                 <input id="event-end-time" type="text" class="form-control create-event-demo"
                                        placeholder="Time">
                             </div>
@@ -139,7 +142,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Participants Type</label>
                             <div class="col-sm-9">
-                                <div class="mt-2" id="event-type">
+                                <div class="mt-2" id="participant-type">
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_1" name="participant_type"
                                                class="custom-control-input" value="AL">
@@ -170,7 +173,7 @@
                         <div class="form-group row participant_dynamic">
                             <label class="col-sm-3 col-form-label">Filter By</label>
                             <div class="col-sm-9">
-                                <div class="mt-2" id="event-type">
+                                <div class="mt-2" id="filter-type">
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_filter_type_1" name="filter_type"
                                                class="custom-control-input" value="A" checked>
@@ -271,6 +274,7 @@
         $(document).ready(function () {
 
             $("input[name='participant_type']").change();
+            $("#id_is_all_day").change();
 
             var date = new Date();
 
@@ -412,6 +416,14 @@
                 //// obtain event data
                 let start_date = iso_to_django(event.start._d);
                 let end_date = null;
+                let event_type = "PR";
+                if (event.title === "Holiday"){
+                    event_type = "HO";
+                } else if (event_type === "Meeting"){
+                    event_type = "ME";
+                } else if (event_type === "Program"){
+                    event_type = "PR";
+                }
                 if (event.end) {
                     end_date = iso_to_django(event.end._d);
                 } else {
@@ -421,10 +433,11 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     title: event.title,
                     description: event.description,
-                    event_type: "AP",
+                    event_type: event_type,
                     date_start: start_date,
                     date_end: end_date,
                 }
+
                 //// make ajax request to change the related object in the database
                 $.ajax({
                     url: "{% url 'event_calendar_create' %}?return=json", // URL to your view that serves new info
@@ -468,15 +481,15 @@
             templateResult: function (state) {
                 // how dropdown list is displayed
                 let filter_type = $("input[name='filter_type']:checked").val();
-                let is_student =  $(state.element).attr('data-is_student');
-                let is_teacher =  $(state.element).attr('data-is_teacher');
-                if(filter_type === "A"){        // all user
+                let is_student = $(state.element).attr('data-is_student');
+                let is_teacher = $(state.element).attr('data-is_teacher');
+                if (filter_type === "A") {        // all user
                     return state.text;
                 }
-                if(filter_type === "S" && is_student === "true"){        // Students only
+                if (filter_type === "S" && is_student === "true") {        // Students only
                     return state.text;
                 }
-                if(filter_type === "T" && is_teacher === "true"){        // Teachers only
+                if (filter_type === "T" && is_teacher === "true") {        // Teachers only
                     return state.text;
                 }
                 return null;
@@ -518,6 +531,14 @@
             //console.log("event create button click");
             $("#id_participant_type_1").click();
             $("#id_filter_type_1").click();
+        })
+
+        $("#id_is_all_day").change(function () {
+            if ($(this).is(':checked')){
+                $(".datetime_dynamic").hide();
+            }else{
+                $(".datetime_dynamic").show();
+            }
         })
     </script>
 

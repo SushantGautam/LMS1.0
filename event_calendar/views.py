@@ -18,6 +18,7 @@ class EventCreateView(CreateView):
 
     def form_invalid(self, form):
         print(form.errors)
+        raise Exception
         return super().form_invalid(form)
 
     def form_valid(self, form):
