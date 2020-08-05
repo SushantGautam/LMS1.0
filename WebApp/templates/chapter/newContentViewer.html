@@ -1139,6 +1139,7 @@
                                                     // check if over image or not
                                                     if (isMouseOverImage) {
                                                         let nextImageIndex = 0;
+                                                        let progressBar = document.getElementById("progressbar-" + id);
 
                                                         // finds the next image index limit scroll between first and last image
                                                         if (e.deltaY > 0) {
@@ -1160,7 +1161,7 @@
                                                         if (parseInt($(images[nextImageIndex]).attr('data-imageoriginalwidth')) > parseInt(imageinfo.width)) {
                                                             $("#stackedpic-" + id).width(imageinfo.width);
                                                         }*/
-                                                        document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+                                                        progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" + progressHeight + "px");
 
                                                     }
                                                 });

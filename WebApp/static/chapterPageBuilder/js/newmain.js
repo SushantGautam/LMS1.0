@@ -432,7 +432,7 @@ class stackedpicture {
                                     image.style.height = '100%';
                                     image.style.width = '95%';
                                     image.style.position = 'absolute';
-                                    image.style.objectFit = 'cover';
+                                    image.style.objectFit = 'contain';
                                     // if(count == 1) image.style.zIndex = "1";
                                     image.setAttribute('data-name', value.name);
 
@@ -501,6 +501,7 @@ class stackedpicture {
                             // check if over image or not
                             if (isMouseOverImage) {
                                 let nextImageIndex = 0;
+                                let progressBar = document.getElementById("progressbar-" + id);
 
                                 // finds the next image index limit scroll between first and last image
                                 if (e.deltaY > 0) {
@@ -518,7 +519,8 @@ class stackedpicture {
                                 images[nextImageIndex].style.zIndex = "1";
                                 imageIndex = nextImageIndex;
 
-                                document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+
+                                progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" + progressHeight + "px");
 
                             }
                         });
@@ -543,8 +545,7 @@ class stackedpicture {
                         </form>
                         <p id="stackedpicture-drag">${message}</p>
                     </div>
-                </div>
-                
+                </div>    
             </div>`
 
         this.RemoveElement = function () {
