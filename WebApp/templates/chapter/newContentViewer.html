@@ -1117,6 +1117,9 @@
                                                                     sortImageElements();
                                                                     $(`#stackedpic-${id}`).find(".spinnner").remove();
                                                                 }
+                                                                imageinfo = getImgSizeInfo(image)
+                                                                image.setAttribute('data-imageOriginalWidth', imageinfo.width);
+                                                                $("#stackedpic-" + id).width(imageinfo.width + 25);
                                                             }
                                                             image.onerror = function () {
                                                                 console.log("Error occurred while loading image");
@@ -1212,8 +1215,12 @@
                                                         // set z index of next image to 1, to appear on top of old image
                                                         images[nextImageIndex].style.zIndex = "1";
                                                         imageIndex = nextImageIndex;
-
-                                                        progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" +  progressHeight + "px");
+                                                        imageinfo = getImgSizeInfo(images[imageIndex])
+                                                        /*
+                                                        if (parseInt($(images[nextImageIndex]).attr('data-imageoriginalwidth')) > parseInt(imageinfo.width)) {
+                                                            $("#stackedpic-" + id).width(imageinfo.width);
+                                                        }*/
+                                                        progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" + progressHeight + "px");
 
                                                     }
                                                 });
@@ -1552,9 +1559,9 @@
     }
 
     // Disable right click
-    $('.noRightClick').bind('contextmenu', function(e) {
+    $('.noRightClick').bind('contextmenu', function (e) {
         return false;
-    }); 
+    });
 
 
     function setThumbnails() {
@@ -2037,6 +2044,35 @@
         minWidth: 75,
         minHeight: 25,
     });
+</script>
+
+<script>
+    function getRenderedSize(contains, cWidth, cHeight, width, height, pos) {
+        var oRatio = width / height,
+            cRatio = cWidth / cHeight;
+        return function () {
+            if (contains ? (oRatio > cRatio) : (oRatio < cRatio)) {
+                this.width = cWidth;
+                this.height = cWidth / oRatio;
+            } else {
+                this.width = cHeight * oRatio;
+                this.height = cHeight;
+            }
+            this.left = (cWidth - this.width) * (pos / 100);
+            this.right = this.width + this.left;
+            return this;
+        }.call({});
+    }
+
+    function getImgSizeInfo(img) {
+        var pos = window.getComputedStyle(img).getPropertyValue('object-position').split(' ');
+        return getRenderedSize(true,
+            img.width,
+            img.height,
+            img.naturalWidth,
+            img.naturalHeight,
+            parseInt(pos[0]));
+    }
 </script>
 {# End of Video Call Scripts #}
 </body>
