@@ -10,9 +10,9 @@
 
 <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
-        <h2>{% blocktrans with username=user.username %}
+        <h4>{% blocktrans with username=user.username %}
             Threads created by:- &nbsp;{{ username }}
-            {% endblocktrans %}</h2>
+            {% endblocktrans %}</h4>
     </div>
     <!-- List group -->
     <ul class="list-group thread-list">
@@ -38,55 +38,15 @@
                                                                             {% endif %}" alt="..." alt=""
                         class="avatar avatar-96wp-user-avatar wp-user-avatar-96 alignnone photo avatar-default forum-user-img " />
                 </a>
-                <h2 class="thread_title">
-                    <div class="media-body media-middle"> &nbsp;
-                        <a href="{% if '/teachers' in request.path %}
-                        {% url 'teacher_thread' pk=thread.pk %}
-                        {% elif '/students' in request.path %}
-                        {% url 'student_thread' pk=thread.pk %}
-                        {% elif '/forum' in request.path %}
-                        {% url 'forum:thread' pk=thread.pk %}
-                        {% endif %}
-                        " class="entry-link">
-                            {{ thread.title }}
-                        </a>
+              
 
-                        <div class="topic_meta text-light text-caption">
-                            <h5>
-                                <p class="topic-meta">
-                                    &nbsp; Topic:
-                                    <a href="
-                                    
-                                    {% if '/teachers' in request.path %}
-                        {% url 'teacher_topic' thread.topic.pk %}
-                        {% elif '/students' in request.path %}
-                        {% url 'student_topic' thread.topic.pk %}
-                        {% elif '/forum' in request.path %}
-                        {% url 'forum:topic' thread.topic.pk %}
-                        {% endif %}                       
-                                  ">
-                                        <span class="link-color">
-                                            {{ thread.topic.title }}
-                                        </span>
-                                    </a> |
-                                    <span class="meta meta-pub_date"> posted
-                                        {{ thread.pub_date | naturaltime }}
-                                    </span> |
-                                    <span class="meta meta-last_replied hidden-xs">
-                                        {% trans "Last Replied" %}: {{ thread.last_replied | naturaltime }}
-                                    </span>
-                                </p>
-                            </h5>
-                        </div>
-                    </div>
-
-                </h2>
+               
 
 
                 <!-------------------------------- Replies ------------------------------------------>
 
 
-                <div class="panel user_infos">
+                <div class="panel user_infos" style="text-align: right;">
                     <ul class="children">
                         <a class="panel-heading collapsed" role="tab" id="heading{{ forloop.counter }}"
                             data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}"
