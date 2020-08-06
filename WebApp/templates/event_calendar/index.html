@@ -41,7 +41,7 @@
                             <i class="fa fa-circle text-danger" data-icon="users"></i> Meeting
                         </div>
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-warning" data-icon="building"></i> Program
+                            <i class="fa fa-circle text-info" data-icon="building"></i> Program
                         </div>
                     </div>
                 </div>
@@ -285,9 +285,28 @@
                         id: 'event_id_{{ event.pk }}',
                         start: '{{ event.date_start.isoformat }}',
                         end: '{{ event.date_end.isoformat }}',
-                        className: 'bg-primary',
                         //icon: "user-o",
                         description: `{{ event.description }}`,
+                        {% if event.is_all_day %}
+                            allDay: true,
+                        {% else %}
+                            allDay: false,
+                        {% endif %}
+                        {% if event.event_type == "PR" %}
+                            icon: "building-o",
+                            className: 'bg-info',
+                        {% elif event.event_type == "ME" %}
+                            icon: "user-o",
+                            className: 'bg-danger',
+                        {% elif event.event_type == "HO" %}
+                            icon: "car",
+                            className: 'bg-success',
+                        {% else %}
+                            // default values
+                            icon: "diamond",
+                            className: 'bg-info',
+                        {% endif %}
+
                     },
                 {% endfor %}
             ];
@@ -417,11 +436,11 @@
                 let start_date = iso_to_django(event.start._d);
                 let end_date = null;
                 let event_type = "PR";
-                if (event.title === "Holiday"){
+                if (event.title === "Holiday") {
                     event_type = "HO";
-                } else if (event_type === "Meeting"){
+                } else if (event.title === "Meeting") {
                     event_type = "ME";
-                } else if (event_type === "Program"){
+                } else if (event.title === "Program") {
                     event_type = "PR";
                 }
                 if (event.end) {
@@ -436,6 +455,7 @@
                     event_type: event_type,
                     date_start: start_date,
                     date_end: end_date,
+                    is_all_day: true,
                 }
 
                 //// make ajax request to change the related object in the database
@@ -534,9 +554,9 @@
         })
 
         $("#id_is_all_day").change(function () {
-            if ($(this).is(':checked')){
+            if ($(this).is(':checked')) {
                 $(".datetime_dynamic").hide();
-            }else{
+            } else {
                 $(".datetime_dynamic").show();
             }
         })
