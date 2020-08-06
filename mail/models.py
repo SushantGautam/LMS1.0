@@ -1,6 +1,8 @@
 import os
 
 from django.db import models
+from django.dispatch import receiver
+
 from WebApp.models import MemberInfo
 
 
@@ -19,14 +21,25 @@ class Mail(models.Model):
     sender_starred = models.BooleanField(default=False)
     sender_delete = models.BooleanField(default=False)
     sender_delete_p = models.BooleanField(default=False)
+    is_mail = models.BooleanField(default=True)
     mail_draft = models.BooleanField(default=False)
     # related fields
     sender = models.ForeignKey(MemberInfo, on_delete=models.DO_NOTHING, related_name="mail_sender")
     reply_to = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
 
+    def can_delete(self):
+        if self.mailreceiver_set.exists():
+            return False
+        else:
+            return True
+
+    def save(self, *args, **kwargs):
+        self.is_mail = True
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.subject
-               # + '--' + self.sender.username
+        # + '--' + self.sender.username
 
     def get_file_upload_name(self):
         if self.attachment:
@@ -43,11 +56,12 @@ class MailReceiver(models.Model):
     mail_spam = models.BooleanField(default=False)
     mail_deleted = models.BooleanField(default=False)
     mail_viewed = models.BooleanField(default=False)
+    is_mail = models.BooleanField(default=False)
     receiver = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, related_name="mail_receiver")
     mail = models.ForeignKey(Mail, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.mail.subject
+    # def __str__(self):
+        # return self.mail.subject
         # + '--' + self.mail.sender.username + '--' + self.receiver.username
 
     def get_file_upload_name(self):
@@ -55,3 +69,22 @@ class MailReceiver(models.Model):
             return os.path.split(self.mail.attachment.name)[1]
         else:
             return ""
+
+    def delete(self, *args, **kwargs):
+        mail_obj = self.mail
+        super().delete()
+        if mail_obj:
+            if mail_obj.can_delete() and mail_obj.sender_delete_p:
+                mail_obj.delete()
+
+
+# @receiver(models.signals.post_delete, sender=MailReceiver)
+# def delete_mail(sender, instance, *args, **kwargs):
+#     """ Deletes mail on `post_delete` """
+#     print(instance)
+#     if instance.mail:
+#         if instance.mail.can_delete() and instance.mail.sender_delete_p:
+#             print("deleting mail")
+#             instance.mail.delete()
+#         else:
+#             print("cant delete mail")

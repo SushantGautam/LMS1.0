@@ -1564,6 +1564,7 @@ class InningGroupListView(ListView):
 class InningGroupCreateView(CreateView):
     model = InningGroup
     form_class = InningGroupForm
+    template_name = 'center_admin/inninggroup_form.html'
 
     def get_form_kwargs(self):
         kwargs = super(InningGroupCreateView, self).get_form_kwargs()
@@ -1595,11 +1596,13 @@ class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
 
 class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
+    template_name = 'center_admin/inninggroup_detail.html'
 
 
 class InningGroupUpdateView(InningGroupAuthMxnCls, UpdateView):
     model = InningGroup
     form_class = InningGroupForm
+    template_name = 'center_admin/inninggroup_form.html'
 
     def form_valid(self, form):
         """If the form is valid, redirect to the supplied URL."""
@@ -1819,6 +1822,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
+    template_name = 'center_admin/groupmapping_form.html'
 
     def get_form_kwargs(self):
         kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
@@ -1842,11 +1846,14 @@ class GroupMappingCreateView(CreateView):
 
 class GroupMappingDetailView(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
+    template_name = 'center_admin/groupmapping_detail.html'
 
 
 class GroupMappingUpdateView(GroupMappingAuthMxnCls, UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
+    template_name = 'center_admin/groupmapping_form.html'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
