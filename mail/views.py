@@ -174,7 +174,7 @@ class MailSendDraftListView(ListView):
         m_star_qs = Mail.objects.filter(sender=self.request.user, sender_starred=True, sender_delete=False,
                                         sender_delete_p=False)
         mr_star_qs = MailReceiver.objects.filter(receiver=self.request.user, mail_starred=True, mail_deleted=False)
-        m_trash_qs = Mail.objects.filter(sender=self.request.user, sender_delete=True, sender_delete_p=False )
+        m_trash_qs = Mail.objects.filter(sender=self.request.user, sender_delete=True, sender_delete_p=False)
         mr_trash_qs = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=True)
 
         mr_star_count = mr_star_qs.count()
@@ -197,7 +197,6 @@ class MailSendDraftListView(ListView):
 
         context['search_q'] = self.request.GET.get('search', '')
         context['filter'] = self.request.GET.get('filter', '')
-
 
         return context
 
@@ -423,7 +422,7 @@ class DraftCreateView(CreateView):
         return r
 
 
-class DraftUpdateView(UpdateView):
+class DraftToSendView(UpdateView):
     model = Mail
     template_name = "mail/detail_draft.html"
     form_class = DraftUpdateForm
@@ -461,6 +460,24 @@ class DraftUpdateView(UpdateView):
             m_rec.receiver = MemberInfo.objects.get(pk=int(r))
             m_rec.save()
 
+        return to_return
+
+
+class DraftUpdateView(UpdateView):
+    model = Mail
+    template_name = "mail/detail_draft.html"
+    form_class = DraftUpdateForm
+    success_url = reverse_lazy('mail_send_list')
+
+    def form_invalid(self, form):
+        to_return = super().form_invalid(form)
+        return to_return
+
+    def form_valid(self, form, **kwargs):
+        self.success_url = self.success_url + "?email_type=draft"
+        to_return = super().form_valid(form)
+        self.object.mail_draft = False
+        self.object.save()
         return to_return
 
 

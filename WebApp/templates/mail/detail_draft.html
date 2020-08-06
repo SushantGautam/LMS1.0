@@ -9,13 +9,15 @@
         </a>
 
         <a href="#" data-toggle="tooltip" title=""
-           id="draft_email_create"
+           id="draft_email_save"
            class="btn btn-outline-primary mr-3"
            data-original-title="Keep">
             <i class="ti-save"></i>
         </a>
 
-        <a href="{%url 'sender_delete' object.pk%}?email_type={{email_type}}" class="btn btn-outline-danger ml-2" data-toggle="tooltip" style="float:right;"
+        <a href="{%url 'sender_delete' object.pk%}?email_type={{email_type}}"
+           class="btn btn-outline-danger ml-2"
+           data-toggle="tooltip"
            title="Dispose">
             <i class="ti-trash"></i>
         </a>

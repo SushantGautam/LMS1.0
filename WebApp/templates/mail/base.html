@@ -17,11 +17,14 @@
     <!-- Mail SideBar -->
     <div class="col-md-3 app-sidebar">
        <div class="card">
+           {% if "mail_draft_detail" in request.get_full_path %}
+           {%else%}
           <div class="card-body">
              <button class="btn btn-primary btn-block comp_eml" data-toggle="modal" data-target="#compose">
              <i class="ti-plus mr-2"></i> Compose Email
              </button>
           </div>
+           {% endif%}
           <div class="app-sidebar-menu">
              <div class="list-group list-group-flush">
                 <a href="{% url 'mail_list' %}?email_type=inbox"
@@ -211,6 +214,8 @@
     </div>
  </div>
 
+
+
  <!-- Mail Compose Popup Model -->
  <div class="modal fade" tabindex="-1" role="dialog" id="compose">
     <div class="modal-dialog" role="document">
@@ -227,7 +232,7 @@
 
                    <a href="#" data-toggle="tooltip" title=""
                        id="draft_email_create"
-                      class="btn btn-outline-light mr-2"
+                      class="btn btn-outline-primary mr-2"
                       data-original-title="Keep">
                    <i class="ti-save"></i>
                    </a>
@@ -362,6 +367,8 @@
        </div>
     </div>
  </div>
+
+
 {% endblock %}
 
 {% block javascript %}
@@ -652,6 +659,13 @@ $(".card_display_email").click(function(){
     });
 
 
+// Saving Draft from Draft Detail
+    $("#draft_email_save").click(function(){
+
+        let url_send = "{% url 'update_draft' object.pk %}?email_type={{ email_type }}";
+        $("#draft_submit_form").attr('action',url_send);
+        $("#draft_submit_form").submit();
+    });
 
 
 
