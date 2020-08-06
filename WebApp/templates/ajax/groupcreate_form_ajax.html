@@ -1,5 +1,4 @@
 {% load static %}
-{% load crispy_forms_tags %}
 
 <small>Choose meaningful name and View Details on Students Group List <b><a
             href="{% url 'groupmapping_list' %}">here</a></b></small><br><br>
@@ -8,35 +7,43 @@
     {% csrf_token %}
     <div class="alert alert-danger form-errors" style="display: none">
     </div>
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        {{ form.GroupMapping_Name|as_crispy_field }}
+    <div class="form-group">
+        <label for="id_GroupMapping_Name">Group Mapping Name</label>
+        <input type="text" class="form-control" name="GroupMapping_Name" maxlength="250" id="id_GroupMapping_Name"
+            required>
     </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-        {{ form.Students }}
+    <div class="form-group">
+        <label for="id_Students">Select Students</label>
+        <select class="select2" id="id_Students" name="Students" multiple>
+            {% for x, y in form.fields.Students.choices %}
+            <option value="{{ x }}" {% if form.fields.Students.value == x %}selected{% endif %}>
+                {{ y }}
+            </option>
+            {% endfor %}
+        </select>
     </div>
-
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
         MAC.
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-            class="select form-control">
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-        <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
-            class="select form-control">
-    </div>
-    <div class="submitButton col-md-12 text-center">
-        <button class="btn btn-success" type="submit" id="submit_ajax">Submit</button>
+    </div> -->
+    <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+    <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
+        class="select form-control">
+    <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
+        class="select form-control">
+    <div class="submitButton text-center pt-3">
+        <button class="btn btn-primary" type="submit" id="submit_ajax">Submit</button>
         <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
     </div>
 </form>
-<script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
+<!-- <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script> -->
 <script>
+    $(document).ready(function () {
+        $('#id_Students').select2({
+            placeholder: 'Select Students'
+        });
+    })
+
     $("#ajaxgroupform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $('#id_Students_to option').prop('selected', true);

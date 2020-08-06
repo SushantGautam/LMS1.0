@@ -61,3 +61,15 @@
   display: block;
   text-align: center !important;
 }
+
+/* form wizard */
+.wizard > .content {
+  padding-left: 0 !important;
+  background-color: white !important;
+  min-height: fit-content !important;
+}
+.wizard > .content > .body {
+  height: 100% !important;
+  width: 100% !important;
+  position: relative !important;
+}
