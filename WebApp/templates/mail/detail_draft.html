@@ -44,7 +44,11 @@
                 <select name="receiver_multiple" class="form-control select2-example"
                         id="receiver_multiple_draft" multiple>
                     {% for u in user_list %}
-                    <option value="{{ u.pk }}">{{ u.username }}
+                    <option value="{{ u.pk }}"
+                     {% if object %}
+                                                {% if u.pk in object.receiver_list  %} selected {% endif %}
+                                                {% endif %}
+                    >{{ u.username }}
                     </option>
                     {% endfor %}
 

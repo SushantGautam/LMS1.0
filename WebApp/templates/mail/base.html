@@ -661,10 +661,11 @@ $(".card_display_email").click(function(){
 
 // Saving Draft from Draft Detail
     $("#draft_email_save").click(function(){
-
+        {% if object%}
         let url_send = "{% url 'update_draft' object.pk %}?email_type={{ email_type }}";
         $("#draft_submit_form").attr('action',url_send);
         $("#draft_submit_form").submit();
+        {% endif %}
     });
 
 

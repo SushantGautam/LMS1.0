@@ -476,7 +476,7 @@ class DraftUpdateView(UpdateView):
     def form_valid(self, form, **kwargs):
         self.success_url = self.success_url + "?email_type=draft"
         to_return = super().form_valid(form)
-        self.object.mail_draft = False
+        self.object.mail_draft = True
         self.object.save()
         return to_return
 

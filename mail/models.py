@@ -11,7 +11,6 @@ def file_name(instance, filename):
 
 
 class Mail(models.Model):
-
     receiver_list = models.CharField(max_length=1000, blank=True, null=True)
     LABEL_CHOICES = (('GR', 'General'), ('SP', 'Support'), ('AS', 'Assignment'), ('EX', 'Examination'),
                      ('PR', 'Practical'))
@@ -49,6 +48,11 @@ class Mail(models.Model):
         else:
             return ""
 
+    def get_receiver_list(self, receiver_list):
+        if len(receiver_list):
+            self.receiver_list = receiver_list.split(',')
+            return self.receiver_list
+
 
 class MailReceiver(models.Model):
     received_date = models.DateTimeField(auto_now_add=True)
@@ -63,8 +67,8 @@ class MailReceiver(models.Model):
     mail = models.ForeignKey(Mail, on_delete=models.CASCADE)
 
     # def __str__(self):
-        # return self.mail.subject
-        # + '--' + self.mail.sender.username + '--' + self.receiver.username
+    # return self.mail.subject
+    # + '--' + self.mail.sender.username + '--' + self.receiver.username
 
     def get_file_upload_name(self):
         if self.mail.attachment:
@@ -78,7 +82,6 @@ class MailReceiver(models.Model):
         if mail_obj:
             if mail_obj.can_delete() and mail_obj.sender_delete_p:
                 mail_obj.delete()
-
 
 # @receiver(models.signals.post_delete, sender=MailReceiver)
 # def delete_mail(sender, instance, *args, **kwargs):
