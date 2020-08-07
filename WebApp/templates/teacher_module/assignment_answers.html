@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load model_template_relation %}
 {% block breadcrumb %}
 
     <li class="breadcrumb-item"><a href="
@@ -158,47 +159,50 @@
             <td>Action</td>
         </tr>
         </thead>
+        <tbody>
+        {% for student in students_list %}
+            {% getAssignmentAnswer Assignment student question as answer %}
+            <tr>
+                <td class="counterCell" style=" padding-top: 15px;"></td>
+                <td>{{ forloop.counter }}</td>
+                <td style=" padding-top: 15px;">{{ student }}</td>
+                <td>{{ question.Question_Score }} </td>
 
-        {% for answer in Answers %}
-            {% if question.id == answer.Question_Code.id %}
-                <tr>
-                    <td class="counterCell" style=" padding-top: 15px;"></td>
-                    <td>{{ forloop.counter }}</td>
-                    <td style=" padding-top: 15px;">{{ answer.Student_Code }}</td>
-                    <td>{{ answer.Question_Code.Question_Score }} </td>
-
-                    <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
-                        data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
-                        {% if answer.Assignment_Score is None %}
-                            Not graded
-                        {% else %}
-                            {{ answer.Assignment_Score }}
-                        {% endif %}
-                        <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
+                <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
+                    data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
+                    {% if answer.Assignment_Score is None %}
+                        Not graded
+                    {% else %}
+                        {{ answer.Assignment_Score }}
+                    {% endif %}
+                    <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
                             <i class="fa fa-edit"></i>
                         </span>
-                    </td>
+                </td>
 
-                    <td>{{ answer.Assignment_Answer }}</td>
-                    <td>{% if answer %}
-                        Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
-                    {% elif not answer %}
-                        Not Submitted
-                    {% endif %}
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-info showanswer" data-toggle="modal" data-target="#exampleModal1"
-                                value="{{ answer.id }}" style="float: right;color:black"
-                                data-student_Score="{{ answer.Assignment_Score }}"
-                                data-assignment_feedback="{{ answer.Assignment_Feedback }}">
-                            <b>View Answer</b>
-                        </button>
-                    </td>
-                </tr>
+                <td>{{ answer.Assignment_Answer }}</td>
+                <td>{% if answer %}
+                    Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
+                {% elif not answer %}
+                    Not Submitted
+                {% endif %}
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-info showanswer" data-toggle="modal" data-target="#exampleModal1"
+                            value="{{ answer.id }}" style="float: right;color:black"
+                            data-student_Score="{{ answer.Assignment_Score }}"
+                            data-assignment_feedback="{{ answer.Assignment_Feedback }}"
+                            {% if not answer %}
+                            disabled
+                            {% endif %}
+                    >
+                        <b>View Answer</b>
+                    </button>
+                </td>
+            </tr>
 
-            {% endif %}
         {% endfor %}
-
+        </tbody>
     </table>
 {% endfor %}
 </div>
@@ -211,6 +215,8 @@
 {% block customjss %}
     <script>
         $('table').on('click', '.showanswer', function () {
+            $('#StudentScore').empty()
+            $('#answercontent').empty()
             $(this).addClass('clickedShowAnswer')
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
@@ -444,11 +450,13 @@
 
 
 
+
                         {% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
                                 data: {
                                     'question_id': q_id,
                                     'assignment_id': '
+
 
 
 

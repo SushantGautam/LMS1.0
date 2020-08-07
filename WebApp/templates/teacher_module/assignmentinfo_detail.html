@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load model_template_relation %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="
         {% if object.Course_Code.Use_Flag %}
@@ -20,4 +21,486 @@
 
     {% include 'assignment/assignmentinfo_detail.html' %}
 
+    <div class="assignment_answers_div hidden">
+        <style>
+            @keyframes glowing {
+                0% {
+                    box-shadow: 0 0 -10px #c4a300;
+                }
+                40% {
+                    box-shadow: 0 0 20px #c4a300;
+                }
+                60% {
+                    box-shadow: 0 0 20px #c4a300;
+                }
+                100% {
+                    box-shadow: 0 0 -10px #c4a300;
+                }
+            }
+
+        </style>
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true" id="create_session_modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel">Answer
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="modal-body" style="color: black;height: -webkit-fill-available;">
+                        <div id="answercontent">
+
+                        </div>
+                        <hr>
+                        <div id="StudentScore">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="session-detail form-inline" style="padding: 10px 0;">
+                <div class="col col-md-6">
+                    {#                    <span style="font-size:18px"><b> Course: </b></span> {{ Assignment.Course_Code }}#}
+                </div>
+
+                <div class="col col-md-6">
+                    <span style="font-size:18px"><b> Session: </b></span>
+                    <select id="select_session" class="form-control" style="width: 30%;">
+                        {% for x in session_list %}
+                            {% for session in x %}
+                                <option value="{{ session.pk }}"
+                                        {% if session.pk == inning.pk %}
+                                        selected
+                                        {% endif %}
+                                > {{ session }}</option>
+                            {% endfor %}
+                        {% endfor %}
+                        <option value="-1"
+                                {% if not inning %}
+                                selected
+                                {% endif %}
+                        > All Sessions
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="course-detail form-inline" style="padding: 10px 0;">
+                <div class="col col-md-6">
+                    {#                    <span style="font-size:18px"><b> Chapter: </b></span>#}
+                    {#                    <select id="select_chapter" class="form-control" style="width: 30%;">#}
+                    {#                        {% for chapter in chapter_list %}#}
+                    {##}
+                    {#                            <option value="{{ chapter.pk }}"#}
+                    {#                                    {% if chapter.pk == Assignment.Chapter_Code.pk %}#}
+                    {#                                    selected#}
+                    {#                                    {% endif %}>{{ chapter }}</option>#}
+                    {#                        {% endfor %}#}
+                    {#                    </select>#}
+                </div>
+
+                <div class="col col-md-6">
+                    {#                    <span style="font-size:18px"><b> Assignment: </b></span>#}
+                    {#                    <select id="select_assignment" class="form-control" style="width: 30%;">#}
+                    {#                        {% for chapter in chapter_list %}#}
+                    {#                            {% for assignment in chapter.assignmentinfos.all %}#}
+                    {#                                <option value="{{ assignment.pk }}" data-chapter="{{ chapter.pk }}"#}
+                    {#                                        {% if assignment.pk == Assignment.pk %}#}
+                    {#                                        selected#}
+                    {#                                        {% endif %}>{{ assignment }}</option>#}
+                    {#                            {% endfor %}#}
+                    {#                        {% endfor %}#}
+                    {#                    </select>#}
+                </div>
+                {#                <button type="button" id="change_assignment_button" class="btn btn-info">Go</button>#}
+            </div>
+        </div>
+        {% if questions %}
+            <div style="padding-bottom: 10px;">
+                {% for question in questions|slice:":1" %}
+                    <h4 class="pageHeader"> {{ question.Assignment_Code }}</h4>
+                {% endfor %}
+                <hr class="header_hr">
+            </div>
+        {% endif %}
+
+        {% for question in questions %}
+            <div class="questions_table_div hidden" data-question_id="{{ question.pk }}">
+                <h5>Question : <br><br> <b>{{ question.Question_Title }}</b></h5>
+                {% if question.Answer_Type == 'F' %}
+                    <btn class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}"
+                         style="float: right">
+                        Download
+                        All Files
+                    </btn>
+                {% endif %}
+                <table class="table table-data table-striped table-bordered bg-white nowrap">
+                    <thead class="thead-light bg-primary">
+                    <tr class="tableTitleRow">
+                        <td>S.No.</td>
+                        <td>S.No.</td>
+                        <td>Student Name</td>
+                        <td>Total Marks</td>
+                        <td>Marks Obtained</td>
+                        <td>Answer</td>
+                        <td>Submitted on</td>
+                        <td>Action</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for student in students_list %}
+                        {% getAssignmentAnswer Assignment student question as answer %}
+                        <tr>
+                            <td class="counterCell" style=" padding-top: 15px;"></td>
+                            <td>{{ forloop.counter }}</td>
+                            <td style=" padding-top: 15px;">{{ student }}</td>
+                            <td>{{ question.Question_Score }} </td>
+
+                            <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
+                                data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
+                                {% if answer.Assignment_Score is None %}
+                                    Not graded
+                                {% else %}
+                                    {{ answer.Assignment_Score }}
+                                {% endif %}
+                                <span class="edit_assignment_score"
+                                      data-assignment_score="{{ answer.Assignment_Score }}">
+                                <i class="fa fa-edit"></i>
+                            </span>
+                            </td>
+
+                            <td>{{ answer.Assignment_Answer }}</td>
+                            <td>{% if answer %}
+                                Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
+                            {% elif not answer %}
+                                Not Submitted
+                            {% endif %}
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info showanswer" data-toggle="modal"
+                                        data-target="#exampleModal1"
+                                        value="{{ answer.id }}" style="float: right;color:black"
+                                        data-student_Score="{{ answer.Assignment_Score }}"
+                                        data-assignment_feedback="{{ answer.Assignment_Feedback }}"
+                                        {% if not answer %}
+                                        disabled
+                                        {% endif %}
+                                >
+                                    <b>View Answer</b>
+                                </button>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock content %}
+
+{% block customjss %}
+    <script>
+        $('table').on('click', '.showanswer', function () {
+            $('#StudentScore').empty()
+            $('#answercontent').empty()
+            $(this).addClass('clickedShowAnswer')
+            {% for answer in Answers %}
+                if (this.value == '{{ answer.id }}') {
+                    $('#answercontent').text(`{{answer.Assignment_Answer}}`)
+
+                    if ('{{ answer.Assignment_File }}') {
+                        $('#answercontent').append(`
+                            <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
+                                <b>View File</b>
+                            </button>
+                            </a>
+                        `)
+                    }
+                    $('#StudentScore').html(`
+                        <form id="StudentScoreForm">
+                        <div>
+                            <p>FeedBack</p>
+                            <p>
+                                <textarea name="assignment_feedback" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                            </p>
+                        </div>
+                        <div>
+                        Score
+                        <input type="number" id="studentScoresubmit" value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                        max="{{ answer.Question_Code.Question_Score }}" >
+                            <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
+                        </div>
+                        </form>
+                        <br> Full Score: <b>{{ answer.Question_Code.Question_Score }} </b>
+                         <input type="hidden" id="answerpk" value="{{ answer.pk }}">
+
+                    `);
+                    $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
+                    $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
+                }
+            {% endfor %}
+        })
+
+        $('#exampleModal1').on('hidden.bs.modal', function () {
+            $('.clickedShowAnswer').removeClass('clickedShowAnswer')
+        })
+
+        $('td').on('click', '.edit_assignment_score', function (e) {
+            let assg_score = $(this).attr('data-assignment_score') == "None" ? '' : $(this).attr('data-assignment_score')
+            let max = $(this).closest('td').attr('data-assignment_max_score')
+            $(this).closest('td').empty().append(`
+            <form method="post">
+                <input type="number" value="${assg_score}" data-original="${assg_score}" min="0" max="${max}">
+                <button type="submit" style="color:green" class="assignment_score_submitBtn"><i class="fa fa-check" aria-hidden="true"></i></button>
+                <button type="button" style="color:red" class="assignment_score_closeBtn"><i class="fa fa-times" aria-hidden="true"></i></button>
+            </form>
+            `)
+        });
+
+        $('td').on('click', '.assignment_score_closeBtn', function (e) {
+            let assg_score = $(this).parent().find('input').attr('data-original') == "" ? 'None' : $(this).parent().find('input').attr('data-original')
+            let assg_display = assg_score == 'None' ? 'Not Graded' : assg_score
+            $(this).closest('td').empty().append(`
+            ${assg_display}
+            <span class="edit_assignment_score" data-assignment_score="${assg_score}">
+                <i class="fa fa-edit"></i>
+            </span>
+           `)
+        });
+
+        $('td').on('click', '.assignment_score_submitBtn', function (e) {
+            e.preventDefault()
+            answer_pk = $(this).closest('td').attr('data-answer_id')
+            stu_score = $(this).closest('td').find('input').val()
+            if (parseInt(stu_score) > parseInt($(this).closest('td').attr('data-assignment_max_score')) || parseInt(stu_score) < 0) {
+                alert('Score must be in between 0 and ' + parseInt($(this).closest('td').attr('data-assignment_max_score')))
+                return false
+            }
+            submitscoreajax(fromtd = true, answer_pk = answer_pk, stu_score = stu_score)
+        })
+
+        $('#StudentScore').on('submit', 'form', function (e) {
+            e.preventDefault()
+            submitscoreajax()
+        })
+
+        function submitscoreajax(fromtd = false, answer_pk = null, stu_score = null) {
+            if (!fromtd) {
+                var answer_pk = $('#answerpk').val();
+                var stu_score = $('#studentScoresubmit').val() ? $('#studentScoresubmit').val() : 0;
+                if (parseInt(stu_score) < 0) {
+                    alert('Score cannot be less than 0');
+                    return false
+                }
+                var feedback = $('#assignment_feedback').val();
+            }
+            $.ajax({
+                url: '/teachers/submitStudentscore/' + answer_pk + '/' + stu_score + '/',
+                method: 'post',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'assignment_feedback': feedback,
+                    'stu_score': stu_score,
+                },
+                success: function (data) {
+                    $('#Score_' + answer_pk).html(stu_score).css("text-shadow", "2px 2px 5px red;");
+                    $('#Score_' + answer_pk).append(`
+                     <span class="edit_assignment_score" data-assignment_score="${stu_score}">
+                            <i class="fa fa-edit"></i>
+                        </span>
+                     `)
+                    $('#Score_' + answer_pk).css("animation", "glowing 5000ms 1");
+
+                    if (!fromtd) {
+                        $('#exampleModal1').modal('toggle');
+                        $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
+                    }
+                    {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);#}
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                    return false
+                }
+            })
+        }
+
+        $('#select_chapter').change(function () {
+            $('#select_assignment option').hide();
+            $('#select_assignment option[data-chapter="' + $(this).val() + '"]').show();
+            // add this code to select 1'st of streets automaticaly
+            // when city changed
+            if ($('#select_assignment option[data-chapter="' + $(this).val() + '"]').length) {
+                $('#select_assignment option[data-chapter="' + $(this).val() + '"]').first().prop('selected', true);
+            }
+                // in case if there's no corresponding street:
+            // reset select element
+            else {
+                $('#select_assignment').val('');
+            }
+        });
+
+        $('#change_assignment_button').on('click', function () {
+            window.location.href = "/teachers/courseinfo/{{ object.Course_Code.pk }}/chapterinfo/{{ object.Chapter_Code.pk }}/assignmentinfo/" + $('#select_assignment').val();
+        })
+
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var table_main = $('.table-data').DataTable({
+                responsive: true,
+                stateSave: true,
+                dom: 'lBfrtip',
+
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5]
+                        }
+                    },
+                    // {
+                    //     extend: 'print',
+                    //     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                    //     fieldSeparator: '\t'
+                    // }
+                ],
+                "columnDefs": [
+                    {
+                        "targets": [1, 5],
+                        "visible": false,
+                        "searchable": true,
+                    },
+                    {
+                        "orderable": false,
+                        "targets": [7]
+                    }
+                ]
+            });
+
+            $("#select_session").on("change", function () {
+                {% if 'iframe' in request.GET %}
+                    {% if '/teachers' in request.path %}
+                        if (this.value != -1) {
+                            window.location.href = `/teachers/courseinfo/{{ object.Course_Code.pk }}/chapterinfo/{{ object.Chapter_Code.pk }}/assignmentinfo/{{ object.pk }}//inning/${this.value}/?iframe=1`
+                        } else {
+                            window.location.href = `/teachers/courseinfo/{{ object.Course_Code.pk }}/chapterinfo/{{ object.Chapter_Code.pk }}/assignmentinfo/{{ object.pk }}/?iframe=1`
+                        }
+                    {% endif %}
+                {% else %}
+                    {% if '/teachers' in request.path %}
+                        if (this.value != -1) {
+                            window.location.href = `/teachers/courseinfo/{{ object.Course_Code.pk }}/chapterinfo/{{ object.Chapter_Code.pk }}/assignmentinfo/{{ object.pk }}/inning/${this.value}/`
+                        } else {
+                            window.location.href = `/teachers/courseinfo/{{ object.Course_Code.pk }}/chapterinfo/{{ object.Chapter_Code.pk }}/assignmentinfo/{{ object.pk }}/`
+                        }
+                    {% endif %}
+                {% endif %}
+            });
+        });
+
+        $('.downloadallfiles').on('click', function () {
+            let q_id = $(this).attr('data-question_id');
+            let answer_file_list = []
+            {% for answer in Answers %}
+                if (q_id == '{{ answer.Question_Code.id }}') {
+                    {% if answer.Assignment_File %}
+                        answer_file_list.push('{{ answer.Assignment_File }}')
+                    {% endif %}
+                }
+            {% endfor %}
+            if (answer_file_list.length > 0) {
+                $.ajax({
+                    url: "{% url 'downloadAssignmentAnswers' %}",
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'list_of_files': answer_file_list,
+                        'question_id': q_id,
+                        'assignment_id': '{{ Assignment.pk }}',
+                    },
+                    success: function (response) {
+                        window.open(response.link, '_blank');
+                        /*setTimeout(function () {
+                            $.ajax({
+                                url: "
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        {% url 'deletedownloadAssignmentAnswers' %}",
+                                type: 'GET',
+                                data: {
+                                    'question_id': q_id,
+                                    'assignment_id': '
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        {{ Assignment.pk }}',
+                                },
+                                success: function (data) {
+                                    console.log(data)
+                                }
+                            })
+                        }, 3000)*/
+                    },
+                });
+            } else {
+                alert('No Answers to download')
+            }
+        })
+    </script>
+
+
+    <script>
+        $('.show-answer-btn').on('click', function () {
+            question_id = $(this).attr('data-questionid');
+            if ($('.questions_table_div[data-question_id=' + question_id + ']').hasClass('hidden')) {
+                $(this).text('Hide Answer')
+            } else {
+                $(this).text('Show Answer')
+            }
+
+            $('.assignment_answers_div').find('.questions_table_div[data-question_id=' + question_id + ']').toggleClass('hidden');
+            $('.assignment_answers_div').find('.questions_table_div[data-question_id=' + question_id + ']').toggleClass('shown');
+
+            if ($('.questions_table_div').hasClass('shown')) {
+                $('.assignment_answers_div').removeClass('hidden');
+            } else {
+                $('.assignment_answers_div').addClass('hidden');
+            }
+        })
+    </script>
+{% endblock %}
