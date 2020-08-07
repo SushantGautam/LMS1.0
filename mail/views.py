@@ -473,12 +473,16 @@ class DraftUpdateView(UpdateView):
         to_return = super().form_invalid(form)
         return to_return
 
-    def form_valid(self, form, **kwargs):
+    def form_valid(self, form):
+
         self.success_url = self.success_url + "?email_type=draft"
-        to_return = super().form_valid(form)
+        r = super().form_valid(form)
+        # print(self.request.POST)
+
+        print(self.request.FILES)
         self.object.mail_draft = True
         self.object.save()
-        return to_return
+        return r
 
 
 class MailDetailView(DetailView):

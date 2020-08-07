@@ -48,10 +48,17 @@ class Mail(models.Model):
         else:
             return ""
 
-    def get_receiver_list(self, receiver_list):
+    def get_receiver_list(self):
+        print("receivers:", self.receiver_list)
+
+        receiver_list = self.receiver_list
         if len(receiver_list):
-            self.receiver_list = receiver_list.split(',')
-            return self.receiver_list
+            print("a")
+            r_list = receiver_list.split(',')
+            print("b")
+            print(r_list)
+            return [int (r) for r in r_list]
+
 
 
 class MailReceiver(models.Model):

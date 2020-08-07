@@ -41,18 +41,19 @@
 <!--                                   {% endif %}-->
 <!--                                   required>-->
 
-                <select name="receiver_multiple" class="form-control select2-example"
-                        id="receiver_multiple_draft" multiple>
-                    {% for u in user_list %}
-                    <option value="{{ u.pk }}"
-                     {% if object %}
-                                                {% if u.pk in object.receiver_list  %} selected {% endif %}
-                                                {% endif %}
-                    >{{ u.username }}
-                    </option>
-                    {% endfor %}
+                        <select name="receiver_multiple" class="form-control select2-example"
+                                id="receiver_multiple_draft" multiple>
+                            {% for u in user_list %}
+                            <option value="{{ u.pk }}"
+                            {% if object %}
+                    {% if u.pk in object.get_receiver_list  %} selected {% endif %} {% endif %}
 
-                </select>
+                                    >{{ u.username }}
+
+                                    </option>
+                                    {% endfor %}
+
+                                    </select>
                 <input type="hidden" name="receiver_list" id="receiver_list_draft" value="">
                 <input type="hidden" name="sender" value="{{ request.user.pk }}">
 
@@ -74,13 +75,23 @@
 
             <div class="form-group">
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" name = "file_upload"
+                    <input type="file" class="custom-file-input" name = "attachment"
 
-                           multiple id="customFileLangHTMLDraft" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
+                           multiple id="customFileLangHTML" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
                     <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files">
                         {{ object.get_file_upload_name }}</label>
+
+
                 </div>
+
+                <div class="clear_div">
+                 <a href="#" id="clear_btn" class="text-danger" style="float:right;">Clear Files</a>
+                 </div>
+                <br>
+
+
             </div>
+
             <div>
                 <div class="form-group d-none">
                     <textarea class="form-control" id="input_body_draft" name = "body" rows="4" cols="50" placeholder="Type Your Email...." required>

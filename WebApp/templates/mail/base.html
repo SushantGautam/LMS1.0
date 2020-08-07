@@ -983,5 +983,19 @@ $(".comp_eml").click(function(){
 
 })
 
+$("#clear_btn").click(function(){
+    $(".custom-file-label").empty();
+    $("#customFileLangHTML").attr("value", "   ");
+    $("#customFileLangHTML").val("   ");
+    $(".select2-example-user").trigger('change');
+
+
+    if(!$(this).val()){
+    $(".clear_div").hide();
+
+    }
+
+});
+
     </script>
 {%endblock%}
