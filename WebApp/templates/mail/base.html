@@ -17,7 +17,7 @@
     <!-- Mail SideBar -->
     <div class="col-md-3 app-sidebar">
        <div class="card">
-           {% if "mail_draft_detail" in request.get_full_path %}
+           {% if "mail_draft_detail" in request.get_full_path or "send_detail" in request.get_full_path or "mail_detail" in request.get_full_path%}
            {%else%}
           <div class="card-body">
              <button class="btn btn-primary btn-block comp_eml" data-toggle="modal" data-target="#compose">
@@ -393,6 +393,20 @@
          {% if "mail_draft_detail" in request.get_full_path %}
             $(".draft_article").find(".ql-editor").html("{{ object.body|safe }}");
             $(".card_display_email").click();
+
+        // Recipient Teacher List Auto Selected
+            if ( $("#teacher_recipient").hasClass("btn-success")){
+
+                $(".teacher_list").show(); // css('display','block');
+                $(".student_list").hide(); //css('display','none');
+                $(".user_list").hide(); // css('display','none');
+                $("input[name='user_select_option']").val("single_teacher");
+                console.log("btn-success");
+
+            }
+
+
+
         {% endif %}
 
         {% if "mail_detail" in request.get_full_path %}
