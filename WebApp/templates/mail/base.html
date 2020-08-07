@@ -496,6 +496,21 @@
 
 
 
+
+     // Draft Form UPLOAD Label
+    $("#customFileLangHTMLDraft").change(function(){
+       // $("label[for='customFileLangHTMLDraft']").html($("#customFileLangHTMLDraft").val());
+
+
+        let file_path = ($("#customFileLangHTMLDraft").val());
+        let file_name = file_path.substr(file_path.lastIndexOf('\\') + 1);
+        $("label[for='customFileLangHTMLDraft']").html(file_name);
+        $("#attachment-clear_id").removeAttr("checked");
+
+    });
+
+
+
 // Re-load Back on clicking Back Button //
       $(".email_back_button").click(function(){
         //{%if 'send_detail' in request.get_full_path %}
@@ -985,15 +1000,17 @@ $(".comp_eml").click(function(){
 
 $("#clear_btn").click(function(){
     $(".custom-file-label").empty();
-    $("#customFileLangHTML").attr("value", "   ");
-    $("#customFileLangHTML").val("   ");
-    $(".select2-example-user").trigger('change');
-
-
-    if(!$(this).val()){
+   // $("#customFileLangHTMLDraft").attr("value", "   ");
+   // $("#customFileLangHTMLDraft").val("   ");
+   // $("#customFileLangHTMLDraft").trigger('change');
+    $("#attachment-clear_id").attr("checked", "checked");
     $(".clear_div").hide();
 
-    }
+
+   // if(!$(custom-file-label).text()){
+   //     $(".clear_div").hide();
+
+  //  }
 
 });
 

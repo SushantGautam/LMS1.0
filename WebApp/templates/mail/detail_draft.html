@@ -75,18 +75,21 @@
 
             <div class="form-group">
                 <div class="custom-file">
+                    <div class="d-none"><input type="checkbox" name="attachment-clear" id="attachment-clear_id">   </div>
                     <input type="file" class="custom-file-input" name = "attachment"
 
-                           multiple id="customFileLangHTML" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
-                    <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files">
+                           multiple id="customFileLangHTMLDraft" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
+                    <label class="custom-file-label" for="customFileLangHTMLDraft" data-browse="Select files">
                         {{ object.get_file_upload_name }}</label>
 
 
                 </div>
 
+                {% if object.attachment%}
                 <div class="clear_div">
                  <a href="#" id="clear_btn" class="text-danger" style="float:right;">Clear Files</a>
                  </div>
+                {% endif%}
                 <br>
 
 
