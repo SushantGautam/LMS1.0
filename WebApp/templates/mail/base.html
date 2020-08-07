@@ -590,6 +590,12 @@
         templateSelection: formatStateSel,
     });
 
+     $(".select2-example-draft").select2({
+        placeholder: ' Select',
+        templateResult: formatState,
+        templateSelection: formatStateSel,
+    });
+
 
 // Select-2 Multiple Select
     $(".select2-example").select2({
@@ -916,7 +922,9 @@ $(".all_stu_recipient").click(function () {
     $("input[name='user_select_option']").val("all_student");
     let old_sel = [];
     $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     {% for u in user_list %}
     {% if u.Is_Student %}
     if (!old_sel.includes('{{u.pk}}')){
@@ -927,7 +935,9 @@ $(".all_stu_recipient").click(function () {
     {% endfor %}
     console.log(old_sel);
     $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     $(".recipient_selector").click();
 
 
@@ -938,7 +948,9 @@ $(".all_tea_recipient").click(function () {
 
     let old_sel = [];
     $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     {% for u in user_list %}
     {% if u.Is_Teacher %}
     if (!old_sel.includes('{{u.pk}}')){
@@ -948,7 +960,9 @@ $(".all_tea_recipient").click(function () {
     {% endfor %}
     console.log(old_sel);
     $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     $(".recipient_selector").click();
 
 
@@ -961,7 +975,9 @@ $(".all_recipient").click(function () {
 
     let old_sel = [];
     $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     {% for u in user_list %}
 
     if (!old_sel.includes('{{u.pk}}')){
@@ -971,7 +987,9 @@ $(".all_recipient").click(function () {
     {% endfor %}
     console.log(old_sel);
     $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     $(".recipient_selector").click();
 
 
