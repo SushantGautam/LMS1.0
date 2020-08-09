@@ -491,6 +491,7 @@ class MailDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+        context['r_list'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
         context['label_list'] = Mail.LABEL_CHOICES
         context['email_type'] = self.request.GET['email_type']
         return context

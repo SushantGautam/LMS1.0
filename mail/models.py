@@ -49,16 +49,10 @@ class Mail(models.Model):
             return ""
 
     def get_receiver_list(self):
-        print("receivers:", self.receiver_list)
-
         receiver_list = self.receiver_list
         if len(receiver_list):
-            print("a")
             r_list = receiver_list.split(',')
-            print("b")
-            print(r_list)
-            return [int (r) for r in r_list]
-
+            return [int(r) for r in r_list]
 
 
 class MailReceiver(models.Model):
@@ -75,6 +69,7 @@ class MailReceiver(models.Model):
 
     def __str__(self):
         return self.mail.subject
+
     # + '--' + self.mail.sender.username + '--' + self.receiver.username
 
     def get_file_upload_name(self):

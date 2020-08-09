@@ -150,7 +150,19 @@
                               id="card_content_sender"> From: {{ object.mail.sender }} &lt {{object.mail.sender.email}} &gt</span>
                             <!--                                            <span class="d-sm-inline d-none text-muted"> &lt;elnora@gmail.com&gt;</span>-->
                         </h6>
-                        <span class="small text-muted" id="card_content_receiver">To: {{ object.receiver }}  &lt {{object.receiver.email}} &gt</span>
+
+                        <span class="small text-muted" id="card_content_receiver">To:
+
+                            {% for u in r_list %}
+                            {% if u.pk in object.mail.get_receiver_list%}
+
+
+                            {{ u.username }}  &lt {{u.email}} &gt,
+
+                        {% endif%}
+                        {%endfor%}
+
+                            </span>
                     </div>
                 </div>
                 <div class="ml-auto">
