@@ -439,7 +439,7 @@
     {% endif %}
 
 
-    <div id="container" class="container12">
+    <div id="container" class="container12 noRightClick">
 
         <div id="page-contents" class="page-contents"></div>
 
@@ -836,15 +836,16 @@
         'wrapAround': true
     });
 
-    // $('a').on('click', 'img', function(){
-    //     console.log('hdjsf')
-    //     if($(this).hasAttribute('data-lightbox')){
-    //         return false;
-    //     }
-    // }).dblclick(function () {
-    //     window.location = this.href;
-    //     return false;
-    // });
+    $('a').on('click', 'img', function () {
+        debugger
+        console.log('hdjsf')
+        if ($(this).hasAttribute('data-lightbox')) {
+            return false;
+        }
+    }).dblclick(function () {
+        window.location = this.href;
+        return false;
+    });
     document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
@@ -1104,19 +1105,34 @@
                                                             var image = new Image;
                                                             count++;
                                                             image.onload = function () {
-                                                                $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
+                                                                var createA = document.createElement('a');
+                                                                createA.setAttribute('href', "data:image;base64," + content);
+                                                                createA.setAttribute('data-toggle', "lightbox");
+                                                                createA.setAttribute('data-name', value.name);
+                                                                createA.setAttribute('data-remote', "data:image;base64," + content);
+                                                                createA.setAttribute('data-lightbox', "stacked" + id);
+                                                                $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(createA)
+                                                                createA.appendChild(this)
                                                                 if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
                                                                     sortImageElements();
                                                                     $(`#stackedpic-${id}`).find(".spinnner").remove();
                                                                 }
+                                                                imageinfo = getImgSizeInfo(image)
+                                                                image.setAttribute('data-imageOriginalWidth', imageinfo.width);
+                                                                $("#stackedpic-" + id).width(imageinfo.width + 25);
                                                             }
+                                                            image.onerror = function () {
+                                                                console.log("Error occurred while loading image");
+                                                            };
                                                             image.src = "data:image;base64," + content;
                                                             image.className = 'stack';
                                                             image.style.height = '100%';
                                                             image.style.width = '95%';
                                                             image.style.position = 'absolute';
+                                                            image.style.objectFit = 'contain';
                                                             {#if (count == 1) image.style.zIndex = "1";#}
                                                             image.setAttribute('data-name', value.name);
+                                                            image.setAttribute('data-lightbox', 'stackedpic' + id);
                                                             if (value.name == firstvalue) {
                                                                 image.style.zIndex = "1";
                                                             }
@@ -1129,7 +1145,7 @@
                                             });
 
                                             function sortImageElements() {
-                                                var result = $('#scroll-image-' + id + ' img').sort(sortAlphaNumElem);
+                                                var result = $('#scroll-image-' + id + ' a').sort(sortAlphaNumElem);
                                                 $('#scroll-image-' + id).html(result);
                                             }
 
@@ -1182,6 +1198,7 @@
                                                     // check if over image or not
                                                     if (isMouseOverImage) {
                                                         let nextImageIndex = 0;
+                                                        let progressBar = document.getElementById("progressbar-" + id);
 
                                                         // finds the next image index limit scroll between first and last image
                                                         if (e.deltaY > 0) {
@@ -1198,8 +1215,12 @@
                                                         // set z index of next image to 1, to appear on top of old image
                                                         images[nextImageIndex].style.zIndex = "1";
                                                         imageIndex = nextImageIndex;
-
-                                                        document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+                                                        imageinfo = getImgSizeInfo(images[imageIndex])
+                                                        /*
+                                                        if (parseInt($(images[nextImageIndex]).attr('data-imageoriginalwidth')) > parseInt(imageinfo.width)) {
+                                                            $("#stackedpic-" + id).width(imageinfo.width);
+                                                        }*/
+                                                        progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" + progressHeight + "px");
 
                                                     }
                                                 });
@@ -1536,6 +1557,11 @@
             }
         }
     }
+
+    // Disable right click
+    $('.noRightClick').bind('contextmenu', function (e) {
+        return false;
+    });
 
 
     function setThumbnails() {
@@ -2018,6 +2044,35 @@
         minWidth: 75,
         minHeight: 25,
     });
+</script>
+
+<script>
+    function getRenderedSize(contains, cWidth, cHeight, width, height, pos) {
+        var oRatio = width / height,
+            cRatio = cWidth / cHeight;
+        return function () {
+            if (contains ? (oRatio > cRatio) : (oRatio < cRatio)) {
+                this.width = cWidth;
+                this.height = cWidth / oRatio;
+            } else {
+                this.width = cHeight * oRatio;
+                this.height = cHeight;
+            }
+            this.left = (cWidth - this.width) * (pos / 100);
+            this.right = this.width + this.left;
+            return this;
+        }.call({});
+    }
+
+    function getImgSizeInfo(img) {
+        var pos = window.getComputedStyle(img).getPropertyValue('object-position').split(' ');
+        return getRenderedSize(true,
+            img.width,
+            img.height,
+            img.naturalWidth,
+            img.naturalHeight,
+            parseInt(pos[0]));
+    }
 </script>
 {# End of Video Call Scripts #}
 </body>

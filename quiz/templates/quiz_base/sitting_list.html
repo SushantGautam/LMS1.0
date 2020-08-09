@@ -15,8 +15,8 @@
     <thead class="thead-light bg-primary">
 
         <td>{% trans "User" %}</td>
-        <td>{% trans "Quiz" %}</td>
-        <td>{% trans "Completed" %}</td>
+        <td>{% trans "Start Datetime" %}</td>
+        <td>{% trans "Completed Datetime" %}</td>
         <td>{% trans "Score" %}(%)</td>
         <!-- <td></td> -->
         
@@ -24,18 +24,18 @@
     </thead>
 
     <tbody>
-        <tr>
+        <!-- <tr>
             <form action="" method="GET">
                 <td><input type="text" name="user_filter" /></td>
                 <td><input type="text" name="quiz_filter" /></td>
                 <td></td>
-                <!-- <td></td> -->
+                <td></td>
                 <td>
                     <button type="submit" class="btn btn-default">{% trans "Filter" %}</button>
                 </td>
            
             </form>
-        </tr>
+        </tr> -->
 
 
         {% for sitting in sitting_list %}
@@ -48,8 +48,8 @@
                     {% url 'quiz_marking_detail' pk=sitting.id %} 
                     {% endif %}
                 " style="font-weight: bold;">{{ sitting.user }}</a></td>
-            <td>{{ sitting.quiz }}</td>
-            <td>{{ sitting.end|date }}</td>
+            <td><span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></td>
+            <td><span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></td>
             <td>{{ sitting.get_percent_correct }}</td>
            
             <!-- <td>

@@ -157,6 +157,12 @@
                                         id="editquestion-btn{{ questions.pk }}">
                                     Edit Question
                                 </button>
+
+                                {% if '/teachers' in request.path %}
+                                    <button class="btn-link show-answer-btn" data-questionid="{{ questions.pk }}">
+                                        Show Answer
+                                    </button>
+                                {% endif %}
                                 <div class="modal fade" id="editQuestionModal" tabindex="-1"
                                      role="dialog"
                                      aria-labelledby="editQuestionLabel" aria-hidden="true"

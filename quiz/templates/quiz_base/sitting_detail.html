@@ -6,8 +6,8 @@
 <p>{{ sitting.quiz.description }}</p>
 <hr>
 <p>{% trans "User" %}: {{ sitting.user }}</p>
-<p>{% trans "Started" %}: {{ sitting.start|time }}{{ sitting.start|date }}</p>
-<p>{% trans "Completed" %}: {{ sitting.end|time }}{{ sitting.end|date }}</p>
+<p>{% trans "Started" %}: <span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></p>
+<p>{% trans "Completed" %}: <span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></p>
 <p>{% trans "Time taken" %}: {{ sitting.duration|time }}</p>
 
 <p>{% trans "Score" %}: {{ sitting.get_percent_correct }}%</p>

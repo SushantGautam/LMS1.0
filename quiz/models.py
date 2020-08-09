@@ -572,6 +572,12 @@ class Quiz(models.Model):
 
     def has_saqs(self):
         return (self.saquestion.count() > 0)
+    
+    def has_sittings(self):
+        if Sitting.objects.filter(quiz=self):
+            return True
+        return False
+
 
     # def get_questions(self):
     #    return self.question_set.all()
@@ -812,6 +818,14 @@ class Sitting(models.Model):
 
     def _question_ids(self):
         return [int(n) for n in self.question_order.split(',') if n]
+
+    @property
+    def get_score_correct(self):
+        score = 0.0
+        for n in self.score_list.split(','):
+            if (n != "") and (n != " ") and (n != "not_graded"):
+                score += float(n)
+        return score
 
     @property
     def get_percent_correct(self):
