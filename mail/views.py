@@ -503,6 +503,8 @@ class SendDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['email_type'] = self.request.GET['email_type']
+        context['user_list'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code).exclude \
+            (id=self.request.user.id)
         return context
 
 

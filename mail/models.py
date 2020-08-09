@@ -73,8 +73,8 @@ class MailReceiver(models.Model):
     receiver = models.ForeignKey(MemberInfo, on_delete=models.CASCADE, related_name="mail_receiver")
     mail = models.ForeignKey(Mail, on_delete=models.CASCADE)
 
-    # def __str__(self):
-    # return self.mail.subject
+    def __str__(self):
+        return self.mail.subject
     # + '--' + self.mail.sender.username + '--' + self.receiver.username
 
     def get_file_upload_name(self):

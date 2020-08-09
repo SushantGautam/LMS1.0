@@ -89,7 +89,7 @@
                 <a href="{% url 'mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-danger ml-2 "
                    title="Dispose"
-                   id="inbox_detail_trash"
+
                    data-toggle="tooltip">
                     <i class="ti-trash"></i>
                 </a>
@@ -104,7 +104,7 @@
                 <a href="{% url 'mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-danger ml-2 "
                    title="Dispose"
-                   id="inbox_detail_trash"
+
                    data-toggle="tooltip">
                     <i class="ti-trash"></i>
                 </a>
@@ -113,10 +113,21 @@
                 <a href="{% url 'mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-success ml-2 "
                    title="Recover Email"
-                   id="inbox_detail_trash"
+
                    data-toggle="tooltip">
                     <i class="ti-reload"></i>
                 </a>
+
+
+
+
+
+                    <form action="{%url 'mail_receiver_delete' object.pk%}?email_type={{email_type}}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item text-danger"><a class="btn btn-outline-danger ml-2 "  title="Empty Trash" data-toggle="tooltip"><i class="ti-trash"></i></a></button>
+                    </form>
+
+
                  {%endif%}
 
 
