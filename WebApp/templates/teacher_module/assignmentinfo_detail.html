@@ -63,55 +63,54 @@
     </div>
 
     <div style="padding-bottom: 10px;">
-        
+
         <h1 class="pageHeader">
             {{ object.Assignment_Topic }}
-            
-                <button type="button" class=" btn btn-sm  btn-light" data-toggle="modal" data-target="#editAssignmentModal"
-                        id="editAssignment-btn">
-                    <i class="fa fa-edit text-info">    </i> <span>Edit</span>
-                </button>
-                {% if '/teachers' in request.path %}
 
-                   
-                    <button type="button" class=" btn btn-sm  btn-light"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                                                                  style="color: rgb(255, 0, 0);cursor:pointer; margin:0px;padding:0px; text-decoration:none; ">
-                        <i class="fa fa-trash text-danger"></i> <span>Delete</span>
-                    </a></button>
-               
-                    <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
-                          id="deleteAssignment{{ object.pk }}">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                            <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                            <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                        </form>
-                {% else %}
-                    <span style="">
-                    <button type="button" class="btn btn-light btn-sm"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                                                                  style="color: rgb(255, 0, 0);cursor:pointer">
+            <button type="button" class=" btn btn-sm  btn-light" data-toggle="modal" data-target="#editAssignmentModal"
+                    id="editAssignment-btn">
+                <i class="fa fa-edit text-info"> </i> <span>Edit</span>
+            </button>
+            {% if '/teachers' in request.path %}
+                <button type="button" class=" btn btn-sm  btn-light"><a id="{{ object.pk }}"
+                                                                        class="assignment-confirm-delete"
+                                                                        style="color: rgb(255, 0, 0);cursor:pointer; margin:0px;padding:0px; text-decoration:none; ">
+                    <i class="fa fa-trash text-danger"></i> <span>Delete</span>
+                </a></button>
+
+                <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
+                      id="deleteAssignment{{ object.pk }}">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                    <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                    <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+                </form>
+            {% else %}
+                <span style="">
+                    <button type="button" class="btn btn-light btn-sm"><a id="{{ object.pk }}"
+                                                                          class="assignment-confirm-delete"
+                                                                          style="color: rgb(255, 0, 0);cursor:pointer">
                         <i class="fa fa-trash text-danger"></i>
                     </a></button>
                 </span>
-                    <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
-                          id="deleteAssignment{{ object.pk }}">
-                            {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                            <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                            <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                            <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                        </form>
-                {% endif %}
-            
+                <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
+                      id="deleteAssignment{{ object.pk }}">
+                    {% csrf_token %}
+                    <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                    <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                    <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                    <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+                </form>
+            {% endif %}
         </h1>
 
     </div>
     <div class="row" style="margin-bottom: 10px;">
-        <div class="col-lg-4 col-md-4 col-sm-12 text-left" >
-           <b style="font-size: 15px;">Course: </b>  {{ object.Course_Code }}
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;">Course: </b> {{ object.Course_Code }}
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;">Chapter:</b>  {{ object.Chapter_Code }}
+            <b style="font-size: 15px;">Chapter:</b> {{ object.Chapter_Code }}
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 text-left">
             <b style="font-size: 15px;">Session:</b>
@@ -137,47 +136,55 @@
     </div>
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;">  Assignment Date: </b> <span
+            <b style="font-size: 15px;"> Assignment Date: </b> <span
                 class="dateconFullMonth"> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;">  Assignment Deadline: </b> <span
+            <b style="font-size: 15px;"> Assignment Deadline: </b> <span
                 class="dateconFullMonth"> {{ object.Assignment_Deadline|date:'d M, Y h:i A' }} </span>
         </div>
 
         <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;"> Register Agent: </b>    {{ object.Register_Agent }}
+            <b style="font-size: 15px;"> Register Agent: </b> {{ object.Register_Agent }}
         </div>
-    </div> 
-        <div class=" text-left " style="margin-bottom: 10px;">
-            <b style="font-size: 15px;">  Status: </b>             
-            {% if object.Use_Flag is True %}
-                <span class="badge badge-success">Published</span>
-            {% elif object.Use_Flag is False %}
-                <span class="badge badge-danger">Not Published</span>
-            {% endif %}
+    </div>
+    <div class=" text-left " style="margin-bottom: 10px;">
+        <b style="font-size: 15px;"> Status: </b>
+        {% if object.Use_Flag is True %}
+            <span class="badge badge-success">Published</span>
+        {% elif object.Use_Flag is False %}
+            <span class="badge badge-danger">Not Published</span>
+        {% endif %}
 
-            {% now "Y-m-d H:i" as todays_datewithtime %}
-            {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
-                <span class="badge badge-info">Upcoming</span>
-            {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
-                <span class="badge badge-danger">Expired</span>
-            {% else %}
-                <span class="badge badge-success">Active</span>
-            {% endif %}
+        {% now "Y-m-d H:i" as todays_datewithtime %}
+        {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
+            <span class="badge badge-info">Upcoming</span>
+        {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
+            <span class="badge badge-danger">Expired</span>
+        {% else %}
+            <span class="badge badge-success">Active</span>
+        {% endif %}
+    </div>
+
+    {% if '/students' not in request.path %}
+        <div class="" style="text-align: right;">
+            <button type="button" class="btn-sm btn-success" data-toggle="modal"
+                    data-target="#addQuestionModal"
+                    id="add-newquestion-btn">
+                Add Question
+            </button>
         </div>
-   
-
+    {% endif %}
     <hr class="header_hr">
 
     {% for question in questions %}
         <div class="row" style=" ;">
             <div class="col-md-9">
                 <h5>
-                  <b>  Question :</b>  <br><br> <b>{{ question.Question_Title }}</b>
+                    <b> Question :</b> <br><br> <b>{{ question.Question_Title }}</b>
                 </h5>
             </div>
-            <div class="col-md-1    ">
+            <div class="col-md-1">
                 <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse"
                         data-target="#answer-collapse-{{ question.id }}"
                         aria-expanded="false" aria-controls="collapseExample">
@@ -187,7 +194,7 @@
 
             <div class="col-md-2">
                 {% if '/students' not in request.path %}
-                    <button class=" btn editquestion-btn btn-light btn-sm "  data-toggle="modal"
+                    <button class=" btn editquestion-btn btn-light btn-sm " data-toggle="modal"
                             data-target="#editQuestionModal"
                             data-questionpk="{{ question.pk }}"
                             id="editquestion-btn{{ question.pk }}">
@@ -252,6 +259,51 @@
             </div>
         </div>
         <div class="answer-div collapse" id="answer-collapse-{{ question.id }}">
+            {% if  question.Question_Score %}
+                <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
+                    Question Score :
+                </div>
+                <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
+                    <b style="color: #000000">{{ question.Question_Score }}</b>
+                </div>
+            {% endif %}
+            {% if  question.Question_Description %}
+                <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
+                    Question Description :
+                </div>
+                <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
+                    <span style="color: #000000">{{ question.Question_Description | safe }}</span>
+                </div>
+            {% endif %}
+
+            {% if question.Answer_Type %}
+                <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
+                    Answer Type :
+
+                </div>
+                <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
+                    <b style="color: #000000">
+                        {% if question.Answer_Type == 'S' %}
+                            Short Answer
+                        {% else %}
+                            File Upload
+                        {% endif %}</b></div>
+            {% endif %}
+            {% if  question.Question_Media_File %}
+                <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
+                    Question Media :
+                </div>
+                <div class=" col-md-12 col-sm-12 col-xs-12 no-padding text-center">
+                    {% if question.extension == '.jpg' or question.extension == '.png' %}
+                        <img class="card-img-top" width="400px"
+                             src="{{ question.Question_Media_File.url }}">
+                    {% else %}
+                        <a href="{{ question.Question_Media_File.url }}" target="_blank"><b
+                                style="color:#017a9b">Click
+                            to view attatched file</b></a>
+                    {% endif %}
+                </div>
+            {% endif %}
             {% if question.Answer_Type == 'F' %}
                 <btn class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">
                     Download
@@ -290,7 +342,7 @@
                                         {{ answer.Assignment_Score }}
                                     {% endif %}
                                     <span class="edit_assignment_score"
-                                        data-assignment_score="{{ answer.Assignment_Score }}">
+                                          data-assignment_score="{{ answer.Assignment_Score }}">
                                         <i class="fa fa-edit"></i>
                                     </span>
                                 {% else %}
@@ -415,7 +467,22 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel"
+         aria-hidden="true" id="add_question_modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title" id="addQuestionModalLabel"><b>Add Question </b>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body modal-auto" id="add_question_modal_body">
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 
 {% block customjss %}
@@ -929,11 +996,17 @@
 
 
 
+
+
+
                         {% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
                                 data: {
                                     'question_id': q_id,
                                     'assignment_id': '
+
+
+
 
 
 
