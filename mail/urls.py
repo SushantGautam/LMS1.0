@@ -1,7 +1,8 @@
 from django.urls import path
 from mail.views import MailListView, MailDetailView, ReplyCreateView, MailMultipleCreate, MailSendDraftListView, \
-    SendDetailView, DraftUpdateView, DraftCreateView, MailDeleteView, MailReceiverDeleteView, StarView, TrashView, \
-    mail_spam, mail_starred, sender_starred, mail_deleted, sender_delete, mail_send, mail_viewed, mail_unread
+    SendDetailView, DraftToSendView, DraftCreateView, MailDeleteView, MailReceiverDeleteView, StarView, TrashView, \
+    mail_spam, mail_starred, sender_starred, mail_deleted, sender_delete, mail_send, mail_viewed, mail_unread, \
+    DraftUpdateView
 
 from mail import views
 
@@ -15,7 +16,8 @@ urlpatterns = (
     path('mail_detail/<int:pk>', MailDetailView.as_view(), name='mail_detail'),
     path('send_detail/<int:pk>', SendDetailView.as_view(), name='send_detail'),
     path('draft_create', DraftCreateView.as_view(), name='draft_create'),
-    path('mail_draft_detail/<int:pk>', DraftUpdateView.as_view(), name='mail_draft_detail'),
+    path('mail_draft_detail/<int:pk>', DraftToSendView.as_view(), name='mail_draft_detail'),
+    path('mail_draft_save/<int:pk>', DraftUpdateView.as_view(), name='update_draft'),
     path('mail_delete/<int:pk>', MailDeleteView, name='mail_delete'),
     path('mail_receiver_delete/<int:pk>', MailReceiverDeleteView.as_view(), name='mail_receiver_delete'),
     path('mail_create', MailMultipleCreate.as_view(), name='mail_create'),
