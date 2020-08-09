@@ -4,23 +4,21 @@ from datetime import datetime, timedelta
 from time import timezone
 
 from django.conf import settings
+from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
     FileField
-from django.contrib.sessions.models import Session
 from django.db.models.signals import post_delete
-from django.dispatch import receiver
+from django.dispatch.dispatcher import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.contrib.auth import user_logged_in
-from django.dispatch.dispatcher import receiver
-
 
 # from quiz.models import Quiz
 
@@ -264,10 +262,22 @@ class CourseInfo(models.Model):
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
 
+    def innings_of_this_course(self):
+        innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
+        return innings
+
     def get_teachers_of_this_course(self):
         teachers_of_this_course_id = InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
         teachers_of_this_course = MemberInfo.objects.filter(pk__in=teachers_of_this_course_id)
         return teachers_of_this_course
+
+    # Get All Students from all groups of all innings in which the course is associated with
+    def get_students_of_this_course(self):
+        student_list = set()
+        for inning in self.innings_of_this_course():
+            for student in inning.Groups.Students.all():
+                student_list.add(student)
+        return student_list
 
     # def get_exam_quiz(self):
     #     return Quiz.objects.get(exam_paper=True, course_code=self.id)
