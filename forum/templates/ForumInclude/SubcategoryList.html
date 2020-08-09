@@ -7,34 +7,44 @@
 {% block main_contain %}
 <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading ">
+        <div class="row">
+            <div class="col-md-7  col-sm-7 col-xs-12">
+                <h2 class="topic_header">
+                    <div class="icon-block half img-circle bg-grey-300">
+                        {% if topic.topic_icon %}
+                        <i class="fa fa-{{ topic.topic_icon }}"></i>
+                        {% else %}
+                        <i class="fa fa-book"></i>
+                        {% endif %}
+        
+                    </div> <span class="text-primary">    {{ panel_title }} </span>
+                   
+                </h2>
+                <div class="topic_des">
+                    <small> {{ topic.description }} </small>
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-5 col-xs-12">
+                <span class="pull-right new_thread">
+                    <a class="btn btn-light btn-flat" href="
+                    {% if '/teachers' in request.path %}
+                    {% url 'teacher_create_thread' topic.node_group.pk topic.pk %}
+                    {% elif '/students' in request.path %}
+                    {% url 'student_create_thread' topic.node_group.pk topic.pk %}
+                    {% else %}
+                    {% url 'forum:create_thread' topic.node_group.pk topic.pk %}
+                                {% endif %}
+                 "><i class="fa fa-fw fa-plus"></i>
+                        Ask New Question</a>
+        
+                </span>
 
-        <h2 class="topic_header">
-            <div class="icon-block half img-circle bg-grey-300">
-                {% if topic.topic_icon %}
-                <i class="fa fa-{{ topic.topic_icon }}"></i>
-                {% else %}
-                <i class="fa fa-book"></i>
-                {% endif %}
-
-            </div> {{ panel_title }}
-        </h2>
-        <div class="topic_des">
-            <small> {{ topic.description }} </small>
+            </div>
         </div>
 
-        <span class="pull-right new_thread">
-            <a class="btn btn-white btn-flat" href="
-            {% if '/teachers' in request.path %}
-            {% url 'teacher_create_thread' topic.node_group.pk topic.pk %}
-            {% elif '/students' in request.path %}
-            {% url 'student_create_thread' topic.node_group.pk topic.pk %}
-            {% else %}
-            {% url 'forum:create_thread' topic.node_group.pk topic.pk %}
-                        {% endif %}
-         "><i class="fa fa-fw fa-plus"></i>
-                Ask New Question</a>
+  
 
-        </span>
+      
 
     </div>
 
@@ -66,7 +76,7 @@
                         {% url 'student_thread' pk=thread.pk %}
                         {% else %}
                         {% url 'forum:thread' pk=thread.pk %}
-                        {% endif %}" class="entry-link">
+                        {% endif %}" class="entry-link ">
                             {{ thread.title }}
                         </a>
 

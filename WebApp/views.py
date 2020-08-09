@@ -1446,6 +1446,7 @@ class InningInfoCreateView(CreateView):
 
 class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
     model = InningInfo
+    template_name = 'center_admin/inninginfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

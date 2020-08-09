@@ -11,65 +11,75 @@
 
     <div class="x_panel">
         <div class="x_title panel" style="padding: 0 10px">
-            <h2>{{ thread.topic.node_group }} </h2>
-            <div class="top_button " style="margin-top: 10px;">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2 class="text-secondary">{{ thread.topic.node_group }} </h2>
 
-                {% if request.user == thread.user %}
-                <a href="
-                {% if '/teachers' in request.path %}
-                    {% url 'teacher_edit_thread' pk=thread.pk %}
-                    {% elif '/students' in request.path %}
-                    {% url 'student_edit_thread' pk=thread.pk %}  
-                     {% elif '/forum' in request.path %}
-                     {% url 'forum:edit_thread' pk=thread.pk %}
-                     {% endif %}"><span class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i> {% trans 'Edit' %}
-                    </span></a>
-                {% endif %}
+                </div>
+                <div class="col-md-6  col-sm-6 col-xs-12 text-right">
+                    <div class="top_button " style="margin-top: ;">
 
+                        {% if request.user == thread.user %}
+                        <a href="
+                        {% if '/teachers' in request.path %}
+                            {% url 'teacher_edit_thread' pk=thread.pk %}
+                            {% elif '/students' in request.path %}
+                            {% url 'student_edit_thread' pk=thread.pk %}  
+                             {% elif '/forum' in request.path %}
+                             {% url 'forum:edit_thread' pk=thread.pk %}
+                             {% endif %}"><span class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i> {% trans 'Edit' %}
+                            </span></a>
+                        {% endif %}
+        
+        
+                        {% if not '/students' in request.path %}
+                        {#                                <a href="#" class="moderate-action move-thread-up" data-toggle="modal"#}
+                        {#                                    data-target="#moderation-modal" data-pk="{{ thread.pk }}"#}
+                        {#                                    data-action="move-thread-up"#}
+                        {#                                    data-api-url="{% url 'forum:thread-detail' thread.pk %}">#}
+                        {#                                    <span class="btn btn-primary btn-xs"><i class="fa fa-chevron-up"></i> Up </span>#}
+                        {#                                </a>#}
+                        {% if thread.closed %}
+        
+                        <a href="#" class="moderate-action open-thread" data-toggle="modal" data-target="#moderation-modal"
+                            data-pk="{{ thread.pk }}" data-action="open-thread"
+                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
+                            <span class="btn btn-info btn-xs" style="margin-right: 5px;"><i class="fa fa-close"></i> Open </span>
+                        </a>
+                        {% else %}
+                        <a href="#" class="moderate-action close-thread" data-toggle="modal" data-target="#moderation-modal"
+                            data-pk="{{ thread.pk }}" data-action="close-thread"
+                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
+                            <span class="btn btn-info btn-xs" style="margin-right: 5px;">
+                                <i class="fa fa-folder-open-o"></i> Close </span>
+                        </a>
+                        {% endif %}
+                        {% if thread.hidden %}
+                        <a href="#" class="moderate-action hide-thread" data-toggle="modal" data-target="#moderation-modal"
+                            data-pk="{{ thread.pk }}" data-action="unhide-thread"
+                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
+                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> UnHide </span>
+                        </a>
+                        {% else %}
+                        <a href="#" class="moderate-action hide-thread" data-toggle="modal" data-target="#moderation-modal"
+                            data-pk="{{ thread.pk }}" data-action="hide-thread"
+                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
+                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> Hide </span>
+                        </a>
+                        {% endif %}
+        
+                        {% endif %}
+        
+        
+        
+        
+        
+                    </div>
 
-                {% if not '/students' in request.path %}
-                {#                                <a href="#" class="moderate-action move-thread-up" data-toggle="modal"#}
-                {#                                    data-target="#moderation-modal" data-pk="{{ thread.pk }}"#}
-                {#                                    data-action="move-thread-up"#}
-                {#                                    data-api-url="{% url 'forum:thread-detail' thread.pk %}">#}
-                {#                                    <span class="btn btn-primary btn-xs"><i class="fa fa-chevron-up"></i> Up </span>#}
-                {#                                </a>#}
-                {% if thread.closed %}
-
-                <a href="#" class="moderate-action open-thread" data-toggle="modal" data-target="#moderation-modal"
-                    data-pk="{{ thread.pk }}" data-action="open-thread"
-                    data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                    <span class="btn btn-info btn-xs" style="margin-right: 5px;"><i class="fa fa-close"></i> Open </span>
-                </a>
-                {% else %}
-                <a href="#" class="moderate-action close-thread" data-toggle="modal" data-target="#moderation-modal"
-                    data-pk="{{ thread.pk }}" data-action="close-thread"
-                    data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                    <span class="btn btn-info btn-xs" style="margin-right: 5px;">
-                        <i class="fa fa-folder-open-o"></i> Close </span>
-                </a>
-                {% endif %}
-                {% if thread.hidden %}
-                <a href="#" class="moderate-action hide-thread" data-toggle="modal" data-target="#moderation-modal"
-                    data-pk="{{ thread.pk }}" data-action="unhide-thread"
-                    data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                    <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> UnHide </span>
-                </a>
-                {% else %}
-                <a href="#" class="moderate-action hide-thread" data-toggle="modal" data-target="#moderation-modal"
-                    data-pk="{{ thread.pk }}" data-action="hide-thread"
-                    data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                    <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> Hide </span>
-                </a>
-                {% endif %}
-
-                {% endif %}
-
-
-
-
-
+                </div>
             </div>
+           
+           
 
             <div class="clearfix"></div>
         </div>
@@ -296,7 +306,7 @@
                             {% if not thread.closed %}
                                 <div class="x_panel" id="Goto_Reply">
                                     <div class="x_title">
-                                        <h2 style="font-weight: bold">Post Reply
+                                        <h2 class="text-secondary" style=" ">Post Reply
 
                                         </h2>
 
@@ -397,14 +407,14 @@
 
                                         <div id="editor-one" class="editor-wrapper"></div>
 
-                                        <textarea name="content_raw" id="id_content_raw" style="display:none;"></textarea>
+                                        <textarea class="form-control" name="content_raw" id="id_content_raw" style=";"></textarea>
 
                                     </div>
 
 
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="margin: 10px 0;">
                                     <div class="controls "><input type="submit" name="submit" value="Submit"
                                             class="btn btn-sm btn-primary" id="submitButton"></div>
                                 </div>
