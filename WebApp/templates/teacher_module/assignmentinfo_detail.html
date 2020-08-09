@@ -63,21 +63,22 @@
     </div>
 
     <div style="padding-bottom: 10px;">
+        
         <h1 class="pageHeader">
             {{ object.Assignment_Topic }}
-            <span style="font-size: large; padding: 10px; margin: 10px">
-                <button type="button" class="btn-sm btn-link" data-toggle="modal" data-target="#editAssignmentModal"
+            
+                <button type="button" class=" btn btn-sm  btn-light" data-toggle="modal" data-target="#editAssignmentModal"
                         id="editAssignment-btn">
-                    <i class="fa fa-edit text-info"></i>
+                    <i class="fa fa-edit text-info">    </i> <span>Edit</span>
                 </button>
                 {% if '/teachers' in request.path %}
 
-                    <span style="">
-                    <button type="button" class="btn btn-link"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                                                                  style="color: rgb(255, 0, 0);cursor:pointer">
-                        <i class="fa fa-trash text-danger"></i>
+                   
+                    <button type="button" class=" btn btn-sm  btn-light"><a id="{{ object.pk }}" class="assignment-confirm-delete"
+                                                                  style="color: rgb(255, 0, 0);cursor:pointer; margin:0px;padding:0px; text-decoration:none; ">
+                        <i class="fa fa-trash text-danger"></i> <span>Delete</span>
                     </a></button>
-                </span>
+               
                     <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
                           id="deleteAssignment{{ object.pk }}">
                             {% csrf_token %}
@@ -87,7 +88,7 @@
                         </form>
                 {% else %}
                     <span style="">
-                    <button type="button" class="btn btn-link"><a id="{{ object.pk }}" class="assignment-confirm-delete"
+                    <button type="button" class="btn btn-light btn-sm"><a id="{{ object.pk }}" class="assignment-confirm-delete"
                                                                   style="color: rgb(255, 0, 0);cursor:pointer">
                         <i class="fa fa-trash text-danger"></i>
                     </a></button>
@@ -101,19 +102,19 @@
                             <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
                         </form>
                 {% endif %}
-            </span>
+            
         </h1>
 
     </div>
-    <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-12">
-            Course: {{ object.Course_Code }}
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left" >
+           <b style="font-size: 15px;">Course: </b>  {{ object.Course_Code }}
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-12">
-            Chapter: {{ object.Chapter_Code }}
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;">Chapter:</b>  {{ object.Chapter_Code }}
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-12">
-            <span style="">Session:</span>
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;">Session:</b>
             <select id="select_session" class="form-control-sm" style="width: 50%;">
                 {% for x in session_list %}
                     {% for session in x %}
@@ -134,21 +135,22 @@
         </div>
 
     </div>
-    <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            Assignment Start Date: <span
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;">  Assignment Date: </b> <span
                 class="dateconFullMonth"> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            Assignment Deadline: <span
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;">  Assignment Deadline: </b> <span
                 class="dateconFullMonth"> {{ object.Assignment_Deadline|date:'d M, Y h:i A' }} </span>
         </div>
 
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            Register Agent: {{ object.Register_Agent }}
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;"> Register Agent: </b>    {{ object.Register_Agent }}
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            Status:
+    </div> 
+        <div class=" text-left " style="margin-bottom: 10px;">
+            <b style="font-size: 15px;">  Status: </b>             
             {% if object.Use_Flag is True %}
                 <span class="badge badge-success">Published</span>
             {% elif object.Use_Flag is False %}
@@ -164,19 +166,19 @@
                 <span class="badge badge-success">Active</span>
             {% endif %}
         </div>
-    </div>
+   
 
     <hr class="header_hr">
 
     {% for question in questions %}
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row" style=" ;">
+            <div class="col-md-9">
                 <h5>
-                    Question : <br><br> <b>{{ question.Question_Title }}</b>
+                  <b>  Question :</b>  <br><br> <b>{{ question.Question_Title }}</b>
                 </h5>
             </div>
-            <div class="col-md-2">
-                <button class="btn btn-primary" type="button" data-toggle="collapse"
+            <div class="col-md-1    ">
+                <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse"
                         data-target="#answer-collapse-{{ question.id }}"
                         aria-expanded="false" aria-controls="collapseExample">
                     Answer
@@ -185,7 +187,7 @@
 
             <div class="col-md-2">
                 {% if '/students' not in request.path %}
-                    <button class="btn-link editquestion-btn" class="btn-sm btn-success" data-toggle="modal"
+                    <button class=" btn editquestion-btn btn-light btn-sm "  data-toggle="modal"
                             data-target="#editQuestionModal"
                             data-questionpk="{{ question.pk }}"
                             id="editquestion-btn{{ question.pk }}">
@@ -217,8 +219,8 @@
                     {% if '/teachers' in request.path %}
 
                         <span style="float: right;"><a id="{{ question.pk }}" class="confirm-delete"
-                                                       style="color: #2A3F54;cursor:pointer">
-                                Delete
+                                                       style="color: #dc3545;cursor:pointer; line-height:30px ">
+                              <b>Delete</b>  
                             </a></span>
 
                         <form method="post"
@@ -256,70 +258,72 @@
                     All Files
                 </btn>
             {% endif %}
-            <table class="table table-data table-striped table-bordered bg-white nowrap">
-                <thead class="thead-light bg-primary">
-                <tr class="tableTitleRow">
-                    <td>S.No.</td>
-                    <td>S.No.</td>
-                    <td>Student Name</td>
-                    <td>Total Marks</td>
-                    <td>Marks Obtained</td>
-                    <td>Answer</td>
-                    <td>Submitted on</td>
-                    <td>Action</td>
-                </tr>
-                </thead>
-                <tbody>
-                {% for student in students_list %}
-                    {% getAssignmentAnswer Assignment student question as answer %}
-                    <tr>
-                        <td class="counterCell" style=" padding-top: 15px;"></td>
-                        <td>{{ forloop.counter }}</td>
-                        <td style=" padding-top: 15px;">{{ student }}</td>
-                        <td>{{ question.Question_Score }} </td>
+            <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px;">
+                <table class="table table-data table-striped table-bordered bg-white nowrap" style="width: 100%; ">
+                    <thead class="thead-light bg-primary">
+                    <tr class="tableTitleRow">
+                        <td>S.No.</td>
+                        <td>S.No.</td>
+                        <td>Student Name</td>
+                        <td>Total Marks</td>
+                        <td>Marks Obtained</td>
+                        <td>Answer</td>
+                        <td>Submitted on</td>
+                        <td>Action</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for student in students_list %}
+                        {% getAssignmentAnswer Assignment student question as answer %}
+                        <tr>
+                            <td class="counterCell" style=" padding-top: 15px;"></td>
+                            <td>{{ forloop.counter }}</td>
+                            <td style=" padding-top: 15px;">{{ student }}</td>
+                            <td>{{ question.Question_Score }} </td>
 
-                        <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
-                            data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
-                            {% if answer %}
-                                {% if answer.Assignment_Score is None %}
-                                    Not graded
+                            <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
+                                data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
+                                {% if answer %}
+                                    {% if answer.Assignment_Score is None %}
+                                        Not graded
+                                    {% else %}
+                                        {{ answer.Assignment_Score }}
+                                    {% endif %}
+                                    <span class="edit_assignment_score"
+                                        data-assignment_score="{{ answer.Assignment_Score }}">
+                                        <i class="fa fa-edit"></i>
+                                    </span>
                                 {% else %}
-                                    {{ answer.Assignment_Score }}
+                                    Not Submitted
                                 {% endif %}
-                                <span class="edit_assignment_score"
-                                      data-assignment_score="{{ answer.Assignment_Score }}">
-                                    <i class="fa fa-edit"></i>
-                                </span>
-                            {% else %}
+                            </td>
+
+                            <td>{{ answer.Assignment_Answer }}</td>
+                            <td>{% if answer %}
+                                Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
+                            {% elif not answer %}
                                 Not Submitted
                             {% endif %}
-                        </td>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info showanswer" data-toggle="modal"
+                                        data-target="#exampleModal1"
+                                        value="{{ answer.id }}" style="float: right;color:black"
+                                        data-student_Score="{{ answer.Assignment_Score }}"
+                                        data-assignment_feedback="{{ answer.Assignment_Feedback }}"
+                                        {% if not answer %}
+                                        disabled
+                                        {% endif %}
+                                >
+                                    <b>View Answer</b>
+                                </button>
+                            </td>
+                        </tr>
 
-                        <td>{{ answer.Assignment_Answer }}</td>
-                        <td>{% if answer %}
-                            Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
-                        {% elif not answer %}
-                            Not Submitted
-                        {% endif %}
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-info showanswer" data-toggle="modal"
-                                    data-target="#exampleModal1"
-                                    value="{{ answer.id }}" style="float: right;color:black"
-                                    data-student_Score="{{ answer.Assignment_Score }}"
-                                    data-assignment_feedback="{{ answer.Assignment_Feedback }}"
-                                    {% if not answer %}
-                                    disabled
-                                    {% endif %}
-                            >
-                                <b>View Answer</b>
-                            </button>
-                        </td>
-                    </tr>
-
-                {% endfor %}
-                </tbody>
-            </table>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     {% endfor %}
     </div>
