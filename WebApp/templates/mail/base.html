@@ -17,11 +17,14 @@
     <!-- Mail SideBar -->
     <div class="col-md-3 app-sidebar">
        <div class="card">
+           {% if "mail_draft_detail" in request.get_full_path or "send_detail" in request.get_full_path or "mail_detail" in request.get_full_path%}
+           {%else%}
           <div class="card-body">
              <button class="btn btn-primary btn-block comp_eml" data-toggle="modal" data-target="#compose">
              <i class="ti-plus mr-2"></i> Compose Email
              </button>
           </div>
+           {% endif%}
           <div class="app-sidebar-menu">
              <div class="list-group list-group-flush">
                 <a href="{% url 'mail_list' %}?email_type=inbox"
@@ -211,6 +214,8 @@
     </div>
  </div>
 
+
+
  <!-- Mail Compose Popup Model -->
  <div class="modal fade" tabindex="-1" role="dialog" id="compose">
     <div class="modal-dialog" role="document">
@@ -227,7 +232,7 @@
 
                    <a href="#" data-toggle="tooltip" title=""
                        id="draft_email_create"
-                      class="btn btn-outline-light mr-2"
+                      class="btn btn-outline-primary mr-2"
                       data-original-title="Keep">
                    <i class="ti-save"></i>
                    </a>
@@ -247,8 +252,9 @@
                         <i class="fa fa-ellipsis-h"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right  ">
-                                <a class="dropdown-item  student_recipient" href="#">Student</a>
-                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>
+<!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
+<!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
+                                <a class="dropdown-item all_recipient " href="#">All </a>
                                 <a class="dropdown-item all_stu_recipient" href="#">All Students</a>
                                <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>
                         </div>
@@ -256,7 +262,19 @@
 
 
 
+
              </div>
+              <div>
+
+                  <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Teacher</a>
+                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Student</a>
+
+
+
+
+
+              </div>
+              <br>
              <form method="POST" class="email_compose_form" id="email_submit_form"
                           action="mail_create"
                           enctype="multipart/form-data">
@@ -349,6 +367,8 @@
        </div>
     </div>
  </div>
+
+
 {% endblock %}
 
 {% block javascript %}
@@ -373,6 +393,20 @@
          {% if "mail_draft_detail" in request.get_full_path %}
             $(".draft_article").find(".ql-editor").html("{{ object.body|safe }}");
             $(".card_display_email").click();
+
+        // Recipient Teacher List Auto Selected
+            if ( $("#teacher_recipient").hasClass("btn-success")){
+
+                $(".teacher_list").show(); // css('display','block');
+                $(".student_list").hide(); //css('display','none');
+                $(".user_list").hide(); // css('display','none');
+                $("input[name='user_select_option']").val("single_teacher");
+                console.log("btn-success");
+
+            }
+
+
+
         {% endif %}
 
         {% if "mail_detail" in request.get_full_path %}
@@ -389,6 +423,9 @@
                 $(".ql-editor").focus();
 
         {% endif %}
+
+
+
 
     });
 
@@ -473,6 +510,21 @@
 
 
 
+
+     // Draft Form UPLOAD Label
+    $("#customFileLangHTMLDraft").change(function(){
+       // $("label[for='customFileLangHTMLDraft']").html($("#customFileLangHTMLDraft").val());
+
+
+        let file_path = ($("#customFileLangHTMLDraft").val());
+        let file_name = file_path.substr(file_path.lastIndexOf('\\') + 1);
+        $("label[for='customFileLangHTMLDraft']").html(file_name);
+        $("#attachment-clear_id").removeAttr("checked");
+
+    });
+
+
+
 // Re-load Back on clicking Back Button //
       $(".email_back_button").click(function(){
         //{%if 'send_detail' in request.get_full_path %}
@@ -526,6 +578,19 @@
                 return null;
             }
         }
+
+
+
+        if (sel_option === "all_recipients") {
+
+                return state.text.replace("__student__", "").replace("__teacher__", "");
+
+        }
+
+
+
+
+
         return state.text.replace("__student__", "").replace("__teacher__", "");
     };
 
@@ -534,6 +599,12 @@
     };
 
      $(".select2-example-user").select2({
+        placeholder: ' Select',
+        templateResult: formatState,
+        templateSelection: formatStateSel,
+    });
+
+     $(".select2-example-draft").select2({
         placeholder: ' Select',
         templateResult: formatState,
         templateSelection: formatStateSel,
@@ -623,6 +694,14 @@ $(".card_display_email").click(function(){
     });
 
 
+// Saving Draft from Draft Detail
+    $("#draft_email_save").click(function(){
+        {% if object%}
+        let url_send = "{% url 'update_draft' object.pk %}?email_type={{ email_type }}";
+        $("#draft_submit_form").attr('action',url_send);
+        $("#draft_submit_form").submit();
+        {% endif %}
+    });
 
 
 
@@ -788,50 +867,67 @@ $(".card_display_email").click(function(){
 
 
 
+// Email Compose Student Label
+ $("#student_recipient").click(function(){
+
+    if ($("#teacher_recipient").hasClass("btn-success")){
+           $("#teacher_recipient").removeClass("btn-success");
+           $("#teacher_recipient").addClass("btn-light");
+           $("#student_recipient").removeClass("btn-light");
+           $("#student_recipient").addClass("btn-success");
+        // $("#teacher_recipient").toggleClass("btn-success btn-light");
+        }
+
+     // $("#student_recipient").toggleClass("btn-light btn-success");
 
 
- // $(".teacher_recipient").click(function(){
+    if ($(this).hasClass("btn-success")){
+        $(".teacher_list").hide(); // css('display','block');
+        $(".student_list").show(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_student");
+        console.log("btn-success");
 
- //   $(".teacher_list").show(); // css('display','block');
- //   $(".student_list").hide(); //css('display','none');
- //   $(".user_list").hide(); // css('display','none');
-  //  $("recipient_selector").hide();
-
-
-
- //   console.log(" teacher list shown");
-
-  //  });
+    }
 
 
-
- $(".student_recipient").click(function(){
-
-    $(".select2-example-user").val("");
-    $(".select2-example-user").trigger('change');
-
-
-   $(".teacher_list").hide(); // css('display','block');
-   $(".student_list").show(); //css('display','none');
-   $(".user_list").hide(); // css('display','none');
-   $("input[name='user_select_option']").val("single_student");
-   $(".recipient_selector").click();
-
-   console.log(" teacher list shown");
 
   });
 
 
 
-$(".teacher_recipient").click(function () {
-    $(".select2-example-user").val("");
-    $(".select2-example-user").trigger('change');
-    $(".teacher_list").show(); // css('display','block');
-    $(".student_list").hide(); //css('display','none');
-    $(".user_list").hide(); // css('display','none');
-    $("input[name='user_select_option']").val("single_teacher");
-    $(".recipient_selector").click();
+
+// Email Compose Teacher Label
+$("#teacher_recipient").click(function () {
+
+    if ($("#student_recipient").hasClass("btn-success")){
+              $("#student_recipient").removeClass("btn-success");
+              $("#student_recipient").addClass("btn-light");
+              $("#teacher_recipient").removeClass("btn-light");
+              $("#teacher_recipient").addClass("btn-success");
+            //  $("#student_recipient").toggleClass("btn-success btn-light");
+        }
+
+   // $("#teacher_recipient").toggleClass("btn-success btn-light");
+
+
+    if ($(this).hasClass("btn-success")){
+        $(".teacher_list").show(); // css('display','block');
+        $(".student_list").hide(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_teacher");
+        console.log("btn-success");
+
+    }
+
+
+
 });
+
+
+
+
+
 
 
 
@@ -840,7 +936,9 @@ $(".all_stu_recipient").click(function () {
     $("input[name='user_select_option']").val("all_student");
     let old_sel = [];
     $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     {% for u in user_list %}
     {% if u.Is_Student %}
     if (!old_sel.includes('{{u.pk}}')){
@@ -851,7 +949,9 @@ $(".all_stu_recipient").click(function () {
     {% endfor %}
     console.log(old_sel);
     $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     $(".recipient_selector").click();
 
 
@@ -862,7 +962,9 @@ $(".all_tea_recipient").click(function () {
 
     let old_sel = [];
     $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     {% for u in user_list %}
     {% if u.Is_Teacher %}
     if (!old_sel.includes('{{u.pk}}')){
@@ -872,17 +974,77 @@ $(".all_tea_recipient").click(function () {
     {% endfor %}
     console.log(old_sel);
     $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
     $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
     $(".recipient_selector").click();
 
 
 });
 
+
+
+$(".all_recipient").click(function () {
+    $("input[name='user_select_option']").val("all_recipients");
+
+    let old_sel = [];
+    $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    {% for u in user_list %}
+
+    if (!old_sel.includes('{{u.pk}}')){
+         old_sel.push('{{ u.pk }}');
+    }
+
+    {% endfor %}
+    console.log(old_sel);
+    $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    $(".recipient_selector").click();
+
+
+});
+
+
+// Email Compose On Click
 $(".comp_eml").click(function(){
     $("input[name='user_select_option']").val("");
     $(".select2-example-user").trigger('change');
 
+
+
+// Recipient Teacher List Auto Selected
+    if ( $("#teacher_recipient").hasClass("btn-success")){
+
+        $(".teacher_list").show(); // css('display','block');
+        $(".student_list").hide(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_teacher");
+        console.log("btn-success");
+
+    }
+
 })
+
+$("#clear_btn").click(function(){
+    $(".custom-file-label").empty();
+   // $("#customFileLangHTMLDraft").attr("value", "   ");
+   // $("#customFileLangHTMLDraft").val("   ");
+   // $("#customFileLangHTMLDraft").trigger('change');
+    $("#attachment-clear_id").attr("checked", "checked");
+    $(".clear_div").hide();
+
+
+   // if(!$(custom-file-label).text()){
+   //     $(".clear_div").hide();
+
+  //  }
+
+});
 
     </script>
 {%endblock%}
