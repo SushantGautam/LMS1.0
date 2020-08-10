@@ -13,7 +13,7 @@ from django_summernote.widgets import SummernoteWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager, Attendance
+    InningManager, Attendance, DepartmentInfo
 
 
 class UserRegisterForm(UserCreationForm):
@@ -55,6 +55,23 @@ class CenterInfoForm(forms.ModelForm):
                   'Use_Flag', 'Register_Agent']
 
 
+class DepartmentInfoForm(forms.ModelForm):
+    class Meta:
+        model = DepartmentInfo
+        fields = ['Department_Name', 'Center_Code',
+                  'Register_Agent', 'Use_Flag']
+        widgets = {
+            'Center_Code': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Center_Code'].initial = self.request.user.Center_Code
+        if '/edit' in self.request.path:
+            del self.fields['Register_Agent']
+
+
 class MemberInfoForm(forms.ModelForm):
     Use_Flag = forms.BooleanField(initial=True, required=False)
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
@@ -85,6 +102,13 @@ class MemberInfoForm(forms.ModelForm):
                                    'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                Field(
                                    'password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field(
+                                   'Member_Department', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Position', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
@@ -137,7 +161,10 @@ class MemberInfoForm(forms.ModelForm):
         model = MemberInfo
         Member_BirthDate = forms.DateField(widget=SelectDateWidget(
             years=range(1985, datetime.date.today().year + 10)))
-        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', \
+                 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
+                 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag', 'Member_Department', \
+                 'Member_Position'
 
 
 class MemberUpdateForm(forms.ModelForm):
@@ -168,6 +195,13 @@ class MemberUpdateForm(forms.ModelForm):
                                    'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                Field(
                                    'email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field(
+                                   'Member_Department', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Position', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
@@ -210,7 +244,10 @@ class MemberUpdateForm(forms.ModelForm):
 
     class Meta:
         model = MemberInfo
-        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student'
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', \
+                 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
+                 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Member_Department', \
+                 'Member_Position'
 
 
 class CourseInfoForm(forms.ModelForm):
@@ -422,15 +459,16 @@ class AssignmentInfoForm(forms.ModelForm):
 
 class QuestionInfoForm(forms.ModelForm):
     Question_Description = forms.CharField(widget=SummernoteWidget(attrs=
-                            {'summernote': 
-                            {'width': '100%', 'height': '480px',
-                             'toolbar': [["style", ["style"]],
-                                         ["font", ["bold", "italic", "underline"]],
-                                         ["para", ["ul", "ol"]],
-                                         ["table", ["table"]],
-                                         ["insert", ["link", "picture"]],
-                                         ]}
-                             }), required=False)
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '480px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
 
     class Meta:
         model = AssignmentQuestionInfo

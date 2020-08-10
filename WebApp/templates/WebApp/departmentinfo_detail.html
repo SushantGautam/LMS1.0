@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Departments</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.DepartMent_Name }}</li>
+
+{% endblock %}
+
+{% block content %}
+    <div class="outerDiv">
+        <h2 class="detailListHeader">Department Information</h2>
+        <hr class="header_hr">
+        <br>
+        <table class="table">
+            <tr>
+                <td>Department Name</td>
+                <td>{{ object.Department_Name }}</td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>
+                    {% if object.Use_Flag == True %}
+                        <span class="text-success">Active</span>
+                    {% else %}
+                        <span class="text-danger">Disable</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Register Agent</td>
+                <td>{{ object.Register_Agent }}</td>
+            </tr>
+            <tr>
+                <td>Register DateTime</td>
+                <td>{{ object.Register_DateTime }}</td>
+            </tr>
+            <tr>
+                <td>Updated DateTime</td>
+                <td>{{ object.Updated_DateTime }}</td>
+            </tr>
+
+        </table>
+        <br>
+        <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'departmentinfo_delete' pk=object.pk %}"
+           onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
+            Delete Department</a>
+    </div>
+
+{% endblock %}

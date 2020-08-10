@@ -53,10 +53,10 @@ from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
-    InningManagerForm
+    InningManagerForm, DepartmentInfoForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice, NoticeView
+    InningManager, Notice, NoticeView, DepartmentInfo
 
 
 # from pathlib import Path
@@ -423,6 +423,49 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
+# ===================== DepartmentInfo Views =================
+
+class DepartmentInfoListView(ListView):
+    model = DepartmentInfo
+
+
+class DepartmentInfoCreateView(CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+
+class DepartmentInfoDetailView(DetailView):
+    model = DepartmentInfo
+
+
+class DepartmentInfoUpdateView(UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+
+def DepartmentInfoDeleteView(request, pk):
+    DepartmentInfo.objects.filter(pk=pk).delete()
+    return redirect("departmentinfo_list")
+
+
+# ==========================    End of Department Views =========================================
+
 class MemberInfoListView(TemplateView):
     template_name = "WebApp/memberinfo_list.html"
     # model = MemberInfo
@@ -435,10 +478,12 @@ class MemberInfoListViewAjax(BaseDatatableView):
     model = MemberInfo
     counter = 0
     template_name = "WebApp/memberinfo_list.html"
-    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
+    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Department',
+               'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
+    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+                     'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
