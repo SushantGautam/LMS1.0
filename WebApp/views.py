@@ -1462,6 +1462,7 @@ class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
 class InningInfoUpdateView(InningInfoAuthMxnCls, UpdateView):
     model = InningInfo
     form_class = InningInfoForm
+    template_name = "center_admin/inninginfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super(InningInfoUpdateView, self).get_form_kwargs()

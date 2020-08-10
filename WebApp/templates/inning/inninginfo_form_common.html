@@ -1,25 +1,10 @@
 {% load static %}
-<link href="{% static 'vendorsx/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
 
 <!-- Modal -->
-<div class="modal fade" id="create_assignment_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="create_assignment_modal_title">Create
-                    Assignment
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i class="ti-close"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="create_assignment_modal_body">
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary font-weight-bold" id="create_assignment_modal_title">Edit Sessions
@@ -91,8 +76,7 @@
     </div>
 </div>
 
-<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'vendorsx/select2/dist/js/select2.min.js' %}"></script>
+<script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
 
 <script>
     $(document).ready(function () {
