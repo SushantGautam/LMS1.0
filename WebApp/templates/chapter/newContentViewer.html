@@ -2081,16 +2081,16 @@ var _IMAGE_HEIGHT;
 var _IMAGE_LOADED = 0;
 // Image is loaded
 function ImageLoaded() {
-    _DIV_OFFSET = $('.image-container').offset();
-    _CONTAINER_WIDTH = $(".image-container").outerWidth();
-    _CONTAINER_HEIGHT = $(".image-container").outerHeight();  
-	_IMAGE_WIDTH = $(".stack").width();
-	_IMAGE_HEIGHT = $(".stack").height();
-	_IMAGE_LOADED = 1;
+    _IMAGE_LOADED = 1;
 }
 
 $(document).on('mousedown', '.image-container', function(event){
 	/* Image should be loaded before it can be dragged */
+    _DIV_OFFSET = $(`#${this.id}`).offset();
+    _CONTAINER_WIDTH = $(`#${this.id}`).outerWidth();
+    _CONTAINER_HEIGHT = $(`#${this.id}`).outerHeight();  
+	_IMAGE_WIDTH = $(`#${this.id}`).find(".stack").width();
+	_IMAGE_HEIGHT = $(`#${this.id}`).find(".stack").height();
 	if(_IMAGE_LOADED == 1) { 
 		_DRAGGGING_STARTED = 1;
 
@@ -2099,23 +2099,26 @@ $(document).on('mousedown', '.image-container', function(event){
 	}
 });
 
-$(document).on('mouseup', '.image-container', function(event){
-    if(_IMAGE_LOADED == 1) { 
-	    
-        var current_mouse_position = { x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top };
-		var change_x = current_mouse_position.x - _LAST_MOUSE_POSITION.x;
-		var change_y = current_mouse_position.y - _LAST_MOUSE_POSITION.y;
-
-		/* Save mouse position */
-		_LAST_MOUSE_POSITION = current_mouse_position;
-
-		var img_top = parseInt($(".stack").css('top'), 10);
-		var img_left = parseInt($(".stack").css('left'), 10);
-
-		var img_top_new = img_top + change_y;
-		var img_left_new = img_left + change_x;
-        $(".stack").css({ top: img_top_new + 'px', left: img_left_new + 'px' });
+// $(document).on('mouseup', '.image-container', function(event){
+window.addEventListener('mouseup', e => {
+    console.log('asdasdasdasdasdad');
+    if(_IMAGE_LOADED == 1) {
+        console.log('asdasd');
         _DRAGGGING_STARTED = 0;
+	    
+        // var current_mouse_position = { x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top };
+		// var change_x = current_mouse_position.x - _LAST_MOUSE_POSITION.x;
+		// var change_y = current_mouse_position.y - _LAST_MOUSE_POSITION.y;
+
+		// /* Save mouse position */
+		// _LAST_MOUSE_POSITION = current_mouse_position;
+
+		// var img_top = parseInt($(`#${this.id}`).find(".stack").css('top'), 10);
+		// var img_left = parseInt($(`#${this.id}`).find(".stack").css('left'), 10);
+
+		// var img_top_new = img_top + change_y;
+		// var img_left_new = img_left + change_x;
+        // $(`#${this.id}`).find(".stack").css({ top: img_top_new + 'px', left: img_left_new + 'px' });
     }
 });
 
@@ -2128,8 +2131,8 @@ $(document).on('mousemove', '.image-container', function(event){
 		/* Save mouse position */
 		_LAST_MOUSE_POSITION = current_mouse_position;
 
-		var img_top = parseInt($(".stack").css('top'), 10);
-		var img_left = parseInt($(".stack").css('left'), 10);
+		var img_top = parseInt($(`#${this.id}`).find(".stack").css('top'), 10);
+		var img_left = parseInt($(`#${this.id}`).find(".stack").css('left'), 10);
 
 		var img_top_new = img_top + change_y;
 		var img_left_new = img_left + change_x;
@@ -2147,7 +2150,7 @@ $(document).on('mousemove', '.image-container', function(event){
         
         // console.log(img_top_new,img_left_new);
 
-		$(".stack").css({ top: img_top_new + 'px', left: img_left_new + 'px' });
+		$(`#${this.id}`).find(".stack").css({ top: img_top_new + 'px', left: img_left_new + 'px' });
 	}
 });
 </script>
