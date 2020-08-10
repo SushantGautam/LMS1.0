@@ -3791,7 +3791,8 @@ class TeacherReport(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
-        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']]
+                                           ) if context['course_list'] else 0
 
         context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code,
                                                             Use_Flag=True)
