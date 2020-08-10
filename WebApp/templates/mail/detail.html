@@ -153,11 +153,12 @@
 
                         <span class="small text-muted" id="card_content_receiver">To:
 
-                            {% for u in r_list %}
+                            {% for u in r_list%}
                             {% if u.pk in object.mail.get_receiver_list%}
 
 
-                            {{ u.username }}  &lt {{u.email}} &gt,
+                            {{ u.username  }}  &lt {{u.email}} &gt,
+
 
                         {% endif%}
                         {%endfor%}
