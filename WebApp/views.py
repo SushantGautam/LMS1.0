@@ -428,6 +428,9 @@ def CenterInfoDeleteView(request, pk):
 class DepartmentInfoListView(ListView):
     model = DepartmentInfo
 
+    def get_queryset(self):
+        return DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+
 
 class DepartmentInfoCreateView(CreateView):
     model = DepartmentInfo
@@ -549,6 +552,13 @@ class MemberInfoCreateView(CreateView):
             messages.error(self.request, 'Error in creating member')
             print(form.errors)
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 def validate_username(request):
     username = request.GET.get('username', None)
@@ -984,6 +994,14 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
 class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 
 class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):

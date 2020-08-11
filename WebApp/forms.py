@@ -71,6 +71,17 @@ class DepartmentInfoForm(forms.ModelForm):
         if '/edit' in self.request.path:
             del self.fields['Register_Agent']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('Department_Name')
+        department = DepartmentInfo.objects.filter(Department_Name=name, Center_Code=self.request.user.Center_Code)
+        if department.exists():
+            if self.instance.id:
+                if department.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if department.get(pk=self.instance.id).Department_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Department Name already Exists')
+
 
 class MemberInfoForm(forms.ModelForm):
     Use_Flag = forms.BooleanField(initial=True, required=False)
@@ -79,7 +90,6 @@ class MemberInfoForm(forms.ModelForm):
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
-
         Accordion(
             AccordionGroup('Basic Information',
 
@@ -166,6 +176,11 @@ class MemberInfoForm(forms.ModelForm):
                  'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag', 'Member_Department', \
                  'Member_Position'
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
+                                                                                  Center_Code=self.request.user.Center_Code)
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
@@ -248,6 +263,12 @@ class MemberUpdateForm(forms.ModelForm):
                  'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
                  'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Member_Department', \
                  'Member_Position'
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
+                                                                                  Center_Code=self.request.user.Center_Code)
 
 
 class CourseInfoForm(forms.ModelForm):

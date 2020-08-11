@@ -60,7 +60,7 @@ class CenterInfo(models.Model):
         return reverse('centerinfo_delete', args=(self.pk,))
 
 class DepartmentInfo(models.Model):
-    Department_Name = CharField(max_length=500, unique=True)
+    Department_Name = CharField(max_length=500)
     Use_Flag = BooleanField(default=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
