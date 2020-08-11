@@ -76,6 +76,7 @@ class AjaxableResponseMixin:
     Mixin to add AJAX support to a form.
     Must be used with an object-based FormView (e.g. CreateView)
     """
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
         if self.request.is_ajax():
@@ -208,13 +209,13 @@ def start(request):
         if request.user.Is_CenterAdmin:
             thread = Thread.objects.visible().filter(
                 user__Center_Code=request.user.Center_Code).order_by(
-                    '-pub_date')[:5]
+                '-pub_date')[:5]
             wordCloud = Thread.objects.filter(
                 user__Center_Code=request.user.Center_Code)
             thread_keywords = get_top_thread_keywords(request, 10)
             course = CourseInfo.objects.filter(
                 Use_Flag=True, Center_Code=request.user.Center_Code).order_by(
-                    '-Register_DateTime')[:5]
+                '-Register_DateTime')[:5]
             coursecount = CourseInfo.objects.filter(
                 Center_Code=request.user.Center_Code, Use_Flag=True).count
             studentcount = MemberInfo.objects.filter(
@@ -370,7 +371,7 @@ def edit_profile_image_ajax(request):
                     'status': 'Fail',
                     "msg": "File size exceeds 2MB"
                 },
-                                    status=500)
+                    status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace(
                 '-', '') + '.' + media.name.split('.')[-1]
@@ -536,9 +537,9 @@ class MemberInfoListViewAjax(BaseDatatableView):
         if search:
             qs = qs.filter(username__istartswith=search) | qs.filter(
                 first_name__istartswith=search) | qs.filter(
-                    last_name__istartswith=search) | qs.filter(
-                        email__istartswith=search) | qs.filter(
-                            Member_Phone__istartswith=search)
+                last_name__istartswith=search) | qs.filter(
+                email__istartswith=search) | qs.filter(
+                Member_Phone__istartswith=search)
         if onlystudents:
             qs = qs.filter(Is_Student=True)
         if onlyteachers:
@@ -580,7 +581,7 @@ def validate_username(request):
     username = request.GET.get('username', None)
     data = {
         'is_taken':
-        MemberInfo.objects.filter(username__iexact=username).exists()
+            MemberInfo.objects.filter(username__iexact=username).exists()
     }
     if data['is_taken']:
         data['error_message'] = 'A user with this username already exists.'
@@ -683,12 +684,12 @@ def ImportCsvFile(request, *args, **kwargs):
                     if len(last_name) >= 50:
                         error = "Last name can't be more than 50 characters"
                         raise Exception
-                    
+
                     if not gender:
                         error = "Gender is required"
                         raise Exception
                     gender = gender.upper()
-                    if not gender in ['M','F']:
+                    if not gender in ['M', 'F']:
                         error = "Gender must be either m or f for male and female respectively"
                         raise Exception
 
@@ -702,7 +703,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     except:
                         error = "Student value should be integer"
                         raise Exception
-                    if not student in [0,1]:
+                    if not student in [0, 1]:
                         error = "Student value should be either 0 or 1"
                         raise Exception
                     student = bool(student)
@@ -711,7 +712,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     except:
                         error = "Teacher value should be integer"
                         raise Exception
-                    if not teacher in [0,1]:
+                    if not teacher in [0, 1]:
                         error = "Teacher value should be either 0 or 1"
                         raise Exception
                     teacher = bool(teacher)
@@ -776,6 +777,7 @@ def ImportCsvFile(request, *args, **kwargs):
             msg = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})
 
+
 # The following function is for importing the course from the csv file
 def ImportCourse(request, *args, **kwargs):
     if request.method == "POST" and request.FILES['import_csv']:
@@ -825,10 +827,10 @@ def ImportCourse(request, *args, **kwargs):
                             course_level = int(course_level)
                         except:
                             error = "Course Level should be integer value"
-                            raise Exception   
+                            raise Exception
                     if course_level < 1 and course_level > 5:
                         error = "Course Level should be between 1 and 5"
-                        raise Exception                   
+                        raise Exception
 
                     obj = CourseInfo()
                     obj.Course_Name = course_name
@@ -851,6 +853,7 @@ def ImportCourse(request, *args, **kwargs):
             error = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": error, "class": "text-success",
                                   "rmclass": "text-danger"})
+
 
 # The following function is for importing the sessions from the csv file
 def ImportSession(request, *args, **kwargs):
@@ -884,7 +887,7 @@ def ImportSession(request, *args, **kwargs):
 
                     if not courses:
                         error = "At least 1 course is required"
-                        raise Exception            
+                        raise Exception
 
                     obj = InningInfo()
                     obj.Inning_Name = session_name
@@ -908,6 +911,7 @@ def ImportSession(request, *args, **kwargs):
             error = "All data has been Uploaded Sucessfully"
         return JsonResponse(data={"message": error, "class": "text-success",
                                   "rmclass": "text-danger"})
+
 
 class PasswordChangeView(PasswordContextMixin, FormView):
     form_class = PasswordChangeForm
@@ -1310,19 +1314,40 @@ class SessionInfoCreateView(CreateView):
     model = SessionInfo
     form_class = SessionInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(SessionInfoCreateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class SessionInfoDetailView(DetailView):
     model = SessionInfo
+
+
+def SessionInfoDeleteView(request, pk):
+    SessionInfo.objects.filter(pk=pk).delete()
+    return redirect("sessioninfo_list")
 
 
 class SessionInfoUpdateView(UpdateView):
     model = SessionInfo
     form_class = SessionInfoForm
 
+    def get_form_kwargs(self):
+        kwargs = super(SessionInfoUpdateView, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
 
 class InningInfoListView(ListView):
     model = InningInfo
     template_name = 'center_admin/inninginfo_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                    Use_Flag=True)
+        return context
 
     def get_queryset(self):
         return InningInfo.objects.filter(
@@ -1333,6 +1358,12 @@ class InningInfoListView(ListView):
 class InningInfoListViewInactive(ListView):
     model = InningInfo
     template_name = 'center_admin/inninginfo_list_inactive.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['student_group_list'] = GroupMapping.objects.filter(Center_Code=self.request.user.Center_Code,
+                                                                    Use_Flag=True)
+        return context
 
     def get_queryset(self):
         return InningInfo.objects.filter(
@@ -1412,6 +1443,71 @@ def InningInfoDeleteView(request, pk):
             return redirect('inninginfo_detail', pk=pk)
 
 
+def InningInfoDeleteViewChecked(request):
+    if request.method == 'POST':
+        print(request.POST.getlist('inning_id[]'))
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = InningInfo.objects.filter(pk__in=request.POST.getlist('inning_id[]'))
+            Obj.delete()
+            if '/inactive' in request.path:
+                return redirect('inninginfo_list_inactive')
+            else:
+                return redirect('inninginfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete inning")
+            return JsonResponse({}, status=500)
+
+
+def InningInfoEditViewChecked(request):
+    if request.method == 'POST':
+        inning_list = []
+        startdateerror = enddateerror = False
+        student_groupObj = start_Date = end_Date = None
+
+        if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
+            start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+        if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
+            end_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+
+        inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
+            student_groupObj = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
+        for inning in inninginfo_list:
+            if start_Date and not end_Date:
+                if inning.End_Date.replace(tzinfo=None) < start_Date:
+                    startdateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+            if not start_Date and end_Date:
+                if inning.Start_Date.replace(tzinfo=None) > end_Date:
+                    enddateerror = True
+                    inning_list.append({
+                        'Inning_Name': inning.Inning_Name.Session_Name,
+                    })
+
+        if startdateerror or enddateerror:
+            return JsonResponse({
+                'message': "Start date is greater than end date in the following.",
+                'inning_list': inning_list,
+            }, status=500)
+
+        if student_groupObj:
+            inninginfo_list.update(Groups=student_groupObj)
+        if start_Date:
+            inninginfo_list.update(Start_Date=start_Date)
+        if end_Date:
+            inninginfo_list.update(End_Date=end_Date)
+
+        if '/inactive' in request.path:
+            return redirect('inninginfo_list_inactive')
+        else:
+            return redirect('inninginfo_list')
+
+
 class InningGroupListView(ListView):
     model = InningGroup
 
@@ -1451,6 +1547,11 @@ class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
     model = SessionInfo
     form_class = SessionInfoForm
     template_name = 'ajax/sessioncreate_form_ajax.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(InningInfoCreateSessionAjax, self).get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
 
 
 class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
@@ -1538,7 +1639,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
             return JsonResponse(
                 data={
                     "message":
-                    "There is no Column <b>Group</b> in the input file",
+                        "There is no Column <b>Group</b> in the input file",
                     "class": "text-danger",
                     "rmclass": "text-success"
                 })
@@ -1565,7 +1666,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         # obj.Students.add(obj_student)
                         err_msg.append(
                             "Student Group: <b>{}</b> can't be created: Student- <b>{}</b> not found<br>"
-                            .format(groups[i], students['Username'][j]))
+                                .format(groups[i], students['Username'][j]))
                         flag = 1
                         break
 
@@ -1577,7 +1678,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                 else:
                     msg.append(
                         "<div class='text-success'>Student Group: <b>{}</b> created</div>"
-                        .format(groups[i]))
+                            .format(groups[i]))
                     if err_msg:
                         err_msg = err_msg + msg
                         msg.clear()
@@ -1820,7 +1921,7 @@ class QuestionInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
                     'status': 'Fail',
                     "msg": "File size exceeds 2MB"
                 },
-                                    status=500)
+                    status=500)
             path = settings.MEDIA_ROOT
             name = (str(uuid.uuid4())).replace(
                 '-', '') + '.' + media.name.split('.')[-1]
@@ -1864,12 +1965,12 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
                             'status': 'Fail',
                             "msg": "File size exceeds 2MB"
                         },
-                                            status=500)
+                            status=500)
                     path = settings.MEDIA_ROOT
                     name = (str(uuid.uuid4())).replace(
                         '-', '') + '.' + media.name.split('.')[-1]
                     fs = FileSystemStorage(location=path +
-                                           '/Question_Media_Files/')
+                                                    '/Question_Media_Files/')
                     filename = fs.save(name, media)
                     Obj.Question_Media_File = 'Question_Media_Files/' + name
             Obj.save()
@@ -2124,7 +2225,7 @@ def save_file(request):
                 request.user.pk) + '.' + media.name.split('.')[-1]
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' +
-                                   courseID + '/' + chapterID)
+                                            courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
         return JsonResponse(data={"message": "success", "media_name": name})
@@ -2215,7 +2316,7 @@ def save_3d_file(request):
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' +
-                                   courseID + '/' + chapterID)
+                                            courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
             # if mtl is not None:
             #     mtlname = name + '.' + mtl.name.split('.')[-1]
@@ -2273,10 +2374,10 @@ def save_video(request):
             r = rs.post(url="https://api.vimeo.com/me/videos",
                         headers={
                             'Authorization':
-                            'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                             'Content-Type': 'application/json',
                             'Accept':
-                            'application/vnd.vimeo.*+json;version=3.4'
+                                'application/vnd.vimeo.*+json;version=3.4'
                         },
                         data=json.dumps(data))
             if r.status_code == 200:
@@ -2285,9 +2386,9 @@ def save_video(request):
                                headers={
                                    'Tus-Resumable': '1.0.0',
                                    'Content-Type':
-                                   'application/offset+octet-stream',
+                                       'application/offset+octet-stream',
                                    'Accept':
-                                   'application/vnd.vimeo.*+json;version=3.4',
+                                       'application/vnd.vimeo.*+json;version=3.4',
                                    'Connection': 'keep-alive',
                                    'Upload-Offset': '0'
                                },
@@ -2342,7 +2443,7 @@ def save_video(request):
             name = (str(uuid.uuid4())).replace('-', '') + '' + "".join(
                 re.findall("[a-zA-Z0-9]+",
                            media.name.split('.')[0])) + '' + str(
-                               request.user.pk)
+                request.user.pk)
             cloudinary.config(cloud_name="nsdevil-com",
                               api_key="355159163645263",
                               api_secret="riH4CD94zuSXffS_wfSgIFgxmJ0")
@@ -2435,7 +2536,7 @@ def import_chapter(request):
             'status': 'false',
             'message': "Not valid zip"
         },
-                            status=500)
+            status=500)
 
     path = settings.MEDIA_ROOT
 
@@ -2890,7 +2991,7 @@ def make_zip_file(list_of_files):
                 os.makedirs(dstfolder)
         if os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
             if (os.path.exists(dst)
-                ):  # if folder exists already, removes it and copy again
+            ):  # if folder exists already, removes it and copy again
                 shutil.rmtree(dst)
             shutil.copytree(settings.BASE_DIR + '/WebApp/' + src, dst)
         else:
@@ -2955,7 +3056,7 @@ def AchievementPage_All_Ajax(request,
         Student_GroupMappingFilter = GroupMapping.objects.filter(
             id__in=CoursegroupFilter,
             Center_Code=request.user.Center_Code).values_list(
-                'Students').order_by('id')
+            'Students').order_by('id')
         # print('Student_GroupMappingFilter', Student_GroupMappingFilter)
         studentfilter = MemberInfo.objects.filter(
             id__in=Student_GroupMappingFilter,
@@ -2975,7 +3076,7 @@ def AchievementPage_All_Ajax(request,
         Student_GroupMappingFilter = GroupMapping.objects.filter(
             id__in=Inningsfilter,
             Center_Code=request.user.Center_Code).values_list(
-                'Students').order_by('id')
+            'Students').order_by('id')
         # print('Student_GroupMappingFilter', Student_GroupMappingFilter)
         studentfilter = MemberInfo.objects.filter(
             id__in=Student_GroupMappingFilter,
@@ -3012,7 +3113,6 @@ def manifestwebmanifest(request):
         data = f.read()
     return HttpResponse(data, )
 
-
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
@@ -3020,21 +3120,17 @@ class SessionManagerUpdateView(UpdateView):
 
     def get_object(self):
         session_Manager = None
-        if InningManager.objects.filter(
-                sessioninfoobj__pk=self.kwargs.get('pk')).exists():
-            session_Manager = InningManager.objects.get(
-                sessioninfoobj__pk=self.kwargs.get('pk'))
+        if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
+            session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
         else:
             session_Manager = InningManager.objects.create(
-                sessioninfoobj=InningInfo.objects.get(
-                    pk=self.kwargs.get('pk')))
+                sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
         return session_Manager
 
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            messages.add_message(self.request, messages.SUCCESS,
-                                 'Session Managers Updated.')
+            messages.add_message(self.request, messages.SUCCESS, 'Session Managers Updated.')
             # return super().form_valid(form)
             return redirect('inninginfo_detail', self.kwargs.get('pk'))
 
@@ -3042,6 +3138,7 @@ class SessionManagerUpdateView(UpdateView):
         kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
+
 
 
 def viewteacherAttendance(request, attend_date, courseid, teacherid):
@@ -3178,7 +3275,7 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
 
             jsondata['contents']['totalstudytime'] = int(
                 jsondata['contents']['totalstudytime']) + int(
-                    studytimeinseconds)
+                studytimeinseconds)
             jsondata['contents']['laststudydate'] = datetime.utcnow().strftime(
                 "%m/%d/%Y %H:%M:%S")
 
@@ -3200,13 +3297,13 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
                 jsondata = {
                     "contents": {
                         "laststudydate":
-                        datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                            datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
                         "totalstudytime":
-                        studytimeinseconds,
+                            studytimeinseconds,
                         "currentpagenumber":
-                        currentPageNumber,
+                            currentPageNumber,
                         "totalPage":
-                        totalPage,
+                            totalPage,
                     },
                 }
             else:
@@ -3389,7 +3486,7 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
             "chapterid": chapterid,
             "visittime": datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
             "type":
-            type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                type,  # type refers to when the function was called. i.e. upon entering viewer or closing
         }
         jsondata.append(newdata)
         with open(student_data_file, "w+") as outfile:
@@ -3400,9 +3497,9 @@ def studentChapterLog(chapterid, studentid, type, createFile=True, isjson=False)
                 {
                     "chapterid": chapterid,
                     "visittime":
-                    datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
+                        datetime.utcnow().strftime("%m/%d/%Y %H:%M:%S"),
                     "type":
-                    type,  # type refers to when the function was called. i.e. upon entering viewer or closing
+                        type,  # type refers to when the function was called. i.e. upon entering viewer or closing
                 },
             ]
 
@@ -3737,3 +3834,35 @@ def MeetPublic(request, userid, meetcode):
 
     return render(request, 'WebApp/meet-public.html',
                   {"meetcode": meetcode, "userobj": MemberInfo.objects.get(pk=userid)})
+
+
+# Teacher Report View
+
+class TeacherReport(TemplateView):
+    template_name = 'center_admin/teacherReport.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']]
+                                           ) if context['course_list'] else 0
+
+        context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code,
+                                                            Use_Flag=True)
+
+        return context
+
+
+class TeacherIndividualReport(TemplateView):
+    template_name = 'WebApp/teacherIndividualReport.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
+            'courses']
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        return context
+
+
+
