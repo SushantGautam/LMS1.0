@@ -1,8 +1,9 @@
 # This file contains template tags for template-model relation.
 
 from django import template
+from django.db.models import Sum
 
-from WebApp.models import MemberInfo
+from WebApp.models import MemberInfo, AssignAnswerInfo
 
 register = template.Library()
 
@@ -12,6 +13,7 @@ register = template.Library()
 def getSurveyStatus(obj, user):
     can_submit, datetimeexpired, options, questions = obj.can_submit(user)
     return can_submit, datetimeexpired, options, questions
+
 
 # @register.simple_tag
 # def canTakeQuiz(obj, user):
@@ -36,6 +38,7 @@ def getTeacherStatusoOfAssignment(obj, user):
         'assg_status': assg_status,
         'total_students': completed + incomplete,
     }
+
 
 @register.simple_tag
 def getUserQuizStatus(obj, user):
@@ -62,3 +65,32 @@ def getUser(userdata):
     if MemberInfo.objects.filter(username=userdata).exists():
         return MemberInfo.objects.get(username=userdata)
     return userdata
+
+
+@register.simple_tag
+def getAssignmentsScore(assignmentObj, userObj):
+    questions, answers = assignmentObj.get_QuestionAndAnswer(userObj)
+    total_score = questions.aggregate(Question_Score__sum=Sum('Question_Score'))['Question_Score__sum']
+    total_score_obtained = answers.aggregate(Assignment_Score__sum=Sum('Assignment_Score'))['Assignment_Score__sum']
+    return {
+        'questions': questions,
+        'answers': answers,
+        'total_score': total_score,
+        'total_score_obtained': total_score_obtained if total_score_obtained else 0,
+    }
+
+
+@register.simple_tag
+def getAssignmentAnswer(assignmentObj, userObj, questionObj):
+    answer = AssignAnswerInfo.objects.filter(Question_Code=questionObj,
+                                             Student_Code=userObj)
+    if answer.exists():
+        return answer.get(Question_Code=questionObj,
+                          Student_Code=userObj)
+    else:
+        return None
+
+
+@register.filter
+def subtract(value, arg):
+    return value - arg

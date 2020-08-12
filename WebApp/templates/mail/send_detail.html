@@ -67,6 +67,17 @@
                title="Recover Email">
                 <i class="ti-reload"></i>
             </a>
+
+            <a href="{%url 'mail_delete' object.pk%}?email_type={{email_type}}"
+               class="btn btn-outline-danger ml-2 "
+               data-toggle="tooltip"
+               title="Empty Trash">
+                <i class="ti-trash"></i>
+            </a>
+
+
+
+
             {%else%}
             <a href="#"
                class="btn btn-outline-primary reply_redirect "
@@ -99,6 +110,17 @@
                               id="card_content_sender">From:{{ object.sender }} &lt  {{ object.sender.email}} &gt</span>
                             <!--                                            <span class="d-sm-inline d-none text-muted"> &lt;elnora@gmail.com&gt;</span>-->
                         </h6>
+
+                        <span class="small text-muted" id="card_content_receiver">To:
+                            {% for u in user_list %}
+                            {% if u.pk in object.get_receiver_list  %}
+                            {{ u.username }}  &lt  {{ u.email}} &gt ,
+                            {%endif%}
+                            {%endfor%}
+
+
+
+                        </span>
 <!--                        <span class="small text-muted" id="card_content_receiver">{{ object.receiver }}</span>-->
                     </div>
                 </div>
@@ -155,6 +177,8 @@
                               id="card_content_sender{{reply.pk}}">From:{{ reply.sender }} &lt {{ reply.sender.email}} &gt</span>
                             <!--                                            <span class="d-sm-inline d-none text-muted"> &lt;elnora@gmail.com&gt;</span>-->
                         </h6>
+
+
 <!--                        <span class="small text-muted" id="card_content_receiver{{reply.pk}}"></span>-->
                     </div>
                 </div>
