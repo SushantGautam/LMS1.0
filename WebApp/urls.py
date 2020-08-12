@@ -445,9 +445,22 @@ urlpatterns += (
          views.MeetPublic, name='public-meet'),
 )
 
-
+# Teacher Report
 urlpatterns += (
     path('teacher_report', views.TeacherReport.as_view(), name='teacher_report'),
     path('teacher_report/<int:teacherpk>/', views.TeacherIndividualReport.as_view(), name='teacher_individual_report'),
 )
 
+urlpatterns += (
+    # urls for DepartmentInfo
+    path('departmentinfo/', login_required(views.DepartmentInfoListView.as_view()),
+         name='departmentinfo_list'),
+    path('departmentinfo/create/', login_required(views.DepartmentInfoCreateView.as_view()),
+         name='departmentinfo_create'),
+    path('departmentinfo/detail/<int:pk>/',
+         views.DepartmentInfoDetailView.as_view(), name='departmentinfo_detail'),
+    path('departmentinfo/update/<int:pk>/',
+         views.DepartmentInfoUpdateView.as_view(), name='departmentinfo_update'),
+    path('departmentinfo/delete/<int:pk>/',
+         views.DepartmentInfoDeleteView, name='departmentinfo_delete'),
+)

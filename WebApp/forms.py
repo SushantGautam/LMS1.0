@@ -13,7 +13,7 @@ from django_summernote.widgets import SummernoteWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager, Attendance
+    InningManager, Attendance, DepartmentInfo
 
 
 class UserRegisterForm(UserCreationForm):
@@ -426,13 +426,13 @@ class AssignmentInfoForm(forms.ModelForm):
 
 class QuestionInfoForm(forms.ModelForm):
     Question_Description = forms.CharField(widget=SummernoteWidget(attrs=
-                            {'summernote': 
+                            {'summernote':
                             {'width': '100%', 'height': '480px',
-                            'toolbar': [["style", ["style"]], 
+                            'toolbar': [["style", ["style"]],
                             ["font", ["bold", "italic", "underline"]],
                             ["para", ["ul", "ol"]],
-                            ["table", ["table"]], 
-                            ["insert", ["link", "picture"]], 
+                            ["table", ["table"]],
+                            ["insert", ["link", "picture"]],
                             ]}
                             }), required=False)
     class Meta:
@@ -544,3 +544,32 @@ class AttendanceFormSetFormT(forms.ModelForm):
                    'attendance_date': forms.HiddenInput(), }
         labels = {
             "present": "", }
+
+
+# Department Infos
+class DepartmentInfoForm(forms.ModelForm):
+    class Meta:
+        model = DepartmentInfo
+        fields = ['Department_Name', 'Center_Code',
+                  'Register_Agent', 'Use_Flag']
+        widgets = {
+            'Center_Code': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Center_Code'].initial = self.request.user.Center_Code
+        if '/edit' in self.request.path:
+            del self.fields['Register_Agent']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('Department_Name')
+        department = DepartmentInfo.objects.filter(Department_Name=name, Center_Code=self.request.user.Center_Code)
+        if department.exists():
+            if self.instance.id:
+                if department.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if department.get(pk=self.instance.id).Department_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Department Name already Exists')
