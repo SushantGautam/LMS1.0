@@ -5,23 +5,27 @@
 
 <div class="panel panel-default">
     <div class="panel-body">
-        <div class="profile_pic">
-            <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" style="height: 35px;" />
-        </div>
+        <div class="card-header text-center">
+            <div class="profile_pic">
+                <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" style="height: 35px;" />
+            </div>
 
-        <a href="{% url 'forum:user_info' request.user.pk %}">
-            <h3 class="btn-white btn-flat ">{{ request.user.username }}</h3>
-        </a>
+            <a href="{% url 'forum:user_info' request.user.pk %}">
+                <h3 class="btn-white btn-flat ">{{ request.user.username }}</h3>
+            </a>
+    </div>
+    </div>
+    <div class="card-body text-center">
         <ul class="list-unstyled ">
-            <li class="text-left" style="padding: 5px 0;"><a class="btn-white btn-flat" href="{% url 'forum:user_threads' request.user.pk %}"><i
+            <li class="text-center" style="padding: 5px 0;"><a class="btn-white btn-flat" href="{% url 'forum:user_threads' request.user.pk %}"><i
                         class="fa fa-question-circle fa-lg"></i> Questions
                     Asked: {{ request.user.threads.count }}</a>
             </li>
-            <li class="text-left" style="padding: 5px 0;"><a class="btn-white btn-flat " href="{% url 'forum:user_posts' request.user.pk %}">
+            <li class="text-center" style="padding: 5px 0;"><a class="btn-white btn-flat " href="{% url 'forum:user_posts' request.user.pk %}">
                     <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.count }}</a>
             </li>
 
-            <li class="text-left" style="padding: 5px 0;" >
+            <li class="text-center" style="padding: 5px 0;" >
                 <p class=""><i class="fa fa-user fa-lg"></i>
                     {% if request.user.is_superuser %}
                     Super User
@@ -39,7 +43,7 @@
 
         </ul>
         <a class="btn btn-primary" href="{% url 'forum:user_info' request.user.pk %}">
-            <i class="fa fa-user-md m-right-xs"></i> View Profile</a>
+            <i class="fa fa-user-md m-right-xs"></i> &nbsp;&nbsp;View Profile</a>
         <br>
 
     </div>

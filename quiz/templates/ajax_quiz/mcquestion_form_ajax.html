@@ -14,20 +14,20 @@
         <div id="option_dynamic_append">
             {{ answers_formset.management_form }}
             {% for form in answers_formset %}
-                <div class="row form-group form-row">
+                <div class="row form-group form-row ">
                     <div style="display: none" class="delete-ans-checkbox">
                         {{ form.DELETE }}
                     </div>
-                    <div class="">
+                    
                         {{ form.content|as_crispy_field }}
-                    </div>
+                    
 
-                    <div class="correct-ans-checkbox col-md-2">
+                    <div class="correct-ans-checkbox " >
                         {{ form.correct|as_crispy_field }}
                     </div>
 
-                    <div class="form-button-div col-md-1">
-                        <button type="button" class="btn btn-danger remove-form-row">x</button>
+                    <div class="form-button-div " style="text-align: right;">
+                        <button type="button" class="btn btn-danger btn-sm remove-form-row ">x</button>
                     </div>
                     
                     
@@ -48,9 +48,9 @@
         <div class="panel-group">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
+                    <h5 class="panel-title">
                         <a data-toggle="collapse" href="#collapse1">More Options</a>
-                    </h4>
+                    </h5>
                 </div>
                 <div id="collapse1" class="panel-collapse collapse">
 
@@ -76,7 +76,7 @@
     <button class="btn btn-primary" type="submit">Submit</button>
 </form>
 
-{% block customjss %}
+{% block javascript %}
     <script>
         function cloneMore(selector, prefix) {
             var newElement = $(selector).clone(true);
@@ -162,8 +162,8 @@
         //$(".control-label").after(`&nbsp;`);
 
         $('div[id^="div_id_answer_set"]').wrapInner("<div class='col-md-12 answer_set_wrapper' ></div>");
-        $('label[for^="id_answer_set"]').wrap("<div class='col-md-3'></div>");
-        $('.answer_set_wrapper > .controls').addClass('col-md-9');
+        $('label[for^="id_answer_set"]').wrap("<div class='col-md-4'></div>");
+        $('.answer_set_wrapper > .controls').addClass('col-md-8');
 
         $('#div_id_content').addClass('col-md-12');
         $('#div_id_answer_order, #div_id_figure, #div_id_score').wrapAll("<div class = col-md-12></div>");
@@ -224,6 +224,6 @@
         $("#id_course_code").val('{{ course_from_quiz }}');
         $("#div_id_cent_code").hide();
         $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
-        $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow-y", "scroll");
+        $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow", "auto");
     </script>
-{% endblock customjss %}
+{% endblock javascript %}

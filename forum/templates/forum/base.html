@@ -41,7 +41,7 @@
 
     <br> <br>
 
-    <div class="container">
+    <div class="">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
             <div class="row">
                 <div class="col-md-9 col-sm-12 col-xs-12 col-lg-9">
@@ -49,11 +49,11 @@
                     {% endblock %}
                 </div>
 
-                <div class="st-pusher" id="content">
+                
                     <div class="col-md-3 col-sm-12 col-xs-12 col-lg-3 ">
+                        <div class="st-pusher" id="content">
 
-
-                        <div class="card1">
+                        <div class="">
 
                             <div class="form-group form-control-search searchField">
 
@@ -65,7 +65,7 @@
                                            placeholder="Type to search">
 
                                     <span class=" pull-right searchButton">
-                                        <button type="submit" id="navSearchBtn" class="btn btn-inverse"
+                                        <button type="submit" id="navSearchBtn" class="btn btn-inverse" style="margin-top: 8px;"
                                                 data-hover-z="1"><i
                                                 class="fa fa-search"></i></button>
 
@@ -75,6 +75,7 @@
 
 
                         </div>
+                        
                         <!-- <div class="panel panel-default">
                             <div class="panel-body">
                               <div class="form-group form-control-material searchField">
@@ -88,7 +89,7 @@
                           </div> -->
 
 
-                        <div class="card1">
+                        <div class="card border-0 bg-light">
                             {% block widget_before %}{% endblock %}
                             {% if request.user.is_authenticated %}
                                 {% include 'forum/widgets/authenticated_user_panel.html' %}
@@ -98,13 +99,14 @@
 
                             {% block widget_after %}{% endblock %}
                         </div>
+                      
 
 
-                        <div class="card1 panel panel-default">
+                        <div class="card border-0  panel panel-default">
 
                             <ul class="list-group list-group-menu">
-                                <div class="panel-heading" style="background-color:#F5F5F5">
-                                    <h4 class="panel-title">Categories</h4>
+                                <div class="   bg-light" style="text-align: center; ;" >
+                                    <h4 class="panel-title" style="padding-top: 5px;">Categories</h4>
                                 </div>
                                 {% for nodegroup in node_groups %}
 

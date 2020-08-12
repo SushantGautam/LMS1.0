@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block stylesheet %}
+<link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Course Allocation</li>
+{% endblock %}
+{% block content %}
+<!-- Model for Import CSV file -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title"><b>CSV File Import</b>
+                </h4>
+                <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="import_csv_body">
+                <form method="POST" id="form_import_csv" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="id_import_csv">Choose the CSV file to Import Course Teacher Allocation Data</label>
+                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv">
+                    <a target="_blank" class="text-center" href="{% static 'importCourseTeacherAllo_sample.csv' %}">
+                        <h4 class="mt-4"><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                    </a>
+
+                    <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
+                            Info...</b></span>
+                    <ul class="info-text" style="display:none;background:azure;">
+                        <li>- Course Allocation Name (required)</li>
+                        <li>- Course Name should be already registered (required)</li>
+                        <li>- At least 1 teacher username is required (required)</li>
+                        <li>- All Teachers account should have already been registered as Member</li>
+                        <li>- Multiple Teachers name should be seperated by comma</li>
+                    </ul>
+
+                    <div class="import-message"></div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-success" type="submit">Submit
+                            File
+                        </button>
+                        <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close">Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        <h2 class="text-primary">Teacher-Course Allocation</h2>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 text-right">
+        <a href="javascript:void(0)" class="btn btn-sm btn-outline-primary" title="List" data-toggle="tooltip"
+            id="tableButton">
+            <i class="fa fa-th-list"></i>
+        </a>
+        <a href="javascript:void(0)" class="btn btn-sm btn-outline-primary ml-2" title="Grid" data-toggle="tooltip"
+            id="cardButton">
+            <i class="fa fa-th-large"></i>
+        </a>
+    </div>
+</div>
+<div>
+    <a class="btn btn-primary pull-right" href="{% url 'inninggroup_create' %}">Allocate Teacher to Course</a>
+</div>
+<div class="table-responsive mt-4" id="tableView">
+    <table class="table table-striped table-bordered nowrap">
+        <thead class="thead-light bg-primary">
+            <tr>
+                <th>ID</th>
+                <th>Course Allocation Name</th>
+                <th>Course Name</th>
+                <th>No. of Teachers</th>
+                <th>Teachers</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><b><a href="{{ object.get_absolute_url }}">{{ object.InningGroup_Name }}</a></b></td>
+                <td>{{ object.Course_Code }}</td>
+                <td>{{ object.Teacher_Code.count }}</td>
+                <td> {% for teachers in object.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}</td>
+                <td>{% if  object.Use_Flag == True %}
+                    Active
+                    {% else %}
+                    Inactive
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div id="cardView" style="display:none;padding: 0;" class="col-md-12 col-sm-12 col-xs-12">
+
+    <div class="btn-createnew">
+        <a class="btn btn-success" href="{% url 'inninggroup_create' %}">Allocate Teacher to Course</a>
+    </div>
+    <br><br><br>
+    <div class="container" id="divID">
+        {% for object in object_list %}
+
+        <div class="col-md-4 col-sm-6 col-xs-12 card-body" id="listCard">
+            <div class="card-header" style="background: white">
+                <h5 class="card-title"> <strong> Session : &nbsp;<a
+                            href="{{ object.get_absolute_url }}">{{ object.Course_Code }}</a></strong></h5>
+
+                <!-- <h5 class="card-title">
+                    </h5> -->
+                <h5 class="card-title"><b>Teachers: {{ object.Teacher_Code.count }} </b></h5>
+                {% for teachers in object.Teacher_Code.all %}<span
+                    class="card-title">{{ teachers }}<br></span>{% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.table').DataTable({
+            dom: 'lBfrtip',
+            responsive: true,
+            buttons: [
+                {
+                    extend: 'csv',
+                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                },
+                {
+                    text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-cloud-download"></i> Import from CSV </span>'
+                },
+                {
+                    extend: 'print',
+                    text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                    fieldSeparator: '\t'
+                }]
+        });
+    });
+</script>
+<script>
+    document.querySelector("#cardButton").addEventListener('click', cardView);
+    document.querySelector("#tableButton").addEventListener('click', tableView);
+    function cardView() {
+        $("#cardButton").css('color', 'black');
+        $("#tableButton").css('color', 'grey');
+        document.querySelector('#cardView').style.display = "inline-block";
+        document.querySelector('#tableView').style.display = "none";
+    }
+    function tableView() {
+        $("#cardButton").css('color', 'grey');
+        $("#tableButton").css('color', 'black');
+        document.querySelector('#tableView').style.display = "inline-block";
+        document.querySelector('#cardView').style.display = "none";
+
+    }
+    $(".button-info").click(function () {
+        $("ul.info-text").toggle();
+    });
+
+    $(document).ready(function () {
+        $('#form_import_csv').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($('form').get(0));
+            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+            formData.append("csrfmiddlewaretoken", csrf);
+            if ($('#id_import_csv').val()) {
+                $('.import-message').append('<div class="se-pre-con-ajax"></div>');
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'csv_import_inninggroup' %}",  // URL to your view that serves new info
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    tryCount: 0,
+                    retryLimit: 3,
+                    success: function (response) {
+                        $('.import-message').addClass(response.class);
+                        $('.import-message').removeClass(response.rmclass);
+                        $('.import-message').html(response.message);
+                        if (response.class == "text-success") {
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        }
+                    },
+                    error: function (request, status, error) {
+                        if (request.status == 503) {
+                            $('.import-message').addClass('text-danger');
+                            $('.import-message').removeClass('text-sucess');
+                            $('.import-message').html("Service Unavialable at the moment but your data may be added in background");
+                        } else {
+                            $('.import-message').addClass('text-danger');
+                            $('.import-message').removeClass('text-sucess');
+                            $('.import-message').html("Error while processing data please try again and verify the format.");
+                        }
+                    },
+                    complete: function () {
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    },
+                });
+            } else {
+                $('.import-message').addClass('text-danger');
+                $('.import-message').html("Please upload a csv file with defined format.");
+            }
+        });
+    });
+</script>
+
+{% endblock %}
