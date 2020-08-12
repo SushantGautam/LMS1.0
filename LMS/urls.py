@@ -28,6 +28,7 @@ urlpatterns = [
                   path('forum/', include('forum.urls')),
                   path('survey/', include('survey.urls')),
                   path('mail/', include('mail.urls')),
+                  path('event_calendar/', include('event_calendar.urls')),
                   url(r'^login/$', views.login, {'template_name': 'registration/login.html',
                                                  'redirect_authenticated_user': True}, name='login'),
                   path(

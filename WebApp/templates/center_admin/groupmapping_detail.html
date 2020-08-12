@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+{% load model_template_relation %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
+{#    <li class="breadcrumb-item"><a href="{% url 'inninginfo_detail' object.Inning_Code.id %}">{{ object.Inning_Code }}</a></li>#}
+<li class="breadcrumb-item active" aria-current="page">{{ object.GroupMapping_Name }}</li>
+{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div class="page-title d-block text-center">
+        <h2>Group Mapping Information</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-10" style="margin:auto">
+        <div class="card p-3">
+            <ul class="text-center font-weight-bold">
+                <li class="p-2">
+                    Group Name : {{ object.GroupMapping_Name }}
+                </li>
+                <li class="p-2">
+                    Register Agent : {% getUser object.Register_Agent as register_agent %}{{ register_agent }}
+                </li>
+                <li class="p-2">
+                    <a class="btn btn-sm btn-outline-primary mx-2" href="{% url 'groupmapping_saveasnew' object.pk %}">
+                        Save as New</a>
+                    <a class="btn btn-sm btn-outline-secondary mx-2" href="{{ object.get_update_url }}">Edit Group
+                        Mapping</a>
+                    <a class="btn btn-sm btn-outline-danger groupmapping-confirm-delete mx-2" href="javascript:void(0)"
+                        id="{{ object.pk }}">Delete
+                        Group Mapping</a>
+                    <form method="post" action="{% url 'groupmapping_delete' pk=object.pk %}"
+                        id="deleteGroupMapping{{ object.pk }}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ object.pk }}" name="groupmapping_id">
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="page-header">
+    <div class="page-title">
+        <h4>Enrolled Students</h4>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped nowrap">
+        <thead class="thead-light">
+            <tr class="tableTitleRow">
+                <th class="text-center">S. No.</th>
+                <th>Username</th>
+                <th>Member ID</th>
+                <th>Full Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Gender</th>
+
+                <th>Temporary Address</th>
+                <th>Permanent Address</th>
+                <th>Birthdate</th>
+                <th>Type</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object.Students.all %}
+            <tr>
+                <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
+                <td style="vertical-align: middle;"><b><a
+                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b>
+                </td>
+                <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
+                <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+                <td style="vertical-align: middle;">{{ object.first_name }}</td>
+                <td style="vertical-align: middle;">{{ object.last_name }}</td>
+                <td style="vertical-align: middle;">{{ object.email }}</td>
+                <td style=" padding-top: 15px;">{{ object.Member_Phone }}</td>
+                <td style="vertical-align: middle;">
+                    {{ object.get_Member_Gender_display }}
+                </td>
+
+                <td style="vertical-align: middle;">{{ object.Member_Temporary_Address }}</td>
+                <td style="vertical-align: middle;">{{ object.Member_Permanent_Address }}</td>
+                <td style="vertical-align: middle;">{{ object.Member_BirthDate|date:"m/d/Y" }}</td>
+                <td style="vertical-align: middle;">
+                    {% if object.Is_Teacher == True and object.Is_Student == True %}
+                    Teacher, Student
+                    {% elif object.Is_Teacher == True %}
+                    Teacher
+                    {% elif object.Is_Student == True %}
+                    Student
+                    {% else %}
+                    Not Assigned
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    $(document).on('click', '.groupmapping-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this GroupMapping?');
+        if (ans == true) {
+            $(`#deleteGroupMapping${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#form_import_csv').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData($('form').get(0));
+            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+            formData.append("csrfmiddlewaretoken", csrf);
+            if ($('#id_import_csv').val()) {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'csv_import_ajax' %}?groupmappingpk={{object.pk}}",  // URL to your view that serves new info
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $('.import-message').addClass(response.class);
+                        $('.import-message').removeClass(response.rmclass);
+                        $('.import-message').html(response.message);
+                    },
+                    error: function () {
+                        $('.import-message').addClass('text-danger');
+                        $('.import-message').removeClass('text-sucess');
+                        $('.import-message').html("Error while processing data please try again and verify the format.");
+                    },
+                });
+            } else {
+                $('.import-message').addClass('text-danger');
+                $('.import-message').html("Please upload a csv file with defined format.");
+            }
+        });
+    });
+
+    $('.closeImportCSV').click(function () {
+        window.location.reload();
+    })
+</script>
+{% endblock %}

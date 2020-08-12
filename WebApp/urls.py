@@ -263,46 +263,48 @@ path('sessioninfo/delete/<int:pk>/',
 
 urlpatterns += (
     # urls for InningInfo
-    path('inninginfo/inactive',
-         views.InningInfoListViewInactive.as_view(),
+    path('inninginfo/inactive', views.InningInfoListViewInactive.as_view(),
          name='inninginfo_list_inactive'),
-    path('inninginfo/',
-         views.InningInfoListView.as_view(),
-         name='inninginfo_list'),
-    path('inninginfo/create/',
-         views.InningInfoCreateView.as_view(),
+    path('inninginfo/', views.InningInfoListView.as_view(), name='inninginfo_list'),
+    path('inninginfo/create/', views.InningInfoCreateView.as_view(),
          name='inninginfo_create'),
     path('inninginfo/saveasnew/<int:pk>/', views.InningInfoCreateView.as_view(),
          name='inninginfo_saveasnew'),
     path('inninginfo/<int:pk>/',
-         views.InningInfoDetailView.as_view(),
-         name='inninginfo_detail'),
+         views.InningInfoDetailView.as_view(), name='inninginfo_detail'),
     path('inninginfo/update/<int:pk>/',
-         views.InningInfoUpdateView.as_view(),
-         name='inninginfo_update'),
+         views.InningInfoUpdateView.as_view(), name='inninginfo_update'),
     path('innninginfo/delete/<int:pk>/',
-         views.InningInfoDeleteView,
-         name='inninginfo_delete'),
+         views.InningInfoDeleteView, name='inninginfo_delete'),
+    path('innninginfo/delete/checked/',
+         views.InningInfoDeleteViewChecked, name='inninginfo_delete_checked'),
+    path('innninginfo/inactive/delete/checked/',
+         views.InningInfoDeleteViewChecked, name='inninginfo_inactive_delete_checked'),
+    path('innninginfo/update/checked/',
+         views.InningInfoEditViewChecked, name='inninginfo_edit_checked'),
+    path('innninginfo/inactive/update/checked/',
+         views.InningInfoEditViewChecked, name='inninginfo_inactive_edit_checked'),
+
+    path('inninginfo/csv_import', views.ImportSession, name='csv_import_inninginfo')
+
 )
+
 
 urlpatterns += (
     # urls for InningGroup
-    path('inninggroup/',
-         views.InningGroupListView.as_view(),
+    path('inninggroup/', views.InningGroupListView.as_view(),
          name='inninggroup_list'),
-    path('inninggroup/create/',
-         views.InningGroupCreateView.as_view(),
+    path('inninggroup/create/', views.InningGroupCreateView.as_view(),
          name='inninggroup_create'),
     path('inninggroup/detail/<int:pk>/',
-         views.InningGroupDetailView.as_view(),
-         name='inninggroup_detail'),
+         views.InningGroupDetailView.as_view(), name='inninggroup_detail'),
     path('inninggroup/update/<int:pk>/',
-         views.InningGroupUpdateView.as_view(),
-         name='inninggroup_update'),
+         views.InningGroupUpdateView.as_view(), name='inninggroup_update'),
     path('inninggroup/delete/<int:pk>/',
-         views.InningGroupDeleteView,
-         name='inninggroup_delete'),
+         views.InningGroupDeleteView, name='inninggroup_delete'),
+    path('inninggroup/csv_import', views.CourseAllocationCSVImport, name='csv_import_inninggroup')
 )
+
 
 urlpatterns += (
     # urls for GroupMapping

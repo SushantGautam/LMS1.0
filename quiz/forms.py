@@ -249,7 +249,7 @@ class QuizForm2(forms.ModelForm):
                     PrependedText(
                         'success_text',
                         '<i class="fa fa-edit"></i>',
-                        rows='1'
+                        rows='5'
                     ),
                     css_class='form-group col-md-4 mb-0'
                 ),
@@ -265,7 +265,8 @@ class QuizForm2(forms.ModelForm):
             ),
             HTML('''<hr size="10">'''),
 
-            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
+            HTML('''<label class=quiz-add-label > <span class="text-secondary">
+             <b> Quiz Type </b> </span></label>'''),
             Row(
                 Column('pre_test', css_class='form-group col-md-4 mb-0'),
                 Column('post_test', css_class='form-group col-md-4 mb-0'),
@@ -286,7 +287,7 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
-            HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
+            HTML('''<label class=quiz-add-label> <b class="text-secondary">Quiz Features </b></label>'''),
             Row(
                 Column('random_order', css_class='form-group col-md-4 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-4 mb-0'),
@@ -388,10 +389,10 @@ class QuizBasicInfoForm(forms.ModelForm):
                 Column(PrependedText('description', '<i class="fa fa-edit"></i>', rows='5'),
                        css_class='form-group col-md-4 mb-0'
                        ),
-                Column(PrependedText('success_text', '<i class="fa fa-edit"></i>', rows='5'),
+                Column(PrependedText('success_text', '<i class="fa fa-edit"></i>', rows='2'),
                        css_class='form-group col-md-4 mb-0'
                        ),
-                Column(PrependedText('fail_text', '<i class="fa fa-edit"></i>', rows='5'),
+                Column(PrependedText('fail_text', '<i class="fa fa-edit"></i>', rows='2'),
                        css_class='form-group col-md-4 mb-0'
                        ),
                 css_class='form-row'

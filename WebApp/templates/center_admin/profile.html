@@ -136,6 +136,43 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="edit_description_info_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="edit_description_info_modal_title">Edit
+                    Description
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="edit_description_info_modal_body">
+                <form method="post" class="edit-description-card">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_Member_Memo">Info about User</label>
+                        <textarea name="Member_Memo" id="id_Member_Memo" class="form-control"
+                            rows="10">{{ user.Member_Memo }}</textarea>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="form-group controls">
+                            <label for="id_Member_Memo" class="col-form-label control-label">Info About You</label>
+                            <textarea class="textarea form-control" name="Member_Memo" id="id_Member_Memo" cols="30"
+                                rows="10">{{ user.Member_Memo }}</textarea>
+                        </div>
+                    </div> -->
+                    <div class="text-center my-3">
+                        <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit">Submit</button>
+                        <button class="btn btn-outline-secondary pmd-ripple-effect" type="button"
+                            id="reset-description-info">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="profile-container bg-dark align-items-center" style="height: 12rem;">
     <div class="profile-bar" style="background: none;">
         <div class="d-flex align-items-center">
@@ -249,6 +286,7 @@
     </div>
 </div>
 <hr>
+
 <div class="col-12 text-center text-primary">
     <h3>Contact Information
         <div class="dropdown pull-right">
@@ -358,5 +396,24 @@
         </div>
     </div>
 </div>
+<hr>
 
+<div class="col-12 text-center text-primary">
+    <h3>Description
+        <div class="dropdown pull-right">
+            <div data-toggle="dropdown" class="cursor-pointer">
+                <i class="fa fa-ellipsis-v "></i>
+            </div>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                    data-target="#edit_description_info_modal" data-animated>Edit</a>
+            </div>
+        </div>
+    </h3>
+    <p class="text-dark">{% if user.Member_Memo %}
+        {{ user.Member_Memo|truncatewords:80 }}
+        {% else %}
+        No description ... <br><br>
+        {% endif %}</p>
+</div>
 {% endblock %}

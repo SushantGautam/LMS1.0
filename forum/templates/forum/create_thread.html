@@ -27,7 +27,7 @@
             {% csrf_token %}
 
             <div class=" x-title">
-                <h2>Create Thread</h2>
+                <h2 class="text-primary">Create Thread</h2>
 
 
             </div>
@@ -100,11 +100,11 @@
             </div>
 
 
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>Description
+            <div class="" style="margin: 20px 0;">
+                <div class="">
+                    <h4 class="">Description
 
-                    </h2>
+                    </h4>
 
                     <div class="clearfix"></div>
                 </div>
@@ -195,14 +195,14 @@
                     </div>
 
                     <div id="editor-one" class="editor-wrapper placeholderText" contenteditable="true"></div>
-
-                    <textarea name="content_raw" id="id_content_raw" style="display:none;"></textarea>
+                    
+                    <textarea class="form-control" name="content_raw" id="id_content_raw" ></textarea>
                     </div>
 
 
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="padding: 10px 0;">
                 <div class="controls "><input type="submit" name="submit" value="Submit" class="btn btn-primary"
                         id="submit-id-submit"></div>
             </div>
