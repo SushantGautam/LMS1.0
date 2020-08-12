@@ -3243,7 +3243,7 @@ def manifestwebmanifest(request):
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
-    template_name = 'WebApp/sessionmanager_form.html'
+    template_name = 'center_admin/sessionmanager_form.html'
 
     def get_object(self):
         session_Manager = None
