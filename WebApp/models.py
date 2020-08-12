@@ -59,11 +59,48 @@ class CenterInfo(models.Model):
     def get_delete_url(self):
         return reverse('centerinfo_delete', args=(self.pk,))
 
+class DepartmentInfo(models.Model):
+    Department_Name = CharField(max_length=500)
+    Use_Flag = BooleanField(default=True)
+    Register_Agent = CharField(max_length=500, blank=True, null=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)
+
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="departmentinfos", on_delete=models.DO_NOTHING, null=True
+    )
+
+    class Meta:
+        ordering = ('-pk',)
+
+    def __str__(self):
+        return self.Department_Name
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def get_absolute_url(self):
+        return reverse('departmentinfo_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('departmentinfo_update', args=(self.pk,))
+
+    def get_delete_url(self):
+        return reverse('departmentinfo_delete', args=(self.pk,))
 
 class MemberInfo(AbstractUser):
     Gender_Choices = (
         ('M', 'Male'),
         ('F', 'Female'),
+    )
+    Position_Choices = (
+        ('Lecturer', 'Lecturer'),
+        ('Assistant_Lecturer', 'Assistant Lecturer'),
+        ('Professor', 'Professor'),
+        ('Associated_Professor', 'Associated Professor'),
+        ('Assistant_Professor', 'Assistant Professor'),
+        ('LAB_Teacher', 'LAB Teacher'),
     )
     username_validator = UnicodeUsernameValidator()
 
@@ -118,6 +155,8 @@ class MemberInfo(AbstractUser):
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
+    Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
+    Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(

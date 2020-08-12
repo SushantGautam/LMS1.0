@@ -41,6 +41,20 @@ urlpatterns += (
 )
 
 urlpatterns += (
+    # urls for DepartmentInfo
+    path('departmentinfo/', login_required(views.DepartmentInfoListView.as_view()),
+         name='departmentinfo_list'),
+    path('departmentinfo/create/', login_required(views.DepartmentInfoCreateView.as_view()),
+         name='departmentinfo_create'),
+    path('departmentinfo/detail/<int:pk>/',
+         views.DepartmentInfoDetailView.as_view(), name='departmentinfo_detail'),
+    path('departmentinfo/update/<int:pk>/',
+         views.DepartmentInfoUpdateView.as_view(), name='departmentinfo_update'),
+    path('departmentinfo/delete/<int:pk>/',
+         views.DepartmentInfoDeleteView, name='departmentinfo_delete'),
+)
+
+urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
     path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
