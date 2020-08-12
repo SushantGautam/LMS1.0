@@ -1,3 +1,17 @@
+<style>
+    .btn-default.active, .btn-default:active, .open>.dropdown-toggle.btn-default {
+        color: #333;
+        background-color: #e6e6e6;
+        border-color: #adadad;
+    }
+    
+    .btn-default {
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+</style>
+
 <div class="clearfix">
 
     <div id="mainSurveyPage">
@@ -5,13 +19,16 @@
         <div class="">
             <div class="">
                 <div class="row" id="surveyheader">
-                    <div class="col-md-3 col-sm-12">
+                    <div class="" style="margin-left: 20px; padding:0 10px">
                         <div class="btn-group" id="status" data-toggle="buttons">
                             <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
+
+                             
                                 <input type="radio" value="active" name="survey_filter_radio"
-                                       checked="checked">Active</label>
+                                       checked="checked">   &nbsp; Active</label>
                             <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                                <input type="radio" value="expire" name="survey_filter_radio">Expired</label>
+                                
+                                <input type="radio" value="expire" name="survey_filter_radio">&nbsp;Expired</label>
 {#                            <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">#}
 {#                                <input type="radio" value="live" name="survey_filter_radio">Live Survey</label>#}
                         </div>

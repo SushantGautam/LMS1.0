@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+<!-- <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet"> -->
+
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Report</li>
+{% endblock %}
+{% block content %}
+{% include 'teacherReport/teacherReport.html' %}
+{% endblock %}
+
+{% block javascript %}
+<!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('.chaptercount').each(function () {
+                if ($(this).hasClass('totalhasContent')) {
+                    $(this).text($(this).closest('tr').find('.hasContent').length)
+                } else if ($(this).hasClass('totalChapters')) {
+                    $(this).text($(this).closest('tr').find('.chaptertd').length)
+                }
+            });
+
+
+
+
+        var table = $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }]
+            });
+
+             table.on('order.dt', function () {
+                table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                    table.cell(cell).invalidate('dom');
+                });
+            }).draw();
+
+
+
+
+    });
+</script>
+<script>
+    document.querySelector("#cardButton").addEventListener('click', cardView);
+    document.querySelector("#tableButton").addEventListener('click', tableView);
+    function cardView() {
+        $("#cardButton").css('color', 'black');
+        $("#tableButton").css('color', 'grey');
+        document.querySelector('#cardView').style.display = "inline-block";
+        document.querySelector('#tableView').style.display = "none";
+    }
+    function tableView() {
+        $("#cardButton").css('color', 'grey');
+        $("#tableButton").css('color', 'black');
+        document.querySelector('#tableView').style.display = "inline-block";
+        document.querySelector('#cardView').style.display = "none";
+
+    }
+</script>
+{% endblock %}

@@ -4,9 +4,11 @@ from datetime import datetime, timedelta
 from time import timezone
 
 from django.conf import settings
+from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
@@ -58,11 +60,52 @@ class CenterInfo(models.Model):
         return reverse('centerinfo_delete', args=(self.pk,))
 
 
+class DepartmentInfo(models.Model):
+    Department_Name = CharField(max_length=500, unique=True)
+    Use_Flag = BooleanField(default=True)
+    Register_Agent = CharField(max_length=500, blank=True, null=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)
+
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="departmentinfos", on_delete=models.DO_NOTHING, null=True
+    )
+
+    class Meta:
+        ordering = ('-pk',)
+
+    def __str__(self):
+        return self.Department_Name
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def get_absolute_url(self):
+        return reverse('departmentinfo_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('departmentinfo_update', args=(self.pk,))
+
+    def get_delete_url(self):
+        return reverse('departmentinfo_delete', args=(self.pk,))
+
+
 class MemberInfo(AbstractUser):
     Gender_Choices = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
+
+    Position_Choices = (
+        ('Lecturer', 'Lecturer'),
+        ('Assistant_Lecturer', 'Assistant Lecturer'),
+        ('Professor', 'Professor'),
+        ('Associated_Professor', 'Associated Professor'),
+        ('Assistant_Professor', 'Assistant Professor'),
+        ('LAB_Teacher', 'LAB Teacher'),
+    )
+
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
@@ -116,6 +159,8 @@ class MemberInfo(AbstractUser):
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
+    Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
+    Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -203,6 +248,27 @@ class MemberInfo(AbstractUser):
     #     return self._create_user(username, email, password, **extra_fields)
 
 
+class UserSession(models.Model):
+    user = models.ForeignKey(MemberInfo, on_delete=models.CASCADE)
+    session = models.OneToOneField(Session, on_delete=models.CASCADE)
+
+
+@receiver(user_logged_in)
+def remove_other_sessions(sender, user, request, **kwargs):
+    if not user.Is_Teacher and not user.Is_CenterAdmin:
+        # remove other sessions
+        Session.objects.filter(usersession__user=user).delete()
+
+        # save current session
+        request.session.save()
+
+        # create a link from the user to the current session (for later removal)
+        UserSession.objects.get_or_create(
+            user=user,
+            session=Session.objects.get(pk=request.session.session_key)
+        )
+
+
 class CourseInfo(models.Model):
     Course_Name = CharField(max_length=240)
     Course_Description = TextField(blank=True, null=True)
@@ -240,16 +306,30 @@ class CourseInfo(models.Model):
     def get_update_url(self):
         return reverse('courseinfo_update', args=(self.pk,))
 
+    def innings_of_this_course(self):
+        innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
+        return innings
+
     def get_teachers_of_this_course(self):
         teachers_of_this_course_id = InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
         teachers_of_this_course = MemberInfo.objects.filter(pk__in=teachers_of_this_course_id)
         return teachers_of_this_course
+
+    # Get All Students from all groups of all innings in which the course is associated with
+    def get_students_of_this_course(self):
+        student_list = set()
+        for inning in self.innings_of_this_course():
+            for student in inning.Groups.Students.all():
+                student_list.add(student)
+        return student_list
 
     # def get_exam_quiz(self):
     #     return Quiz.objects.get(exam_paper=True, course_code=self.id)
 
     def __str__(self):
         return self.Course_Name
+
+
 
 
 class ChapterInfo(models.Model):
@@ -312,11 +392,13 @@ class ChapterInfo(models.Model):
             content_data = ""
 
         return content_data
-    
+
     def has_content(self):
-        file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
+        file_path = os.path.join(settings.MEDIA_ROOT, 'chapterBuilder', str(self.Course_Code.pk), str(self.pk),
+                                 str(self.pk) + '.txt')
 
         return os.path.exists(file_path)
+
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)

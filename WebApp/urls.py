@@ -49,6 +49,7 @@ urlpatterns += (
     # url(r'^deletethread/(?P<pk>\d+)/$', views.thread_delete, name='smart_forum_thread_delete'),
 )
 
+
 urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/',
@@ -254,6 +255,10 @@ urlpatterns += (
     path('sessioninfo/update/<int:pk>/',
          views.SessionInfoUpdateView.as_view(),
          name='sessioninfo_update'),
+path('sessioninfo/delete/<int:pk>/',
+         views.SessionInfoDeleteView,
+         name='sessioninfo_delete'),
+
 )
 
 urlpatterns += (
@@ -441,3 +446,10 @@ urlpatterns += (
     path('meet/<int:userid>/<slug:meetcode>/',
          views.MeetPublic, name='public-meet'),
 )
+
+
+urlpatterns += (
+    path('teacher_report', views.TeacherReport.as_view(), name='teacher_report'),
+    path('teacher_report/<int:teacherpk>/', views.TeacherIndividualReport.as_view(), name='teacher_individual_report'),
+)
+

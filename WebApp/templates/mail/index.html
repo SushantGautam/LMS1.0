@@ -277,9 +277,18 @@
        <div class="mb-1 d-flex justify-content-between align-items-center">
           <div class="text-truncate app-list-title">
              {% if 'mail_outbox' in request.get_full_path %}
-             {{email.sender}}
-             &lt{{email.sender.email}}&gt
+                To:
+              {% for u in user_list%}
+              {% if u.pk in email.get_receiver_list %}
+             {{u.username}}
+             &lt{{u.email}}&gt.
+              {%endif%}
+              {%endfor%}
+
+
+
              {%else%}
+              From:
              {{email.mail.sender}}
              &lt{{email.mail.sender.email}}&gt
              {%endif%}
