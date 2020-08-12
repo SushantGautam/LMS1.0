@@ -444,6 +444,21 @@ class DepartmentInfoCreateView(CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 class DepartmentInfoDetailView(DetailView):
     model = DepartmentInfo
@@ -460,6 +475,23 @@ class DepartmentInfoUpdateView(UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+
+class DepartmentInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 
 def DepartmentInfoDeleteView(request, pk):

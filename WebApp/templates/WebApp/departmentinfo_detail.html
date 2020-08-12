@@ -41,10 +41,58 @@
 
         </table>
         <br>
-        <a class="btn btn-primary" href="{{ object.get_update_url }}">Edit</a>
+        <button class="btn btn-primary" id="edit_department-btn" data-toggle="modal"
+                data-target="#department-modal">Edit
+        </button>
         <a class="btn btn-danger" href="{% url 'departmentinfo_delete' pk=object.pk %}"
            onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
             Delete Department</a>
     </div>
+
+    <div class="modal fade" id="department-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block customjss %}
+    <script type="text/javascript">
+        var form_url = "";
+        $(document).ready(function () {
+            $('#edit_department-btn').on('click', function () {
+                $('#department-modal .modal-body').empty();
+                $('#department-modal .modal-title').text("Edit Department");
+                $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
+
+                let url = "{% url 'departmentinfo_update_ajax' object.pk %}";
+                $.ajax({
+                    type: "GET",
+                    url: url,  // URL to your view that serves new info
+                    success: function (response) {
+                        form_url = url;
+                        $('#department-modal .modal-body').append(response);
+                    },
+                    error: function () {
+                        console.log('Error in generating form')
+                    },
+                    complete: function () {
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    }
+                });
+            });
+        });
+    </script>
 
 {% endblock %}
