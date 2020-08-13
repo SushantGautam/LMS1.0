@@ -1492,6 +1492,7 @@ class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
 class InningInfoUpdateView(InningInfoAuthMxnCls, UpdateView):
     model = InningInfo
     form_class = InningInfoForm
+    template_name = "center_admin/inninginfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
@@ -3342,7 +3343,7 @@ def manifestwebmanifest(request):
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
-    template_name = 'WebApp/sessionmanager_form.html'
+    template_name = 'center_admin/sessionmanager_form.html'
 
     def get_object(self):
         session_Manager = None
