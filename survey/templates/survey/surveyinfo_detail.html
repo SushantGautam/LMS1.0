@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% load static %} {% block stylesheets %}
+{% extends "base.html" %}
+{% load static %}
+{% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %} {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
@@ -10,7 +12,7 @@
 
 </style>
 {% block content %}
-            {% include 'WebApp/theme/alerts.html' %}
+
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/highchart_data.js' %}"></script>
 

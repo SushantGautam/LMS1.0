@@ -159,11 +159,6 @@ class SurveyInfoCreateView(CreateView):
     form_class = SurveyInfoForm
 
 
-# class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
-#     model = SurveyInfo
-#     form_class = SurveyInfoForm
-#     template_name = 'ajax/surveyInfoAddSurvey_ajax2.html
-
 class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
@@ -528,6 +523,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
 
 class SurveyInfoDetailView(AdminAuthMxnCls, SurveyInfoAuthMxnCls, DetailView):
     model = SurveyInfo
+    template_name = 'survey/surveyinfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
