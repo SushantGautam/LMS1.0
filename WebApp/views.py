@@ -1275,7 +1275,7 @@ class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
 
 class ChapterInfoDiscussionView(ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
-    template_name = 'comment/commentLandingPage.html'
+    template_name = 'WebApp/chapterdiscussion.html'
 
 
 def CourseForum(request, course):
