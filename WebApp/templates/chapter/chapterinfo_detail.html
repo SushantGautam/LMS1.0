@@ -1,6 +1,13 @@
 {% load static %}
 {% load model_template_relation %}
 
+{% load comment_tags %}  {# Loading the template tag #}
+
+<style>
+    .d-none {
+        display: none !important;
+    }
+</style>
 {# <script src="https://player.vimeo.com/api/player.js"></script> #}
 {% now "Y-m-d" as todays_date %}
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -32,10 +39,7 @@
                 : {{ object.Chapter_Name }} </h2>
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-            <!-- <a class="btn-sm btn-info" href="#" id="course-viewer" data-toggle="modal"
-                data-target="#course-modal">
-                Content Viewer &nbsp;
-            </a> -->
+
             <a class="btn-sm btn-info" href="
                 {% if '/teachers' in request.path %}
                     {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
@@ -289,13 +293,23 @@
                             </button>
                         </td>
                     {% endif %}
+
+
+                </tr>
+                <!-- Post Quiz End -->
+                <tr>
+                    <td>
+                        <!-- Button trigger modal -->
+                        <a class="btn btn-info"
+                           href="{% url 'chapterinfo_discussion' object.Course_Code.pk object.pk %}">
+                            Chapter Discussion
+                        </a>
+                    </td>
+                </tr>
+
+
+            </table>
         </div>
-
-        </tr>
-        <!-- Post Quiz End -->
-
-        </table>
-
     </div>
 </div>
 
@@ -327,7 +341,7 @@
                         {% if o.Use_Flag == False %}
                             <span class="badge badge-danger"><b>Inactive</b></span>
                         {% elif o.Assignment_Deadline and todays_datewithtime > o.Assignment_Deadline|date:"Y-m-d H:i" %}
-                            <span class="badge badge-danger">Expired</span>   
+                            <span class="badge badge-danger">Expired</span>
                         {% endif %}
                     </h5>
                     <h5>
@@ -470,8 +484,6 @@
     </script>
 
     <script>
-
-
         $(document).ready(function () {
             $('.pre_test_change').change(function () {
                 // console.log(this.id);
@@ -504,8 +516,6 @@
                 });
             });
         });
-
-
         $('#course-viewer').click(function (e) {
             e.preventDefault();
             $.ajax({
@@ -603,3 +613,6 @@
         }
     </script>
 {% endblock %}
+
+{% include_static %}
+{% include_bootstrap %}

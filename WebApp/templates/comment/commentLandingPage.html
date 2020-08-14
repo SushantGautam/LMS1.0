@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% load model_template_relation %}
+
+{% load comment_tags %}  {# Loading the template tag #}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="
+    {% if object.Course_Code.Use_Flag %}
+        {% url 'courseinfo_list_active' %}
+    {% else %}
+        {% url 'courseinfo_list_inactive' %}
+    {% endif %}
+    ">Course</a></li>
+    <li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Discussion</li>
+{% endblock %}
+
+{% block content %}
+    <style>
+        .d-none {
+            display: none !important;
+        }
+    </style>
+    {% now "Y-m-d" as todays_date %}
+
+    <div class="outerDiv">
+        {% include 'WebApp/theme/alerts.html' %}
+        <div class="col-md-12 col-sm-12 col xs-12">
+
+            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
+                    : {{ object.Chapter_Name }} </h2>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h3 class="detailListHeader">
+                    Discussion
+                </h3>
+                <hr>
+            </div>
+
+        </div>
+        <div>
+            {% render_comments object request comments_per_page=10 %}
+            {# Render all the comments belonging to a passed object #}
+        </div>
+    </div>
+
+    {% block customjss %}
+
+        <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+    {% endblock %}
+
+    {% include_static %}
+    {% include_bootstrap %}
+{% endblock content %}
+

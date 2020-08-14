@@ -1273,6 +1273,11 @@ class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
                             pk=self.request.POST['chapter_id'])
 
 
+class ChapterInfoDiscussionView(ChapterAuthMxnCls, DetailView):
+    model = ChapterInfo
+    template_name = 'comment/commentLandingPage.html'
+
+
 def CourseForum(request, course):
     course = CourseInfo.objects.get(pk=course)
     course_forum = None
