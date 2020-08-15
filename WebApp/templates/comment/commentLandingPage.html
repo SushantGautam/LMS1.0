@@ -1,4 +1,7 @@
+{% load static %}
 {% load comment_tags %}  {# Loading the template tag #}
+
+<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 
 {% render_comments object request comments_per_page=10 %}   {# Render all the comments belonging to a passed object #}
 

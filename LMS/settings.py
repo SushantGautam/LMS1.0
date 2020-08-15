@@ -246,3 +246,5 @@ PROFILE_APP_NAME = 'WebApp'
 PROFILE_MODEL_NAME = 'MemberInfo'  # letter case insensitive
 
 COMMENT_FLAGS_ALLOWED = 10
+
+COMMENT_SHOW_FLAGGED = True
