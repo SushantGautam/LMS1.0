@@ -1,7 +1,7 @@
 {% load static %}
 
-{#<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">#}
-<link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet"/>
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+<link href="{% static 'smart_wizard_theme_dots.css' %}" rel="stylesheet">
 
 {% load crispy_forms_tags %}
 
@@ -54,7 +54,7 @@
                                 <div class="btn-group" id="switchButtons" data-toggle="buttons"
                                      style="    padding: 10px;">
                                     <label class="mcq_question btn btn-default btn-on btn-md active">
-                                        <input type="radio" value="1" name="multifeatured_ule[module_id][switchButtons]"
+                                        <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
                                                checked="checked">Multiple Choice</label>
                                     <label class="short_question btn btn-default btn-off btn-md ">
                                         <input type="radio" value="0"
@@ -91,7 +91,7 @@
 
                                                 <button
                                                         onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                                        class="btn btn-success">Add option
+                                                        class="btn btn-primary">Add option
                                                 </button>
 
                                             {% endif %}
@@ -99,7 +99,7 @@
                                     {% endfor %}
                                 </div>
                                 <div style="text-align:center; padding: 20px;">
-                                    <input class="add-mcq btn btn-block btn-lg" type="button"
+                                    <input class="add-mcq btn btn-block btn-lg btn-primary" type="button"
                                            value="Add Question"
                                            id="add_more_qn">
                                 </div>
@@ -115,7 +115,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                                <input class="add-mcq btn btn-block btn-lg" type="button"
+                                <input class="add-mcq btn btn-block btn-lg btn-primary" type="button"
                                        value="Add Question" id="add_more_sa_qn">
                             </div>
                             <div class="text-danger question_error"></div>
@@ -129,7 +129,7 @@
         <div class="row">
 
             <div class="col-md-12 text-center">
-                <button class="btn btn-amber-500" type="button" data-toggle="collapse"
+                <button class="btn btn-amber-500 text-danger" type="button" data-toggle="collapse"
                         data-target="#collapseExample"
                         aria-expanded="false" aria-controls="collapseExample">
                     Edit More Information

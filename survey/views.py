@@ -66,27 +66,13 @@ class CategoryInfoUpdateView(UpdateView):
     form_class = CategoryInfoForm
 
 
-class SurveyList(ListView):
-    model = SurveyInfo
-
-    # ....................................Pagination.............................................................
-
-    # def listing(request):
-    #     survey_list = SurveyInfo.objects.all()
-    #     print(survey_list)
-    #     print('keep going')
-    #     paginator = Paginator(survey_list, 10)  # Show 10 contacts per page
-    #
-    #     page = request.GET.get('page')
-    #     surveys = paginator.get_page(page)
-    #     print(surveys)
-    #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
+# class SurveyList(ListView):
+# model = SurveyInfo
 
 
 class SurveyInfoListView(AdminAuthMxnCls, ListView):
     model = SurveyInfo
     template_name = 'survey/surveylist.html'
-
     paginate_by = 6
 
     def __init__(self, **kwargs):
@@ -102,20 +88,27 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
+        context['search_q'] = self.request.GET.get('query', '')
+        context['category'] = self.request.GET.get('category_name', '').lower()
 
         return context
-        # context['']
-
-        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
-
-        # context['surveyForm'] = {'categoryName': list(categoryName)}
-        # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
-        # context['surveyForm'] = serializers.serialize('json', list(categoryName), fields=('Category_Name'))
 
     # ......................................Survey Search ..............................................
 
     def get_queryset(self):
+
         qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        category = self.request.GET.get('category_name', '').lower()
+        if category != "all_survey":
+            qs = qs.filter(Category_Code__Category_Name__iexact=category)
+
+        date_filter = self.request.GET.get('date_filter', '').lower()
+        if date_filter == "active":
+            qs = qs.filter(End_Date__gt=timezone.now())
+
+        if date_filter == "expire":
+            qs = qs.filter(End_Date__lte=timezone.now())
+
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
@@ -125,33 +118,54 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
-    # def post(self, request):
-    #     obj = SurveyInfo()
-    #     if request.method == "POST":
-    #         obj.Survey_Title = request.POST['Survey_Title']
-    #         obj.Start_Date = request.POST['Start_Date']
-    #         obj.End_Date = request.POST['End_Date']
-    #         obj.Session_Code = InningInfo.objects.get(pk = request.POST['Session_Code'])
-    #         obj.Course_Code = CourseInfo.objects.get(pk = request.POST['Course_Code'])
-    #         obj.save()
-    #         print(obj.id)
-    #     return redirect('surveyinfo_detail', obj.id)
 
+class surveyFilterCategory(ListView):
+    model = SurveyInfo
+    template_name = 'survey/common/surveyinfo_expireView.html'
 
-# def get_context_data(self, **kwargs):
-#     categoryName = CategoryInfo.objects.filter(code__startswith='a').values_list('Category_Name')
-#     return JsonResponse({'categoryName': list(categoryName)})
+    paginate_by = 6
 
-# def get_survey_info(request):
-#     id = request.GET.get('id', None)
-#     # questions = QuestionInfo.objects.filter(
-#     #     Survey_Code=id).order_by('pk')
-#     options = OptionInfo.objects.all()
-#     data = {'options':options}
-#     print(data)
-#     #submit = SubmitSurvey.objects.all()
-#     # context = 'asdasdasdasd'
-#     return JsonResponse(data)
+    def get_queryset(self):
+        category_name = self.request.GET['category_name'].lower()
+        date_filter = self.request.GET['date_filter'].lower()
+        print("category id:", category_name)
+        print("date filter:", date_filter)
+        my_queryset = SurveyInfo.objects.filter(
+            Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
+        print("all survey query", len(my_queryset))
+        if category_name != "all_survey":
+            my_queryset = my_queryset.filter(Category_Code__Category_Name__iexact=category_name)
+            print(category_name, "query", len(my_queryset))
+        if date_filter == "active":
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
+            print(date_filter, "query", len(my_queryset))
+        elif date_filter == "expire":
+            my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
+            print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "live":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
+        #     print(date_filter, "query", len(my_queryset))
+
+        return my_queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now()
+        context['category_name'] = self.request.GET['category_name'].lower()
+        context['date_filter'] = self.request.GET['date_filter'].lower()
+        return context
+
+    # ....................................Pagination.............................................................
+
+    # def listing(request):
+    #     survey_list = SurveyInfo.objects.all()
+    #     print(survey_list)
+    #     paginator = Paginator(survey_list, 10)
+    #
+    #     page = request.GET.get('page')
+    #     surveys = paginator.get_page(page)
+    #     print(surveys)
+    #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
 
 
 class SurveyInfoCreateView(CreateView):
@@ -642,55 +656,6 @@ class AnswerInfoDetailView(DetailView):
 class AnswerInfoUpdateView(UpdateView):
     model = AnswerInfo
     form_class = AnswerInfoForm
-
-
-class surveyFilterCategory(ListView):
-    model = SurveyInfo
-    template_name = 'survey/common/surveyinfo_expireView.html'
-
-    paginate_by = 6
-
-    def get_queryset(self):
-        category_name = self.request.GET['category_name'].lower()
-        date_filter = self.request.GET['date_filter'].lower()
-        print("category id:", category_name)
-        print("date filter:", date_filter)
-        my_queryset = SurveyInfo.objects.filter(
-            Q(Center_Code=None) | Q(Center_Code=self.request.user.Center_Code))
-        print("all survey query", len(my_queryset))
-        if category_name != "all_survey":
-            my_queryset = my_queryset.filter(Category_Code__Category_Name__iexact=category_name)
-            print(category_name, "query", len(my_queryset))
-        if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
-            print(date_filter, "query", len(my_queryset))
-        elif date_filter == "expire":
-            my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
-            print(date_filter, "query", len(my_queryset))
-        # elif date_filter == "live":
-        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
-        #     print(date_filter, "query", len(my_queryset))
-
-        return my_queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['currentDate'] = datetime.now()
-        context['category_name'] = self.request.GET['category_name'].lower()
-        context['date_filter'] = self.request.GET['date_filter'].lower()
-        return context
-
-    # ....................................Pagination.............................................................
-
-    # def listing(request):
-    #     survey_list = SurveyInfo.objects.all()
-    #     print(survey_list)
-    #     paginator = Paginator(survey_list, 10)
-    #
-    #     page = request.GET.get('page')
-    #     surveys = paginator.get_page(page)
-    #     print(surveys)
-    #     return render(request, 'surveyinfo_expireView.html', {'surveys': surveys})
 
 
 def SurveyclearViewForAdmin(request, pk):

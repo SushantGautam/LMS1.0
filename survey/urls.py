@@ -33,17 +33,26 @@ urlpatterns += (
 urlpatterns += (
     # urls for SurveyInfo
     path('surveyinfo/', views.SurveyInfoListView.as_view(), name='surveyinfo_list'),
-    path('surveyinfo/', views.SurveyList.as_view(), name='surveylist'),
-    path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
-         name='surveyinfo_create'),
+    # path('surveyinfo/', views.SurveyList.as_view(), name='surveylist'),
+
+
+
     path('surveyinfo/detail/<int:pk>/',
          views.SurveyInfoDetailView.as_view(), name='surveyinfo_detail'),
+
+    path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
+         name='surveyinfo_create'),
+
+    path('surveyinfo/update/<int:pk>/',
+         views.SurveyInfoUpdateView.as_view(), name='surveyinfo_update'),
+
+
+
 
     path('clearsurveys/<int:pk>/',
          views.SurveyclearViewForAdmin, name='clearsurveys'),
 
-    path('surveyinfo/update/<int:pk>/',
-         views.SurveyInfoUpdateView.as_view(), name='surveyinfo_update'),
+
 
     # path('surveyinfo/detail', views.get_survey_info,
     #     name='get_survey_info'),
