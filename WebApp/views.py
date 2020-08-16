@@ -50,6 +50,7 @@ from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Quiz
 from survey.models import SurveyInfo
+from django.contrib.sessions.models import Session
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
@@ -110,17 +111,32 @@ def ProfileView(request):
     return render(request, 'WebApp/profile.html')
 
 
-def login(request, template_name='registration/login.html',
-          redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=AuthenticationForm,
-          extra_context=None, redirect_authenticated_user=True):
-    return LoginView.as_view(
-        template_name=template_name,
-        redirect_field_name=redirect_field_name,
-        form_class=authentication_form,
-        extra_context=extra_context,
-        redirect_authenticated_user=redirect_authenticated_user,
-    )(request)
+class login(LoginView):
+    redirect_authenticated_user=True
+    template_name = 'registration/login.html'
+
+    def form_valid(self, form):
+        forcelogin = bool(self.request.POST['forcelogin'])
+        if not forcelogin:
+            if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
+                if (Session.objects.filter(usersession__user=form.get_user()).exists()):
+                    return JsonResponse({'msg': 'Account already login in another place'})
+
+        return super().form_valid(form)
+
+
+
+# def login(request, template_name='registration/login.html',
+#           redirect_field_name=REDIRECT_FIELD_NAME,
+#           authentication_form=AuthenticationForm,
+#           extra_context=None, redirect_authenticated_user=True):
+#     return LoginView.as_view(
+#         template_name=template_name,
+#         redirect_field_name=redirect_field_name,
+#         form_class=authentication_form,
+#         extra_context=extra_context,
+#         redirect_authenticated_user=redirect_authenticated_user,
+#     )(request)
 
 
 def logout(request, next_page=None,
@@ -444,6 +460,21 @@ class DepartmentInfoCreateView(CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 class DepartmentInfoDetailView(DetailView):
     model = DepartmentInfo
@@ -460,6 +491,23 @@ class DepartmentInfoUpdateView(UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+
+class DepartmentInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 
 def DepartmentInfoDeleteView(request, pk):
@@ -1239,6 +1287,11 @@ class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
                            "Cannot delete chapter with assignments")
             return redirect('chapterinfo_detail', course=self.request.POST['course_id'],
                             pk=self.request.POST['chapter_id'])
+
+
+class ChapterInfoDiscussionView(ChapterAuthMxnCls, DetailView):
+    model = ChapterInfo
+    template_name = 'WebApp/chapterdiscussion.html'
 
 
 def CourseForum(request, course):

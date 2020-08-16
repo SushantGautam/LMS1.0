@@ -37,6 +37,10 @@
         <label for="id_Use_Flag" class="control-label ">Publish</label>
         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked>
     </div>
+    <div class="col-md-12 col-sm-12 col-xs-12" id="div_is_commentable">
+        <label for="id_is_commentable" class="control-label ">Comment</label>
+        <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable" checked>
+    </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
