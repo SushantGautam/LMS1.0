@@ -90,6 +90,8 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
         context['submit'] = SubmitSurvey.objects.all()
         context['search_q'] = self.request.GET.get('query', '')
         context['category'] = self.request.GET.get('category_name', '').lower()
+        context['filter'] = self.request.GET.get('date_filter', '').lower()
+
 
         return context
 

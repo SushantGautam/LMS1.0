@@ -146,7 +146,7 @@
                                 {% if page_obj.has_previous %}
                                 <a class="page-link"
 
-                                   href="{% url 'surveyinfo_list'%}?email_type={{email_type}}&page={{page_obj.previous_page_number}}"
+                                   href="{% url 'surveyinfo_list'%}?category_name={{category}}&date_filter={{filter}}&page={{page_obj.previous_page_number}}"
 
 
                                    aria-label="Previous">
@@ -160,7 +160,7 @@
                                 {% if page_obj.has_next %}
                                 <a class="page-link"
 
-                                   href="{% url 'surveyinfo_list'%}?email_type={{email_type}}&page={{page_obj.next_page_number }}"
+                                   href="{% url 'surveyinfo_list'%}?category_name={{category}}&date_filter={{filter}}&page={{page_obj.next_page_number }}"
 
                                    aria-label="Next">
                                     <i class="ti-arrow-right"></i>
