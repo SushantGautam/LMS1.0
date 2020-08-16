@@ -117,6 +117,8 @@ urlpatterns += (
     path('chapterinfo/delete/<int:pk>/',
          views.ChapterInfoDeleteView.as_view(), name='chapterinfo_delete'),
 
+    path('courseinfo/<int:course>/chapterinfo/<int:pk>/discussion/', views.ChapterInfoDiscussionView.as_view(),
+         name='chapterinfo_discussion'),
 )
 
 urlpatterns += (

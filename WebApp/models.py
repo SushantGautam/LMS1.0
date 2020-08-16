@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
@@ -338,6 +339,10 @@ class ChapterInfo(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
+    from comment.models import Comment
+
+    comments = GenericRelation(Comment)
+    is_commentable = models.BooleanField(default=True)
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',

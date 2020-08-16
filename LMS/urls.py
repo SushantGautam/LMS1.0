@@ -118,3 +118,7 @@ urlpatterns += (
     path('api/v1/video_urlresolver/', views.getDirectURLOfMedias, name='getDirectURLOfMedias'),
     path('api/v1/<int:chapterID>/chat_history/', views.getChatMessageHistoryApi, name='getChatHistory'),
 )
+
+urlpatterns += (
+    path('comment/', include('comment.urls')),
+)
