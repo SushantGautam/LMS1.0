@@ -46,11 +46,11 @@
     </div>
 
     {% block customjss %}
-
-        <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-
-    {% endblock %}
-
-
+        <script>
+            window.onload = function () {
+                {#$('.js-comment-input').attr('disabled', true)#}
+            }
+        </script>
+    {% endblock customjss %}
 {% endblock content %}
 

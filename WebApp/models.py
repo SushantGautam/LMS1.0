@@ -342,6 +342,7 @@ class ChapterInfo(models.Model):
     from comment.models import Comment
 
     comments = GenericRelation(Comment)
+    is_commentable = models.BooleanField(default=True)
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
