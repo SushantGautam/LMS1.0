@@ -43,26 +43,28 @@
                        class="category-name list-group-item d-flex align-items-center
                         {% if 'all_survey' in request.get_full_path %} bg-primary {% endif %}"
                        id="all_survey">
-                        <i class="fa fa-bar-chart mr-2 text-primary" id="categoryIcons"></i>All survey</a>
+                        <i class="fa fa-bar-chart mr-2
+                        {% if 'all_survey' in request.get_full_path %} text-light {%else%} text-primary {%endif%}"
+                       id="categoryIcons"></i>All survey
+                    </a>
                 </div>
 
                 {% for category in categories %}
                 <div class="list-group list-group-flush">
                     <a href="{% url 'surveyinfo_list' %}?category_name={{ category.Category_Name }}"
                        class="list-group-item d-flex align-items-center category-name
-                        {% if category.Category_Name in request.get_full_path %}
-                        bg-primary
-                        {%endif%}
-
-
-                            "
+                        {% if category.Category_Name in request.get_full_path %} bg-primary {%endif%} "
                        id="{{ category.Category_Name }}">
-                        <i class="fa fa-{{ category.Category_Icon }} mr-2 text-primary"></i>{{ category.Category_Name }}
+                        <i class="fa fa-{{ category.Category_Icon }} mr-2
+                    {% if category.Category_Name in request.get_full_path %} text-light {%else%} text-primary {%endif%}">
+
+                        </i>{{ category.Category_Name }}
                         <span class="small ml-auto">  </span>
 
                          {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
                                                 {% else %}
-                        <button class=" {{ category.Category_Name }} btn btn-primary add_survey_btn btn-small"
+                        <button class=" {{ category.Category_Name }} btn add_survey_btn btn-small
+                        {% if category.Category_Name in request.get_full_path %}btn-light{%else%}btn-primary{%endif%}"
                                 id="category_Add_Button{{ category.Category_Name }}"
                                 style="margin: 0;"
                                 data-toggle="modal"
@@ -191,7 +193,8 @@
                                     {% if object.id in submittedSurvey %}
                                     <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
                                     {% else %}
-                                    <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x"
+                                    <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x text-primary "
+
                                        id="participatedSurvey"
                                        aria-hidden="true"></i>
                                     {% endif %}
