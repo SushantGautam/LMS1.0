@@ -1,0 +1,1686 @@
+{% load static %}
+
+<head>
+    <link rel="icon" type="image/png" href="/static/images/logo.png" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>LMS</title>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{% static 'chapterPageBuilder/images/favicon.ico' %}" />
+
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/color-picker/nano.min.css' %}">
+
+
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/newChapterBuilder.css' %}">
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/new-responsive.css' %}">
+
+    <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/bootstrap3.4.1.min.css' %}">
+    <link rel="stylesheet"
+        href="{% static 'chapterPageBuilder/SummerNote/summernote-0.8.16-dist/summernote.min.css' %}">
+
+</head>
+
+<body>
+    <section class=" container-fluid full-page-builder ">
+
+        <header id="" class="builder-top col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="row component-container">
+                <div class="chapter-title-only col-md-3 col-sm-3 col-xs-12">
+                    <span class="chapter-name">{{ chapterdetails.Chapter_Name|truncatechars:40 }} </span>
+
+                </div>
+                <div class=" buttons-chapter-only col-md-8 col-sm-6 col-xs-12">
+                    <button class="btn-type1" id="SaveBtn"><i style="color:white" class="fas fa-save"></i>&nbsp; Save
+                    </button>
+
+                    <input id="importzipfile" name="importfile" type="file" style="display: none"
+                        accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed" />
+                    <button class="btn-type1" id="import_zip_link">
+                        <i style="color:white" class="fas fa-file-import"></i>&nbsp; Import
+                    </button>
+                    <a href="{% url 'exportzip' course chapter %}" target="_blank"
+                        onclick="return confirm('Have you saved the latest change?')">
+                        <button class="btn-type1"><i style="color:white" class="fas fa-file-export"></i>&nbsp; Export
+                        </button>
+                    </a>
+                    <a href="
+                {% if 'teachers/' in request.path %}
+                    {% url 'teachersnewpreviewcontentviewer' course chapter %}
+                {% else %}
+                    {% url 'newpreviewcontentviewer' course chapter %}
+               {% endif %}
+                " id="previewBtn">
+                        <button class="btn-type1" id="previewBtn"><i style="color:white" class="fas fa-play-circle"></i>
+                            &nbsp;Preview
+                        </button>
+                    </a>
+
+                </div>
+                <div class="exit-button-only col-md-1 col-sm-3 col-xs-12 ">
+                    <a href="
+                    {% if 'teachers' in request.path %}
+                    {% url 'teacher_chapterinfo_detail' course chapter %}
+                    {% else %}
+                    {% url 'chapterinfo_detail' course chapter %}
+                    {% endif %}
+                " id="goBackBtn"><span> QUIT <i style="border:1px solid #8592a4; padding:1px 2px   "
+                                class="fas fa-times"></i> </span></i>
+                    </a>
+                </div>
+
+
+            </div>
+
+        </header>
+
+
+        <main class=" container-body-part col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+            <div class="row body-holder">
+
+                <div class=" ols-part sidebar col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                    <div class="ols-objects">
+                        <div class=" row-ols">
+                            <div class="obj-img">
+                                <div class="obj-img-holder">
+                                    <a class="" href="#1a" data-toggle="tab"> <img id="id1" class="obj1"
+                                            src="{% static 'chapterPageBuilder/icons/newicon/object-w.svg' %}">
+                                        <img id="id2" class="obj2"
+                                            src="{% static 'chapterPageBuilder/icons/newicon/object-b.svg' %}">
+                                        <span class="ols-name1" style="color: white; text-align:center">Object</span>
+                                    </a>
+
+
+                                </div>
+
+                            </div>
+                            <div class="layout-img">
+                                <div class="layout-img-holder">
+                                    <a class=" " href="#2a" data-toggle="tab"><img id="id3" class="obj3"
+                                            src="{% static 'chapterPageBuilder/icons/newicon/layout-w.svg' %}">
+                                        <img id="id4" class="obj4"
+                                            src="{% static 'chapterPageBuilder/icons/newicon/layout-b.svg' %}">
+
+                                        <span class="ols-name2" style="color: white; text-align:center">Layout</span>
+
+                                    </a>
+
+
+                                </div>
+
+                            </div>
+                            <div class="source-img">
+                                <div class="source-img-holder">
+
+                                    <a href="#3a" data-toggle="tab"><img id="id5" class="obj5"
+                                            src="{% static 'chapterPageBuilder/icons/newicon/source.svg' %}">
+                                        <img id="id6" class="obj6"
+                                            src="{% static 'chapterPageBuilder/icons/newicon/source-b.svg' %}">
+                                        <span class="ols-name3" style="color: white;">Media</span>
+
+                                    </a>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="ols-each-content">
+                        <div id="exTab1" class="">
+
+                            <div class="tab-content ">
+
+                                <div class="tab-pane active" id="1a">
+                                    <div class="icon-boxes">
+                                        <ul class="list-objects">
+
+                                            <li class="individual-objects draggable draggable-style textbox">
+
+                                                <img class="object-image-size"
+                                                    src="{% static 'chapterPageBuilder/icons/newicon/text.svg' %}">
+                                                <span class="object-name-size">TEXT BOX</span>
+                                            </li>
+
+                                            <!-- <li class="individual-objects draggable draggable-style ">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/link.svg' %}">
+                                                </span> <span class="object-name-size">TEXT LINK</span>
+                                        </li>
+
+                                        <li class="individual-objects draggable draggable-style">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/layer-link.svg' %}">
+                                                </span> <span class="object-name-size">LAYER LINK</span>
+                                        </li> -->
+
+
+                                            <li class="individual-objects draggable draggable-style button buttons">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/button.svg' %}">
+                                                </span> <span class="object-name-size">BUTTON</span>
+                                            </li>
+
+
+                                            <!-- <li class="individual-objects draggable draggable-style">
+                                                <span>
+                                                 <img class="object-image-size"
+                                                      src="{% static 'chapterPageBuilder/icons/newicon/download.svg' %}">
+                                                </span> <span class="object-name-size">DOWNLOAD</span>
+                                        </li> -->
+
+
+                                            <li class="individual-objects draggable draggable-style picture">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/picture.svg' %}">
+                                                </span> <span class="object-name-size">PICTURE</span>
+                                            </li>
+
+
+                                            <li class="individual-objects draggable draggable-style video">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/video.svg' %}">
+                                                </span> <span class="object-name-size">VIDEO</span>
+                                            </li>
+
+
+                                            <li class="individual-objects draggable draggable-style 3dobject">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/3d-cube.svg' %}">
+                                                </span> <span class="object-name-size">3D OBJECT</span>
+                                            </li>
+
+
+                                            <li class="individual-objects draggable draggable-style Pdf">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/pdf.svg' %}">
+                                                </span> <span class="object-name-size">PDF</span>
+                                            </li>
+
+
+                                            <li class="individual-objects draggable draggable-style audio">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/audio.png' %}">
+                                                </span> <span class="object-name-size">AUDIO</span>
+                                            </li>
+
+
+                                            <li class="individual-objects draggable draggable-style button quiz">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/quiz.svg' %}">
+                                                </span> <span class="object-name-size">QUIZ</span>
+                                            </li>
+
+
+                                            <li class="individual-objects draggable draggable-style button survey">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/newicon/survey.svg' %}">
+                                                </span> <span class="object-name-size">SURVEY</span>
+                                            </li>
+
+                                            <li class="individual-objects draggable draggable-style stacked-picture">
+                                                <span>
+                                                    <img class="object-image-size"
+                                                        src="{% static 'chapterPageBuilder/icons/stackedimage.svg' %}">
+                                                </span> <span class="object-name-size">STACKED PICTURE</span>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="tab-pane " id="2a">
+
+                                    <div class=" layouts-only col-md-12">
+                                        <div class="row">
+                                            <div class="draggable-style own-padding col-md-6">
+                                                <div
+                                                    class="layout-type-holder draggable layout grid ui-draggable ui-draggable-handle">
+                                                    <img src="{% static 'chapterPageBuilder/images/saveimg1.png' %}"
+                                                        alt="like this">
+                                                </div>
+
+                                            </div>
+                                            <div class="draggable-style own-padding col-md-6">
+                                                <div
+                                                    class="layout-type-holder draggable layout grid-1 ui-draggable ui-draggable-handle">
+                                                    <img src="{% static 'chapterPageBuilder/images/saveimg2.png' %}"
+                                                        alt="like this">
+                                                </div>
+                                            </div>
+                                            <div class="draggable-style  own-padding col-md-6">
+                                                <div
+                                                    class="layout-type-holder draggable layout title-slide ui-draggable ui-draggable-handle">
+                                                    <img src="{% static 'chapterPageBuilder/images/saveimg3.png' %}"
+                                                        alt="like this">
+                                                </div>
+                                            </div>
+                                            <div class="draggable-style own-padding col-md-6">
+                                                <div
+                                                    class="layout-type-holder draggable layout title-content-details ui-draggable ui-draggable-handle">
+                                                    <img src="{% static 'chapterPageBuilder/images/saveimg4.png' %}"
+                                                        alt="like this">
+                                                </div>
+                                            </div>
+                                            <div class="draggable-style own-padding col-md-6">
+                                                <div
+                                                    class="layout-type-holder draggable layout pdf-text ui-draggable ui-draggable-handle">
+                                                    <img src="{% static 'chapterPageBuilder/images/saveimg5.png' %}"
+                                                        alt="like this">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div style="color: black;" class="tab-pane" id="3a">
+                                    <div class="media-items-only col-md-12 col-xs-12">
+
+
+                                        <div class="dropdown ">
+                                            <button class="btn  dropdown-toggle custom-dropdown" type="button"
+                                                data-toggle="dropdown"><span> Filter Items</span>
+
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#">ALL ITEMS</a></li>
+                                                <li class="divider"></li>
+                                                <li><a href="#">IMAGES</a></li>
+                                                <li><a href="#">VIDEOS</a></li>
+                                                <li><a href="#">AUDIOS</a></li>
+                                                <li><a href="#">PDF</a></li>
+                                                <li><a href="#">3D</a></li>
+
+
+                                            </ul>
+                                        </div>
+                                        <div class="select-link-box" style="display: none">
+                                            <ul class="select-link-ul">
+
+                                                <li class="icon1-link">
+                                                    <span data-toggle="tooltip" data-placement="left"
+                                                        title='Copy Link'><i class="fas fa-link"></i></span>
+                                                </li>
+                                                <li class="icon2-link">
+                                                    <span data-toggle="tooltip" data-placement="right" title='Preview'>
+                                                        <i style="color:black" class="fas fa-play-circle"></i></span>
+                                                </li>
+                                                <li class="icon3-link" data-toggle="modal"
+                                                    data-target="#mediafilealertmodal">
+                                                    <span data-toggle="tooltip" data-placement="right" title='Delete'>
+                                                        <i style="color:black" class="fas fa-trash"></i></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="dropdown-items">
+                                            <div class="image-gallery"></div>
+                                            <div class="video-gallery"></div>
+                                            <div class="pdf-gallery"></div>
+                                            <div class="_3d-gallery"></div>
+                                            <div class="audio-gallery"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="main-canvas-part col-md-8 col-sm-8 col-xs-12">
+
+
+                    <div id="" class=" main-canvas-holder col-md-12">
+                        <div class="view-mode ">
+                            <ul class="full-screen-color">
+                                <li>
+                                    <a class="first-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
+                                        title="" onclick="toggleFullScreen()" data-original-title="FullScreen">
+                                        <span><img style="height: 15px; width:15px ; margin-top:-5px"
+                                                src="{% static 'chapterPageBuilder/icons/newicon/expand.svg' %}">
+                                        </span>&nbsp;
+                                        <span style="font-size: 15px;">Full Screen</span> &nbsp;&nbsp;</a>
+
+                                    <a class="second-toggle" id="togglefull" data-toggle="tooltip" data-placement="top"
+                                        title="" onclick="toggleFullScreen()" data-original-title="FullScreen">
+                                        <span><img style="height: 15px; width:15px ; margin-top:-5px"
+                                                src="{% static 'chapterPageBuilder/icons/newicon/compress.svg' %}">&nbsp;&nbsp;
+                                            <span style="font-size: 15px;">Standard Screen</span> </a>
+
+                                </li>
+                                <li><span class="color-picker" style="font-size: 15px;"></li>
+                                <li> <span style="font-size: 15px;">
+
+
+                                        BG Color</span>
+                                </li>
+
+
+                            </ul>
+
+
+                        </div>
+                        <div class="main-central-canvas tabs" id="tabs-for-download">
+                            <p id="tab" value="0" class="tab-content-no   droppable editor-canvas current"
+                                style="height: 100%; background-color: white;">
+
+                            </p>
+                            <p id="copy_tab" value="0" style="display: none;">
+
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-canvas-part col-md-2 col-xs-12">
+
+                    <div class="chapter-listings">
+                        <form style="margin-bottom: 0px!important;">
+                            <div class="form-group">
+                                <label style="color:white" for="sel1">Current Chapter&nbsp;:-</label>
+                                <select class="form-control" name="chapter-lists" id="chapterlist">
+                                    {% for chapter in chapterlist %}
+                                    <option value="{{ chapter.id }}">
+                                        {{ chapter.Chapter_No }}. {{ chapter.Chapter_Name|truncatechars:20 }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="">
+                        <hr style="color:red;">
+
+                    </div>
+
+                    <a class="note-chapter-part" data-toggle="modal" data-target="#link-description">
+                        <div class="note-holder1">
+                            <span data-toggle="tooltip" data-placement="right" title='Edit Chapter information'
+                                style="color: white; font-weight:600; cursor:pointer;">Description <i
+                                    class="fas fa-pencil-alt"></i></span>
+                            <div id="chapter-description" class="note-chapter">
+                                <p style="text-align:justify; color:white">{{ chapterdetails.Summary|truncatechars:70 }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- popup for description -->
+
+                    <div id="link-description" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: #353c46;">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-8">
+                                            <h4 class="modal-title" style="color: white;">Edit Chapter Info</h4>
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                style="color:white">
+                                                &times;
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <form id="chapter-description-form" method="post"
+                                    action="{% url 'partialchapterinfo_update_ajax' chapterdetails.pk %}">
+                                    {% csrf_token %}
+                                    <div class="alert alert-danger form-errors" style="display: none">
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Modal Contents Here -->
+
+                                        <div class="col-sm-12">
+                                            <div id="div_id_Chapter_No" class="form-group"
+                                                style="margin-bottom: 10px!important;">
+                                                <label for="id_Chapter_No" class="control-label  requiredField">
+                                                    Chapter No<span class="asteriskField">*</span>
+                                                </label>
+
+                                                <div class="controls ">
+                                                    <input type="number" name="Chapter_No"
+                                                        value="{{ chapterdetails.Chapter_No }}"
+                                                        class="numberinput form-control" min="1" required=""
+                                                        id="id_Chapter_No">
+                                                </div>
+                                            </div>
+
+                                            <div id="div_id_Chapter_Name" class="form-group"
+                                                style="margin-bottom: 10px!important;">
+                                                <label for="id_Chapter_Name" class="control-label  requiredField">
+                                                    Chapter Name<span class="asteriskField">*</span>
+                                                </label>
+                                                <div class="controls ">
+                                                    <input type="text" name="Chapter_Name"
+                                                        value="{{ chapterdetails.Chapter_Name }}" maxlength="200"
+                                                        class="textinput textInput form-control" required=""
+                                                        id="id_Chapter_Name">
+                                                </div>
+                                            </div>
+
+                                            <div id="div_id_Summary" class="form-group"
+                                                style="margin-bottom: 10px!important;">
+                                                <label for="id_Summary" class="control-label ">
+                                                    Description
+                                                </label>
+                                                <div class="controls ">
+
+                                                    <textarea style="width: 100%;" name="Summary" rows="5"
+                                                        class="textarea  "
+                                                        id="id_Summary"> {{ chapterdetails.Summary }}</textarea>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="hidden" name="Course_Code"
+                                            value="{{ chapterdetails.Course_Code.pk }}" id="id_Course_Code">
+                                        <button type="submit" class="#">Submit</button>
+                                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ends -->
+
+
+                    <div class="additional-canvas tabs-to-click" style="position: relative;">
+                        <ul class="small-canvases-list" id="sortable-slides">
+
+                            <li class="small-canvases pagenumber current" data-before="1" style="position: relative;"
+                                onclick="changePage('tab1')" value="1">
+                                <div class="mini-canvas-btns" style="position:absolute; top:0px;left:0;right:0; ">
+
+                                    <span style="float:right">
+                                        <button class="clone-button" value="1">
+                                            <span data-toggle="tooltip" data-placement="botton" title=' Clone Button'>
+                                                <i class="fa fa-clone " aria-hidden="true"></i>
+                                            </span>
+
+                                        </button>
+                                    </span>
+
+                                    <span style="float:right">
+                                        <button class="delete-page-btn" value="1">
+                                            <span data-toggle="tooltip" data-placement="botton" title=' Delete Page'>
+                                                <i class="fa fa-times " aria-hidden="true"></i>
+                                            </span>
+
+
+                                        </button>
+                                    </span>
+                                </div>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+
+                    <div class="add-page">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;">
+                            <hr>
+
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+
+
+                            <a id="add-page-btn" title="Add new Page"> <i class="fas fa-plus-circle"></i>&nbsp;Add
+                                page</a>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+    </section>
+    <div id="examiframeholder">
+        <div id="closeiframebtn" class="closeiframebtn" title="Close Preview">
+            <button>
+                <i class="fa fa-times">
+                </i>
+
+            </button>
+        </div>
+        <div id="iframeholder" style="background: rgba(0,0,0,0.9);"></div>
+    </div>
+    <!-- Button Modal -->
+    <div id="btn-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div id="button-link-chapter" class="modal-content">
+                <form id="btn-form">
+                    <div class="modal-header button-header-color">
+                        <h4 class="modal-title button-position">Button</h4>
+                        <button type="" class="close" data-dismiss="modal">
+                            <i style="color:white !important " class="fa fa-times"></i>
+
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <!-- Modal Contents Here -->
+                        <div class="col-md-12" style="padding: 10px;">
+
+
+                            <label class="col-sm-4">Display Name</label>
+                            <div style="margin-bottom:10px" class="col-sm-8">
+                                <input class="form-control" type="text" name="btn-name" id="btn-name">
+
+                            </div>
+
+                            <br>
+                            <label class="col-sm-4">Link &nbsp; (http://)</label>
+                            <div class="col-sm-8">
+                                <span class="btnlink">
+
+                                    <input class="form-control" type="text" name="btn-link" id="btn-link"
+                                        placeholder="ublcloud.me">
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="button_id" value="">
+                        <button type="button" id="btn-submit" class="#">Submit</button>
+                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div id="quiz-link-chapter" class="modal-content">
+                <form id="quiz-form">
+                    <div class="modal-header" style="background-color: #353c46;">
+                        <div class="col-sm-12">
+                            <div class="col-sm-8">
+                                <h4 class="modal-title" style="color: white;">Quiz</h4>
+
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;
+                                </button>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-body" style="width: 100%;">
+                        <!-- Modal Contents Here -->
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <label class="control-label">Display Name</label>
+
+                            </div>
+
+                            <input type="text" name="quiz-btn-name" id="quiz-btn-name" class="form-control"
+                                placeholder="Default Input" style="width: 100%;">
+
+                        </div>
+
+
+                        <input type="hidden" name="quiz-link" id="quiz-link">
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="new-quiz">
+                                    <a href="
+                                    {% if '/teachers' in request.path %}
+                                    {% url 'teacher_chapterinfo_detail' course chapter %}?ifquiz=1
+                                    {% else %}
+                                    {% url 'chapterinfo_detail' course chapter %}?ifquiz=1
+                                    {% endif %}
+                                    " target="_blank" id="quiz_create_link">
+                                        <h5> <span
+                                                style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
+                                                New Quiz </span></h5>
+                                    </a>
+
+
+                                </div>
+                                <hr>
+
+                                <div class="select-quiz text-left">
+                                    <h5> Select Existing Quiz
+                                    </h5>
+                                    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                                </div>
+                                <div class="modal-table-container" style="max-height:200px;overflow:auto">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Quiz Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myTable">
+                                            <!-- Table contents goes here from ajax -->
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <hr>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <label>Chosen Quiz</label>
+
+                                    </div>
+                                    <div class="col-md-8">
+                                        <!-- <input type="text" name="quiz-name" id="quiz-name" style="width:100%"> -->
+                                        <input type="text" placeholder="none" name="quiz-name" id="quiz-name"
+                                            class="form-control" style="width: 100%;">
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border:none!important;">
+                        <input type="hidden" id="quiz_id" value="">
+                        <button type="button" id="quiz-submit" class="#">Submit</button>
+                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Survey Modal -->
+    <div id="survey-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div id="survey-link-chapter" class="modal-content">
+                <form id="survey-form">
+                    <div class="modal-header" style="background-color: #353c46;">
+                        <div class="col-md-12 col-sm-12 ">
+                            <div class="col-sm-8  col-xs-6">
+                                <h4 style="color:white" class="modal-title">Survey</h4>
+
+                            </div>
+                            <div class="col-sm-4 col-xs-6">
+                                <button type="button" class="close" data-dismiss="modal" style="color: white;">&times;
+                                </button>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-body" style="width: 100%;">
+                        <!-- Modal Contents Here -->
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <label class="control-label">Display Name</label>
+
+                            </div>
+
+                            <input type="text" name="survey-btn-name" id="survey-btn-name" class="form-control"
+                                placeholder="Default Input" style="width: 100%;">
+
+                        </div>
+
+
+                        <input type="hidden" name="survey-link" id="survey-link">
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="new-survey">
+                                    <a id="survey_create_link" href="    {% if 'teachers' in request.path %}
+                                    {% url  'teacher_courseinfo_detail' course %}?ifsurvey=1
+                                    {% else %}
+                                    {% url  'courseinfo_detail' course %}?ifsurvey=1
+                                    {% endif %}" target="_blank">
+                                        <h5> <span
+                                                style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
+                                                New Survey </span></h5>
+                                    </a>
+
+
+                                </div>
+                                <hr>
+
+                                <div class="select-survey text-left">
+                                    <h5> Select Existing Survey
+                                    </h5>
+                                    <input class="form-control" id="mySurveyInput" type="text" placeholder="Search..">
+                                </div>
+                                <div class="modal-table-container" style="max-height:200px;overflow:auto">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Survey Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="mySurveyTable">
+                                            <!-- Table contents goes here from ajax -->
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <hr>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <label>Chosen Survey</label>
+
+                                    </div>
+                                    <div class="col-md-8">
+                                        <!-- <input type="text" name="survey-name" id="survey-name" style="width:100%"> -->
+                                        <input type="text" placeholder="none" name="survey-name" id="survey-name"
+                                            class="form-control" style="width: 100%;">
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border:none!important;">
+                        <input type="hidden" id="survey_id" value="">
+                        <button type="button" id="survey-submit" class="#">Submit</button>
+                        <button type="button" class="#" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Link Modal -->
+    <div id="link-video-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Link</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+
+                    <label>Link to video</label>
+                    <span class="btnlink">
+                        http://
+                        <input type="text" name="link" id="video-link" accept="video/*">
+                    </span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" id="link-video-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- End of link modal -->
+
+    <!-- Link Image Modal -->
+    <div id="link-image-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Link</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+
+                    <label>Image Link</label>
+                    <span class="btnlink">
+                        http://
+                        <input type="text" name="link" id="image-link">
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="link-image-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- End of link modal -->
+
+    <!-- Link Modal -->
+    <div id="link-3d-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #353c46;">
+                    <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            <h4 class="modal-title" style="color: white;">Link</h4>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="button" class="close" data-dismiss="modal"
+                                style="color:white">&times;</button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+                    <div class="col-sm-12">
+                        <label>Upload 3D file(.glb or .gltf)</label>
+
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" name="_3dfile" id="_3dfile-link"
+                                accept=".glb,.gltf">
+                            <label class="custom-file-label" for="_3dfile-link">Choose file</label>
+                        </div>
+
+
+                        <div style="margin-top: 15px; font-weight:600">For converting 3D files online,
+                            <a class="clickButton" href="https://blackthread.io/gltf-converter/" target="_blank">
+                                Click Here
+                            </a>
+                        </div>
+                    </div>
+                    <!-- <div>
+                <label>Upload 3D file (MTL)</label>
+                <input type="file" name="mtlfile" id="mtl-file" accept=".mtl" readonly/>
+            </div> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="link-3d-submit" class="#">Submit</button>
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div>
+        <button type="button" class="copy-link-btn" style="display: none">Copy Link</button>
+        <input type="text" class="copy-link-text" id="copy-link-text" style="display: none">
+    </div>
+    <div class="alert-info infomessage"
+        style="display: none; position: absolute; top: 10%; left: 50%; padding:5px 10px; color:black; border-radius:5px; ">
+        Link Copied
+    </div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Info</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal Contents Here -->
+                    <ul>
+                        <li> File Format to upload should be zip file and should be less than 200MB</li>
+                        <li> All files should be directly inside the zip, there shouldn't be any other directory</li>
+                        <li> Files format should be .jpg, .png, .bmp, .gif, .jpeg and its size should be less than 2MB
+                        </li>
+                        <li> All images height and width must be of same size inside the zip</li>
+
+                    </ul>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- End of link modal -->
+
+    <!-- Media Files Remove Confirmation Modal -->
+    <div class="modal fade" id="mediafilealertmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete this media?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="mediafilealertmodalbody1">
+                        <p>This media items might be used by others.
+                            Following are the occurences where the media is used.</p>
+
+                    </div>
+                    <div id="mediafilealertmodalbody2"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="delete-media-confirmed">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="{% static 'chapterPageBuilder/js/jquery.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+
+<script src="{% static 'chapterPageBuilder/js/jszip.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/jszip-utils.min.js' %}"></script>
+
+<script src="{% static 'chapterPageBuilder/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/newmain.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/brower.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/color-picker/pickr.min.js' %}"></script>
+<!-- Loads <model-viewer> for modern browsers: -->
+<script type="module" crossorigin="anonymous" src="{% static '3D_Viewer/model-viewer.js' %}">
+</script>
+
+<!-- Loads <model-viewer> for old browsers like IE11: -->
+<script nomodule crossorigin="anonymous" src="{% static '3D_Viewer/model-viewer-legacy.js' %}">
+</script>
+
+
+<script>
+    const pickr = Pickr.create({
+        el: '.color-picker',
+        theme: 'nano', // or 'monolith', or 'nano'
+
+        swatches: [
+            'rgba(244, 67, 54, 1)',
+            'rgba(233, 30, 99, 0.95)',
+            'rgba(156, 39, 176, 0.9)',
+            'rgba(103, 58, 183, 0.85)',
+            'rgba(63, 81, 181, 0.8)',
+            'rgba(33, 150, 243, 0.75)',
+            'rgba(3, 169, 244, 0.7)',
+            'rgba(0, 188, 212, 0.7)',
+            'rgba(0, 150, 136, 0.75)',
+            'rgba(76, 175, 80, 0.8)',
+            'rgba(139, 195, 74, 0.85)',
+            'rgba(205, 220, 57, 0.9)',
+            'rgba(255, 235, 59, 0.95)',
+            'rgba(255, 193, 7, 1)'
+        ],
+
+        components: {
+
+            // Main components
+            preview: true,
+            opacity: true,
+            hue: true,
+
+            // Input / output Options
+            interaction: {
+                hex: false,
+                rgba: false,
+                hsla: false,
+                hsva: false,
+                cmyk: false,
+                input: true,
+                clear: false,
+                save: true
+            }
+        },
+        strings: {
+            save: 'Apply',
+
+        }
+    });
+    pickr.on('save', (color, instance) => {
+        const rgbaColor = color.toRGBA().toString();
+        document.querySelector('.current').style.backgroundColor = rgbaColor;
+        setThumbnailok = true
+    })
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".obj-img-holder").click(function () {
+            $("#id1").css("display", "none");
+            $("#id2").css("display", "block");
+
+            $("#id3").css("display", "block");
+            $("#id4").css("display", "none");
+
+            $("#id5").css("display", "block");
+            $("#id6").css("display", "none");
+        })
+        $(".layout-img-holder").click(function () {
+            $("#id3").css("display", "none");
+            $("#id4 ").css("display", "block");
+
+            $("#id1").css("display", "block");
+            $("#id2").css("display", "none");
+
+            $("#id5").css("display", "block");
+            $("#id6").css("display", "none");
+
+
+        })
+        $(".source-img-holder").click(function () {
+            $("#id5").css("display", "none");
+            $("#id6 ").css("display", "block");
+
+            $("#id1").css("display", "block");
+            $("#id2").css("display", "none");
+
+            $("#id3").css("display", "block");
+            $("#id4").css("display", "none");
+
+
+        })
+
+    });
+</script>
+<script>
+    function toggleFullScreen() {
+        if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+            if (document.documentElement.requestFullScreen) {
+                document.documentElement.requestFullScreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullScreen) {
+                document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+            $('.first-toggle').css('display', 'none')
+            $('.second-toggle').css('display', 'block')
+        } else {
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+            $('.first-toggle').css('display', 'block')
+            $('.second-toggle').css('display', 'none')
+        }
+    }
+</script>
+
+{# Scripts from old builder #}
+<script src="{% static 'chapterPageBuilder/js/html2canvas.js' %}"></script>
+
+<script src="{% static 'chapterPageBuilder/js/offline.min.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/js/accordin.js' %}"></script>
+<script src="{% static 'chapterPageBuilder/SummerNote/summernote-0.8.16-dist/summernote.min.js' %}"></script>
+<link href="https://unpkg.com/cloudinary-video-player@1.3.4/dist/cld-video-player.min.css" rel="stylesheet">
+<script src="https://unpkg.com/cloudinary-core@2.6.3/cloudinary-core-shrinkwrap.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/cloudinary-video-player@1.3.4/dist/cld-video-player.min.js"
+    type="text/javascript"></script>
+
+<!-- Cincopa -->
+<script type="text/javascript" src="https://wwwcdn.cincopa.com/_cms/ugc/uploader.js?cmsver=15"></script>
+<script>
+    var setThumbnailok = false;
+    var currentPage = '1';
+    var data = {{ data | safe}};
+    var courseID = '{{course}}';
+    var chapterID = '{{chapter}}';
+    var chaptertitle = '{{chapterdetails.Chapter_Name}}';
+    var save_file_url = "{% url 'saveFile' %}";
+    var save_video_url = "{% url 'saveVideo' %}";
+    var delete_file_url = "{% url 'delete-chapter-files' %}";
+    var save_3d_url = "{% url 'save3d' %}";
+    var load_file_url = "/media/chapterBuilder/" + courseID + "/" + chapterID;
+    var save_json_url = "{% url 'saveJson' %}";
+    var import_zip_url = '{% url "importzip" %}';
+    var csrf_token = '{{csrf_token}}';
+    var video_icon = '{% static "chapterPageBuilder/images/video_icon.png" %}';
+    var audio_icon = '{% static "chapterPageBuilder/images/audio_icon.png" %}';
+    var _3d_icon = '{% static "chapterPageBuilder/icons/3d.svg" %}';
+    var pdf_icon = '{% static "chapterPageBuilder/icons/pdf.svg" %}';
+    var server_name = '{{ server_name }}';
+    var centerName = '{{ request.user.Center_Code }}';
+    var courseName = '{{ course_name }}';
+    var user = '{{ user.pk }}'
+    var imagegalleryid, videogalleryid, audiogalleryid;
+    if (server_name == "Indonesian_Server") {
+        imagegalleryid = 'A8AAAoODp5Za';
+        videogalleryid = 'AYMAfq-EnZOX';
+        audiogalleryid = 'AgLA8o--2Nr0';
+    } else if (server_name == 'Korean_Server') {
+        imagegalleryid = 'AsNAMruu8BjR';
+        audiogalleryid = 'AcFAJqeO8V_R';
+    } else if (server_name == 'Vietnam_Server') {
+        imagegalleryid = 'AUOAUr-S8FbV';
+        audiogalleryid = 'AMOA5rOA85RW';
+    }
+
+    $('#chapterlist').val(chapterID);
+
+    var previous = chapterID;
+    (function () {
+
+        $("select").on('focus', function () {
+            // Store the current value on focus and on change
+            previous = this.value;
+        }).change(function () {
+            // Do something with the previous value after the change
+            var confirmation = confirm("Are you sure you want to leave?")
+            if (confirmation == false) {
+                $('#chapterlist').val(previous)
+                return false
+            } else {
+                let chapter = $('#chapterlist').val()
+                {% if 'teachers' in request.path %}
+                location.assign('/teachers/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/newChapterBuilder')
+                {% else %}
+                location.assign('/courseinfo/' + courseID + '/chapterinfo/' + chapter + '/newChapterBuilder')
+                {% endif %}
+            }
+        });
+    })();
+
+    $('#quiz_create_link').click(function (e) {
+        e.preventDefault();
+        $('#quiz-modal').modal('toggle');
+        let link = $("#quiz_create_link").attr('href');
+        loadPreview(link, 1)
+    })
+
+    $('#survey_create_link').click(function (e) {
+        e.preventDefault();
+        $('#survey-modal').modal('toggle');
+        let link = $("#survey_create_link").attr('href');
+        loadPreview(link, 1)
+    })
+
+    // Add circular progress bar
+    function addprogress() {
+
+        $(".progressc").each(function () {
+
+            var value = $(this).attr('data-value');
+            var left = $(this).find('.progress-left .progress-barc');
+            var right = $(this).find('.progress-right .progress-barc');
+
+            if (value > 0) {
+                if (value <= 50) {
+                    right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                } else {
+                    right.css('transform', 'rotate(180deg)')
+                    left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+                }
+            }
+
+        });
+    }
+
+    function percentageToDegrees(percentage) {
+        return percentage / 100 * 360
+    }
+
+</script>
+<script>
+
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+
+    $('#chapter-description-form').on('submit', function (e) {
+        e.preventDefault()
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),  // URL to your view that serves new info
+            data: $(this).serialize(),
+            success: function (data) {
+                $('#link-description').modal('toggle');
+                $('.form-errors').empty()
+                $('.chapter-name').text(data.chapter_name)
+                $('#chapter-description').find('p').text(data.summary)
+                $(`#chapterlist option[value=${data.chapter_pk}]`).text(data.chapter_no + '. ' + data.chapter_name)
+            },
+            error: function (err) {
+                console.log(err)
+                $('.form-errors').empty()
+                if (err.hasOwnProperty('responseJSON')) {
+                    console.log('Error in posting chapter create form', err.responseJSON.msg)
+                    $('.form-errors').append(err.responseJSON.msg).css('display', 'block')
+                } else {
+                    console.log('Error in posting chapter create form')
+                }
+            },
+        });
+    });
+</script>
+
+{# End of Scripts from old builder #}
+
+<script>
+    const truncateString = (string, maxLength = 30) => {
+        if (!string) return null;
+        const showDots = string.length > maxLength;
+        return `${string.substring(0, maxLength)}${showDots ? '...' : ''}`;
+    };
+
+    function mediaFilesClickFunction($this) {
+        if ($($this).closest('.mediaitemcontainer').hasClass('media-selected')) {
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
+            $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
+            $('.selectedmediafilename').remove()
+        } else {
+            $('.selectedmediafilename').remove()
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', 'Click to Select')
+            $('.mediaitemcontainer').removeClass('media-selected')
+            $($this).closest('.mediaitemcontainer').toggleClass('media-selected')
+            $('.media-selected').find('.source-gallery-holder').attr('data-original-title', $('.media-selected').find('.mediafiles').attr('data-filename'))
+            $('.select-link-ul').after(`<div class="selectedmediafilename" style="margin: 10px 0px; text-align:center ">${$('.media-selected').find('.mediafiles').attr('data-truncfilename')}</div>`)
+        }
+        if ($('.media-selected').length > 0) {
+            $('.select-link-box').css('display', 'block')
+        } else {
+            $('.select-link-box').css('display', 'none')
+        }
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+    setTimeout(function () {
+        retrieveServerMedias(10)
+    }, 2000)
+
+    function retrieveServerMedias(max_items = 10) {
+        $.ajax({
+            url: "{% url 'retrieve-chapter-files' %}?max_items=" + max_items,
+            data: {
+                'courseID': courseID,
+                'chapterID': chapterID,
+                'userpk': '{{ request.user.pk }}'
+            },
+            success: function (data) {
+                //counter = 1 //for combine limit
+                if (data.pdf.length > 0) {
+                    $('.pdf-gallery').empty();
+                    data.pdf.forEach(x => {
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
+                        trunctitle = title
+                        if (title.length > 25) {
+                            trunctitle = truncateString(title, 25)
+                        }
+                        $('.pdf-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/pdf.svg' %}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                        )
+                    });
+                }
+                if (data._3d.length > 0) {
+                    $('._3d-gallery').empty();
+                    data._3d.forEach(x => {
+                        title = (x.includes('___') ? x.split('___')[1] : x.split('&&&')[1]) + '.' + x.split('.')[1]
+                        trunctitle = title
+                        if (title.length > 25) {
+                            trunctitle = truncateString(title, 25)
+                        }
+                        $('._3d-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-filename=${title} data-truncfilename=${trunctitle} data-href = "/media/chapterBuilder/${courseID}/${chapterID}/${x}">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="{% static 'chapterPageBuilder/icons/3d.svg' %}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                        )
+                    });
+                }
+                if (data.vimeo_videos) {
+                    if (data.vimeo_videos.length > 0) {
+                        data.vimeo_videos.forEach(x => {
+                            embed_link = "//player.vimeo.com/video/" + getVimeoVideoID(x['video-link'])
+                            title = (x['video-name'].includes('___') ? x['video-name'].split('___')[1] : x['video-name'].split('&&&')[1]) + '.' + x['video-name'].split('.')[1]
+                            trunctitle = title
+                            if (title.length > 25) {
+                                trunctitle = truncateString(title, 25)
+                            }
+                            $('.video-gallery').append(`
+                            <div class="col-sm-6 col-xs-12 media-items-holder">
+                                <div class = "mediaitemcontainer">
+                                <a class="mediafiles" href="javascript:void(0)" data-id="${x['video-id']}" data-filename=${title} data-truncfilename=${trunctitle} data-href = "${embed_link}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=156032">
+                                <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                                    <img src="${x['video-thumbnail'].link}" style="object-fit: contain;">
+                                </div>
+                                </a>
+                                </div>
+                            </div>
+                            `
+                            )
+                        })
+                    }
+                }
+                $('.mediafiles').on('click', function (e) {
+                    e.stopImmediatePropagation();
+                    mediaFilesClickFunction(this)
+
+                })
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            // dataType: dataType
+        });
+    }
+
+    /* mediaType List
+        1- Image
+        2- Video
+        3- Audio
+        4- PDF
+        5- 3d object
+     */
+    function retrieveMedias(mediatype) {
+        var gallery_name = null
+        var media_link = null
+        var galleryid
+        let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
+        let media_type = '';
+        let page_no = 1;
+        let item_per_page = 10;
+        let tags = server_name + ',' + 'center_' + centerName + ',' + 'course_' + courseName;
+
+        if (mediatype == 1) {
+            gallery_name = $('.image-gallery');
+            galleryid = imagegalleryid;
+            media_type = 'image';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${imagegalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+
+        } else if (mediatype == 2) {
+            gallery_name = $('.video-gallery');
+            galleryid = videogalleryid;
+            media_type = 'video';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${videogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+        } else if (mediatype == 3) {
+            gallery_name = $('.audio-gallery');
+            galleryid = audiogalleryid;
+            media_type = 'audio';
+            media_link = `https://api.cincopa.com/v2/asset.list.json?api_token=${api_token}&type=${media_type}&page=${page_no}&items_per_page=${item_per_page}&tag=${tags}&ident=y`;
+            // media_link = `https://api.cincopa.com/v2/gallery.get_items.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&fid=${audiogalleryid}&page=1&items_per_page=10&tag=${centerName},${courseName}&ident=y`
+        }
+
+        $.get(media_link, function (data) {
+            if (typeof (data) !== 'string') {
+                data['items'].forEach(element => {
+                    var thumbnail = element.thumbnail.url;
+                    if (mediatype == 3) {
+                        if (element.thumbnail.url && element.thumbnail.url != "") {
+                            var thumbnail = element.thumbnail.url;
+                        } else {
+                            var thumbnail = "{% static 'chapterPageBuilder/images/audio_icon.png' %}"
+                        }
+                    }
+                    title = element.filename
+                    trunctitle = title
+                    if (title.length > 25) {
+                        trunctitle = truncateString(title, 25)
+                    }
+
+                    gallery_name.append(`
+                        <div class="col-sm-6 col-xs-12 media-items-holder">
+                            <div class = "mediaitemcontainer">
+                            <a class="mediafiles" href="javascript:void(0)" data-id="${element.rid}" data-filename=${title} data-truncfilename=${trunctitle} data-href = "//www.cincopa.com/media-platform/iframe.aspx?fid=${galleryid}!${element.rid}">
+                            <div class="source-gallery-holder" data-toggle="tooltip" data-placement="bottom" title='Click To Select'>
+                            <img src = ${thumbnail} style="object-fit: contain">
+                            </div>
+                            </a>
+                            </div>
+                     </div>
+                    `)
+                });
+                $('.mediafiles').on('dblclick', function (e) {
+                    e.preventDefault()
+                    //loadPreview($(this).attr('data-href'), 1, null, 1)
+                })
+
+                $('.mediafiles').on('click', function (e) {
+                    e.stopImmediatePropagation();
+                    mediaFilesClickFunction(this)
+                })
+
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+        })
+    }
+
+    retrieveMedias(1)
+    retrieveMedias(2)
+    retrieveMedias(3)
+
+    $('.icon1-link').on('click', function () {
+        var copyText = document.createElement("input");
+        copyText.value = $('.media-selected').find('a').attr('data-href');
+        document.body.appendChild(copyText);
+        copyText.select();
+        copyText.setSelectionRange(0, 999)
+        document.execCommand("copy");
+        document.body.removeChild(copyText);
+        $('.infomessage').fadeIn(1500)
+        $('.infomessage').fadeOut(1500)
+
+    })
+
+    $('.icon2-link').on('click', function () {
+        if ($('.media-selected').parents().hasClass('image-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <img src=${$('.media-selected').find('a').attr('data-href')} height="100%" width="100%" style="object-fit:contain;">
+            `);
+            $('#closeiframebtn').css({ 'display': 'block', 'top': '1vh' });
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            $('#examiframeholder').addClass('examiframeholder')
+            $('#iframeholder').append(`
+                <model-viewer
+                src="${$('.media-selected').find('a').attr('data-href')}"
+                alt="Here is a 3D Object."
+                auto-rotate
+                camera-controls
+                style="height: 100%;width:100%;"></model-viewer>
+            `);
+            $('#closeiframebtn').css({ 'display': 'block', 'top': '1vh' });
+        } else {
+            loadPreview($('.media-selected').find('a').attr('data-href'), 1, null, 1);
+        }
+    })
+
+    $('.icon3-link').on('click', function () {
+        $('#mediafilealertmodalbody2').empty()
+        var filekey;
+        if ($('.media-selected').parents().hasClass('image-gallery')) {
+            filekey = 'pic'
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            filekey = '_3d'
+        } else if ($('.media-selected').parents().hasClass('pdf-gallery')) {
+            filekey = 'pdf'
+        } else if ($('.media-selected').parents().hasClass('video-gallery')) {
+            filekey = 'video'
+        } else if ($('.media-selected').parents().hasClass('audio-gallery')) {
+            filekey = 'audio'
+        }
+        $.ajax({
+            type: "GET",
+            url: '{% if " / teachers" in request.path %}{% url "checkMediaFiles" %}?teachers=1{% else %}{% url "checkMediaFiles" %}{% endif %}',  // URL to your view that serves new info
+            data: {
+                'courseID': courseID,
+                'filelink': $('.media-selected').find('a').attr('data-href'),
+                'filekey': filekey,
+            },
+            success: function (response) {
+                if (response.message.length == 0) {
+                    $('#mediafilealertmodalbody2').append('<div>Media is not used in other chapters.</div>')
+                    return false
+                }
+                response.message.forEach(x => {
+                    $('#mediafilealertmodalbody2').append(`
+                        <div>
+                            ${x.chapter_no}. ${x.chapter_name} Page: ${x.page} Link => <a href="${x.chapter_link}" target="_blank"> Click to visit </a>
+                        </div>
+                    `)
+                })
+            },
+            error: function (err) {
+                console.log(err)
+            },
+        });
+    })
+
+    $('#delete-media-confirmed').on('click', function () {
+        var filetype = 0;
+        if ($('.media-selected').parents().hasClass('image-gallery') || $('.media-selected').parents().hasClass('audio-gallery')) {
+            removeCincopaMedias(imagegalleryid, $('.media-selected').find('a').attr('data-id'), filetype)
+        } else if ($('.media-selected').parents().hasClass('_3d-gallery')) {
+            tobedeletedfiles._3d.push($('.media-selected').find('a').attr('data-href'))
+            filetype = 5
+            deleteFile(tobedeletedfiles, filetype)
+        } else if ($('.media-selected').parents().hasClass('pdf-gallery')) {
+            tobedeletedfiles.pdf.push($('.media-selected').find('a').attr('data-href'))
+            filetype = 4
+            deleteFile(tobedeletedfiles, filetype)
+        } else if ($('.media-selected').parents().hasClass('video-gallery')) {
+            if (server_name == "Indonesian Server") {
+                removeCincopaMedias(videogalleryid, $('.media-selected').find('a').attr('data-id'), 2)
+            } else {
+                tobedeletedfiles.video.push($('.media-selected').find('a').attr('data-id'))
+                filetype = 2
+                deleteFile(tobedeletedfiles, filetype)
+            }
+        }
+        $('#mediafilealertmodal').modal('hide')
+    })
+
+    function removeCincopaMedias(fid, rids, filetype) {
+        let api_token = '1453562iobwp33x0qrt34ip4bjiynb5olte';
+        $.get(`https://api.cincopa.com/v2/asset.delete.json?api_token=${api_token}&rid=${rids}`, function (data) {
+            console.log(data)
+            retrieveMedias(filetype)
+        }).fail(function (err) {
+            console.log(err);
+        })
+    }
+
+    $('.dropdown-menu li').on('click', function () {
+        $('.dropdown-selected').removeClass('dropdown-selected active')
+        $(this).addClass('dropdown-selected active')
+        $('.custom-dropdown>span').text($(this).find('a').text())
+        $('.dropdown-items>div').css('display', 'none');
+
+        if ($(this).find('a').text().toLowerCase() == "images") {
+            $('.image-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "videos") {
+            $('.video-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "audios") {
+            $('.audio-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "pdf") {
+            $('.pdf-gallery').css('display', 'block')
+        } else if ($(this).find('a').text().toLowerCase() == "3d") {
+            $('._3d-gallery').css('display', 'block')
+        } else {
+            $('.dropdown-items div').css('display', 'block');
+        }
+    })
+
+</script>
+
+<!-- <script src="{% static 'chapterPageBuilder/js/stackimage.js' %}"></script> -->
