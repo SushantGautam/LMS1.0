@@ -100,6 +100,10 @@ def render_content(comment, number):
 def can_delete_comment(comment, user):
     return is_comment_admin(user) or (comment.is_flagged and is_comment_moderator(user))
 
+@register.simple_tag(name='can_hide_comment')
+def can_hide_comment(comment, user):
+    return is_comment_admin(user) or (is_comment_moderator(user))
+
 
 register.inclusion_tag('comment/comments/content.html')(render_content)
 

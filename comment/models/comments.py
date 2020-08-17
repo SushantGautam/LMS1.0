@@ -21,6 +21,8 @@ class Comment(models.Model):
     posted = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
+    is_visible = models.BooleanField(default=True)
+
     objects = CommentManager()
 
     class Meta:

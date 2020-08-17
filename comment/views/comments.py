@@ -105,3 +105,49 @@ class DeleteComment(BaseCommentView):
         self.comment.delete()
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
+
+class HideComment(BaseCommentView):
+    comment = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
+        if request.user != self.comment.user and not is_comment_admin(request.user) \
+                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        data = dict()
+        context = self.get_context_data()
+        context["comment"] = self.comment
+        data['html_form'] = render_to_string('comment/comments/comment_hide_modal.html', context, request=request)
+        return JsonResponse(data)
+
+    def post(self, request, *args, **kwargs):
+        self.comment.is_visible = False
+        self.comment.save()
+        context = self.get_context_data()
+        return render(request, 'comment/comments/base.html', context)
+
+class ShowComment(BaseCommentView):
+    comment = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
+        if request.user != self.comment.user and not is_comment_admin(request.user) \
+                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        data = dict()
+        context = self.get_context_data()
+        context["comment"] = self.comment
+        data['html_form'] = render_to_string('comment/comments/comment_show_modal.html', context, request=request)
+        return JsonResponse(data)
+
+    def post(self, request, *args, **kwargs):
+        self.comment.is_visible = True
+        self.comment.save()
+        context = self.get_context_data()
+        return render(request, 'comment/comments/base.html', context)
