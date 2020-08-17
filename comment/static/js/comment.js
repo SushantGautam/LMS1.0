@@ -214,6 +214,119 @@ $(function () {
         });
     };
 
+    var hideComment = function (e) {
+        e.preventDefault();
+        var hasParent, paginate, comment_per_page;
+        var $form = $(this);
+        var $parentComment = $deleteCommentButton.parents().eq(4);
+        var $reply = $deleteCommentButton.parents().eq(6).find(".js-reply-link");
+        var $replyNumber = $deleteCommentButton.parents().eq(6).find(".js-reply-number");
+        var $formData = $form.serializeArray();
+        var $thisURL = $form.attr("data-url");
+
+        // get the current page number and send it to pagination func
+        var currentURL = window.location.href.split("=")[1];
+        pageNumber = parseInt(currentURL, 10);
+
+        // retrieve the comment status parent or child
+        $.each($formData, function (i, field) {
+            if (field.name === "has_parent") hasParent = field.value === "True";
+        });
+
+        // send page number to BE
+        $formData.push({name: 'page', value: pageNumber});
+
+        $.ajax({
+            method: "POST",
+            url: $thisURL,
+            data: $formData,
+            success: function hideCommentDone(data, textStatus, jqXHR) {
+                $("#Modal").modal("hide");
+                $parentComment.remove();
+                var $parentCommentArr = $(".js-parent-comment");
+                if (hasParent) {
+                    // update replies count if a child was deleted
+                    var rNum = Number($replyNumber.text()) - 1;
+                    $replyNumber.replaceWith('<span class="js-reply-number text-dark">' + rNum + '</span>');
+                    if (rNum > 1) {
+                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Replies</a>');
+                    } else {
+                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Reply</a>');
+                    }
+                    // update total count of comments
+                    commentCount(-1);
+                } else {
+                    // reload all comments only when deleting parent comment
+                    $("#comments").replaceWith(data);
+                    // clear BS classes and attr from body tag
+                    $("body").removeClass("modal-open");
+                    $("body").removeAttr("class");
+                    $("body").removeAttr("style");
+                    $(".modal-backdrop").remove();
+                }
+            },
+            error: function handleFormError(jqXHR, textStatus, errorThrown) {
+                alert("Unable to hide comment!, please try again");
+            },
+        });
+    };
+
+    var showComment = function (e) {
+        e.preventDefault();
+        var hasParent, paginate, comment_per_page;
+        var $form = $(this);
+        var $parentComment = $deleteCommentButton.parents().eq(4);
+        var $reply = $deleteCommentButton.parents().eq(6).find(".js-reply-link");
+        var $replyNumber = $deleteCommentButton.parents().eq(6).find(".js-reply-number");
+        var $formData = $form.serializeArray();
+        var $thisURL = $form.attr("data-url");
+
+        // get the current page number and send it to pagination func
+        var currentURL = window.location.href.split("=")[1];
+        pageNumber = parseInt(currentURL, 10);
+
+        // retrieve the comment status parent or child
+        $.each($formData, function (i, field) {
+            if (field.name === "has_parent") hasParent = field.value === "True";
+        });
+
+        // send page number to BE
+        $formData.push({name: 'page', value: pageNumber});
+
+        $.ajax({
+            method: "POST",
+            url: $thisURL,
+            data: $formData,
+            success: function showCommentDone(data, textStatus, jqXHR) {
+                $("#Modal").modal("hide");
+                $parentComment.remove();
+                var $parentCommentArr = $(".js-parent-comment");
+                if (hasParent) {
+                    // update replies count if a child was deleted
+                    var rNum = Number($replyNumber.text()) - 1;
+                    $replyNumber.replaceWith('<span class="js-reply-number text-dark">' + rNum + '</span>');
+                    if (rNum > 1) {
+                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Replies</a>');
+                    } else {
+                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Reply</a>');
+                    }
+                    // update total count of comments
+                    commentCount(-1);
+                } else {
+                    // reload all comments only when deleting parent comment
+                    $("#comments").replaceWith(data);
+                    // clear BS classes and attr from body tag
+                    $("body").removeClass("modal-open");
+                    $("body").removeAttr("class");
+                    $("body").removeAttr("style");
+                    $(".modal-backdrop").remove();
+                }
+            },
+            error: function handleFormError(jqXHR, textStatus, errorThrown) {
+                alert("Unable to hide comment!, please try again");
+            },
+        });
+    };
     /**
      * Returns whether a classList contains a particular class or not.
      * @param {Array} classList - the array of classes to be compared.
@@ -496,6 +609,10 @@ $(function () {
     $(document).on("click", ".js-comment-cancel", cancelEdit);
     $(document).on("click", ".js-comment-delete", loadForm);
     $(document).on("submit", ".js-comment-delete-form", deleteComment);
+    $(document).on("click", ".js-comment-hide", loadForm);
+    $(document).on("submit", ".js-comment-hide-form", hideComment);
+    $(document).on("click", ".js-comment-show", loadForm);
+    $(document).on("submit", ".js-comment-show-form", showComment);
     $(document).on("click", ".js-comment-reaction", commentReact);
     $(document).on("click", ".js-comment-flag", commentFlag);
     $(document).on("click", ".js-read-more-btn", toggleText);
