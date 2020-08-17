@@ -147,6 +147,28 @@
 
 
 <body>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="message-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Continue Study</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                You have been idle for a while. Please click <b><i>Continue</i></b> to keep studying. Or you will be
+                redirected to chapter {{ chapter }} in <span id="redirectTimeCounter"></span> seconds.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ---------------------------------------------------------------------------------------- -->
 
 <div class="top-header">
     <div class="container">
@@ -2193,4 +2215,54 @@
         }
     });
 </script>
+
+<!-- Idle Time Check Scripts -->
+{% if '/students' in request.path %}
+    <script>
+        // Idle Time Check
+        var idleTime = 0;
+        var redirectInterval;
+        var idleTimeCheckIntervalTime = 5000;
+        var idleTimeRedirectTime = (15 * 60 * 1000);
+        window.onmousemove = function () {
+            idleTime = 0;
+        }
+
+        function idleTImeCheck() {
+            if (idleTime >= (idleTimeRedirectTime)) {
+                displayAlertMessage()
+            } else {
+                idleTime += idleTimeCheckIntervalTime;   // increment must be equal to function interval time
+            }
+        }
+
+        var idleTimeCheckInterval = setInterval(idleTImeCheck, idleTimeCheckIntervalTime);
+
+        function displayAlertMessage() {
+            $('#message-modal').modal('show');
+            var counter = 15;
+            redirectInterval = setInterval(function () {
+                if (counter == 0) {
+                    window.location.href = '/students/courseinfo/{{ chapter.Course_Code.id }}/chapterinfo/{{ chapter.id }}/?idle=true&redirected=true';
+                    clearSetInterval(redirectInterval);
+                    clearSetInterval(idleTimeCheckInterval);
+
+                }
+                if (counter >= 0) {
+                    $('#redirectTimeCounter').text(counter);
+                    counter--;
+                }
+            }, 1000);
+        }
+
+        function clearSetInterval(intervalVar) {
+            clearInterval(intervalVar);
+        }
+
+        $('#message-modal').on('hidden.bs.modal', function () {
+            idleTime = 0;
+            clearSetInterval(redirectInterval);
+        })
+    </script>
+{% endif %}
 </body>
