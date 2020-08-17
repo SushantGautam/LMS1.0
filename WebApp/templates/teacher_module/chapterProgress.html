@@ -60,8 +60,14 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
 
-        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> [Course Info]</div>
-
+        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> 
+            [Course Info]
+            {% if inning  %}
+                <a href="{% url 'progress_download' course.pk inning.pk %}" target="__blank">
+                    <button class="btn btn-info btn-sm pull-right" id="downloadProgress">Download All Student Progress</button>
+                </a>
+            {% endif %}
+        </div>
 
         <div class=" courseinfo-detail-only col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6">

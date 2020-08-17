@@ -381,6 +381,7 @@ urlpatterns += (
          views.StudentChapterProgressView, name='student_chapter_progress'),
     path('editstudentChapterProgressTime/<int:chapterid>/<int:studentid>/', views.editStudentChapterProgressTime,
          name="editStudentChapterProgressTime"),
+    path('courseinfo/detail/<int:coursepk>/<int:sessionpk>/download/', views.CourseProgressDownload, name="progress_download")
 )
 
 # Notice URL
