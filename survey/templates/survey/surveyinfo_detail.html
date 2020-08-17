@@ -11,7 +11,7 @@
 </style>
 {% block content %}
     {% include 'survey/common/alerts.html' %}
-    {% include 'survey/common/details.html' %}
+    {% include 'survey/common/new_detail.html' %}
 
 <br><br>
     <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="float: left;">
@@ -25,6 +25,8 @@
     <script src="{% static 'js/highcharts.js' %}"></script>
     <script src="{% static 'js/highchart_data.js' %}"></script>
     <script src="{% static 'worldcloud.js' %}"></script>
+
+
 
     {#  {% if object.Survey_Live %}#}
 
