@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
-    FileField
+    FileField, Sum
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.urls import reverse
@@ -524,6 +524,10 @@ class AssignmentInfo(models.Model):
         if self.Assignment_Start and self.Assignment_Deadline:
             if self.Assignment_Start > self.Assignment_Deadline:
                 raise ValidationError("End date must be greater than start date")
+    
+    @property
+    def get_total_score(self):
+        return AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
 
 
 def upload_to(instance, filename):

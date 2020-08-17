@@ -4,6 +4,7 @@ import math
 import os
 import re
 import uuid
+import decimal
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -26,7 +27,7 @@ from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixi
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -3925,3 +3926,76 @@ class TeacherIndividualReport(TemplateView):
             'courses']
         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
         return context
+
+
+def CourseProgressDownload(request, coursepk, sessionpk):
+    course = CourseInfo.objects.get(pk=int(coursepk))
+    session = InningInfo.objects.get(pk=int(sessionpk))
+    chapters = ChapterInfo.objects.filter(Course_Code=course)
+    students = session.Groups.Students.all()
+
+    column_names = (("Student Name", "Full Name"), ("Username", "User ID"))
+    score_dict = dict()
+    for chapter in chapters:
+        chapter_name = chapter.Chapter_Name
+        column_names = (column_names + ((chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
+        quizes = Quiz.objects.filter(chapter_code=chapter)
+        quiz_total_score = 0.0
+        for quiz in quizes:
+            quiz_total_score += quiz.get_max_score
+        assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter)
+        assignment_total_score = 0.0
+        for assignemnt in assignments:
+            assignment_total_score += assignemnt.get_total_score
+        quiz_total_score = decimal.Decimal(round(quiz_total_score,2))
+        assignment_total_score = decimal.Decimal(round(assignment_total_score,2))
+        score_dict[chapter.pk] = [quiz_total_score,assignment_total_score]
+    cols = pd.MultiIndex.from_tuples(column_names)
+    df = pd.DataFrame(columns=column_names)
+
+
+    for i, student in enumerate(students):
+        new_row = {("Student Name", "Full Name"): student.get_full_name(), ("Username", "User ID"): student.username}
+        for chapter in chapters:
+            chapter_name = chapter.Chapter_Name
+            
+            student_quiz_scores = []
+            student_quiz_score = 0.0
+            quiz_sittings = Sitting.objects.filter(quiz__chapter_code=chapter, user=student, complete=True)
+            for quiz_sitting in quiz_sittings:
+                student_quiz_scores.append(quiz_sitting.get_score_correct)
+            student_quiz_score = max(student_quiz_scores) if student_quiz_scores else 0
+            student_quiz_score = decimal.Decimal(round(student_quiz_score,2))
+
+            student_assignment_score = AssignAnswerInfo.objects.filter(
+                                            Question_Code__Assignment_Code__Chapter_Code=chapter, Student_Code=student).aggregate(
+                                            Sum('Assignment_Score'))['Assignment_Score__sum']
+            if student_assignment_score:
+                student_assignment_score = decimal.Decimal(round(student_assignment_score,2))
+            else:
+                student_assignment_score = 0
+
+            data = get_study_time(course.pk, chapter, student)
+            progress = data['progress']
+
+            new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(student_quiz_score) + ')'
+            new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(student_assignment_score) + ')'
+            new_row[(chapter_name, "Progress Complete")] = str(progress)
+
+        df = df.append(new_row, ignore_index=True)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.index += 1
+        df.index.name = 'S.N.'
+        sheet_name = str(course.Course_Name)
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
+        if len(sheet_name) > 28:
+            sheet_name = sheet_name[:27] + ' ..'
+        df.to_excel(writer, sheet_name=sheet_name)
+        writer.save()
+        response = HttpResponse(b.getvalue(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'StudentProgress_' + sheet_name + '.xlsx"'
+        return response
