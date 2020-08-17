@@ -527,7 +527,11 @@ class AssignmentInfo(models.Model):
     
     @property
     def get_total_score(self):
-        return AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
+        score = AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
+        if score:
+            return score
+        else:
+            return 0
 
 
 def upload_to(instance, filename):
