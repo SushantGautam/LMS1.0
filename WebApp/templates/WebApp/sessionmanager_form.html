@@ -22,7 +22,7 @@
                 </label>
                 <select class="select2" id="id_memberinfoobj" name="memberinfoobj" multiple>
                     {% for x, y in form.fields.memberinfoobj.choices %}
-                    <option value="{{ x }}" {% if form.fields.memberinfoobj.value == x %}selected{% endif %}>
+                    <option value="{{ x }}" {% if form.initial.memberinfoobj == x %}selected{% endif %}>
                         {{ y }}
                     </option>
                     {% endfor %}

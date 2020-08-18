@@ -2,7 +2,13 @@
 {% load static %}
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item"><a href="{% url 'courseinfo_grid' %}">Course</a></li>
+<li class="breadcrumb-item"><a href="
+    {% if object.Course_Code.Use_Flag %}
+        {% url 'courseinfo_grid_active' %}
+    {% else %}
+        {% url 'courseinfo_grid_inactive' %}
+    {% endif %}
+    ">Course</a></li>
 <li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
 <li class="breadcrumb-item"><a href="{{ object.get_absolute_url }}">{{ object.Chapter_Name }}</a>
 </li>
@@ -57,14 +63,14 @@
                             <div class="form-group">
                                 <label for="Start_Date" class="font-weight-bold">Start Date</label>
                                 <input name="Start_Date" type="date" class="form-control" id="id_Start_Date"
-                                    max="9999-12-31" value="{{ object.Start_Date }}">
+                                    max="9999-12-31" value="{{ object.Start_Date|date:'Y-m-d' }}">
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="End_Date" class="font-weight-bold">End Date</label>
                                 <input name="End_Date" type="date" class="form-control" id="id_End_Date"
-                                    max="9999-12-31" value="{{ object.End_Date }}">
+                                    max="9999-12-31" value="{{ object.End_Date|date:'Y-m-d' }}">
                             </div>
                         </div>
                     </div>
