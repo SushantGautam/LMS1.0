@@ -185,6 +185,8 @@ $(function () {
             data: $formData,
             success: function deleteCommentDone(data, textStatus, jqXHR) {
                 $("#Modal").modal("hide");
+                location.reload()
+                /*
                 $parentComment.remove();
                 var $parentCommentArr = $(".js-parent-comment");
                 if (hasParent) {
@@ -207,6 +209,8 @@ $(function () {
                     $("body").removeAttr("style");
                     $(".modal-backdrop").remove();
                 }
+
+                 */
             },
             error: function handleFormError(jqXHR, textStatus, errorThrown) {
                 alert("Unable to delete your comment!, please try again");
@@ -242,28 +246,7 @@ $(function () {
             data: $formData,
             success: function hideCommentDone(data, textStatus, jqXHR) {
                 $("#Modal").modal("hide");
-                $parentComment.remove();
-                var $parentCommentArr = $(".js-parent-comment");
-                if (hasParent) {
-                    // update replies count if a child was deleted
-                    var rNum = Number($replyNumber.text()) - 1;
-                    $replyNumber.replaceWith('<span class="js-reply-number text-dark">' + rNum + '</span>');
-                    if (rNum > 1) {
-                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Replies</a>');
-                    } else {
-                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Reply</a>');
-                    }
-                    // update total count of comments
-                    commentCount(-1);
-                } else {
-                    // reload all comments only when deleting parent comment
-                    $("#comments").replaceWith(data);
-                    // clear BS classes and attr from body tag
-                    $("body").removeClass("modal-open");
-                    $("body").removeAttr("class");
-                    $("body").removeAttr("style");
-                    $(".modal-backdrop").remove();
-                }
+                location.reload()
             },
             error: function handleFormError(jqXHR, textStatus, errorThrown) {
                 alert("Unable to hide comment!, please try again");
@@ -299,28 +282,7 @@ $(function () {
             data: $formData,
             success: function showCommentDone(data, textStatus, jqXHR) {
                 $("#Modal").modal("hide");
-                $parentComment.remove();
-                var $parentCommentArr = $(".js-parent-comment");
-                if (hasParent) {
-                    // update replies count if a child was deleted
-                    var rNum = Number($replyNumber.text()) - 1;
-                    $replyNumber.replaceWith('<span class="js-reply-number text-dark">' + rNum + '</span>');
-                    if (rNum > 1) {
-                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Replies</a>');
-                    } else {
-                        $reply.replaceWith('<a class="js-reply-link ml-1" href="#">Reply</a>');
-                    }
-                    // update total count of comments
-                    commentCount(-1);
-                } else {
-                    // reload all comments only when deleting parent comment
-                    $("#comments").replaceWith(data);
-                    // clear BS classes and attr from body tag
-                    $("body").removeClass("modal-open");
-                    $("body").removeAttr("class");
-                    $("body").removeAttr("style");
-                    $(".modal-backdrop").remove();
-                }
+                location.reload()
             },
             error: function handleFormError(jqXHR, textStatus, errorThrown) {
                 alert("Unable to hide comment!, please try again");

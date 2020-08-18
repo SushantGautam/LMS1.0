@@ -1,5 +1,6 @@
 {% load comment_tags %}
-<form class="js-comment-delete-form" method="post"
+
+<form class="{% block form_class %}js-comment-delete-form{% endblock form_class %}" method="post"
       {% block dataurl %}data-url="{% if comment %}{% url 'comment:delete' pk=comment.id %}{% endif %}{% endblock %}">
     {% csrf_token %}
     <div class="modal-header">
