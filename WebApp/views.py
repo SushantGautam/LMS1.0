@@ -50,10 +50,10 @@ from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
-    InningManagerForm
+    InningManagerForm, DepartmentInfoForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice, NoticeView
+    InningManager, Notice, NoticeView, DepartmentInfo
 
 
 class Changestate(View):
@@ -3347,6 +3347,7 @@ def manifestwebmanifest(request):
         data = f.read()
     return HttpResponse(data, )
 
+
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
@@ -3372,7 +3373,6 @@ class SessionManagerUpdateView(UpdateView):
         kwargs = super(SessionManagerUpdateView, self).get_form_kwargs()
         kwargs.update({'request': self.request})
         return kwargs
-
 
 
 def viewteacherAttendance(request, attend_date, courseid, teacherid):
@@ -4099,4 +4099,58 @@ class TeacherIndividualReport(TemplateView):
         return context
 
 
+# ===================== DepartmentInfo Views =================
 
+
+class DepartmentInfoListView(ListView):
+    model = DepartmentInfo
+    template_name = 'center_admin/departmentinfo_list.html'
+
+    def get_queryset(self):
+        return DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+
+
+# class DepartmentInfoForm(object):
+#     pass
+
+
+class DepartmentInfoCreateView(CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'center_admin/departmentinfo_form.html'
+    success_url = reverse_lazy('departmentinfo_list')
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+
+class DepartmentInfoDetailView(DetailView):
+    model = DepartmentInfo
+    template_name = 'center_admin/departmentinfo_detail.html'
+
+
+class DepartmentInfoUpdateView(UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'center_admin/departmentinfo_form.html'
+    success_url = reverse_lazy('departmentinfo_list')
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+
+def DepartmentInfoDeleteView(request, pk):
+    DepartmentInfo.objects.filter(pk=pk).delete()
+    return redirect("departmentinfo_list")
+
+# ==========================    End of Department Views =========================================

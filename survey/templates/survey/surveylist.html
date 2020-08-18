@@ -1,22 +1,26 @@
 {% extends "base.html" %}
 {% load static %}
 {% block stylesheets %}
+
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
   <li class="breadcrumb-item active" aria-current="page">Survey</li>
 {% endblock %}
 {% block content %}
-  {% include 'survey/surveyinfo_list.html' %}
+  {% include 'survey/new_surveylist.html' %}
 {% endblock %}
 
 
 {% block javascript %}
 
+  <script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
   {% for category in categories %}
     <script>
-        $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
+
+       $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
             $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
             $.ajax({
                 type: "GET",
@@ -54,6 +58,9 @@
 
       $(document).ready(function () {
 
+           $('.repeater').repeater();
+
+
           $.ajax({
               type: "GET",
               data: {
@@ -69,6 +76,8 @@
               }
           });
       });
+
+
 
       $('.category-name').on('click', function () {
           var category_name = this.id;
@@ -88,7 +97,7 @@
           });
       });
 
-      // -----------------------------ACTIVE AND EPIRE -------------------------------------
+      // -----------------------------ACTIVE AND EXPIRE -------------------------------------
       $("#ActiveButton").on("click", function () {
           var category_name = $(".card-text.active .category-name").attr('id');
           $.ajax({
@@ -150,4 +159,14 @@
           window.location.href = String(response['url']);
       }
   </script>
+
+
+    // Prevent Default for Add Survey
+  <script>
+   $('.add_survey_btn').click(function(event){
+          event.preventDefault();
+
+    });
+  </script>
+
 {% endblock javascript %}

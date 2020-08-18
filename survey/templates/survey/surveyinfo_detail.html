@@ -10,22 +10,24 @@
 
 </style>
 {% block content %}
-            {% include 'WebApp/theme/alerts.html' %}
-    <script src="{% static 'js/highcharts.js' %}"></script>
-    <script src="{% static 'js/highchart_data.js' %}"></script>
+    {% include 'survey/common/alerts.html' %}
+    {% include 'survey/common/new_detail.html' %}
 
-    {% include 'survey/common/details.html' %}
-
-
-    <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="
-    float: left;
-">
+<br><br>
+    <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="float: left;">
         <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
 
     </a>
 {% endblock %}
 
 {% block javascript %}
+
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/highchart_data.js' %}"></script>
+    <script src="{% static 'worldcloud.js' %}"></script>
+
+
+
     {#  {% if object.Survey_Live %}#}
 
     <script>
@@ -51,25 +53,8 @@
 
                 if (current_progress >= 100) {
                     clearInterval(interval);
-                    location.reload();
-                    //   $.ajax({
-                    //       type: "GET",
-                    //       url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                    //       success: function (data) {
-                    //           obj = JSON.parse(data);
-                    //           for (var i = 0; i < obj.length; i++) {
-                    //               $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                    //               console.log($("#progress" + obj[i].pk).css('width'));
-                    //               $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                    //               console.log($("#progress_span" + obj[i].pk).html());
-                    //               console.log(obj[i].pk)
-                    //           }
-                    //       },
-                    //       complete: function () {
-                    //           current_progress = 0;
-                    //           $(".se-pre-con-ajax").fadeOut("fast");
-                    //       }
-                    //   });
+                    //location.reload();
+
                 }
 
             }, 1000);
