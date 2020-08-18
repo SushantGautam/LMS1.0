@@ -2,7 +2,13 @@
 {% load static %}
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item"><a href="{% url 'courseinfo_grid' %}">Course</a></li>
+<li class="breadcrumb-item"><a href="
+    {% if object.Course_Code.Use_Flag %}
+        {% url 'courseinfo_grid_active' %}
+    {% else %}
+        {% url 'courseinfo_grid_inactive' %}
+    {% endif %}
+    ">Course</a></li>
 {% if 'create' in request.path %}
 <li class="breadcrumb-item active" aria-current="page">Create New Course</li>
 {% else %}
