@@ -101,7 +101,7 @@ class AjaxableResponseMixin:
 def ProfileView(request):
     if AuthCheck(request, admn=1) == 2:
         return redirect('login')
-    return render(request, 'center_admin/profile.html')
+    return render(request, 'WebApp/profile.html')
 
 
 def login(request,
@@ -255,7 +255,7 @@ def start(request):
             else:
                 notice = None
             # return HttpResponse("default home")
-            return render(request, "center_admin/dashboard.html",
+            return render(request, "WebApp/dashboard.html",
                           {'course': course, 'coursecount': coursecount, 'studentcount': studentcount,
                            'teachercount': teachercount,
                            'threadcount': threadcount, 'totalcount': totalcount, 'thread': thread,
@@ -482,7 +482,7 @@ def CenterInfoDeleteView(request, pk):
 
 
 class MemberInfoListView(ListView):
-    template_name = "center_admin/memberinfo_list.html"
+    template_name = "WebApp/memberinfo_list.html"
     model = MemberInfo
     #
     # def get_queryset(self):
@@ -560,7 +560,7 @@ class MemberInfoListViewInactive(ListView):
 class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
-    template_name = "center_admin/memberinfo_form.html"
+    template_name = "WebApp/memberinfo_form.html"
     success_url = reverse_lazy('memberinfo_list')
 
     def form_valid(self, form):
@@ -1020,13 +1020,13 @@ class PasswordChangeView(PasswordContextMixin, FormView):
 
 class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     model = MemberInfo
-    template_name = "center_admin/memberinfo_detail.html"
+    template_name = "WebApp/memberinfo_detail.html"
 
 
 class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
-    template_name = "center_admin/memberinfo_form.html"
+    template_name = "WebApp/memberinfo_form.html"
 
 
 class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
@@ -1049,52 +1049,60 @@ class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
 
 class CourseInfoGridView(ListView):
     model = CourseInfo
-    paginate_by = 6
-    template_name = "center_admin/courseinfo_grid.html"
+    # paginate_by = 6
+    template_name = "WebApp/courseinfo_grid.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('paginate_by'):
+            self.paginate_by = self.request.GET.get('paginate_by')
+        return super(CourseInfoGridView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = self.model.objects.filter(
-            Center_Code=self.request.user.Center_Code)
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        if '/inactive/' in self.request.path:
+            qs = qs.filter(Use_Flag=False)
+        if '/active/' in self.request.path:
+            qs = qs.filter(Use_Flag=True)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
             qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
-                messages.error(
-                    self.request,
-                    'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by(
-            "-id"
-        )  # you don't need this if you set up your ordering on the model
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
 
 class CourseInfoListView(ListView):
     model = CourseInfo
-    paginate_by = 6
-    template_name = "center_admin/courseinfo_list.html"
+    template_name = 'WebApp/courseinfo_list.html'
+    # paginate_by = 6
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('paginate_by'):
+            self.paginate_by = self.request.GET.get('paginate_by')
+        return super(CourseInfoListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = self.model.objects.filter(
-            Center_Code=self.request.user.Center_Code)
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        if '/inactive/' in self.request.path:
+            qs = qs.filter(Use_Flag=False)
+        if '/active/' in self.request.path:
+            qs = qs.filter(Use_Flag=True)
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
             qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
-                messages.error(
-                    self.request,
-                    'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by(
-            "-id"
-        )  # you don't need this if you set up your ordering on the model
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
 
 class CourseInfoCreateView(AdminAuthMxnCls, CreateView):
     model = CourseInfo
     form_class = CourseInfoForm
-    template_name = "center_admin/courseinfo_form.html"
+    template_name = "WebApp/courseinfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1104,7 +1112,7 @@ class CourseInfoCreateView(AdminAuthMxnCls, CreateView):
 
 class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
     model = CourseInfo
-    template_name = "center_admin/courseinfo_detail.html"
+    template_name = "WebApp/courseinfo_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1132,7 +1140,7 @@ class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
 class CourseInfoUpdateView(CourseAuthMxnCls, AdminAuthMxnCls, UpdateView):
     model = CourseInfo
     form_class = CourseInfoForm
-    template_name = "center_admin/courseinfo_form.html"
+    template_name = "WebApp/courseinfo_form.html"
 
     def get_form_kwargs(self):
         """
@@ -1267,7 +1275,7 @@ class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
 
 class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
-    template_name = "center_admin/chapterinfo_detail.html"
+    template_name = "WebApp/chapterinfo_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1329,7 +1337,7 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
-    template_name = "center_admin/chapterinfo_edit.html"
+    template_name = "WebApp/chapterinfo_edit.html"
 
     def get_form_kwargs(self):
         """
@@ -1415,7 +1423,7 @@ class SessionInfoUpdateView(UpdateView):
 
 class InningInfoListView(ListView):
     model = InningInfo
-    template_name = 'center_admin/inninginfo_list.html'
+    template_name = 'WebApp/inninginfo_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1431,7 +1439,7 @@ class InningInfoListView(ListView):
 
 class InningInfoListViewInactive(ListView):
     model = InningInfo
-    template_name = 'center_admin/inninginfo_list_inactive.html'
+    template_name = 'WebApp/inninginfo_list_inactive.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1448,7 +1456,7 @@ class InningInfoListViewInactive(ListView):
 class InningInfoCreateView(CreateView):
     model = InningInfo
     form_class = InningInfoForm
-    template_name = "center_admin/inninginfo_form.html"
+    template_name = "WebApp/inninginfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super(InningInfoCreateView, self).get_form_kwargs()
@@ -1476,7 +1484,7 @@ class InningInfoCreateView(CreateView):
 
 class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
     model = InningInfo
-    template_name = 'center_admin/inninginfo_detail.html'
+    template_name = 'WebApp/inninginfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1492,7 +1500,7 @@ class InningInfoDetailView(InningInfoAuthMxnCls, DetailView):
 class InningInfoUpdateView(InningInfoAuthMxnCls, UpdateView):
     model = InningInfo
     form_class = InningInfoForm
-    template_name = "center_admin/inninginfo_form.html"
+    template_name = "WebApp/inninginfo_form.html"
 
     def get_form_kwargs(self):
         kwargs = super(InningInfoUpdateView, self).get_form_kwargs()
@@ -1650,7 +1658,7 @@ def InningInfoEditViewChecked(request):
 
 class InningGroupListView(ListView):
     model = InningGroup
-    template_name = 'center_admin/inninggroup_list.html'
+    template_name = 'WebApp/inninggroup_list.html'
 
     # Send data only related to the center
     def get_queryset(self):
@@ -1661,7 +1669,7 @@ class InningGroupListView(ListView):
 class InningGroupCreateView(CreateView):
     model = InningGroup
     form_class = InningGroupForm
-    template_name = 'center_admin/inninggroup_form.html'
+    template_name = 'WebApp/inninggroup_form.html'
 
     def get_form_kwargs(self):
         kwargs = super(InningGroupCreateView, self).get_form_kwargs()
@@ -1698,13 +1706,13 @@ class InningInfoCreateSessionAjax(AjaxableResponseMixin, CreateView):
 
 class InningGroupDetailView(InningGroupAuthMxnCls, DetailView):
     model = InningGroup
-    template_name = 'center_admin/inninggroup_detail.html'
+    template_name = 'WebApp/inninggroup_detail.html'
 
 
 class InningGroupUpdateView(InningGroupAuthMxnCls, UpdateView):
     model = InningGroup
     form_class = InningGroupForm
-    template_name = 'center_admin/inninggroup_form.html'
+    template_name = 'WebApp/inninggroup_form.html'
 
     def form_valid(self, form):
         """If the form is valid, redirect to the supplied URL."""
@@ -1750,7 +1758,7 @@ class GroupCreateSessionAjax(AjaxableResponseMixin, CreateView):
 
 class GroupMappingListView(ListView):
     model = GroupMapping
-    template_name = 'center_admin/groupmapping_list.html'
+    template_name = 'WebApp/groupmapping_list.html'
 
     # Send data only related to the center
     def get_queryset(self):
@@ -1924,7 +1932,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
 class GroupMappingCreateView(CreateView):
     model = GroupMapping
     form_class = GroupMappingForm
-    template_name = 'center_admin/groupmapping_form.html'
+    template_name = 'WebApp/groupmapping_form.html'
 
     def get_form_kwargs(self):
         kwargs = super(GroupMappingCreateView, self).get_form_kwargs()
@@ -1948,13 +1956,13 @@ class GroupMappingCreateView(CreateView):
 
 class GroupMappingDetailView(GroupMappingAuthMxnCls, DetailView):
     model = GroupMapping
-    template_name = 'center_admin/groupmapping_detail.html'
+    template_name = 'WebApp/groupmapping_detail.html'
 
 
 class GroupMappingUpdateView(GroupMappingAuthMxnCls, UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
-    template_name = 'center_admin/groupmapping_form.html'
+    template_name = 'WebApp/groupmapping_form.html'
 
 
     def get_context_data(self, **kwargs):
@@ -2053,7 +2061,7 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
 
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
     model = AssignmentInfo
-    template_name = 'center_admin/assignmentinfo_detail.html'
+    template_name = 'WebApp/assignmentinfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3343,7 +3351,7 @@ def manifestwebmanifest(request):
 class SessionManagerUpdateView(UpdateView):
     model = InningManager
     form_class = InningManagerForm
-    template_name = 'center_admin/sessionmanager_form.html'
+    template_name = 'WebApp/sessionmanager_form.html'
 
     def get_object(self):
         session_Manager = None
@@ -4065,7 +4073,7 @@ def MeetPublic(request, userid, meetcode):
 # Teacher Report View
 
 class TeacherReport(TemplateView):
-    template_name = 'center_admin/teacherReport.html'
+    template_name = 'WebApp/teacherReport.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
