@@ -33,16 +33,16 @@
                 <form method="POST" id="FormID" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="id_Course_Name">Course Name</label>
+                        <label for="id_Course_Name">Course Name *</label>
                         <input type="text" class="form-control" name="Course_Name" id="id_Course_Name"
                             value="{{ object.Course_Name }}" placeholder="Enter name of the course" required
                             {% if '/teachers' in request.path %} readonly {% endif %}>
                     </div>
                     <div class="form-group">
-                        <label for="id_Course_Provider">Course Provider</label>
+                        <label for="id_Course_Provider">Course Provider *</label>
                         <input type="text" class="form-control" name="Course_Provider"
                             value="{{ form.Course_Provider.value }}" maxlength="250" id="id_Course_Provider"
-                            placeholder="Enter course provider" required>
+                            placeholder="Enter course provider" required readonly>
                     </div>
                     <div class="form-group">
                         <label for="id_Course_Description">Course Description</label>
@@ -55,9 +55,9 @@
                         {{form.Course_Cover_File}}
                     </div>
                     <div class="form-group">
-                        <label for="id_Course_Provider">Course Rating</label>
+                        <label for="id_Course_Provider">Course Rating *</label>
                         <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
-                            value="{{ object.Course_Level }}" min="1" max="5">
+                            value="{{ object.Course_Level }}" min="1" max="5" required>
                     </div>
                     {% if 'edit' in request.path %}
                     <div class="form-group">

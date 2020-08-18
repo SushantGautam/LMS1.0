@@ -111,7 +111,7 @@
                                             <select class="select2" id="id_Inning_Name" name="Inning_Name">
                                                 {% for x, y in form.fields.Inning_Name.choices %}
                                                 <option value="{{ x }}"
-                                                    {% if form.fields.Inning_Name.value == x %}selected{% endif %}>
+                                                    {% if form.initial.Inning_Name == x %}selected{% endif %}>
                                                     {{ y }}
                                                 </option>
                                                 {% endfor %}
@@ -191,7 +191,7 @@
                                             <select class="select2" id="id_Groups" name="Groups">
                                                 {% for x, y in form.fields.Groups.choices %}
                                                 <option value="{{ x }}"
-                                                    {% if form.fields.Groups.value == x %}selected{% endif %}>{{ y }}
+                                                    {% if form.initial.Groups == x %}selected{% endif %}>{{ y }}
                                                 </option>
                                                 {% endfor %}
                                             </select>
@@ -229,7 +229,7 @@
                                             <select class="select2" id="id_Course_Group" name="Course_Group" multiple>
                                                 {% for x, y in form.fields.Course_Group.choices %}
                                                 <option value="{{ x }}"
-                                                    {% if form.fields.Course_Group.value == x %}selected{% endif %}>
+                                                    {% if form.initial.Course_Group == x %}selected{% endif %}>
                                                     {{ y }}
                                                 </option>
                                                 {% endfor %}

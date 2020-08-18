@@ -63,14 +63,14 @@
                             <div class="form-group">
                                 <label for="Start_Date" class="font-weight-bold">Start Date</label>
                                 <input name="Start_Date" type="date" class="form-control" id="id_Start_Date"
-                                    max="9999-12-31" value="{{ object.Start_Date }}">
+                                    max="9999-12-31" value="{{ object.Start_Date|date:'Y-m-d' }}">
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="End_Date" class="font-weight-bold">End Date</label>
                                 <input name="End_Date" type="date" class="form-control" id="id_End_Date"
-                                    max="9999-12-31" value="{{ object.End_Date }}">
+                                    max="9999-12-31" value="{{ object.End_Date|date:'Y-m-d' }}">
                             </div>
                         </div>
                     </div>

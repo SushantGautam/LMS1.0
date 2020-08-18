@@ -8,15 +8,15 @@
     <div class="alert alert-danger form-errors" style="display: none">
     </div>
     <div class="form-group">
-        <label for="id_GroupMapping_Name">Group Mapping Name</label>
+        <label for="id_GroupMapping_Name">Group Mapping Name *</label>
         <input type="text" class="form-control" name="GroupMapping_Name" maxlength="250" id="id_GroupMapping_Name"
             required>
     </div>
     <div class="form-group">
-        <label for="id_Students">Select Students</label>
+        <label for="id_Students">Select Students *</label>
         <select class="select2" id="id_Students" name="Students" multiple>
             {% for x, y in form.fields.Students.choices %}
-            <option value="{{ x }}" {% if form.fields.Students.value == x %}selected{% endif %}>
+            <option value="{{ x }}" {% if form.initial.Students == x %}selected{% endif %}>
                 {{ y }}
             </option>
             {% endfor %}

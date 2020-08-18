@@ -68,15 +68,15 @@
                 {% endfor %}
                 {% endif %}
                 <div class="form-group">
-                    <label for="id_Member_ID">Group Mapping Name</label>
+                    <label for="id_Member_ID">Group Mapping Name *</label>
                     <input type="text" name="GroupMapping_Name" id="id_GroupMapping_Name" maxlength="200"
-                        value="{{ object.GroupMapping_Name }}" class="form-control">
+                        value="{{ object.GroupMapping_Name }}" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="id_Students" class="float-left">Students</label>
+                    <label for="id_Students" class="float-left">Students *</label>
                     <select class="select2" id="id_Students" name="Students" multiple>
                         {% for x, y in form.fields.Students.choices %}
-                        <option value="{{ x }}" {% if form.fields.Students.value == x %}selected{% endif %}>{{ y }}
+                        <option value="{{ x }}" {% if form.initial.Students == x %}selected{% endif %}>{{ y }}
                         </option>
                         {% endfor %}
                     </select>
