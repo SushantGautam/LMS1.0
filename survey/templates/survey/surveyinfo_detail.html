@@ -134,4 +134,24 @@
 
     </script>
 
+    <script>
+        // Script to toogle chart
+        $( document ).ready(function() {
+            $('.mychart').click(function(){
+                var radioID = this.id;
+                var parent_id = '';
+
+                if(radioID.includes("pie")){
+                    parent_id = "chart" + radioID.replace("pie", "");
+                    $(`#${parent_id} > .pieChart`).show();
+                    $(`#${parent_id} > .columnChart`).hide();
+                }else{
+                    parent_id = "chart" + radioID.replace("column", "");
+                    $(`#${parent_id} > .columnChart`).show();
+                    $(`#${parent_id} > .pieChart`).hide();
+                }
+            });
+        });
+    </script>
+
 {% endblock %}
