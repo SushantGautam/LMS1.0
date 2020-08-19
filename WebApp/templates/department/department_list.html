@@ -1,0 +1,81 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+
+
+
+<div class="container">
+    <div class="page-section">
+        <div class="media v-middle">
+            <div class="media-body">
+                <h1 class="text-display-1 margin-none">List of Department </h1>
+            </div>
+            <div class="btn-createnew">
+            <a class="btn btn-success" href="{% url 'departmentinfo_create' %}">Create new Department</a>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-md-6 col-sm-12">
+
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
+
+        </div>
+    </div>
+    <br>
+    <div class="panel panel-default">
+        <div class="table-responsive" id="tableView">
+            <table class="table table-striped table-bordered bg-white">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>ID</td>
+                    <td>Department Name</td>
+                    <td>Register Agent</td>
+                    <td>Register Date</td>
+                    <td>Updated Date</td>
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td>
+                        <td>{{ object.Register_Agent }}</td>
+                        <td>{{ object.Register_DateTime }}</td>
+                        <td>{{ object.Updated_DateTime }}</td>
+
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

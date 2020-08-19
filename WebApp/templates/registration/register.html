@@ -44,7 +44,7 @@ background-size: cover;">
                 <label for="id_Center_Code" class="float-left">Center Code</label>
                 <select class="select2" id="id_Center_Code" name="Center_Code">
                     {% for x, y in form.fields.Center_Code.choices %}
-                    <option value="{{ x }}" {% if form.fields.Center_Code.value == x %} selected{% endif %}>{{ y }}
+                    <option value="{{ x }}" {% if form.initial.Center_Code == x %} selected{% endif %}>{{ y }}
                     </option>
                     {% endfor %}
                 </select>
@@ -53,7 +53,7 @@ background-size: cover;">
                 <label for="id_Center_Code" class="float-left">Gender</label>
                 <select class="form-control" id="id_Member_Gender" name="Member_Gender">
                     {% for x, y in form.fields.Member_Gender.choices %}
-                    <option value="{{ x }}" {% if form.fields.Member_Gender.value == x %} selected{% endif %}>{{ y }}
+                    <option value="{{ x }}" {% if form.initial.Member_Gender == x %} selected{% endif %}>{{ y }}
                     </option>
                     {% endfor %}
                 </select>

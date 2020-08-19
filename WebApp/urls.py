@@ -85,12 +85,10 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for CourseInfo
-    path('courseinfo_grid/',
-         views.CourseInfoGridView.as_view(),
-         name='courseinfo_grid'),
-    path('courseinfo_list/',
-         views.CourseInfoListView.as_view(),
-         name='courseinfo_list'),
+    path('courseinfo_grid/active/', views.CourseInfoGridView.as_view(), name='courseinfo_grid_active'),
+    path('courseinfo_grid/inactive/', views.CourseInfoGridView.as_view(), name='courseinfo_grid_inactive'),     
+    path('courseinfo/active/', views.CourseInfoListView.as_view(), name='courseinfo_list_active'),
+    path('courseinfo/inactive/', views.CourseInfoListView.as_view(), name='courseinfo_list_inactive'),
     path('courseinfo/create/',
          views.CourseInfoCreateView.as_view(),
          name='courseinfo_create'),
@@ -363,6 +361,7 @@ urlpatterns += (
          name='inninggroup_create_ajax'),
 )
 
+
 urlpatterns += (
     # urls for chapterpagebuilder
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/chapterpagebuilder',
@@ -378,8 +377,7 @@ urlpatterns += (
     path('save3d', views.save_3d_file, name='save3d'),
     path('saveJson', views.save_json, name='saveJson'),
     path('export/<int:course>/<int:chapter>/',
-         views.export_chapter,
-         name='exportzip'),
+         views.export_chapter, name='exportzip'),
     path('import', views.import_chapter, name='importzip'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents',
          views.ContentsView.as_view(), name='contentviewer'),
@@ -392,12 +390,12 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/contents/newpreview',
          views.NewContentsView.as_view(), name='newpreviewcontentviewer'),
     path('delete-chapter-files',
-         views.deletechapterfile,
-         name='delete-chapter-files'),
+         views.deletechapterfile, name='delete-chapter-files'),
     path('retrieve-chapter-files',
          views.retrievechapterfile, name='retrieve-chapter-files'),
     path('checkMediaFiles/', views.checkForMediaFiles, name='checkMediaFiles'),
 )
+
 
 urlpatterns += (
     path('AchievementPage_Student/<int:student_id>',
@@ -447,9 +445,22 @@ urlpatterns += (
          views.MeetPublic, name='public-meet'),
 )
 
-
+# Teacher Report
 urlpatterns += (
     path('teacher_report', views.TeacherReport.as_view(), name='teacher_report'),
     path('teacher_report/<int:teacherpk>/', views.TeacherIndividualReport.as_view(), name='teacher_individual_report'),
 )
 
+urlpatterns += (
+    # urls for DepartmentInfo
+    path('departmentinfo/', login_required(views.DepartmentInfoListView.as_view()),
+         name='departmentinfo_list'),
+    path('departmentinfo/create/', login_required(views.DepartmentInfoCreateView.as_view()),
+         name='departmentinfo_create'),
+    path('departmentinfo/detail/<int:pk>/',
+         views.DepartmentInfoDetailView.as_view(), name='departmentinfo_detail'),
+    path('departmentinfo/update/<int:pk>/',
+         views.DepartmentInfoUpdateView.as_view(), name='departmentinfo_update'),
+    path('departmentinfo/delete/<int:pk>/',
+         views.DepartmentInfoDeleteView, name='departmentinfo_delete'),
+)

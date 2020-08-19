@@ -6,36 +6,34 @@
     <form method="post" id="ajaxquestioninfoform" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_Question_Title" class="control-label font-weight-bold">
+            <label for="id_Question_Title" class="control-label">
                 Question Title <span class="asteriskField">*</span>
             </label>
             <input type="text" name="Question_Title" maxlength="4000" class="form-control" required
                 value="{{ object.Question_Title }}" id="id_Question_Title">
         </div>
         <div class="form-group">
-            <label for="id_Question_Description" class="font-weight-bold">Question Description</label>
+            <label for="id_Question_Description">Question Description</label>
             {{ form.Question_Description }}
         </div>
         <div class="form-group">
-            <label for="id_Question_Score" class="font-weight-bold">
+            <label for="id_Question_Score">
                 Question Score <span class="asteriskField">*</span>
             </label>
             <input type="numb er" name="Question_Score" value="{{ object.Question_Score }}" required
                 id="id_Question_Score" class="form-control">
         </div>
         <div class="form-group">
-            <label for="id_Answer_Type" class="float-left font-weight-bold">Answer Type <span
-                    class="asteriskField">*</span></label>
+            <label for="id_Answer_Type">Answer Type <span class="asteriskField">*</span></label>
             <select class="form-control" id="id_Answer_Type" name="Answer_Type">
                 {% for x, y in form.fields.Answer_Type.choices %}
-                <option value="{{ x }}" {% if form.fields.Answer_Type.value == x %} selected{% endif %}>{{ y }}
+                <option value="{{ x }}" {% if form.initial.Answer_Type == x %} selected{% endif %}>{{ y }}
                 </option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
-            <label for="id_Course_Cover_File" class="font-weight-bold">Question Media File <span
-                    class="asteriskField">*</span></label>
+            <label for="id_Course_Cover_File">Question Media File</label>
             <br>
             {{form.Question_Media_File}}
         </div>

@@ -3,222 +3,229 @@
 <!-- sidebar menu -->
 {% if user.is_authenticated %}
 <div class="navigation-menu-wrapper">
-                <!-- Menu tab -->
-                <div class="navigation-menu-tab">
-                    <ul>
-                        <li>
-                            <a href="#" data-menu-target="#dashboard">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="home"></i>
-                                </span>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#members">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="users"></i>
-                                </span>
-                                <span>Members</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#courses">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="book"></i>
-                                </span>
-                                <span>Courses</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#session">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="align-justify"></i>
-                                </span>
-                                <span>Session</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#quiz">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="help-circle"></i>
-                                </span>
-                                <span>Quiz</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#forum">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="message-square"></i>
-                                </span>
-                                <span>Forum</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#survey">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="clipboard"></i>
-                                </span>
-                                <span>Survey</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-menu-target="#achievement">
-                                <span class="menu-tab-icon">
-                                    <i data-feather="archive"></i>
-                                </span>
-                                <span>Miscellaneous</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- ./ Menu tab -->
+    <!-- Menu tab -->
+    <div class="navigation-menu-tab">
+        <ul>
+            <li>
+                <a href="#" data-menu-target="#dashboard">
+                    <span class="menu-tab-icon">
+                        <i data-feather="home"></i>
+                    </span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#members">
+                    <span class="menu-tab-icon">
+                        <i data-feather="users"></i>
+                    </span>
+                    <span>Members</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#courses">
+                    <span class="menu-tab-icon">
+                        <i data-feather="book"></i>
+                    </span>
+                    <span>Courses</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#session">
+                    <span class="menu-tab-icon">
+                        <i data-feather="align-justify"></i>
+                    </span>
+                    <span>Session</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#quiz">
+                    <span class="menu-tab-icon">
+                        <i data-feather="help-circle"></i>
+                    </span>
+                    <span>Quiz</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#forum">
+                    <span class="menu-tab-icon">
+                        <i data-feather="message-square"></i>
+                    </span>
+                    <span>Forum</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#survey">
+                    <span class="menu-tab-icon">
+                        <i data-feather="clipboard"></i>
+                    </span>
+                    <span>Survey</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#achievement">
+                    <span class="menu-tab-icon">
+                        <i data-feather="archive"></i>
+                    </span>
+                    <span>Miscellaneous</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- ./ Menu tab -->
 
-                <!-- Menu body -->
-                <div class="navigation-menu-body">
-                    <ul id="dashboard">
-                        <li class="navigation-divider">Dashboard</li>
-                        <li>
-                            <a  href="{% url 'start' %}">
-                                <span class="nav-link-icon" data-feather="airplay"></span>
-                                <span>Home Page</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul id="members">
-                        <li class="navigation-divider">Members</li>
-                        <li>
-                            <a  href="{% url 'memberinfo_list' %}">
-                                <span class="nav-link-icon" data-feather="users"></span>
-                                <span>Member List</span>
-                                <!-- <span class="badge badge-danger">5</span> -->
-                            </a>
-                        </li>
-                        <li>
-                            <a  href="{% url 'memberinfo_create' %}">
-                                <span class="nav-link-icon" data-feather="user-plus"></span>
-                                <span>Register Members</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul id="courses">
-                        <li class="navigation-divider">Courses</li>
-                        <li>
-                            <a href="{% url 'courseinfo_grid' %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="book"></i>
-                                </span>
-                                <span>Course List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'courseinfo_create' %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="plus"></i>
-                                </span>
-                                <span>Register Course</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul id="session">
-                        <li class="navigation-divider">Sessions</li>
-                        <li>
-                            <a  href="{% url 'inninginfo_list' %}">
-                                <span class="nav-link-icon" data-feather="align-justify"></span>
-                                <span>Session List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a  href="{% url 'groupmapping_list' %}">
-                                <span class="nav-link-icon" data-feather="user"></span>
-                                <span>Student Group</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a  href="{% url 'inninggroup_list' %}">
-                                <span class="nav-link-icon" data-feather="clipboard"></span>
-                                <span>Teacher Course Allocation</span>
-                            </a>
-                        </li>
-                        
-                    </ul>
-                    <ul id="quiz">
-                        <li class="navigation-divider">Quiz</li>
-                        <li>
-                            <a  href="{% url 'quiz_list' %}">
-                                <span class="nav-link-icon" data-feather="help-circle"></span>
-                                <span>Quiz List</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a  href="{% url 'quiz_exam_list' %}">
-                                <span class="nav-link-icon" data-feather="book-open"></span>
-                                <span>Quiz Exam</span>
-                            </a>
-                        </li>
-                    </ul>
+    <!-- Menu body -->
+    <div class="navigation-menu-body">
+        <ul id="dashboard">
+            <li class="navigation-divider">Dashboard</li>
+            <li>
+                <a href="{% url 'start' %}">
+                    <span class="nav-link-icon" data-feather="airplay"></span>
+                    <span>Home Page</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="members">
+            <li class="navigation-divider">Members</li>
+            <li>
+                <a href="{% url 'memberinfo_list' %}">
+                    <span class="nav-link-icon" data-feather="users"></span>
+                    <span>Member List</span>
+                    <!-- <span class="badge badge-danger">5</span> -->
+                </a>
+            </li>
+            <li>
+                <a  href="{% url 'departmentinfo_list'%}">
+                    <span class="nav-link-icon" data-feather="briefcase"></span>
+                    <span>Department List</span>
+                    <!-- <span class="badge badge-danger">5</span> -->
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'memberinfo_create' %}">
+                    <span class="nav-link-icon" data-feather="user-plus"></span>
+                    <span>Register Members</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="courses">
+            <li class="navigation-divider">Courses</li>
+            <li>
+                <a href="{% url 'courseinfo_grid_active' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="book"></i>
+                    </span>
+                    <span>Course List</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'courseinfo_create' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="plus"></i>
+                    </span>
+                    <span>Register Course</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="session">
+            <li class="navigation-divider">Sessions</li>
+            <li>
+                <a href="{% url 'inninginfo_list' %}">
+                    <span class="nav-link-icon" data-feather="align-justify"></span>
+                    <span>Session List</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'groupmapping_list' %}">
+                    <span class="nav-link-icon" data-feather="user"></span>
+                    <span>Student Group</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'inninggroup_list' %}">
+                    <span class="nav-link-icon" data-feather="clipboard"></span>
+                    <span>Teacher Course Allocation</span>
+                </a>
+            </li>
 
-                    <ul id="forum">
-                        <li class="navigation-divider">Forum</li>
-                        <li>
-                            <a href="{% url 'forum:index' %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="home"></i>
-                                </span>
-                                <span>Home</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'forum:user_info' request.user.pk %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="info"></i>
-                                </span>
-                                <span>Profile</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul id="survey">
-                        <li class="navigation-divider">Survey</li>
-                        <li>
-                            <a href="{% url 'surveylist' %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="layers"></i>
-                                </span>
-                                <span>Survey List</span>
-                            </a>
-                        </li>
-                    </ul>
+        </ul>
+        <ul id="quiz">
+            <li class="navigation-divider">Quiz</li>
+            <li>
+                <a href="{% url 'quiz_list' %}">
+                    <span class="nav-link-icon" data-feather="help-circle"></span>
+                    <span>Quiz List</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'quiz_exam_list' %}">
+                    <span class="nav-link-icon" data-feather="book-open"></span>
+                    <span>Quiz Exam</span>
+                </a>
+            </li>
+        </ul>
 
-                    <ul id="achievement">
-                        <li class="navigation-divider">Miscellaneous</li>
-                        <li>
-                            <a href="{% url 'mail_list' %}?email_type=inbox">
-                                <span class="nav-link-icon">
-                                    <i data-feather="mail"></i>
-                                </span>
-                                <span>Mail</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'event_calendar' %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="calendar"></i>
-                                </span>
-                                <span>Calendar</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'teacher_report' %}">
-                                <span class="nav-link-icon">
-                                    <i data-feather="file-text"></i>
-                                </span>
-                                <span>Teacher Report</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- ./ Menu body -->
-            </div>
+        <ul id="forum">
+            <li class="navigation-divider">Forum</li>
+            <li>
+                <a href="{% url 'forum:index' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="home"></i>
+                    </span>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'forum:user_info' request.user.pk %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="info"></i>
+                    </span>
+                    <span>Profile</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="survey">
+            <li class="navigation-divider">Survey</li>
+            <li>
+                <a href="{% url 'surveyinfo_list' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="layers"></i>
+                    </span>
+                    <span>Survey List</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul id="achievement">
+            <li class="navigation-divider">Miscellaneous</li>
+            <li>
+                <a href="{% url 'mail_list' %}?email_type=inbox">
+                    <span class="nav-link-icon">
+                        <i data-feather="mail"></i>
+                    </span>
+                    <span>Mail</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'event_calendar' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="calendar"></i>
+                    </span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'teacher_report' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="file-text"></i>
+                    </span>
+                    <span>Teacher Report</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- ./ Menu body -->
+</div>
 {% endif %}
 
 <script>

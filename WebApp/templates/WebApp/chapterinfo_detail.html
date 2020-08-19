@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="
+    {% if object.Course_Code.Use_Flag %}
+        {% url 'courseinfo_grid_active' %}
+    {% else %}
+        {% url 'courseinfo_grid_inactive' %}
+    {% endif %}
+    ">Course</a></li>
+<li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Chapter_Name }}</li>
+{% endblock %}
+
+{% block content %}
+{% include 'chapter/chapterinfo_detail.html' %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).on('click', '.chapter-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Chapter?');
+        if (ans == true) {
+            $(`#deleteChapter${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
+    $('#add-newassignment-btn').on('click', function () {
+        $('#create_assignment_modal_body').empty();
+        $('#create_assignment_modal_body').append(
+            `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+           class="select form-control">
+        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
+           class="select form-control">`
+        )
+        $.ajax({
+            type: "GET",
+            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_assignment_modal_body').append(response);
+                $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
+                //Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating assignment create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+            }
+        });
+    });
+
+</script>
+{% endblock %}
