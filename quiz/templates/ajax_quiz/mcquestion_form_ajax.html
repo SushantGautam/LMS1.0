@@ -11,7 +11,7 @@
 
         {{ form.content|as_crispy_field }}
 
-        <div id="option_dynamic_append">
+        <div id="col-md-12 option_dynamic_append">
             {{ answers_formset.management_form }}
             {% for form in answers_formset %}
                 <div class="row form-group form-row ">
@@ -163,7 +163,7 @@
 
         $('div[id^="div_id_answer_set"]').wrapInner("<div class='col-md-12 answer_set_wrapper' ></div>");
         $('label[for^="id_answer_set"]').wrap("<div class='col-md-4'></div>");
-        $('.answer_set_wrapper > .controls').addClass('col-md-8');
+        $('.answer_set_wrapper > .controls').addClass('col-md-12');
 
         $('#div_id_content').addClass('col-md-12');
         $('#div_id_answer_order, #div_id_figure, #div_id_score').wrapAll("<div class = col-md-12></div>");
