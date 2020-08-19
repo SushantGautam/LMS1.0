@@ -29,6 +29,7 @@
              <h1 class="pollTitle">{{ object.Survey_Title }}</h1>
         </div>
     </div>
+    <br><br><br>
 <!--    <div class="row">-->
 <!--        <div class="col-md-4">-->
 <!--            <div class="col-md-12">-->
@@ -72,11 +73,13 @@
                         <div >
 
                             {% if survey.id == object.id %}
-                                <h4 class="text-center">{{ survey.Survey_Title }}</h4>
-                                <h4 class="text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                                <h4 class="text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
+                                <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
+                                <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
+                                <h4 class="text-danger text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
+                                <h4 class="text-danger text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
+
                             {% else %}
+
                                 <h4 class="text-info text-center"><a
                                         href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
                                 <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
@@ -133,7 +136,7 @@
                             <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
                                            value="pie">
                             <label for="pie{{ forloop.counter }}">Pie&nbsp;</label>
-                            <div id="chart{{ forloop.counter }}" style="height: 300px" >
+                            <div id="chart{{ forloop.counter }}"  >
                                 <div class="columnChart"></div>
                                 <div class="pieChart" style="display: none;"></div>
                             </div>
@@ -201,9 +204,12 @@
                                                         {{ option.get_option_percentage }},
                                                     {% endfor %}],
                                             chart: {
+                                                height: 300,
                                                 width: 380,
                                                 type: 'pie',
                                             },
+
+
                                             labels: [{% for option in question.optioninfo.all %}
                                                         "{{ option.Option_Name }}" ,
                                                     {% endfor %}],
@@ -236,6 +242,32 @@
                 </div>
             </div>
             <div class="col-md-3"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create Survey</h4>
+                <div class="form-group">
+                    <label class="control-label " id="categoryTitle" for="first-name">
+                        {% for category in categories %}
+                            <span class="generalLabel">{{ category.Category_Name }}</span>
+                        {% endfor %}
+                    </label>
+                </div>
+            </div>
+            <div class="modal-body" id="surveyForm">
+                <div>
+                    <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
         </div>
     </div>
 </div>

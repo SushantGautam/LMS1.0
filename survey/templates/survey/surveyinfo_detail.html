@@ -53,7 +53,7 @@
 
                 if (current_progress >= 100) {
                     clearInterval(interval);
-                    //location.reload();
+                    location.reload();
 
                 }
 
@@ -138,6 +138,7 @@
         // Script to toogle chart
         $( document ).ready(function() {
             $('.mychart').click(function(){
+                $('#chk').prop('checked', false)
                 var radioID = this.id;
                 var parent_id = '';
 
