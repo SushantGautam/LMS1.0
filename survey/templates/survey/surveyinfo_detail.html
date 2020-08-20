@@ -21,7 +21,8 @@
 {% endblock %}
 
 {% block javascript %}
-
+    <script src="{% static 'js/jspdf.debug.js' %}"></script>
+    <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
     <script>
         var current_progress = 0;
         $(document).ready(function () {
@@ -290,8 +291,8 @@
             hctx.textAlign = "start";
             hctx.font = "12px Georgia";
             ini_y += 14;
-            ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + DateConvert("{{ object.Start_Date|date:'M d, Y H:i' }}"), 0, ini_y);
-            ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + DateConvert("{{ object.End_Date|date:'M d, Y H:i' }}"), 0, ini_y);
+            ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + "{{ object.Start_Date|date:'M d, Y H:i' }}", 0, ini_y);
+            ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + "{{ object.End_Date|date:'M d, Y H:i' }}", 0, ini_y);
             ini_y = addTextCanvas(hcanvas, hctx, "Number of Participants: {{ submit }}", 0, ini_y);
 
             let a_r = hcanvas.width / hcanvas.height;

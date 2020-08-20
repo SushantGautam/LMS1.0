@@ -28,7 +28,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-             <h1 class="pollTitle">{{ object.Survey_Title }}</h1>
+             <h1 class="pollTitle" style="color:#5c6bc0;">{{ object.Survey_Title }}</h1>
         </div>
     </div>
     <br><br><br>
@@ -74,18 +74,17 @@
                  <ul class="card_labels" style="text-align:center">
                         <li>
                             <div class="form-group">
-                                <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                       for="first-name">Status</label>
+                              <strong>  <h3 class=" col-md-12 col-sm-12 col-xs-12 text-info" >Status</h3> </strong>
                             </div>
                         </li>
                         <li class="surveyViewDates">
                             <h4>
                                 {% if object.get_status == "Expired" %}
-                                    <span class="label label-danger">Expired</span>
+                                    <a class=" btn btn-danger text-white">Expired</a>
                                 {% elif object.get_status == "Active" %}
-                                    <span class="label label-success">Active</span>
+                                    <a class=" btn btn-success text-white">Active</a>
                                 {% elif object.get_status == "Upcoming" %}
-                                    <span class="label label-info">Upcoming</span>
+                                    <a class="btn btn-warning text-white">Upcoming</a>
                                 {% endif %}
                             </h4>
                         </li>
@@ -119,16 +118,18 @@
             </div>
         </div>
     </div>
-
+    <hr class="btn-primary">
     <div class="row">
 
             <div class="col-md-9">
                 <div class="col-md-12">
+                    <br>
                      {% if submit > 0 %}
                         <button type="button" id="btnDownload" class="btn btn-primary btn-md">
                             <i class="fa fa-print" aria-hidden="true"></i> &nbsp; Print Results
                         </button>
                         {% endif %}
+                    <br><br>
                         {% for question in questions %}
                             {% if question.Question_Type == "MCQ" %}
                                  <div class="x_panel" id="pollsQuestions"
@@ -250,7 +251,7 @@
                             {%else%}
 
                                 <div>
-                                             <div class="x_panel SurveyAnswers SAQAnswers_div" id="pollsQuestions"
+                                             <div class=" SurveyAnswers SAQAnswers_div" id="pollsQuestions"
                                                  style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
                                                     <div>
                                                         <h2 class="title ">
@@ -262,7 +263,7 @@
                                                      <div style=" width: 100%; height: 2px; display: flex; flex-direction: auto;  "></div>
                                                         <div id="WordCloud{{ forloop.counter }}" style="min-width: 310px; max-width: 800px; margin: 0 auto"></div>
 
-                                                            <div class="x_content" id= "accordion" style="margin-left: 40px;">
+                                                            <div class="x_content" id= "accordion" style="width:100%; margin: 0 10px 10px 10px">
                                                                <a class="panel-heading collapsed" role="tab"
                                                                    id="heading{{ forloop.counter }}"
                                                                    data-toggle="collapse" data-target="#collapse{{ forloop.counter }}"
@@ -278,9 +279,8 @@
                                                   aria-expanded="false" >
 
 
-                                                <table class="SATable table table-striped table-bordered "
-                                                       style="width:100%">
-                                                    <thead>
+                                                <table class="SATable table table-striped table-bordered ">
+                                                    <thead class="data_table_head">
                                                     <tr>
                                                         <th>S.N.</th>
                                                         <th>Full Name (Username)</th>
