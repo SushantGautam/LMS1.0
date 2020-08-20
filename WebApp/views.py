@@ -4,6 +4,7 @@ import math
 import os
 import re
 import uuid
+import decimal
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -26,7 +27,7 @@ from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixi
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -50,13 +51,14 @@ from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Quiz
 from survey.models import SurveyInfo
+from django.contrib.sessions.models import Session
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
-    InningManagerForm
+    InningManagerForm, DepartmentInfoForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice, NoticeView
+    InningManager, Notice, NoticeView, DepartmentInfo
 
 
 # from pathlib import Path
@@ -110,17 +112,32 @@ def ProfileView(request):
     return render(request, 'WebApp/profile.html')
 
 
-def login(request, template_name='registration/login.html',
-          redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=AuthenticationForm,
-          extra_context=None, redirect_authenticated_user=True):
-    return LoginView.as_view(
-        template_name=template_name,
-        redirect_field_name=redirect_field_name,
-        form_class=authentication_form,
-        extra_context=extra_context,
-        redirect_authenticated_user=redirect_authenticated_user,
-    )(request)
+class login(LoginView):
+    redirect_authenticated_user=True
+    template_name = 'registration/login.html'
+
+    def form_valid(self, form):
+        forcelogin = bool(self.request.POST['forcelogin'])
+        if not forcelogin:
+            if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
+                if (Session.objects.filter(usersession__user=form.get_user()).exists()):
+                    return JsonResponse({'msg': 'Account already login in another place'})
+
+        return super().form_valid(form)
+
+
+
+# def login(request, template_name='registration/login.html',
+#           redirect_field_name=REDIRECT_FIELD_NAME,
+#           authentication_form=AuthenticationForm,
+#           extra_context=None, redirect_authenticated_user=True):
+#     return LoginView.as_view(
+#         template_name=template_name,
+#         redirect_field_name=redirect_field_name,
+#         form_class=authentication_form,
+#         extra_context=extra_context,
+#         redirect_authenticated_user=redirect_authenticated_user,
+#     )(request)
 
 
 def logout(request, next_page=None,
@@ -423,6 +440,84 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
+# ===================== DepartmentInfo Views =================
+
+class DepartmentInfoListView(ListView):
+    model = DepartmentInfo
+
+    def get_queryset(self):
+        return DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+
+
+class DepartmentInfoCreateView(CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
+
+class DepartmentInfoDetailView(DetailView):
+    model = DepartmentInfo
+
+
+class DepartmentInfoUpdateView(UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+
+class DepartmentInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
+
+
+def DepartmentInfoDeleteView(request, pk):
+    DepartmentInfo.objects.filter(pk=pk).delete()
+    return redirect("departmentinfo_list")
+
+
+# ==========================    End of Department Views =========================================
+
 class MemberInfoListView(TemplateView):
     template_name = "WebApp/memberinfo_list.html"
     # model = MemberInfo
@@ -435,10 +530,12 @@ class MemberInfoListViewAjax(BaseDatatableView):
     model = MemberInfo
     counter = 0
     template_name = "WebApp/memberinfo_list.html"
-    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Phone',
+    columns = ['counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email', 'Member_Department',
+               'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Phone',
+    order_columns = ['', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+                     'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
@@ -504,6 +601,13 @@ class MemberInfoCreateView(CreateView):
             messages.error(self.request, 'Error in creating member')
             print(form.errors)
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
 def validate_username(request):
     username = request.GET.get('username', None)
@@ -940,6 +1044,14 @@ class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
 
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
 
 class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
     model = MemberInfo
@@ -959,7 +1071,7 @@ class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
 
 class CourseInfoListView(ListView):
     model = CourseInfo
-    paginate_by = 6
+    # paginate_by = 6
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.GET.get('paginate_by'):
@@ -1176,6 +1288,11 @@ class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
                            "Cannot delete chapter with assignments")
             return redirect('chapterinfo_detail', course=self.request.POST['course_id'],
                             pk=self.request.POST['chapter_id'])
+
+
+class ChapterInfoDiscussionView(ChapterAuthMxnCls, DetailView):
+    model = ChapterInfo
+    template_name = 'WebApp/chapterdiscussion.html'
 
 
 def CourseForum(request, course):
@@ -3791,7 +3908,8 @@ class TeacherReport(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
-        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']]
+                                           ) if context['course_list'] else 0
 
         context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code,
                                                             Use_Flag=True)
@@ -3808,3 +3926,76 @@ class TeacherIndividualReport(TemplateView):
             'courses']
         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
         return context
+
+
+def CourseProgressDownload(request, coursepk, sessionpk):
+    course = CourseInfo.objects.get(pk=int(coursepk))
+    session = InningInfo.objects.get(pk=int(sessionpk))
+    chapters = ChapterInfo.objects.filter(Course_Code=course)
+    students = session.Groups.Students.all()
+
+    column_names = (("Student Name", "Full Name"), ("Username", "User ID"))
+    score_dict = dict()
+    for chapter in chapters:
+        chapter_name = chapter.Chapter_Name
+        column_names = (column_names + ((chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
+        quizes = Quiz.objects.filter(chapter_code=chapter)
+        quiz_total_score = 0.0
+        for quiz in quizes:
+            quiz_total_score += quiz.get_max_score
+        assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter)
+        assignment_total_score = 0.0
+        for assignemnt in assignments:
+            assignment_total_score += assignemnt.get_total_score
+        quiz_total_score = decimal.Decimal(round(quiz_total_score,2))
+        assignment_total_score = decimal.Decimal(round(assignment_total_score,2))
+        score_dict[chapter.pk] = [quiz_total_score,assignment_total_score]
+    cols = pd.MultiIndex.from_tuples(column_names)
+    df = pd.DataFrame(columns=column_names)
+
+
+    for i, student in enumerate(students):
+        new_row = {("Student Name", "Full Name"): student.get_full_name(), ("Username", "User ID"): student.username}
+        for chapter in chapters:
+            chapter_name = chapter.Chapter_Name
+            
+            student_quiz_scores = []
+            student_quiz_score = 0.0
+            quiz_sittings = Sitting.objects.filter(quiz__chapter_code=chapter, user=student, complete=True)
+            for quiz_sitting in quiz_sittings:
+                student_quiz_scores.append(quiz_sitting.get_score_correct)
+            student_quiz_score = max(student_quiz_scores) if student_quiz_scores else 0
+            student_quiz_score = decimal.Decimal(round(student_quiz_score,2))
+
+            student_assignment_score = AssignAnswerInfo.objects.filter(
+                                            Question_Code__Assignment_Code__Chapter_Code=chapter, Student_Code=student).aggregate(
+                                            Sum('Assignment_Score'))['Assignment_Score__sum']
+            if student_assignment_score:
+                student_assignment_score = decimal.Decimal(round(student_assignment_score,2))
+            else:
+                student_assignment_score = 0
+
+            data = get_study_time(course.pk, chapter, student)
+            progress = data['progress']
+
+            new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(student_quiz_score) + ')'
+            new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(student_assignment_score) + ')'
+            new_row[(chapter_name, "Progress Complete")] = str(progress)
+
+        df = df.append(new_row, ignore_index=True)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.index += 1
+        df.index.name = 'S.N.'
+        sheet_name = str(course.Course_Name)
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
+        if len(sheet_name) > 28:
+            sheet_name = sheet_name[:27] + ' ..'
+        df.to_excel(writer, sheet_name=sheet_name)
+        writer.save()
+        response = HttpResponse(b.getvalue(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'StudentProgress_' + sheet_name + '.xlsx"'
+        return response

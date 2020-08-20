@@ -40,17 +40,30 @@
                         <th rowspan="2">S.No</th>
                         <th rowspan="2">Teacher Name</th>
                         <th rowspan="2">Course Name</th>
-                        <th colspan="{{ max_chapter_count }}">Chapter</th>
+                        <th colspan="
+                            {% if max_chapter_count > 0 %}
+                                {{ max_chapter_count }}
+                            {% else %}
+                                1
+                            {% endif %}
+                        ">Chapter
+                        </th>
                         <th rowspan="2">Chapter Contents</th>
                         <th rowspan="2">Total Chapter</th>
                     </tr>
-                    <tr>
-                        {% with ''|center:max_chapter_count as range %}
-                            {% for _ in range %}
-                                <th>{{ forloop.counter }}</th>
-                            {% endfor %}
-                        {% endwith %}
-                    </tr>
+                    {% if max_chapter_count > 0 %}
+                        <tr>
+                            {% with ''|center:max_chapter_count as range %}
+                                {% for _ in range %}
+                                    <th>{{ forloop.counter }}</th>
+                                {% endfor %}
+                            {% endwith %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th> No Chapters</th>
+                        </tr>
+                    {% endif %}
                     </thead>
                     <tbody>
                     {% for teacher in teacher_list %}
@@ -60,25 +73,30 @@
                                 <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td>
                                 <td><a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
                                 <!-- Chapter has content or not -->
-                                {% for chapter in course.chapterinfos.all %}
-                                    <td style="text-align:center">
-                                        {% if chapter.has_content %}
-                                            <span style="color: green;text-align: center;" class="chaptertd hasContent">✔</span>
-                                        {% else %}
-                                            <span style="color: darkred;" class="chaptertd">❌</span>
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
-                                {% if course.chapterinfos.count < max_chapter_count %}
-                                    {% with  max_chapter_count|subtract:course.chapterinfos.count as count %}
-                                        {% with ''|center:count as range %}
-                                            {% for _ in range %}
-                                                <td class="nochapter"> -</td>
-                                            {% endfor %}
-                                        {% endwith %}
-                                    {% endwith %}
-                                {% endif %}
 
+                                {% if max_chapter_count > 0 %}
+                                    {% for chapter in course.chapterinfos.all %}
+                                        <td style="text-align:center">
+                                            {% if chapter.has_content %}
+                                                <span style="color: green;text-align: center;"
+                                                      class="chaptertd hasContent">✔</span>
+                                            {% else %}
+                                                <span style="color: darkred;" class="chaptertd">❌</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    {% if course.chapterinfos.count < max_chapter_count %}
+                                        {% with  max_chapter_count|subtract:course.chapterinfos.count as count %}
+                                            {% with ''|center:count as range %}
+                                                {% for _ in range %}
+                                                    <td class="nochapter"> -</td>
+                                                {% endfor %}
+                                            {% endwith %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% else %}
+                                    <td class="nochapter"> -</td>
+                                {% endif %}
                                 <td class="chaptercount totalhasContent"></td>
                                 <td class="chaptercount totalChapters"></td>
                             </tr>

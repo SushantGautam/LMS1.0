@@ -3,7 +3,7 @@
 from django import template
 from django.db.models import Sum
 
-from WebApp.models import MemberInfo
+from WebApp.models import MemberInfo, AssignAnswerInfo
 
 register = template.Library()
 
@@ -13,6 +13,7 @@ register = template.Library()
 def getSurveyStatus(obj, user):
     can_submit, datetimeexpired, options, questions = obj.can_submit(user)
     return can_submit, datetimeexpired, options, questions
+
 
 # @register.simple_tag
 # def canTakeQuiz(obj, user):
@@ -37,6 +38,7 @@ def getTeacherStatusoOfAssignment(obj, user):
         'assg_status': assg_status,
         'total_students': completed + incomplete,
     }
+
 
 @register.simple_tag
 def getUserQuizStatus(obj, user):
@@ -76,6 +78,18 @@ def getAssignmentsScore(assignmentObj, userObj):
         'total_score': total_score,
         'total_score_obtained': total_score_obtained if total_score_obtained else 0,
     }
+
+
+@register.simple_tag
+def getAssignmentAnswer(assignmentObj, userObj, questionObj):
+    answer = AssignAnswerInfo.objects.filter(Question_Code=questionObj,
+                                             Student_Code=userObj)
+    if answer.exists():
+        return answer.get(Question_Code=questionObj,
+                          Student_Code=userObj)
+    else:
+        return None
+
 
 @register.filter
 def subtract(value, arg):

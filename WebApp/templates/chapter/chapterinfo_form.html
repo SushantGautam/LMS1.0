@@ -69,6 +69,15 @@
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
+            <label>
+                Discussion
+            </label><br>
+            <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable"
+                    {% if object.is_commentable == False %}
+                   &nbsp; {% elif object.is_commentable == True %} checked {% endif %}><br> <br>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
             <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
                    class="select form-control">
         </div>

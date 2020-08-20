@@ -444,6 +444,40 @@ body{
     left: 30%;
     z-index: 9999;
 }
+@media (min-width:768px) and (max-width:899px){
+    .video-box{
+        width: 450px;
+    }
+
+}
+@media (min-width:551px) and (max-width:767px){
+    .video-box{
+        width: 350px;
+        left: 20%;
+    }
+
+}
+@media (min-width:440px) and (max-width:550px){
+    .video-box{
+        width: 330px;
+        left: 5%;
+    }
+
+}
+@media (min-width:400px) and (max-width:439px){
+    .video-box{
+        width: 330px;
+        left: 1%;
+    }
+
+}
+@media (min-width:320px) and (max-width:439px){
+    .video-box{
+        width: 100%;
+        left: 0%;
+    }
+
+}
 .video-call-option{
     padding: 0;
     text-align: right;

@@ -13,9 +13,18 @@
         <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
         <style>
             /* Stack image progress bar */
-            .progressbar {
+            .progressbar-outer {
                 float: right;
+                height: 98%;
                 width: 15px;
+                background: white;
+                padding: 1px;
+                margin: 2px 0;
+                border-radius: 5px;
+            }
+
+            .progressbar {
+                padding: 1px;
                 border-radius: 10px;
                 background-color: #2d3436;
                 background-image: linear-gradient(315deg, #2d3436 0%, #d3d3d3 74%);
@@ -138,6 +147,28 @@
 
 
 <body>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="message-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Continue Study</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                You have been idle for a while. Please click <b><i>Continue</i></b> to keep studying. Or you will be
+                redirected to chapter {{ chapter }} in <span id="redirectTimeCounter"></span> seconds.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ---------------------------------------------------------------------------------------- -->
 
 <div class="top-header">
     <div class="container">
@@ -149,6 +180,9 @@
                             <li class="course-name">{{ course }} &nbsp;<i style="color:white"
                                                                           class="fa fa-caret-right"></i></li>
                             <li class="chapter-name">{{ chapter }} </li>
+                            <li class="chapter-status-complete">
+                                <i class="fa fa-times" style="color: #721c24"></i>
+                            </li>
                         </ul>
                     </div>
 
@@ -380,7 +414,7 @@
     {% endif %}
 
 
-    <div id="container" class="container12">
+    <div id="container" class="container12 noRightClick">
 
         <div id="page-contents" class="page-contents"></div>
 
@@ -777,15 +811,16 @@
         'wrapAround': true
     });
 
-    // $('a').on('click', 'img', function(){
-    //     console.log('hdjsf')
-    //     if($(this).hasAttribute('data-lightbox')){
-    //         return false;
-    //     }
-    // }).dblclick(function () {
-    //     window.location = this.href;
-    //     return false;
-    // });
+    $('a').on('click', 'img', function () {
+        debugger
+        console.log('hdjsf')
+        if ($(this).hasAttribute('data-lightbox')) {
+            return false;
+        }
+    }).dblclick(function () {
+        window.location = this.href;
+        return false;
+    });
     document.addEventListener('visibilitychange', function () {
         pauseAllVideos(); // change tab text for demo
     })
@@ -893,7 +928,7 @@
                 loadexam(link, 1)
             {% endif %}
         }
-    })
+    });
 
     function loadexam(link, ShowCloseBoxonInit = false) {
 
@@ -994,9 +1029,8 @@
                                 } else if (css_value.hasOwnProperty('link')) {
                                     $('#page' + key).append(`
                                         <div class = "pic" style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                        <div class = "spinnner" style = 'position:relative'> 
+                                        <div class = "spinnner" style = 'z-index: 2'> 
                                             <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%">
-                                                
                                             </div>
                                         <iframe onload="onPicFrameLoad(this)" class="pic-iframe" style="width:100%;height:100%;" src="${css_value.link}"
                                             frameborder="0" allowfullscreen scrolling="no" allow="autoplay; fullscreen"></iframe>
@@ -1046,19 +1080,31 @@
                                                             var image = new Image;
                                                             count++;
                                                             image.onload = function () {
-                                                                $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
+                                                                var createA = document.createElement('a');
+                                                                createA.setAttribute('href', "data:image;base64," + content);
+                                                                createA.setAttribute('data-toggle', "lightbox");
+                                                                createA.setAttribute('data-name', value.name);
+                                                                createA.setAttribute('data-remote', "data:image;base64," + content);
+                                                                createA.setAttribute('data-lightbox', "stacked" + id);
+                                                                $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(createA)
+                                                                createA.appendChild(this)
                                                                 if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
-                                                                    $(`#stackedpic-${id}`).find(".spinnner").remove()
-                                                                    sortImageElements()
+                                                                    sortImageElements();
+                                                                    $(`#stackedpic-${id}`).find(".spinnner").remove();
                                                                 }
                                                             }
+                                                            image.onerror = function () {
+                                                                console.log("Error occurred while loading image");
+                                                            };
                                                             image.src = "data:image;base64," + content;
                                                             image.className = 'stack';
                                                             image.style.height = '100%';
                                                             image.style.width = '95%';
                                                             image.style.position = 'absolute';
+                                                            image.style.objectFit = 'contain';
                                                             {#if (count == 1) image.style.zIndex = "1";#}
                                                             image.setAttribute('data-name', value.name);
+                                                            image.setAttribute('data-lightbox', 'stackedpic' + id);
                                                             if (value.name == firstvalue) {
                                                                 image.style.zIndex = "1";
                                                             }
@@ -1071,7 +1117,7 @@
                                             });
 
                                             function sortImageElements() {
-                                                var result = $('#scroll-image-' + id + ' img').sort(sortAlphaNumElem);
+                                                var result = $('#scroll-image-' + id + ' a').sort(sortAlphaNumElem);
                                                 $('#scroll-image-' + id).html(result);
                                             }
 
@@ -1079,7 +1125,7 @@
                                                 imageCount++;
                                             });
                                             // Set progress bar height based on images count
-                                            let progressHeight = imageHeight / imageCount;
+                                            let progressHeight = (imageHeight - 25) / imageCount;
                                             progressBar.style.height = progressHeight + "px";
 
                                             // Index of current image which is on display
@@ -1124,6 +1170,7 @@
                                                     // check if over image or not
                                                     if (isMouseOverImage) {
                                                         let nextImageIndex = 0;
+                                                        let progressBar = document.getElementById("progressbar-" + id);
 
                                                         // finds the next image index limit scroll between first and last image
                                                         if (e.deltaY > 0) {
@@ -1141,7 +1188,7 @@
                                                         images[nextImageIndex].style.zIndex = "1";
                                                         imageIndex = nextImageIndex;
 
-                                                        document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+                                                        progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" + progressHeight + "px");
 
                                                     }
                                                 });
@@ -1149,17 +1196,29 @@
 
                                     $('#page' + key).append(`
                                             <div class = "stackedpic" id="stackedpic-${id}" style = 'position:absolute; top: ${css_value.tops}; left: ${css_value.left}; height:${parseFloat(css_value.height)}%; width:${parseFloat(css_value.width)}%'>
-                                            <div class = "spinnner" style = 'position:relative; z-index: 2'>
+                                            <div class = "spinnner" style = 'z-index: 2'>
                                                 <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
                                             </div>
-                                            <div class="row" style="display:flex;flex-grow:1;width:100%">
-                                                <div id="scroll-image-${id}" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
-                                                <div style="width:100%;max-width:4%"><div id="progressbar-${id}"></div></div>
+                                            <div class="row" style="height:15px;width:100%;background:gray;">
+                                                <div style="float:right;font-size:1em;margin-right:2em;color:white;">
+                                                    <i id="zoomi-${id}" class="fas fa-plus-circle zoom-in btn-zoom" style="cursor:pointer"></i> &nbsp; 
+                                                    <i id="zoomo-${id}" class="fas fa-minus-circle zoom-out btn-zoom" style="cursor:pointer"></i> &nbsp; 
+                                                    <i id="zoomr-${id}" class="fas fa-circle zoom-reset btn-zoom" style="cursor:pointer"></i>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="display:flex;flex-grow:1;width:100%;background:black;overflow:hidden;">
+                                                <div class="image-container" id="scroll-image-${id}" style="padding-left:0;padding-right:0;width:100%;max-width:95%"></div>
+                                                
+                                                <div style="width:100%;max-width:4%;z-index:9;">
+                                                <div class="progressbar-outer">
+                                                    <div class="progressbar" id="progressbar-${id}"></div>
+                                                </div></div>
                                             </div>
                                            </div>
                                         `);
                                 }
                             });
+
                         }
 
                         if (div == 'btn-div') {
@@ -1478,6 +1537,14 @@
             }
         }
     }
+
+    // Disable right click
+    $('.noRightClick').bind('contextmenu', function (e) {
+        return false;
+    });
+    $(document).bind('contextmenu', '#lightbox', function (e) {
+        return false;
+    });
 
 
     function setThumbnails() {
@@ -1819,6 +1886,13 @@
             var chapterProgress;
             var currentPageUpdateOnServer = 0;
 
+            // Chapter Progress Display
+            var chapterCompleted = false;
+            var mustreadtime = parseInt('{{ chapter.mustreadtime }}');
+            var readTime = 0;
+            var serverCurrentPage = 0;
+            var serverTotalPage = 0;
+
             function chapterProgressFunction() {
                 var timewhensendingprogress = Date.now() / 1000 | 0; // floors the value
                 //if (currentPageUpdateOnServer) {
@@ -1834,11 +1908,40 @@
                             'last_study_time': timewhensendingprogress,
                         },
                         success: function (data) {
+                            readTime = parseInt(data.contents.totalstudytime)
+                            serverCurrentPage = parseInt(data.contents.currentpagenumber)
+                            serverTotalPage = parseInt(data.contents.totalPage)
                             window.currentPageUpdateOnServer = parseInt(data.contents.currentpagenumber)
+                            UpdateChapterStatus()
                         },
                     })
                 }, 5000);
                 //}
+            }
+
+            function hasCompletedTime() {
+                return readTime > mustreadtime;
+            }
+
+            function hasCompletedPages() {
+                return serverCurrentPage >= serverTotalPage;
+            }
+
+            function hasCompletedChapter() {
+                return (hasCompletedTime() && hasCompletedPages())
+            }
+
+            function UpdateChapterStatus() {
+                if (!chapterCompleted) {
+                    if (hasCompletedChapter()) {
+                        chapterCompleted = true;
+                        alert('Congratulations! Requirements for completion of chapter has been completed.')
+                        $('.chapter-status-complete').empty();
+                        $('.chapter-status-complete').append(
+                            '<i class="fa fa-check-double" style="color:green"></i>'
+                        )
+                    }
+                }
             }
 
             function chapterProgressStopFunction() {
@@ -1961,5 +2064,218 @@
         minHeight: 25,
     });
 </script>
-{# End of Video Call Scripts #}
+<script>
+    {# End of Video Call Scripts #}
+    // FOR ZOOM
+    // Set initial zoom level
+    var zoom_level = 100;
+
+    // Click events
+    $(document).on('click', '.zoom-in', function () {
+        var stackID = (this.id).replace("zoomi-", "");
+        var zoomWrapperID = 'scroll-image-' + stackID;
+        zoom_page(10, $(this), zoomWrapperID)
+    });
+    $(document).on('click', '.zoom-out', function () {
+        var stackID = (this.id).replace("zoomo-", "");
+        var zoomWrapperID = 'scroll-image-' + stackID;
+        zoom_page(-10, $(this), zoomWrapperID)
+    });
+    $(document).on('click', '.zoom-reset', function () {
+        var stackID = (this.id).replace("zoomr-", "");
+        var zoomWrapperID = 'scroll-image-' + stackID;
+        zoom_page(0, $(this), zoomWrapperID)
+    });
+
+    // Zoom function
+    function zoom_page(step, trigger, zoomWrapperID) {
+        // Zoom just to steps in or out
+        if (zoom_level >= 200 && step > 0 || zoom_level <= 30 && step < 0) return;
+
+        // Set / reset zoom
+        if (step == 0) zoom_level = 100;
+        else zoom_level = zoom_level + step;
+
+        var scale = zoom_level / 100;
+
+        // Set page zoom via CSS
+        $(`#${zoomWrapperID}`).css({
+            'transform': 'scale(' + (scale) + ')', // set zoom
+            'transform-origin': '0 0'
+        });
+
+        // Adjust page to zoom width
+        if (zoom_level > 100) $(`#${zoomWrapperID}`).css({
+            width: (zoom_level * 1.2) + '%'
+        });
+        else $('body').css({
+            width: '100%'
+        });
+
+        // Activate / deactivate trigger (use CSS to make them look different)
+        if (zoom_level >= 20 || zoom_level <= 40) trigger.addClass('disabled');
+        else trigger.parents('ul').find('.disabled').removeClass('disabled');
+        if (zoom_level != 100) $('#zoom_reset').removeClass('disabled');
+        else $('#zoom_reset').addClass('disabled');
+        ImageLoaded();
+    }
+
+    function updateLists(element, columnId) {
+        //doSomething
+
+    }
+
+
+    // $('.btn-zoom').on("click", function(event) {
+    //     $("*").css("cursor", "progress");
+    // });
+
+
+    // DRAGGING IMAGE
+    var _DRAGGGING_STARTED = 0;
+    var _LAST_MOUSEMOVE_POSITION = {x: null, y: null};
+    var _DIV_OFFSET;
+    var _CONTAINER_WIDTH;
+    var _CONTAINER_HEIGHT;
+    var _IMAGE_WIDTH;
+    var _IMAGE_HEIGHT;
+    var _IMAGE_LOADED = 0;
+
+    // Image is loaded
+    function ImageLoaded() {
+        _IMAGE_LOADED = 1;
+    }
+
+    $(document).on('mousedown', '.image-container', function (event) {
+        /* Image should be loaded before it can be dragged */
+        _DIV_OFFSET = $(`#${this.id}`).offset();
+        _CONTAINER_WIDTH = $(`#${this.id}`).outerWidth();
+        _CONTAINER_HEIGHT = $(`#${this.id}`).outerHeight();
+        _IMAGE_WIDTH = $(`#${this.id}`).find(".stack").width();
+        _IMAGE_HEIGHT = $(`#${this.id}`).find(".stack").height();
+        if (_IMAGE_LOADED == 1) {
+            _DRAGGGING_STARTED = 1;
+
+            /* Save mouse position */
+            _LAST_MOUSE_POSITION = {x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top};
+        }
+    });
+
+    // $(document).on('mouseup', '.image-container', function(event){
+    window.addEventListener('mouseup', e => {
+        if (_IMAGE_LOADED == 1) {
+            console.log('asdasd');
+            _DRAGGGING_STARTED = 0;
+
+            // var current_mouse_position = { x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top };
+            // var change_x = current_mouse_position.x - _LAST_MOUSE_POSITION.x;
+            // var change_y = current_mouse_position.y - _LAST_MOUSE_POSITION.y;
+
+            // /* Save mouse position */
+            // _LAST_MOUSE_POSITION = current_mouse_position;
+
+            // var img_top = parseInt($(`#${this.id}`).find(".stack").css('top'), 10);
+            // var img_left = parseInt($(`#${this.id}`).find(".stack").css('left'), 10);
+
+            // var img_top_new = img_top + change_y;
+            // var img_left_new = img_left + change_x;
+            // $(`#${this.id}`).find(".stack").css({ top: img_top_new + 'px', left: img_left_new + 'px' });
+        }
+    });
+
+    $(document).on('mousemove', '.image-container', function (event) {
+        if (_DRAGGGING_STARTED == 1) {
+            var current_mouse_position = {x: event.pageX - _DIV_OFFSET.left, y: event.pageY - _DIV_OFFSET.top};
+            var change_x = current_mouse_position.x - _LAST_MOUSE_POSITION.x;
+            var change_y = current_mouse_position.y - _LAST_MOUSE_POSITION.y;
+
+            /* Save mouse position */
+            _LAST_MOUSE_POSITION = current_mouse_position;
+
+            var img_top = parseInt($(`#${this.id}`).find(".stack").css('top'), 10);
+            var img_left = parseInt($(`#${this.id}`).find(".stack").css('left'), 10);
+
+            var img_top_new = img_top + change_y;
+            var img_left_new = img_left + change_x;
+
+            /* Validate top and left do not fall outside the image, otherwise white space will be seen */
+            // if(img_top_new > 0)
+            // 	img_top_new = 0;
+            // if(img_top_new < (_CONTAINER_HEIGHT - _IMAGE_HEIGHT))
+            // 	img_top_new = _CONTAINER_HEIGHT - _IMAGE_HEIGHT;
+
+            // if(img_left_new > 0)
+            // 	img_left_new = 0;
+            // if(img_left_new < (_CONTAINER_WIDTH - _IMAGE_WIDTH))
+            // 	img_left_new = _CONTAINER_WIDTH - _IMAGE_WIDTH;
+
+            // console.log(img_top_new,img_left_new);
+
+            $(`#${this.id}`).find(".stack").css({top: img_top_new + 'px', left: img_left_new + 'px'});
+        }
+    });
+</script>
+
+<!-- Idle Time Check Scripts -->
+{% if '/students' in request.path %}
+    <script>
+        // Idle Time Check
+        var idleTime = 0;
+        var redirectInterval;
+        var idleTimeCheckIntervalTime = 5000;
+        var idleTimeRedirectTime = (15 * 60 * 1000);
+        window.onmousemove = function () {
+            idleTime = 0;
+        }
+
+        function idleTImeCheck() {
+            if (idleTime >= (idleTimeRedirectTime)) {
+                displayAlertMessage()
+            } else {
+                idleTime += idleTimeCheckIntervalTime;   // increment must be equal to function interval time
+            }
+        }
+
+        var idleTimeCheckInterval = setInterval(idleTImeCheck, idleTimeCheckIntervalTime);
+
+        function displayAlertMessage() {
+            $('#message-modal').modal('show');
+            var counter = 15;
+            redirectInterval = setInterval(function () {
+                if (counter == 0) {
+                    window.location.href = '/students/courseinfo/{{ chapter.Course_Code.id }}/chapterinfo/{{ chapter.id }}/?idle=true&redirected=true';
+                    clearSetInterval(redirectInterval);
+                    clearSetInterval(idleTimeCheckInterval);
+
+                }
+                if (counter >= 0) {
+                    $('#redirectTimeCounter').text(counter);
+                    counter--;
+                }
+            }, 1000);
+        }
+
+        function clearSetInterval(intervalVar) {
+            clearInterval(intervalVar);
+        }
+
+        $('#message-modal').on('hidden.bs.modal', function () {
+            idleTime = 0;
+            clearSetInterval(redirectInterval);
+        });
+
+        // // Multiple tab restriction
+        var viewerID = window.localStorage.getItem('viewerID');
+        
+        if (viewerID){
+            window.location.href = '/students/courseinfo/{{ chapter.Course_Code.id }}/chapterinfo/{{ chapter.id }}/?multitab=true&redirected=true';
+        }else{
+            window.localStorage.setItem('viewerID', 'viewer-1');
+            window.onbeforeunload = function() {
+                window.localStorage.clear();
+                return '';
+            };
+        }
+    </script>
+{% endif %}
 </body>

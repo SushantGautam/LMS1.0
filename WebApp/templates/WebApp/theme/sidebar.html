@@ -59,6 +59,7 @@
                         <a><i class="fa fa-user"></i>Members<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{% url 'memberinfo_list' %}">Members List</a></li>
+                            <li><a href="{% url 'departmentinfo_list' %}">Departments List</a></li>
                             <li>
                                 <a href="{% url 'memberinfo_create' %}">Create New Member</a>
                             </li>
@@ -101,7 +102,7 @@
                     </li>
 
                     <li>
-                        <a href="{% url 'teacher_report' %}"><i class="fa fa-trophy"></i> Achievement <span></span>
+                        <a href="{% url 'teacher_report' %}"><i class="fa fa-file-text-o"></i> Teacher Report <span></span>
                         </a>
                     </li>
                 </ul>

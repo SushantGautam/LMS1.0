@@ -385,11 +385,9 @@ class stackedpicture {
         //let img = '';
         let spinnerElem = '';
         if (link != null) {
-            spinnerElem = `
-                        <div class = "spinnner" style = 'z-index: 2'>
-                                                <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
-                                            </div>
-                        `
+            spinnerElem = `<div class = "spinner" style = 'z-index: 2'>
+                            <div class="loadspin loadspin-pic " style="position:absolute; top:44%; left:47%"></div>
+                        </div>`
             var promise = new JSZip.external.Promise(function (resolve, reject) {
                 JSZipUtils.getBinaryContent(link, function (err, data) {
                     if (err) {
@@ -425,8 +423,8 @@ class stackedpicture {
                                     image.onload = function () {
                                         $(`#stackedpic-${id}`).find('#scroll-image-' + id).append(this)
                                         if (Object.keys(zip.files).length == $('#scroll-image-' + id + ' img').length) {
-                                            $(`#stackedpic-${id}`).find(".spinnner").remove()
-                                            sortImageElements()
+                                            sortImageElements();
+                                            $(`#stackedpic-${id}`).find(".spinner").remove();
                                         }
                                     }
                                     image.src = "data:image;base64," + content;
@@ -434,7 +432,7 @@ class stackedpicture {
                                     image.style.height = '100%';
                                     image.style.width = '95%';
                                     image.style.position = 'absolute';
-                                    image.style.objectFit = 'cover';
+                                    image.style.objectFit = 'contain';
                                     // if(count == 1) image.style.zIndex = "1";
                                     image.setAttribute('data-name', value.name);
 
@@ -503,6 +501,7 @@ class stackedpicture {
                             // check if over image or not
                             if (isMouseOverImage) {
                                 let nextImageIndex = 0;
+                                let progressBar = document.getElementById("progressbar-" + id);
 
                                 // finds the next image index limit scroll between first and last image
                                 if (e.deltaY > 0) {
@@ -520,7 +519,8 @@ class stackedpicture {
                                 images[nextImageIndex].style.zIndex = "1";
                                 imageIndex = nextImageIndex;
 
-                                document.getElementById("progressbar-" + id).setAttribute("style", "height:" + (imageIndex + 1) * 100 / imageCount + "%");
+
+                                progressBar.setAttribute("style", "margin-top:" + imageIndex * progressHeight + "px;height:" + progressHeight + "px");
 
                             }
                         });
@@ -533,6 +533,7 @@ class stackedpicture {
                 <div id="stackedpic-actions">
                     <i data-toggle="tooltip" data-placement="bottom"  title='Delete item' class="  fas fa-trash" id=${id} ></i>
                     <span  data-toggle="tooltip" data-placement="bottom"  title='Upload File'><i class=" fas fa-upload" id=${id}></i></span>
+                    <span  data-toggle="tooltip" data-placement="bottom"  title='Help'><i class="fas fa-info-circle info-button" id=${id}></i></span>
                 </div>
                 ${spinnerElem}
                 <div class="row" style="flex-grow:1;width:100%">
@@ -544,8 +545,7 @@ class stackedpicture {
                         </form>
                         <p id="stackedpicture-drag">${message}</p>
                     </div>
-                </div>
-                
+                </div>    
             </div>`
 
         this.RemoveElement = function () {
@@ -1660,9 +1660,14 @@ function StackedPictureFunction(top = null, left = null, link = null, rid = null
         width, height);
     SPic.renderDiagram();
 
+
     $('.stackedpic .fa-upload').off().unbind().click(function (e) {
         trigger = parseInt(e.target.id) + 1;
         $('#' + trigger).trigger('click');
+    });
+
+    $('.stackedpic .info-button').off().unbind().click(function (e) {
+        $('#info-modal').modal('toggle');
     });
 
     $('.stackedpic .fa-trash').click(function (e) {

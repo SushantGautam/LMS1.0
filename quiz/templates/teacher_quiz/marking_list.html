@@ -1,0 +1,101 @@
+{% extends 'teacher_module/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "All Quizzes" %}{% endblock %}
+{% block breadcrumb %}
+<!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li> -->
+
+
+<li class="breadcrumb-item active" aria-current="page">Marking list</li>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load i18n %}
+
+<br>
+<h3>{% trans 'Quiz List played by the student' %}</h3>
+<hr><br>
+{% if quiz_list %}
+
+<table id="MarkingList" class="table table-striped table-bordered bg-white nowrap">
+    <thead class="thead-light bg-primary">
+        <th>{% trans "Quiz" %}</th>
+        <th>{% trans "Type" %}</th>
+        <th>{% trans "Created Date" %}</th>
+        <th>{% trans "Question Count" %}</th>
+        <th>{% trans "Participation/Completion times" %}</th>
+        <th>{% trans "Participated/Completed Student Count" %}</th>
+    </thead>
+
+    <tbody>
+        {% for quiz in quiz_list %}
+
+        <tr>
+            <td><a href="{% url 'teacher_individual_quiz_marking' quiz.id %}" style="font-weight: bold;">{{ quiz }}</a></td>
+            <td>{% if quiz.pre_test %} Pre Test<br> {% endif %}
+                {% if quiz.post_test %} Post Test<br> {% endif %}
+                {% if quiz.exam_paper %} Exam {% endif %}
+            </td>
+            <td>{{ quiz.created_date }}</td>
+            <td>{{ quiz.question_count }}</td>
+            <td>{{ quiz.count }}/{{ quiz.complete_count }}</td>
+            <td>{{ quiz.student_count }}/{{ quiz.student_complete_count }}</td>
+           
+            <!-- <td>
+                {% trans "View details" %}</a>
+            </td> -->
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+{% else %}
+<p>{% trans "There are no any quiz and marking for it" %}.</p>
+{% endif %}
+
+{% endblock %}
+{% block customjss %}
+<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var table_main = $('#MarkingList').DataTable({
+                responsive: true,
+                dom: 'lBfrtip',
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ],
+                "columnDefs": []
+
+            });
+        });
+
+
+    </script>
+{% endblock %}

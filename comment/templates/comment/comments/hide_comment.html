@@ -1,0 +1,6 @@
+{% load comment_tags %}
+<button title="{% if comment.is_visible %}Hide{% else %}Show{% endif %} comment"
+        class="js-comment-hide {% block hide_btn_cls %}btn btn-link{% endblock hide_btn_cls %}"
+        data-url="{% url 'comment:hide' pk=comment.id %}?comments_per_page={{ comments_per_page }}&model_name={% get_model_name model_object %}&model_id={{ model_object.id }}&app_name={% get_app_name model_object %}&oauth={{ oauth }}">
+        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+</button>
