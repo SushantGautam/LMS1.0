@@ -643,9 +643,17 @@
             var url = window.location.href;
             if ((url.indexOf('?idle=true') != -1) && (url.indexOf('&redirected=true') != -1)) {
                 $('#message-modal').modal('show');
+                $('#message-modal').find('.modal-body').html(`You have been idle for a while. Therefore, you are redirected.`);
                 // window.history.replaceState(null, null, window.location.pathname); // removes all query string i.e after '?'
                 let newurl = removeURLParameter(url, 'redirected');
                 newurl = removeURLParameter(newurl, 'idle');
+                window.history.replaceState(null, null, newurl); // removes query string i.e after '?'
+            }else if ((url.indexOf('?multitab=true') != -1) && (url.indexOf('&redirected=true') != -1)) {
+                $('#message-modal').modal('show');
+                $('#message-modal').find('.modal-body').html(`You are restricted to open multiple viewer tab please close previous one`);
+                // window.history.replaceState(null, null, window.location.pathname); // removes all query string i.e after '?'
+                let newurl = removeURLParameter(url, 'redirected');
+                newurl = removeURLParameter(newurl, 'multitab');
                 window.history.replaceState(null, null, newurl); // removes query string i.e after '?'
             }
             return false

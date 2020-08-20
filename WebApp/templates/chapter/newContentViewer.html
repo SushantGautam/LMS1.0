@@ -2262,7 +2262,20 @@
         $('#message-modal').on('hidden.bs.modal', function () {
             idleTime = 0;
             clearSetInterval(redirectInterval);
-        })
+        });
+
+        // // Multiple tab restriction
+        var viewerID = window.localStorage.getItem('viewerID');
+        
+        if (viewerID){
+            window.location.href = '/students/courseinfo/{{ chapter.Course_Code.id }}/chapterinfo/{{ chapter.id }}/?multitab=true&redirected=true';
+        }else{
+            window.localStorage.setItem('viewerID', 'viewer-1');
+            window.onbeforeunload = function() {
+                window.localStorage.clear();
+                return '';
+            };
+        }
     </script>
 {% endif %}
 </body>
