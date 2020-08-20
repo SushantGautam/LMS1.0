@@ -1,5 +1,13 @@
 {% load comment_tags %}
-<div class="row">
+
+<style>
+    {% block stylesheet %}
+
+    {% endblock stylesheet %}
+</style>
+
+
+<div class="row" {% if not comment.is_visible %}style="background-color: #dcc9c9" {% endif %}>
     {% if has_valid_profile %}
         <div class="{% block image_wrapper_cls %}col-2 col-md-1{% endblock image_wrapper_cls %}">
             <a href="{% get_profile_url comment %}">
