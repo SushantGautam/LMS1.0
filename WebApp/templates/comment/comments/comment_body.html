@@ -1,5 +1,16 @@
 {% extends 'comment/comments/comment_body.html' %}
 {% load comment_tags %}
+
+{% block stylesheet %}
+    .useravatar {
+    height: 80px;
+    width: 80px;
+    }
+{% endblock stylesheet %}
+
+{% block image_cls %}w-100 useravatar{% endblock image_cls %}
+
 {% block comment_content %}
     {% render_content comment.content 20 %}
 {% endblock comment_content %}
+

@@ -45,7 +45,7 @@ def get_img_path(obj):
             if field.value_from_object(profile):
                 return field.value_from_object(profile).url
             else:
-                return None
+                return '/static/images/profile/profile.png'
     return ''
 
 
@@ -98,11 +98,13 @@ def render_content(comment, number):
 
 @register.simple_tag(name='can_delete_comment')
 def can_delete_comment(comment, user):
-    return is_comment_admin(user) or (comment.is_flagged and is_comment_moderator(user))
+    return is_comment_admin(user) or (
+            comment.is_flagged and is_comment_moderator(user)) or user.Is_Teacher or user.Is_CenterAdmin
+
 
 @register.simple_tag(name='can_hide_comment')
 def can_hide_comment(comment, user):
-    return is_comment_admin(user) or (is_comment_moderator(user))
+    return is_comment_admin(user) or (is_comment_moderator(user)) or user.Is_Teacher or user.Is_CenterAdmin
 
 
 register.inclusion_tag('comment/comments/content.html')(render_content)
