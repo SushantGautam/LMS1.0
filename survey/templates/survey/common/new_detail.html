@@ -1,9 +1,11 @@
 {% load readmore %}
+{% load i18n %}
 {% load static %}
 
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 
 <script src="{% static 'vendors/charts/apex/apexcharts.min.js' %}"></script>
+
 
 <div style="position: sticky; width: 100%; top: 0; z-index: 1">
 
@@ -69,26 +71,32 @@
         </div>
         <div class="col-md-4">
              <div class="col-md-12">
-                {% for survey in history %}
-                        <div >
-
-                            {% if survey.id == object.id %}
-                                <h4 class="text-danger text-center">{{ survey.Survey_Title }}</h4>
-                                <h4 class="text-danger text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-danger text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                                <h4 class="text-danger text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-
-                            {% else %}
-
-                                <h4 class="text-info text-center"><a
-                                        href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
-                                <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-info text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                                <h4 class="text-info text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-                            {% endif %}
-
-                        </div>
-                    {% endfor %}
+                 <ul class="card_labels" style="text-align:center">
+                        <li>
+                            <div class="form-group">
+                                <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                                       for="first-name">Status</label>
+                            </div>
+                        </li>
+                        <li class="surveyViewDates">
+                            <h4>
+                                {% if object.get_status == "Expired" %}
+                                    <span class="label label-danger">Expired</span>
+                                {% elif object.get_status == "Active" %}
+                                    <span class="label label-success">Active</span>
+                                {% elif object.get_status == "Upcoming" %}
+                                    <span class="label label-info">Upcoming</span>
+                                {% endif %}
+                            </h4>
+                        </li>
+                        <li class="surveyViewDates">
+                            <h4>
+                                {% if object.Use_Flag == False %}
+                                    <span class="label label-warning">Hidden</span>
+                                {% endif %}
+                            </h4>
+                        </li>
+                    </ul>
 
             </div>
         </div>
@@ -113,9 +121,14 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+
             <div class="col-md-9">
                 <div class="col-md-12">
+                     {% if submit > 0 %}
+                        <button type="button" id="btnDownload" class="btn btn-primary btn-md">
+                            <i class="fa fa-print" aria-hidden="true"></i> &nbsp; Print Results
+                        </button>
+                        {% endif %}
                         {% for question in questions %}
                             {% if question.Question_Type == "MCQ" %}
                                  <div class="x_panel" id="pollsQuestions"
@@ -128,7 +141,7 @@
                                              <br>
                                     </div>
                                 </div>
-                        <div class="card">
+                                    <div class="card">
                         <div class="card-body">
                             <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
                                            value="column" checked >
@@ -234,6 +247,81 @@
 
                         </div>
                     </div>
+                            {%else%}
+
+                                <div>
+                                             <div class="x_panel SurveyAnswers SAQAnswers_div" id="pollsQuestions"
+                                                 style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                                                    <div>
+                                                        <h2 class="title ">
+                                                            <strong>{{ forloop.counter }} . &nbsp;
+                                                                {{ question.Question_Name }}</strong>
+                                                        </h2>
+                                                             <br>
+                                                    </div>
+                                                     <div style=" width: 100%; height: 2px; display: flex; flex-direction: auto;  "></div>
+                                                        <div id="WordCloud{{ forloop.counter }}" style="min-width: 310px; max-width: 800px; margin: 0 auto"></div>
+
+                                                            <div class="x_content" id= "accordion" style="margin-left: 40px;">
+                                                               <a class="panel-heading collapsed" role="tab"
+                                                                   id="heading{{ forloop.counter }}"
+                                                                   data-toggle="collapse" data-target="#collapse{{ forloop.counter }}"
+                                                                   href="#collapse{{ forloop.counter }}" aria-expanded="false"
+                                                                   aria-controls="collapse{{ forloop.counter }}">
+                                                                    <h5 class="panel-title text-primary"  onclick="$('#chk').prop('checked',
+                                                                        false)">Click to See Answers
+                                                                    </h5>
+                                                                </a>
+                                                        <br><br>
+                                                  <div id="collapse{{ forloop.counter }}" class="collapse"
+                                                  aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion"
+                                                  aria-expanded="false" >
+
+
+                                                <table class="SATable table table-striped table-bordered "
+                                                       style="width:100%">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S.N.</th>
+                                                        <th>Full Name (Username)</th>
+                                                        <th>Answer</th>
+                                                        <th>Date Submitted</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    {% for answer in question.get_answers %}
+
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ answer.Submit_Code.Student_Code.getFullName }}</td>
+                                                            <td>{{ answer.Answer_Value }}</td>
+                                                            <td class="">
+                                                                <span class="datecon">{{ answer.Submit_Code.Created_Date|date:"d M, Y h:i A" }}</span>
+                                                            </td>
+                                                        </tr>
+
+                                                    {% endfor %}
+                                                    </tbody>
+
+                                                </table>
+
+
+                                            </div>
+
+
+                                                            </div>
+                                                </div>
+
+
+
+
+
+
+                                </div>
+
+
+
 
                             {%endif%}
                     {%endfor%}
@@ -241,8 +329,44 @@
 
                 </div>
             </div>
-            <div class="col-md-3"></div>
-        </div>
+            <div class="col-md-3">
+                <div class="col-md-12">
+
+                    <br><br><br>
+
+                     <div class="card" style="width: 16rem;"  >
+                         <div class="card-header text-primary" style="text-align: center">Survey Version Info</div>
+                          <div class="card-body">
+                              <div class="card-scroll">
+
+                    {% for survey in history %}
+
+                            {% if survey.id == object.id %}
+                                 <b> <a class="text-info text-center"> {{ survey.Survey_Title }}</a></b><br><br>
+                                  <a class="text-primary text-center">Version: {{ survey.Version_No }}</a><br>
+                                  <a class="fa fa-calendar text-primary text-center" > Created: {{ survey.Created_Date|date:'M d, Y H:i' }}</a><br>
+                                  <a class="fa fa-calendar text-primary text-center" > Updated: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a><br><br><br>
+                                  <hr class="btn-info">
+
+
+                            {% else %}
+
+                               <b> <a class="text-danger text-center"
+                                        href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a> </b> <br><br>
+                                <a class="text-warning  text-center">Version: {{ survey.Version_No }}</a> <br>
+                                <a class="fa fa-calendar text-warning text-center"> Created: {{ survey.Created_Date|date:'M d, Y H:i' }}</a> <br>
+                                <a class="fa fa-calendar text-warning text-center"> Updated: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a> <br><br><br>
+                                  <hr class="btn-info">
+                            {% endif %}
+
+
+                    {% endfor %}
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
     </div>
 </div>
 
