@@ -41,6 +41,24 @@ urlpatterns += (
 )
 
 urlpatterns += (
+    # urls for DepartmentInfo
+    path('departmentinfo/', login_required(views.DepartmentInfoListView.as_view()),
+         name='departmentinfo_list'),
+    path('departmentinfo/create/', login_required(views.DepartmentInfoCreateView.as_view()),
+         name='departmentinfo_create'),
+    path('departmentinfo/create/ajax/', login_required(views.DepartmentInfoCreateViewAjax.as_view()),
+         name='departmentinfo_create_ajax'),
+    path('departmentinfo/detail/<int:pk>/',
+         views.DepartmentInfoDetailView.as_view(), name='departmentinfo_detail'),
+    path('departmentinfo/update/<int:pk>/',
+         views.DepartmentInfoUpdateView.as_view(), name='departmentinfo_update'),
+    path('departmentinfo/update/<int:pk>/ajax/',
+         views.DepartmentInfoUpdateViewAjax.as_view(), name='departmentinfo_update_ajax'),
+    path('departmentinfo/delete/<int:pk>/',
+         views.DepartmentInfoDeleteView, name='departmentinfo_delete'),
+)
+
+urlpatterns += (
     # urls for MemberInfo
     path('memberinfo/', views.MemberInfoListView.as_view(), name='memberinfo_list'),
     path('memberinfoajax/', views.MemberInfoListViewAjax.as_view(), name='memberinfo_listajax'),
@@ -99,6 +117,8 @@ urlpatterns += (
     path('chapterinfo/delete/<int:pk>/',
          views.ChapterInfoDeleteView.as_view(), name='chapterinfo_delete'),
 
+    path('courseinfo/<int:course>/chapterinfo/<int:pk>/discussion/', views.ChapterInfoDiscussionView.as_view(),
+         name='chapterinfo_discussion'),
 )
 
 urlpatterns += (
@@ -361,6 +381,7 @@ urlpatterns += (
          views.StudentChapterProgressView, name='student_chapter_progress'),
     path('editstudentChapterProgressTime/<int:chapterid>/<int:studentid>/', views.editStudentChapterProgressTime,
          name="editStudentChapterProgressTime"),
+    path('courseinfo/detail/<int:coursepk>/<int:sessionpk>/download/', views.CourseProgressDownload, name="progress_download")
 )
 
 # Notice URL

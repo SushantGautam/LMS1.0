@@ -40,6 +40,17 @@
                         <td>{{ object.email }}</td>
                     </tr>
                     <tr>
+                        <td class="mediumblack">Department</td>
+                        <td>{{ object.Member_Department }}</td>
+                    </tr>
+
+                    {% if object.Is_Teacher %}
+                        <tr>
+                            <td class="mediumblack">Position</td>
+                            <td>{{ object.Member_Position }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr>
                         <td class="mediumblack">Permanent Address</td>
                         <td>{{ object.Member_Permanent_Address }}</td>
                     </tr>

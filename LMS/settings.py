@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'survey',
     'decorator_include',
     'django_summernote',
+    'comment',
 ]
 
 MIDDLEWARE = [
@@ -240,3 +241,10 @@ SERVER_NAME = 'Vietnam_Server'
 CORS_ORIGIN_ALLOW_ALL = True
 
 WHITENOISE_MAX_AGE = 43200
+
+PROFILE_APP_NAME = 'WebApp'
+PROFILE_MODEL_NAME = 'MemberInfo'  # letter case insensitive
+
+COMMENT_FLAGS_ALLOWED = 10
+
+COMMENT_SHOW_FLAGGED = True

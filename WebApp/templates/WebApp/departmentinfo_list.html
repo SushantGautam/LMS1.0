@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">Departments</li>
+{% endblock %}
+{% block content %}
+
+
+    <div class="centerInfoListClass">
+
+        <h2 class="tableHeader">List of Departments</h2>
+        <hr class="header_hr">
+
+        <div class="btn-createnew">
+            <button type="button" class="btn btn-success" id="create_department-btn" data-toggle="modal"
+                    data-target="#department-modal">
+                Create New Department
+            </button>
+            {#            <a class="btn btn-success" href="{% url 'departmentinfo_create' %}">Create new Department</a>#}
+        </div>
+        <br><br><br>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered bg-white">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>ID</td>
+                    <td>Department Name</td>
+                    <td>Register Agent</td>
+                    <td>Register Date</td>
+                    <td>Updated Date</td>
+                    <td>Actions</td>
+                </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td>
+                        <td>{{ object.Register_Agent }}</td>
+                        <td>{{ object.Register_DateTime }}</td>
+                        <td>{{ object.Updated_DateTime }}</td>
+                        <td>
+                            <button class="btn btn-primary edit_department-btn" data-toggle="modal"
+                                    data-target="#department-modal" value="{{ object.pk }}">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <a class="btn btn-danger" href="{% url 'departmentinfo_delete' pk=object.pk %}"
+                               onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <br>
+        <br>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="department-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block customjss %}
+    <script type="text/javascript">
+        var form_url = "";
+        $(document).ready(function () {
+            $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }]
+            });
+
+            $('#create_department-btn').on('click', function () {
+                $('#department-modal .modal-body').empty();
+                $('#department-modal .modal-title').text("Create New Department");
+                $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
+
+                let url = "{% url 'departmentinfo_create_ajax' %}";
+                $.ajax({
+                    type: "GET",
+                    url: url,  // URL to your view that serves new info
+                    success: function (response) {
+                        form_url = url;
+                        $('#department-modal .modal-body').append(response);
+                    },
+                    error: function () {
+                        console.log('Error in generating form')
+                    },
+                    complete: function () {
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    }
+                });
+            });
+
+            $('.edit_department-btn').on('click', function () {
+                $('#department-modal .modal-body').empty();
+                $('#department-modal .modal-title').text("Edit Department");
+                $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
+
+                let url = "/departmentinfo/update/" + this.value + "/ajax/";
+                $.ajax({
+                    type: "GET",
+                    url: url,  // URL to your view that serves new info
+                    success: function (response) {
+                        form_url = url;
+                        $('#department-modal .modal-body').append(response);
+                    },
+                    error: function () {
+                        console.log('Error in generating form')
+                    },
+                    complete: function () {
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}
