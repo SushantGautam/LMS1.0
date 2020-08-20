@@ -21,8 +21,14 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'worldcloud.js' %}"></script>
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
+
+
+
+
+
     <script>
         var current_progress = 0;
         $(document).ready(function () {

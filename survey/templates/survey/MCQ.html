@@ -1,0 +1,120 @@
+ <div class="x_panel  ">
+                                 <div class="" id="pollsQuestions"
+                                     style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                                    <div class="title1">
+                                        <h2 class="title ">
+                                            <strong>{{ forloop.counter }} . &nbsp;
+                                                {{ question.Question_Name }}</strong>
+                                        </h2>
+                                             <br>
+                                    </div>
+                                </div>
+                                    <div class="card">
+                        <div class="card-body SurveyAnswers MCQAnswers_div">
+                            <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
+                                           value="column" checked >
+                            <label for="column{{ forloop.counter }}">Column &nbsp;</label>
+                            <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
+                                           value="pie">
+                            <label for="pie{{ forloop.counter }}">Pie&nbsp;</label>
+                            <div id="chart{{ forloop.counter }}"  >
+                                <div class="columnChart"></div>
+                                <div class="pieChart" style="display: none;"></div>
+                            </div>
+
+                            <script>
+
+                                document.addEventListener("DOMContentLoaded", function (event) {
+                                // FOR COLUMN CHART
+                                $(function () {
+
+                                    var options = {
+                                        series: [{
+                                            data: [
+                                                    {% for option in question.optioninfo.all %}
+                                                        {{ option.get_option_percentage }},
+                                                    {% endfor %}
+                                                    ]
+                                                }],
+                                        chart: {
+                                            type: 'bar',
+                                            height: 350,
+                                        },
+
+                                        plotOptions: {
+                                            bar: {
+                                                horizontal: false,
+                                                columnWidth: '30%',
+                                                endingShape: 'flat'
+                                            }
+                                        },
+
+                                        dataLabels: {
+                                            enabled: false
+                                        },
+
+                                        grid:{
+                                            show: true,
+                                            strokeDashArray: 5,
+                                        },
+
+                                        stroke: {
+                                            show: false,
+                                            width: 2,
+                                            colors: ['transparent']
+                                        },
+
+                                        xaxis: {
+                                            categories: [
+                                                {% for option in question.optioninfo.all %}
+                                                    "{{ option.Option_Name }}" ,
+                                                {% endfor %}
+                                            ],
+                                        },
+
+                                    };
+
+                                    var chart = new ApexCharts(document.querySelector("#chart{{ forloop.counter }}").querySelector('.columnChart'), options);
+                                    chart.render();
+                                    });
+
+                                    // For PIE CHART
+                                    $(function () {
+                                        var options = {
+                                            series: [{% for option in question.optioninfo.all %}
+                                                        {{ option.get_option_percentage }},
+                                                    {% endfor %}],
+                                            chart: {
+                                                height: 300,
+                                                width: 380,
+                                                type: 'pie',
+                                            },
+
+
+                                            labels: [{% for option in question.optioninfo.all %}
+                                                        "{{ option.Option_Name }}" ,
+                                                    {% endfor %}],
+                                            responsive: [{
+                                                breakpoint: 480,
+                                                options: {
+                                                    chart: {
+                                                        width: 200
+                                                    },
+                                                    legend: {
+                                                        position: 'bottom'
+                                                    }
+                                                }
+                                            }]
+                                        };
+
+                                        var chart = new ApexCharts(document.querySelector("#chart{{ forloop.counter }}").querySelector('.pieChart'), options);
+                                        chart.render();
+                                    });
+                                });
+                            </script>
+
+
+                        </div>
+                    </div>
+
+                                    </div>

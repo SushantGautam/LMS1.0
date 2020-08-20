@@ -101,7 +101,7 @@
         </div>
          <div class="col-md-4 del_retake" >
             <div class="col-md-12">
-                    {% if not '/students' in request.path and not '/teachers' in request.path %}
+                     {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
                         <form method="POST" action="{% url 'surveyinfo_delete' %}"
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
@@ -110,6 +110,33 @@
                                 <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete Survey
                             </button>
                         </form>
+                <br>
+                             {% if object.check_expired %}
+                            <!-- ##################### survey expired so cannot edit  ##############################  -->
+                            {#              <button type="button" class="btn btn-warning btn-md" disabled>#}
+                            {#                Survey Expired#}
+                            {#              </button>#}
+                        {% elif object.check_started %}
+                            <!-- ##################### survey started already so only update basic info  ######################  -->
+                            <button type="button" class="btn btn-warning btn-lg text-white" id="update_survey_button_limited"
+                                    data-toggle="modal"
+                                    data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
+                                 &nbsp Edit Basic Info
+                            </button>
+                        {% else %}
+                            <!-- ##################### else full update access  ##############################  -->
+                            <button type="button" class="btn btn-warning btn-lg" id="update_survey_button"
+                                    data-toggle="modal"
+                                    data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
+                                Edit
+                            </button>
+                        {% endif %}
+                     {% else %}
+                        <!-- ##################### No Access  ##############################  -->
+                        <button type="button" class="btn btn-warning btn-md" disabled>
+                            No Edit Permission
+                        </button>
+
                     {% endif %}
                     <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"
                             data-target="#survey_form_modal">  <i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;
@@ -132,7 +159,8 @@
                     <br><br>
                         {% for question in questions %}
                             {% if question.Question_Type == "MCQ" %}
-                                 <div class="x_panel" id="pollsQuestions"
+                                <div class="x_panel SurveyAnswers MCQAnswers_div ">
+                                 <div class="" id="pollsQuestions"
                                      style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
                                     <div class="title1">
                                         <h2 class="title ">
@@ -246,8 +274,12 @@
                                 });
                             </script>
 
+
+
                         </div>
                     </div>
+
+                                    </div>
                             {%else%}
 
                                 <div>
