@@ -1,7 +1,10 @@
 from datetime import timedelta
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save, post_delete
+from django.utils import timezone
 
+from Notifications.models import Notification
 from Notifications.signals import notify
 from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup
 
@@ -139,23 +142,46 @@ def ChapterInfoDelete_handler(sender, instance, **kwargs):
     )
 
     '''
+        For Students, 
+        
         Check if the chapter belonging to course is associated with any innings.
         If yes, add Session to notification table (target_audience).
         When the Notification start date is less than current time, send notification to all students in that session
         and delete the current object holding session information.
     '''
 
-    if InningInfo.objects.filter(
-            Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
-        notify.send(
-            sender=request.user,
-            target_audience=InningInfo.objects.filter(
-                Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-            verb=verb,
-            description='{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
-                                                                    instance.Course_Code.Course_Name),
-            action_object=instance,
-        )
+    # Delete Notifications that have not been sent to receipents if instance is deleted
+    NotificationAction(instance, instance.__class__, instance.id).delete()
+
+    # --------------------------------------------------------------------------------
+
+    # If instance has start date and start date has been reached, then send delete notifications, except pass.
+    if instance.Start_Date:
+        if instance.Start_Date <= timezone.now():
+            if InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+                notify.send(
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                    verb=verb,
+                    description='{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
+                                                                            instance.Course_Code.Course_Name),
+                    action_object=instance,
+                )
 
 
 post_delete.connect(ChapterInfoDelete_handler, sender=ChapterInfo)
+
+
+class NotificationAction:
+    def __init__(self, instance, action_object_content_type, action_object_object_id):
+        self.instance, self.action_object_content_type, action_object_object_id = instance, action_object_content_type, action_object_object_id
+
+    def delete(self):
+        # Filter Notifications of this that are not sent and delete.
+        notifications_to_delete = Notification.objects.filter(is_sent=False, start_notification_date__gt=timezone.now(),
+                                                              action_object_content_type=ContentType.objects.get_for_model(
+                                                                  self.instance.__class__),
+                                                              action_object_object_id=self.instance.id)
+        notifications_to_delete.delete()
