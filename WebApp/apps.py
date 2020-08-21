@@ -5,4 +5,4 @@ class WebAppConfig(AppConfig):
     name = 'WebApp'
 
     def ready(self):
-        pass
+        import WebApp.signals
