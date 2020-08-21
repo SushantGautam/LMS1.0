@@ -1,10 +1,10 @@
+import decimal
 import glob
 import json
 import math
 import os
 import re
 import uuid
-import decimal
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -20,10 +20,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
+from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
@@ -51,7 +52,6 @@ from forum.models import Thread, Topic
 from forum.views import get_top_thread_keywords, NodeGroup
 from quiz.models import Quiz
 from survey.models import SurveyInfo
-from django.contrib.sessions.models import Session
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
@@ -1335,7 +1335,7 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
             form.instance.End_Date = None
 
         # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
-        form.save()
+        # form.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

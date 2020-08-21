@@ -81,16 +81,19 @@ def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
         request = None
     if created:
         verb = "created"
+        description = '{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
+                                                                  instance.Course_Code.Course_Name)
     else:
         verb = "updated"
+        description = '{} updated chapter {} in course {}'.format(request.user, instance.Chapter_Name,
+                                                                  instance.Course_Code.Course_Name)
 
     notify.send(
         sender=request.user,
         verb=verb,
         recipient=MemberInfo.objects.filter(Center_Code=instance.Course_Code.Center_Code, Use_Flag=True,
                                             Is_CenterAdmin=True),
-        description='{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
-                                                                instance.Course_Code.Course_Name),
+        description=description,
         action_object=instance,
     )
 
@@ -101,18 +104,54 @@ def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
         and delete the current object holding session information.
     '''
 
-    if InningInfo.objects.filter(
-            Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+    if not created:
+        # Update Notifications that have not been sent to receipents if instance is update
+        NotificationAction(instance, instance.__class__, instance.id).update()
+
+        if instance.Start_Date:
+            if instance.Start_Date >= timezone.now():
+                notify.send(
+                    start_notification_date=(
+                            instance.Start_Date - timedelta(hours=1,
+                                                            minutes=0)) if instance.Start_Date else timezone.now(),
+                    end_notification_date=(
+                            instance.End_Date - timedelta(hours=1, minutes=0)) if instance.End_Date else None,
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                    verb=verb,
+                    description=description,
+                    action_object=instance,
+                )
+
+    # --------------------------------------------------------------------------------
+
+    if instance.Start_Date:
+        if instance.Start_Date <= timezone.now():
+            if InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+                notify.send(
+                    start_notification_date=(
+                            instance.Start_Date - timedelta(hours=1,
+                                                            minutes=0)) if instance.Start_Date else timezone.now(),
+                    end_notification_date=(
+                            instance.End_Date - timedelta(hours=1, minutes=0)) if instance.End_Date else None,
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                    verb=verb,
+                    description=description,
+                    action_object=instance,
+                )
+    else:
         notify.send(
-            start_notification_date=(
-                    instance.Start_Date - timedelta(hours=1, minutes=0)) if instance.Start_Date else None,
-            end_notification_date=(instance.End_Date - timedelta(hours=1, minutes=0)) if instance.End_Date else None,
+            start_notification_date=timezone.now(),
+            end_notification_date=None,
             sender=request.user,
             target_audience=InningInfo.objects.filter(
                 Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
             verb=verb,
-            description='{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
-                                                                    instance.Course_Code.Course_Name),
+            description=description,
             action_object=instance,
         )
 
@@ -143,7 +182,7 @@ def ChapterInfoDelete_handler(sender, instance, **kwargs):
 
     '''
         For Students, 
-        
+
         Check if the chapter belonging to course is associated with any innings.
         If yes, add Session to notification table (target_audience).
         When the Notification start date is less than current time, send notification to all students in that session
@@ -165,10 +204,22 @@ def ChapterInfoDelete_handler(sender, instance, **kwargs):
                     target_audience=InningInfo.objects.filter(
                         Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
                     verb=verb,
-                    description='{} created chapter {} in course {}'.format(request.user, instance.Chapter_Name,
+                    description='{} deleted chapter {} in course {}'.format(request.user, instance.Chapter_Name,
                                                                             instance.Course_Code.Course_Name),
                     action_object=instance,
                 )
+    else:
+        if InningInfo.objects.filter(
+                Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+            notify.send(
+                sender=request.user,
+                target_audience=InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                verb=verb,
+                description='{} deleted chapter {} in course {}'.format(request.user, instance.Chapter_Name,
+                                                                        instance.Course_Code.Course_Name),
+                action_object=instance,
+            )
 
 
 post_delete.connect(ChapterInfoDelete_handler, sender=ChapterInfo)
@@ -185,3 +236,17 @@ class NotificationAction:
                                                                   self.instance.__class__),
                                                               action_object_object_id=self.instance.id)
         notifications_to_delete.delete()
+
+    def update(self):
+        # Filter Notifications of this that are not sent and delete.
+        notifications_to_update = Notification.objects.filter(is_sent=False, start_notification_date__gt=timezone.now(),
+                                                              action_object_content_type=ContentType.objects.get_for_model(
+                                                                  self.instance.__class__),
+                                                              action_object_object_id=self.instance.id)
+
+        notifications_to_update.update(
+            start_notification_date=(
+                    self.instance.Start_Date - timedelta(hours=1, minutes=0)) if self.instance.Start_Date else None,
+            end_notification_date=(
+                    self.instance.End_Date - timedelta(hours=1, minutes=0)) if self.instance.End_Date else None,
+        )
