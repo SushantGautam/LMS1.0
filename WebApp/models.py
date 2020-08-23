@@ -7,13 +7,14 @@ from django.conf import settings
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
-    FileField
+    FileField, Sum
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.urls import reverse
@@ -59,11 +60,48 @@ class CenterInfo(models.Model):
     def get_delete_url(self):
         return reverse('centerinfo_delete', args=(self.pk,))
 
+class DepartmentInfo(models.Model):
+    Department_Name = CharField(max_length=500)
+    Use_Flag = BooleanField(default=True)
+    Register_Agent = CharField(max_length=500, blank=True, null=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)
+
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="departmentinfos", on_delete=models.DO_NOTHING, null=True
+    )
+
+    class Meta:
+        ordering = ('-pk',)
+
+    def __str__(self):
+        return self.Department_Name
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def get_absolute_url(self):
+        return reverse('departmentinfo_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('departmentinfo_update', args=(self.pk,))
+
+    def get_delete_url(self):
+        return reverse('departmentinfo_delete', args=(self.pk,))
 
 class MemberInfo(AbstractUser):
     Gender_Choices = (
         ('M', 'Male'),
         ('F', 'Female'),
+    )
+    Position_Choices = (
+        ('Lecturer', 'Lecturer'),
+        ('Assistant_Lecturer', 'Assistant Lecturer'),
+        ('Professor', 'Professor'),
+        ('Associated_Professor', 'Associated Professor'),
+        ('Assistant_Professor', 'Assistant Professor'),
+        ('LAB_Teacher', 'LAB Teacher'),
     )
     username_validator = UnicodeUsernameValidator()
 
@@ -118,6 +156,8 @@ class MemberInfo(AbstractUser):
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
+    Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
+    Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -299,6 +339,10 @@ class ChapterInfo(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
+    from comment.models import Comment
+
+    comments = GenericRelation(Comment)
+    is_commentable = models.BooleanField(default=True)
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
@@ -480,6 +524,14 @@ class AssignmentInfo(models.Model):
         if self.Assignment_Start and self.Assignment_Deadline:
             if self.Assignment_Start > self.Assignment_Deadline:
                 raise ValidationError("End date must be greater than start date")
+    
+    @property
+    def get_total_score(self):
+        score = AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
+        if score:
+            return score
+        else:
+            return 0
 
 
 def upload_to(instance, filename):

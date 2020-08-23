@@ -17,6 +17,7 @@
         <td>{% trans "User" %}</td>
         <td>{% trans "Start Datetime" %}</td>
         <td>{% trans "Completed Datetime" %}</td>
+        <td>{% trans "Obtained Score" %}</td>
         <td>{% trans "Score" %}(%)</td>
         <!-- <td></td> -->
         
@@ -50,6 +51,7 @@
                 " style="font-weight: bold;">{{ sitting.user }}</a></td>
             <td><span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></td>
             <td><span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></td>
+            <td>{{ sitting.get_score_correct }}</td>
             <td>{{ sitting.get_percent_correct }}</td>
            
             <!-- <td>
