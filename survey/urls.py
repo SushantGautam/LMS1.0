@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from . import api
+from . import api, pdf
 from . import views
 
 # app_name = "survey"
@@ -124,4 +124,10 @@ urlpatterns += (
 urlpatterns += (
     # delete survey
     path('surveyinfo/delete/', views.deleteSurvey, name='surveyinfo_delete'),
+)
+
+
+urlpatterns += (
+    # export pdf
+    path('pdf', views.export_pdf, name='export_pdf'),
 )

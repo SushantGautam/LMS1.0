@@ -59,7 +59,7 @@
 
                 if (current_progress >= 100) {
                     clearInterval(interval);
-                    location.reload();
+                   // location.reload();
 
                 }
 
@@ -326,12 +326,16 @@
                         $this = index
 
                         if ($this.classList.contains('MCQAnswers_div')) {
-                            let svgel = $($this).find('svg')[0];
+
+
+
+                            let svgel = $($this).find('svg:visible')[0];
                             let xml = new XMLSerializer().serializeToString(svgel);
 
                             let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
                                 domURL = self.URL || self.webkitURL || self,
-                                url = domURL.createObjectURL(svg);
+                               // url = domURL.createObjectURL(svg);
+                               url = "data:image/svg+xml;base64,"+window.btoa(xml);
 
                             // make it base64
                             //var svg64 = btoa(xml);
@@ -347,7 +351,7 @@
                             var ctx = canvas.getContext("2d");
                             var img = new Image();
                             img.onload = function () {
-                                let qn_title = $(svgel).parent().parent().attr('data-qn-title');
+                                let qn_title = $(svgel).parent().parent().parent().attr('data-qn-title');
                                 //let qn_title = `#. 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 end`;
                                 ctx.font = "14px Georgia";
                                 let lines = getLines(ctx, qn_title, canvas.width - 10);
@@ -367,7 +371,7 @@
                                 //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
                                 let a_r = canvas.width / canvas.height;
                                 var imgHeight = (doc.internal.pageSize.getHeight() * 0.6);
-                                var imgWidth = (imgHeight * a_r);
+                                var imgWidth = (imgHeight );
 
                                 //yPos += 5;
                                 //yPos = add_text(doc,

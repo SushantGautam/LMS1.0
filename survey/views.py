@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
-
+from fusionexport import ExportManager, ExportConfig
+import os
 from django import forms
 from django.contrib import messages
 from django.core import serializers
@@ -7,7 +8,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.forms import model_to_dict
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -91,7 +92,6 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
         context['search_q'] = self.request.GET.get('query', '')
         context['category'] = self.request.GET.get('category_name', '').lower()
         context['filter'] = self.request.GET.get('date_filter', '').lower()
-
 
         return context
 
@@ -543,6 +543,7 @@ class SurveyInfoDetailView(AdminAuthMxnCls, SurveyInfoAuthMxnCls, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
         context['options'] = OptionInfo.objects.filter(Question_Code__in=context['questions']).order_by('pk')
@@ -679,3 +680,27 @@ def deleteSurvey(request):
         if SurveyInfo.objects.filter(pk=request.POST['objectpk']).exists():
             obj = SurveyInfo.objects.get(pk=request.POST['objectpk']).delete()
     return redirect('surveyinfo_list')
+
+
+def export_pdf(request):
+    # Instantiate ExportConfig and ExportManager
+    export_config = ExportConfig()
+    export_manager = ExportManager()
+
+    # Fetch the curr directory of the template
+    curr_dir = os.path.dirname(os.path.abspath(__file__))
+
+    template_path = os.path.join(curr_dir, 'templates/survey/xyz.html')
+
+    # Set all the configurations
+
+    export_config['templateFilePath'] = template_path
+    export_config['type'] = 'pdf'
+    export_config['templateFormat'] = 'A4'
+    export_config['asyncCapture'] = True
+
+    # Export your first PDF
+
+    # export_manager.export(export_config, unzip=True)
+
+    return JsonResponse((export_config['templateFilePath'],export_config['type'],export_config['templateFormat'],export_config['asyncCapture'],export_manager.export(export_config, unzip=True)), safe=False)

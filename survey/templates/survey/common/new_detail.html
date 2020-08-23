@@ -149,13 +149,17 @@
     <div class="row">
 
             <div class="col-md-9">
-                <div class="col-md-12">
+               <div class="col-md-12">
                     <br>
+
                      {% if submit > 0 %}
                         <button type="button" id="btnDownload" class="btn btn-primary btn-md">
                             <i class="fa fa-print" aria-hidden="true"></i> &nbsp; Print Results
                         </button>
+
                         {% endif %}
+
+
                     <br><br>
                         {% for question in questions %}
                             {% if question.Question_Type == "MCQ" %}
@@ -169,6 +173,8 @@
                                         </h2>
                                              <br>
                                     </div>
+
+
                                 </div>
                                     <div class="card">
                         <div class="card-body">
@@ -178,7 +184,7 @@
                             <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
                                            value="pie">
                             <label for="pie{{ forloop.counter }}">Pie&nbsp;</label>
-                            <div id="chart{{ forloop.counter }}"  >
+                            <div id="chart{{ forloop.counter }}"  data-qn-title="{{ forloop.counter }}. {{ question.Question_Name }}" >
                                 <div class="columnChart"></div>
                                 <div class="pieChart" style="display: none;"></div>
                             </div>
