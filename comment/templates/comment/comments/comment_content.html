@@ -26,6 +26,7 @@
 
             {% can_delete_comment comment user as can_delete %}
             {% can_hide_comment comment user as can_hide %}
+            {% can_close_comment comment user as can_close %}
             {% if comment.user == user %}
                 | {% include 'comment/comments/edit_icon.html' %}
                 {% include 'comment/comments/delete_icon.html' %}
@@ -33,6 +34,12 @@
                     {% include 'comment/comments/hide_comment.html' %}
                 {% else %}
                     {% include 'comment/comments/show_comment.html' %}
+                {% endif %}
+
+                {% if comment.is_closed %}
+                    {% include 'comment/comments/open_comment.html' %}
+                {% else %}
+                    {% include 'comment/comments/close_comment.html' %}
                 {% endif %}
             {% else %}
                 {% if can_delete %}
@@ -51,6 +58,14 @@
                         | {% include 'comment/comments/show_comment.html' %}
                     {% endif %}
                 {% endif %}
+
+                {% if can_close %}
+                    {% if comment.is_closed %}
+                        {% include 'comment/comments/open_comment.html' %}
+                    {% else %}
+                        {% include 'comment/comments/close_comment.html' %}
+                    {% endif %}
+                {% endif %}
             {% endif %}
             {% if comment.is_parent %}
                 {% get_replies_count comment user as reply_count %}
@@ -58,7 +73,7 @@
                 <a class="js-reply-link {% block reply_link_cls %}btn btn-link ml-1{% endblock reply_link_cls %}"
                    href="#">
                     {% blocktrans with plural_str=reply_count|pluralize:"y,ies" %} Repl{{ plural_str }}
-                         {% endblocktrans %}
+                    {% endblocktrans %}
                 </a>
             {% endif %}
         </small>

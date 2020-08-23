@@ -6,7 +6,11 @@
         {% for comment in replies %}
             {% include 'comment/comments/child_comment.html' %}
         {% endfor %}
-        {% include 'comment/comments/create_comment.html' with placeholder=placeholder %}
+        {% if not comment.is_closed %}
+            {% include 'comment/comments/create_comment.html' with placeholder=placeholder %}
+        {% else %}
+            <p>Comment is closed. Reply is not possible</p>
+        {% endif %}
     </div>
     <hr/>
 </div>
