@@ -5,7 +5,8 @@
         <div class="card">
             <div class="card-body">
                 <a href="#" class="btn btn-outline-light dropdown-toggle bg-primary" data-toggle="dropdown">
-                    Active / Expired
+                   {% if 'active' in request.get_full_path %}Active{%endif%}{% if 'expire' in request.get_full_path %} Expired {%endif%}
+
                 </a>
                 <div class="dropdown-menu dropdown-menu-left">
 
@@ -39,7 +40,7 @@
                 </div>
 
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'surveyinfo_list' %}?category_name=all_survey"
+                    <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active"
                        class="category-name list-group-item d-flex align-items-center
                         {% if 'all_survey' in request.get_full_path %} bg-primary {% endif %}"
                        id="all_survey">
@@ -51,7 +52,7 @@
 
                 {% for category in categories %}
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'surveyinfo_list' %}?category_name={{ category.Category_Name }}"
+                    <a href="{% url 'surveyinfo_list' %}?category_name={{ category.Category_Name }}&date_filter=active"
                        class="list-group-item d-flex align-items-center category-name
                         {% if category.Category_Name in request.get_full_path %} bg-primary {%endif%} "
                        id="{{ category.Category_Name }}">
@@ -63,7 +64,7 @@
 
                          {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
                                                 {% else %}
-                        <button class=" {{ category.Category_Name }} btn add_survey_btn btn-small
+                        <button class=" {{ category.Category_Name }} btn add_survey_btn btn-sm
                         {% if category.Category_Name in request.get_full_path %}btn-light{%else%}btn-primary{%endif%}"
                                 id="category_Add_Button{{ category.Category_Name }}"
                                 style="margin: 0;"

@@ -1,9 +1,11 @@
 {% load readmore %}
+{% load i18n %}
 {% load static %}
 
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 
 <script src="{% static 'vendors/charts/apex/apexcharts.min.js' %}"></script>
+
 
 <div style="position: sticky; width: 100%; top: 0; z-index: 1">
 
@@ -26,9 +28,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-             <h1 class="pollTitle">{{ object.Survey_Title }}</h1>
+             <h1 class="pollTitle" style="color:#5c6bc0;">{{ object.Survey_Title }}</h1>
         </div>
     </div>
+    <br><br><br>
 <!--    <div class="row">-->
 <!--        <div class="col-md-4">-->
 <!--            <div class="col-md-12">-->
@@ -68,30 +71,37 @@
         </div>
         <div class="col-md-4">
              <div class="col-md-12">
-                {% for survey in history %}
-                        <div >
-
-                            {% if survey.id == object.id %}
-                                <h4 class="text-center">{{ survey.Survey_Title }}</h4>
-                                <h4 class="text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                                <h4 class="text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-                            {% else %}
-                                <h4 class="text-info text-center"><a
-                                        href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a></h4>
-                                <h4 class="text-info text-center">V {{ survey.Version_No }}</h4>
-                                <h4 class="text-info text-center datecon">{{ survey.Created_Date|date:'M d, Y H:i' }}</h4>
-                                <h4 class="text-info text-center datecon">{{ survey.Updated_Date|date:'M d, Y H:i' }}</h4>
-                            {% endif %}
-
-                        </div>
-                    {% endfor %}
+                 <ul class="card_labels" style="text-align:center">
+                        <li>
+                            <div class="form-group">
+                              <strong>  <h3 class=" col-md-12 col-sm-12 col-xs-12 text-info" >Status</h3> </strong>
+                            </div>
+                        </li>
+                        <li class="surveyViewDates">
+                            <h4>
+                                {% if object.get_status == "Expired" %}
+                                    <a class=" btn btn-danger text-white">Expired</a>
+                                {% elif object.get_status == "Active" %}
+                                    <a class=" btn btn-success text-white">Active</a>
+                                {% elif object.get_status == "Upcoming" %}
+                                    <a class="btn btn-warning text-white">Upcoming</a>
+                                {% endif %}
+                            </h4>
+                        </li>
+                        <li class="surveyViewDates">
+                            <h4>
+                                {% if object.Use_Flag == False %}
+                                    <span class="label label-warning">Hidden</span>
+                                {% endif %}
+                            </h4>
+                        </li>
+                    </ul>
 
             </div>
         </div>
          <div class="col-md-4 del_retake" >
             <div class="col-md-12">
-                    {% if not '/students' in request.path and not '/teachers' in request.path %}
+                     {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
                         <form method="POST" action="{% url 'surveyinfo_delete' %}"
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
@@ -100,6 +110,33 @@
                                 <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete Survey
                             </button>
                         </form>
+                <br>
+                             {% if object.check_expired %}
+                            <!-- ##################### survey expired so cannot edit  ##############################  -->
+                            {#              <button type="button" class="btn btn-warning btn-md" disabled>#}
+                            {#                Survey Expired#}
+                            {#              </button>#}
+                        {% elif object.check_started %}
+                            <!-- ##################### survey started already so only update basic info  ######################  -->
+                            <button type="button" class="btn btn-warning btn-lg text-white" id="update_survey_button_limited"
+                                    data-toggle="modal"
+                                    data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
+                                 &nbsp Edit Basic Info
+                            </button>
+                        {% else %}
+                            <!-- ##################### else full update access  ##############################  -->
+                            <button type="button" class="btn btn-warning btn-lg" id="update_survey_button"
+                                    data-toggle="modal"
+                                    data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
+                                Edit
+                            </button>
+                        {% endif %}
+                     {% else %}
+                        <!-- ##################### No Access  ##############################  -->
+                        <button type="button" class="btn btn-warning btn-md" disabled>
+                            No Edit Permission
+                        </button>
+
                     {% endif %}
                     <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"
                             data-target="#survey_form_modal">  <i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;
@@ -108,14 +145,22 @@
             </div>
         </div>
     </div>
-
+    <hr class="btn-primary">
     <div class="row">
-        <div class="col-md-12">
+
             <div class="col-md-9">
                 <div class="col-md-12">
+                    <br>
+                     {% if submit > 0 %}
+                        <button type="button" id="btnDownload" class="btn btn-primary btn-md">
+                            <i class="fa fa-print" aria-hidden="true"></i> &nbsp; Print Results
+                        </button>
+                        {% endif %}
+                    <br><br>
                         {% for question in questions %}
                             {% if question.Question_Type == "MCQ" %}
-                                 <div class="x_panel" id="pollsQuestions"
+                                <div class="x_panel SurveyAnswers MCQAnswers_div ">
+                                 <div class="" id="pollsQuestions"
                                      style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
                                     <div class="title1">
                                         <h2 class="title ">
@@ -125,7 +170,7 @@
                                              <br>
                                     </div>
                                 </div>
-                        <div class="card">
+                                    <div class="card">
                         <div class="card-body">
                             <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
                                            value="column" checked >
@@ -133,7 +178,7 @@
                             <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
                                            value="pie">
                             <label for="pie{{ forloop.counter }}">Pie&nbsp;</label>
-                            <div id="chart{{ forloop.counter }}" style="height: 300px" >
+                            <div id="chart{{ forloop.counter }}"  >
                                 <div class="columnChart"></div>
                                 <div class="pieChart" style="display: none;"></div>
                             </div>
@@ -201,9 +246,12 @@
                                                         {{ option.get_option_percentage }},
                                                     {% endfor %}],
                                             chart: {
+                                                height: 300,
                                                 width: 380,
                                                 type: 'pie',
                                             },
+
+
                                             labels: [{% for option in question.optioninfo.all %}
                                                         "{{ option.Option_Name }}" ,
                                                     {% endfor %}],
@@ -226,8 +274,86 @@
                                 });
                             </script>
 
+
+
                         </div>
                     </div>
+
+                                    </div>
+                            {%else%}
+
+                                <div>
+                                             <div class=" SurveyAnswers SAQAnswers_div" id="pollsQuestions"
+                                                 style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                                                    <div>
+                                                        <h2 class="title ">
+                                                            <strong>{{ forloop.counter }} . &nbsp;
+                                                                {{ question.Question_Name }}</strong>
+                                                        </h2>
+                                                             <br>
+                                                    </div>
+                                                     <div style=" width: 100%; height: 2px; display: flex; flex-direction: auto;  "></div>
+                                                        <div id="WordCloud{{ forloop.counter }}" style="min-width: 310px; max-width: 800px; margin: 0 auto"></div>
+
+                                                            <div class="x_content" id= "accordion" style="width:100%; margin: 0 10px 10px 10px">
+                                                               <a class="panel-heading collapsed" role="tab"
+                                                                   id="heading{{ forloop.counter }}"
+                                                                   data-toggle="collapse" data-target="#collapse{{ forloop.counter }}"
+                                                                   href="#collapse{{ forloop.counter }}" aria-expanded="false"
+                                                                   aria-controls="collapse{{ forloop.counter }}">
+                                                                    <h5 class="panel-title text-primary"  onclick="$('#chk').prop('checked',
+                                                                        false)">Click to See Answers
+                                                                    </h5>
+                                                                </a>
+                                                        <br><br>
+                                                  <div id="collapse{{ forloop.counter }}" class="collapse"
+                                                  aria-labelledby="heading{{ forloop.counter }}" data-parent="#accordion"
+                                                  aria-expanded="false" >
+
+
+                                                <table class="SATable table table-striped table-bordered ">
+                                                    <thead class="data_table_head">
+                                                    <tr>
+                                                        <th>S.N.</th>
+                                                        <th>Full Name (Username)</th>
+                                                        <th>Answer</th>
+                                                        <th>Date Submitted</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    {% for answer in question.get_answers %}
+
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ answer.Submit_Code.Student_Code.getFullName }}</td>
+                                                            <td>{{ answer.Answer_Value }}</td>
+                                                            <td class="">
+                                                                <span class="datecon">{{ answer.Submit_Code.Created_Date|date:"d M, Y h:i A" }}</span>
+                                                            </td>
+                                                        </tr>
+
+                                                    {% endfor %}
+                                                    </tbody>
+
+                                                </table>
+
+
+                                            </div>
+
+
+                                                            </div>
+                                                </div>
+
+
+
+
+
+
+                                </div>
+
+
+
 
                             {%endif%}
                     {%endfor%}
@@ -235,7 +361,69 @@
 
                 </div>
             </div>
-            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <div class="col-md-12">
+
+                    <br><br><br>
+
+                     <div class="card" style="width: 16rem;"  >
+                         <div class="card-header text-primary" style="text-align: center">Survey Version Info</div>
+                          <div class="card-body">
+                              <div class="card-scroll">
+
+                    {% for survey in history %}
+
+                            {% if survey.id == object.id %}
+                                 <b> <a class="text-info text-center"> {{ survey.Survey_Title }}</a></b><br><br>
+                                  <a class="text-primary text-center">Version: {{ survey.Version_No }}</a><br>
+                                  <a class="fa fa-calendar text-primary text-center" > Created: {{ survey.Created_Date|date:'M d, Y H:i' }}</a><br>
+                                  <a class="fa fa-calendar text-primary text-center" > Updated: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a><br><br><br>
+                                  <hr class="btn-info">
+
+
+                            {% else %}
+
+                               <b> <a class="text-danger text-center"
+                                        href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a> </b> <br><br>
+                                <a class="text-warning  text-center">Version: {{ survey.Version_No }}</a> <br>
+                                <a class="fa fa-calendar text-warning text-center"> Created: {{ survey.Created_Date|date:'M d, Y H:i' }}</a> <br>
+                                <a class="fa fa-calendar text-warning text-center"> Updated: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a> <br><br><br>
+                                  <hr class="btn-info">
+                            {% endif %}
+
+
+                    {% endfor %}
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</div>
+
+
+<div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create Survey</h4>
+                <div class="form-group">
+                    <label class="control-label " id="categoryTitle" for="first-name">
+                        {% for category in categories %}
+                            <span class="generalLabel">{{ category.Category_Name }}</span>
+                        {% endfor %}
+                    </label>
+                </div>
+            </div>
+            <div class="modal-body" id="surveyForm">
+                <div>
+                    <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
         </div>
     </div>
 </div>

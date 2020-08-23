@@ -278,6 +278,24 @@ input[type="search"] {
 
 }
 
+.dataTables_length, .dt-buttons, .dataTables_filter{
+    display:inline;
+}
+
+.dataTables_length{
+float:left;
+}
+
+.dataTables_filter{
+float:right;
+}
+
+.data_table_head{
+background:#5c6bc0;
+
+}
+
+
 .bs-chart-container strong {
   font-weight: 400;
   margin-bottom: 5px;
