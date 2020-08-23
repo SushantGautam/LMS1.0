@@ -2426,25 +2426,43 @@ def QuizMarkingCSV(request, quiz_pk):
     mcquestions = quiz.mcquestion.all()
     tfquestions = quiz.tfquestion.all()
     saquestions = quiz.saquestion.all()
+    extra_row_1 = {'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
+    extra_row_2 = {'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
 
     # Deining column names
     column_names = ['Student Username', 'Start Datetime', 'End Datetime']
     answer_name = "O/X"
+    mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
     for i, mcquestion in enumerate(mcquestions):
         question_name = "MCQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " M" + str(i + 1))
+        mcq_full_score += mcquestion.score
+        extra_row_1[question_name] = mcquestion.score
+        extra_row_2[question_name] = mcquestion.get_correct_answer()
     for i, tfquestion in enumerate(tfquestions):
         question_name = "TFQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " T" + str(i + 1))
+        tfq_full_score += tfquestion.score
+        extra_row_1[question_name] = tfquestion.score
+        extra_row_2[question_name] = tfquestion.correct
     for i, saquestion in enumerate(saquestions):
         question_name = "SAQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " S" + str(i + 1))
-    column_names.extend(["MCQ OS", "TFQ OS", "SAQ OS", "Total OS", "Total Score(TS)", "Percentage"])
+        saq_full_score += saquestion.score
+        extra_row_1[question_name] = saquestion.score
+    column_names.extend(["MCQ Score", "TFQ Score", "SAQ Score", "Total Score", "Percentage"])
 
     df = pd.DataFrame(columns=column_names)
+
+    extra_row_1["MCQ Score"] = mcq_full_score
+    extra_row_1["TFQ Score"] = tfq_full_score
+    extra_row_1["SAQ Score"] = saq_full_score
+    extra_row_1["Total Score"] = total_score
+    df = df.append(extra_row_1, ignore_index=True)
+    df = df.append(extra_row_2, ignore_index=True)
 
     for quiz_sitting in quiz_sittings:
         start_date = ''
@@ -2455,8 +2473,7 @@ def QuizMarkingCSV(request, quiz_pk):
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
         new_row = {'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
-                   'Total Score(TS)': total_score, 'Total OS': quiz_sitting.get_score_correct,
-                   'Percentage': quiz_sitting.get_percent_correct}
+                'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
@@ -2496,9 +2513,9 @@ def QuizMarkingCSV(request, quiz_pk):
             if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
                 totalsaq_score += float(score_list[score_index])
 
-        new_row['MCQ OS'] = totalmcq_score
-        new_row['TFQ OS'] = totaltfq_score
-        new_row['SAQ OS'] = totalsaq_score
+        new_row['MCQ Score'] = totalmcq_score
+        new_row['TFQ Score'] = totaltfq_score
+        new_row['SAQ Score'] = totalsaq_score
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
     # return HttpResponse("<h4>Student All Course Progress download</h4>")
