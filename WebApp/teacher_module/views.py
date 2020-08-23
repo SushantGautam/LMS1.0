@@ -2426,11 +2426,11 @@ def QuizMarkingCSV(request, quiz_pk):
     mcquestions = quiz.mcquestion.all()
     tfquestions = quiz.tfquestion.all()
     saquestions = quiz.saquestion.all()
-    extra_row_1 = {'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
-    extra_row_2 = {'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
+    extra_row_1 = {'S.N.': 'Full Score', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
+    extra_row_2 = {'S.N.': 'Correct Answer', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
 
     # Deining column names
-    column_names = ['Student Username', 'Start Datetime', 'End Datetime']
+    column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
     answer_name = "O/X"
     mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
     for i, mcquestion in enumerate(mcquestions):
@@ -2463,16 +2463,17 @@ def QuizMarkingCSV(request, quiz_pk):
     extra_row_1["Total Score"] = total_score
     df = df.append(extra_row_1, ignore_index=True)
     df = df.append(extra_row_2, ignore_index=True)
+    counter = 0
 
     for quiz_sitting in quiz_sittings:
         start_date = ''
         end_date = ''
-        # flag = True
+        counter += 1
         if quiz_sitting.start:
             start_date = quiz_sitting.start.replace(tzinfo=None)
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
-        new_row = {'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
+        new_row = {'S.N.':counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
                 'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
 
         user_answers = json.loads(quiz_sitting.user_answers)
@@ -2518,12 +2519,13 @@ def QuizMarkingCSV(request, quiz_pk):
         new_row['SAQ Score'] = totalsaq_score
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
-    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    
+    df = df.set_index('S.N.', drop=True)
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
-        df.index += 1
-        df.index.name = 'S.N.'
+        # df.index += 1
+        # df.index.name = 'S.N.'
         sheet_name = str(quiz.title)
         sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
         if len(sheet_name) > 28:
