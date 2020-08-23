@@ -3,14 +3,15 @@
 
 {% block stylesheet %}
     .useravatar {
-    height: 80px;
-    width: 80px;
+    height: 60px;
+    width: 60px;
+    border-radius:50%
     }
 {% endblock stylesheet %}
 
-{% block image_cls %}w-100 useravatar{% endblock image_cls %}
+{% block image_cls %} useravatar{% endblock image_cls %}
 
 {% block comment_content %}
-    {% render_content comment.content 20 %}
+   <p >{% render_content comment.content 20 %}</p> 
 {% endblock comment_content %}
 

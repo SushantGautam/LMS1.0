@@ -289,6 +289,83 @@ $(function () {
             },
         });
     };
+
+    // Individual comment close option
+
+    var closeComment = function (e) {
+        e.preventDefault();
+        var hasParent, paginate, comment_per_page;
+        var $form = $(this);
+        var $parentComment = $deleteCommentButton.parents().eq(4);
+        var $reply = $deleteCommentButton.parents().eq(6).find(".js-reply-link");
+        var $replyNumber = $deleteCommentButton.parents().eq(6).find(".js-reply-number");
+        var $formData = $form.serializeArray();
+        var $thisURL = $form.attr("data-url");
+
+        // get the current page number and send it to pagination func
+        var currentURL = window.location.href.split("=")[1];
+        pageNumber = parseInt(currentURL, 10);
+
+        // retrieve the comment status parent or child
+        $.each($formData, function (i, field) {
+            if (field.name === "has_parent") hasParent = field.value === "True";
+        });
+
+        // send page number to BE
+        $formData.push({name: 'page', value: pageNumber});
+
+        $.ajax({
+            method: "POST",
+            url: $thisURL,
+            data: $formData,
+            success: function closeCommentDone(data, textStatus, jqXHR) {
+                $("#Modal").modal("hide");
+                location.reload()
+            },
+            error: function handleFormError(jqXHR, textStatus, errorThrown) {
+                alert("Unable to close comment!, please try again");
+            },
+        });
+    };
+
+    var openComment = function (e) {
+        e.preventDefault();
+        var hasParent, paginate, comment_per_page;
+        var $form = $(this);
+        var $parentComment = $deleteCommentButton.parents().eq(4);
+        var $reply = $deleteCommentButton.parents().eq(6).find(".js-reply-link");
+        var $replyNumber = $deleteCommentButton.parents().eq(6).find(".js-reply-number");
+        var $formData = $form.serializeArray();
+        var $thisURL = $form.attr("data-url");
+
+        // get the current page number and send it to pagination func
+        var currentURL = window.location.href.split("=")[1];
+        pageNumber = parseInt(currentURL, 10);
+
+        // retrieve the comment status parent or child
+        $.each($formData, function (i, field) {
+            if (field.name === "has_parent") hasParent = field.value === "True";
+        });
+
+        // send page number to BE
+        $formData.push({name: 'page', value: pageNumber});
+
+        $.ajax({
+            method: "POST",
+            url: $thisURL,
+            data: $formData,
+            success: function showCommentDone(data, textStatus, jqXHR) {
+                $("#Modal").modal("hide");
+                location.reload()
+            },
+            error: function handleFormError(jqXHR, textStatus, errorThrown) {
+                alert("Unable to open comment!, please try again");
+            },
+        });
+    };
+
+    //  ----------------------------------------------------------------------------------------------
+
     /**
      * Returns whether a classList contains a particular class or not.
      * @param {Array} classList - the array of classes to be compared.
@@ -575,6 +652,10 @@ $(function () {
     $(document).on("submit", ".js-comment-hide-form", hideComment);
     $(document).on("click", ".js-comment-show", loadForm);
     $(document).on("submit", ".js-comment-show-form", showComment);
+    $(document).on("click", ".js-comment-close", loadForm);
+    $(document).on("submit", ".js-comment-close-form", closeComment);
+    $(document).on("click", ".js-comment-open", loadForm);
+    $(document).on("submit", ".js-comment-open-form", openComment);
     $(document).on("click", ".js-comment-reaction", commentReact);
     $(document).on("click", ".js-comment-flag", commentFlag);
     $(document).on("click", ".js-read-more-btn", toggleText);

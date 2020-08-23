@@ -306,6 +306,10 @@ class MCQuestion(Question):
         return [(answer.id, answer.content) for answer in
                 self.order_answers(Answer.objects.filter(question=self))]
 
+    def get_correct_answer(self):
+        correct_ans = list(Answer.objects.filter(question=self, correct=True).values_list('content', flat=True))
+        return ", ".join( repr(e) for e in correct_ans)
+
     def answer_choice_to_string(self, guess):
         return Answer.objects.get(id=guess).content
 

@@ -107,6 +107,11 @@ def can_hide_comment(comment, user):
     return is_comment_admin(user) or (is_comment_moderator(user)) or user.Is_Teacher or user.Is_CenterAdmin
 
 
+@register.simple_tag(name='can_close_comment')
+def can_close_comment(comment, user):
+    return is_comment_admin(user) or (is_comment_moderator(user)) or user.Is_Teacher or user.Is_CenterAdmin
+
+
 register.inclusion_tag('comment/comments/content.html')(render_content)
 
 
