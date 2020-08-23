@@ -1,5 +1,5 @@
 {% load comment_tags %}
-
+{% load static %}
 <style>
     {% block stylesheet %}
 
@@ -13,7 +13,7 @@
             <a href="{% get_profile_url comment %}">
                 <img class="{% block image_cls %}w-100{% endblock image_cls %}"
                      src="{% get_img_path comment %}" alt="{{ comment.user.username }}"
-                     onerror="this.onerror=null;this.src='https://placeimg.com/200/300/animals';">
+                     onerror="this.onerror=null;this.src='{% static "images/profile/profile.png" %}';">
             </a>
         </div>
     {% endif %}
