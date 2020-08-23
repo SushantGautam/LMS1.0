@@ -4,10 +4,14 @@
 
 <div class=" text-left{% if comment.has_flagged_state %}flagged-comment {% endif %}{% block content_wrapper_cls %}{% if has_valid_profile %} col-md-10{% else %}co-11 mx-3{% endif %}{% endblock content_wrapper_cls %}">
     {% block comment_content %}
-        {% render_content comment 30 %}
+   
+      <p style="font-size: 20px;">{% render_content comment 30 %}</p>  
+ 
+        
     {% endblock comment_content %}
     <div class="blockquote-footer">
         <small>
+           
             <a class="{% block username_cls %}{% endblock username_cls %}" href="{% get_profile_url comment %}"
                title="View {{ comment.user }} profile">{{ comment.user }}</a> |
             {% if comment.is_edited %}
