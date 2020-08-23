@@ -5,7 +5,7 @@
 {% block form_class %}js-comment-show-form{% endblock %}
 
 {% block dataurl %}data-url="{% if comment %}{% url 'comment:open' pk=comment.id %}{% endif %}{% endblock dataurl %}
-{% block content %}Are you sure you want to re-open this comment {% endblock content %}
+{% block content %}Are you sure you want to enable replies for this comment {% endblock content %}
 {% block title %}Confirm comment open{% endblock title %}
-{% block formsubmitbutton %}Open{% endblock %}
+{% block formsubmitbutton %}Enable{% endblock %}
 {% block del_btn_cls %}btn btn-success{% endblock %}

@@ -5,7 +5,7 @@
 {% block form_class %}js-comment-show-form{% endblock %}
 
 {% block dataurl %}data-url="{% if comment %}{% url 'comment:close' pk=comment.id %}{% endif %}{% endblock dataurl %}
-{% block content %}Are you sure you want to close this comment {% endblock content %}
+{% block content %}Are you sure you want to disable replies for this comment {% endblock content %}
 {% block title %}Confirm comment close{% endblock title %}
-{% block formsubmitbutton %}Close{% endblock %}
-{% block del_btn_cls %}btn btn-info{% endblock %}
+{% block formsubmitbutton %}Disable{% endblock %}
+{% block del_btn_cls %}btn btn-danger{% endblock %}
