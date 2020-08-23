@@ -1,13 +1,15 @@
 {% load static %}
 {% load i18n %}
 
-    
-
-
-
 
 <br>
-<h3>{% trans 'Marking List of Individual Quiz' %} ({{ quiz }}) </h3>
+<h3>{% trans 'Marking List of Individual Quiz' %} ({{ quiz }})
+    <a href="{% url 'quiz_marking_csv' quiz.pk %}" target="__blank">
+        <button class="btn btn=sm btn-info pull-right">
+            <i class="fa fa-download" aria-hidden="true"></i> Download Detail Result
+        </button>
+    </a>
+</h3>
 <hr><br>
 {% if sitting_list %}
 
@@ -17,6 +19,7 @@
         <td>{% trans "User" %}</td>
         <td>{% trans "Start Datetime" %}</td>
         <td>{% trans "Completed Datetime" %}</td>
+        <td>{% trans "Obtained Score" %}</td>
         <td>{% trans "Score" %}(%)</td>
         <!-- <td></td> -->
         
@@ -50,6 +53,7 @@
                 " style="font-weight: bold;">{{ sitting.user }}</a></td>
             <td><span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></td>
             <td><span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></td>
+            <td>{{ sitting.get_score_correct }}</td>
             <td>{{ sitting.get_percent_correct }}</td>
            
             <!-- <td>

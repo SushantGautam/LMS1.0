@@ -27,8 +27,9 @@ urlpatterns = [
                   url(r'^$', views.start, name='start'),
                   path('forum/', include('forum.urls')),
                   path('survey/', include('survey.urls')),
-                  url(r'^login/$', views.login, {'template_name': 'registration/login.html',
-                                                 'redirect_authenticated_user': True}, name='login'),
+                  path('login/', views.login.as_view(), name='login'),
+                #   url(r'^login/$', views.login, {'template_name': 'registration/login.html',
+                #                                  'redirect_authenticated_user': True}, name='login'),
                   path(
                       'students/courseinfo/<int:course>/chapterinfo/<int:chapter>/contentforapp/<slug:username>/<slug:password>/',
                       loginforapp, name='loginforapp'),
@@ -116,4 +117,8 @@ urlpatterns += (
 urlpatterns += (
     path('api/v1/video_urlresolver/', views.getDirectURLOfMedias, name='getDirectURLOfMedias'),
     path('api/v1/<int:chapterID>/chat_history/', views.getChatMessageHistoryApi, name='getChatHistory'),
+)
+
+urlpatterns += (
+    path('comment/', include('comment.urls')),
 )

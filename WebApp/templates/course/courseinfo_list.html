@@ -367,15 +367,13 @@
                 </div>
             {% empty %}
                 <b>NO COURSES ALLOCATED</b>
-
             {% endfor %}
-
-           
-
         </div>
+        {% if object_list %}
         <div class=" col-md-12 col-sm-12 col-xs-12 text-center" id="pagination">
 
         </div>
+        {% endif %}
     </div>  
         <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
             <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
@@ -819,17 +817,20 @@
         * Initialization
         * * * * * * * * * * * * * * * * */
 
-        var init = function () {
-            let pagesize = Math.ceil(document.getElementsByClassName('listcard').length / parseInt(document.getElementById('paginate_courses').value))
+        // Run Script if at least one course is present.
+        {% if object_list %}
+            var init = function () {
+                let pagesize = Math.ceil(document.getElementsByClassName('listcard').length / parseInt(document.getElementById('paginate_courses').value))
 
-            Pagination.Init(document.getElementById('pagination'), {
-                size: pagesize, // pages size
-                page: 1,  // selected page
-                step: 3   // pages before and after current
-            });
-        };
+                Pagination.Init(document.getElementById('pagination'), {
+                    size: pagesize, // pages size
+                    page: 1,  // selected page
+                    step: 3   // pages before and after current
+                });
+            };
 
         document.addEventListener('DOMContentLoaded', init, false);
+        {% endif %}
 
         $('#searchCourseForm').on('submit', function (e) {
             e.preventDefault()

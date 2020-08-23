@@ -1,0 +1,9 @@
+{% load static %}
+{% load comment_tags %}  {# Loading the template tag #}
+
+{% include_static_jquery %}
+{% render_comments object request comments_per_page=10 %}   {# Render all the comments belonging to a passed object #}
+
+
+{% include_static %}
+{% include_bootstrap %}
