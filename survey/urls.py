@@ -127,7 +127,4 @@ urlpatterns += (
 )
 
 
-urlpatterns += (
-    # export pdf
-    path('pdf', views.export_pdf, name='export_pdf'),
-)
+
