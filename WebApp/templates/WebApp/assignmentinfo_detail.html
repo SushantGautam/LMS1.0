@@ -11,6 +11,7 @@
     ">Course</a></li>
 <li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
 <li class="breadcrumb-item"><a href="{{ object.Chapter_Code.get_absolute_url }}">{{ object.Chapter_Code }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
 {% endblock %}
 {% block content %}
 <div class="modal fade" id="add_question_modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -123,7 +124,15 @@
         </div>
 
         <div class="my-5">
-            <h4 class="text-primary mb-4">List of Questions</h4>
+            <div class="d-flex justify-content-between">
+                <h4 class="text-primary mb-4">List of Questions</h4>
+                <div>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add_question_modal"
+                        id="add-newquestion-btn">
+                        Add Question
+                    </button>
+                </div>
+            </div>
             {% for question in Questions %}
             <div class="accordion mb-4" id="questionList{{ question.pk }}">
                 <div class="card shadow-none border">
@@ -161,14 +170,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-sm btn-outline-info editquestion-btn mx-2" data-toggle="modal"
+                            <button class="btn btn-sm btn-info btn-floating editquestion-btn mx-2" data-toggle="modal"
                                 data-target="#editQuestionModal{{ question.pk }}" id="editquestion-btn{{ question.pk }}"
                                 data-questionpk="{{ question.pk }}">
-                                Edit Question
+                                <i class="fa fa-pencil"></i>
                             </button>
                             {% if '/teachers' in request.path %}
-                            <button id="{{ question.pk }}" class="btn btn-sm btn-outline-danger confirm-delete mx-2">
-                                Delete
+                            <button id="{{ question.pk }}"
+                                class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
+                                <i class="fa fa-trash"></i>
                             </button>
                             <form method="post"
                                 action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
@@ -180,8 +190,9 @@
                                 <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
                             </form>
                             {% else %}
-                            <button id="{{ question.pk }}" class="btn btn-sm btn-outline-danger confirm-delete mx-2">
-                                Delete
+                            <button id="{{ question.pk }}"
+                                class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
+                                <i class="fa fa-trash"></i>
                             </button>
                             <form method="post"
                                 action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=question.pk %}"
@@ -430,12 +441,12 @@
                     </a>
                 </li>
                 {% endif %}
-                <li class="p-2 border-top">
+                <!-- <li class="p-2 border-top">
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add_question_modal"
                         id="add-newquestion-btn">
                         Add Question
                     </button>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>
