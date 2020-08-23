@@ -9,7 +9,8 @@
         {% if not comment.is_closed %}
             {% include 'comment/comments/create_comment.html' with placeholder=placeholder %}
         {% else %}
-            <p>Comment is closed. Reply is not possible</p>
+            <p class="text-center" style="font-size: x-small; color: #721c24;">Comment is closed. Reply is not
+                possible</p>
         {% endif %}
     </div>
     <hr/>
