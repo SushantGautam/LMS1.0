@@ -13,7 +13,7 @@
         <small>
             {% include "comment/reactions/reactions.html" with comment=comment %}
 
-            <a class="{% block username_cls %}{% endblock username_cls %}" href="{% get_profile_url comment %}"
+            <a class="{% block username_cls %}{% endblock username_cls %}" href="javascript:void(0)"
                title="View {{ comment.user }} profile">{{ comment.user }}</a> |
             {% if comment.is_edited %}
                 <span class="font-italic"
@@ -22,7 +22,7 @@
             {% else %}
                 <span class="font-italic"
                       title="{% trans 'Posted' %}">{% blocktrans with posted_time=comment.posted|timesince %}
-                   <b>{{ posted_time }}</b>  ago{% endblocktrans %}</span>
+                    <b>{{ posted_time }}</b>  ago{% endblocktrans %}</span>
             {% endif %}
 
             {% can_delete_comment comment user as can_delete %}
