@@ -1,0 +1,24 @@
+<div class="alert alert-block alert-{{ notice.level }}">
+    <a class="close pull-right" href="#">
+        <i class="icon-close"></i>
+    </a>
+
+    <h4>
+        <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
+        {{ notice.creator }}
+        {{ notice.verb }}
+        {% if notice.action_object %}
+            <a href=" {{ notice.action_object.get_absolute_url }}"> {{ notice.action_object }} </a>
+        {% endif %}
+    </h4>
+
+    <p>{{ notice.timesince }} ago</p>
+
+    <p>{{ notice.description|linebreaksbr }}</p>
+
+    <div class="notice-actions">
+        {% for action in notice.data.actions %}
+            <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+        {% endfor %}
+    </div>
+</div>

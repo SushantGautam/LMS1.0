@@ -2433,10 +2433,12 @@ def QuizMarkingCSV(request, quiz_pk):
     column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
     answer_name = "O/X"
     mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
+    color_column = []
     for i, mcquestion in enumerate(mcquestions):
         question_name = "MCQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " M" + str(i + 1))
+        color_column.append(answer_name + " M" + str(i + 1))
         mcq_full_score += mcquestion.score
         extra_row_1[question_name] = mcquestion.score
         extra_row_2[question_name] = mcquestion.get_correct_answer()
@@ -2444,6 +2446,7 @@ def QuizMarkingCSV(request, quiz_pk):
         question_name = "TFQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " T" + str(i + 1))
+        color_column.append(answer_name + " T" + str(i + 1))
         tfq_full_score += tfquestion.score
         extra_row_1[question_name] = tfquestion.score
         extra_row_2[question_name] = tfquestion.correct
@@ -2484,7 +2487,10 @@ def QuizMarkingCSV(request, quiz_pk):
         for i, mcquestion in enumerate(mcquestions):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
-            ans_value = Answer.objects.get(id=int(question_name_value)).content
+            if question_name_value:
+                ans_value = Answer.objects.get(id=int(question_name_value)).content
+            else:
+                ans_value = ''
             new_row[question_name] = ans_value
             if mcquestion.check_if_correct(question_name_value):
                 new_row[answer_name + " M" + str(i + 1)] = "✔"
@@ -2521,6 +2527,30 @@ def QuizMarkingCSV(request, quiz_pk):
         df = df.append(new_row, ignore_index=True)
     
     df = df.set_index('S.N.', drop=True)
+
+    # # Styling Dataframe
+    th_props = [
+        ('font-size', '11px'),
+        ('text-align', 'center'),
+        ('font-weight', 'bold'),
+        ('color', '#6d6d6d'),
+        ('background-color', 'yellow')
+    ]
+    styles = [
+        dict(selector="th", props=th_props)
+    ]
+
+    def color_negative_red(val):
+        color = 'white'
+        if val == '✔':
+            color = 'lightblue'
+        if val == '❌':
+            color = 'red'
+        return 'background-color: %s' % color
+
+    df = df.style.applymap(color_negative_red, subset=color_column).set_table_styles(styles)
+    # print(df)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
