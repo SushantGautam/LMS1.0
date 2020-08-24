@@ -2,7 +2,7 @@
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %} {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}">Survey</a>
+        <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">Survey</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
@@ -10,14 +10,11 @@
 
 </style>
 {% block content %}
-    {% include 'survey/common/alerts.html' %}
+
     {% include 'survey/common/new_detail.html' %}
 
 <br><br>
-    <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="float: left;">
-        <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
 
-    </a>
 {% endblock %}
 
 {% block javascript %}
@@ -25,7 +22,20 @@
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
 
+    <script>
+         let checkbox = $("input[class=custom-control-input]");
+         checkbox.addEventListener( 'change', function() {
+                    if(this.checked) {
+                        console.log("cannot false");
+                       $(this).prop('checked', false);
 
+                    } else {
+                        $(this).prop('checked', true);
+                         console.log("falsed");
+                    }
+            });
+
+    </script>
 
 
 
@@ -59,7 +69,7 @@
 
                 if (current_progress >= 100) {
                     clearInterval(interval);
-                   // location.reload();
+                   location.reload();
 
                 }
 

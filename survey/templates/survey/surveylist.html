@@ -8,8 +8,9 @@
 
 {% block breadcrumb %}
   <li class="breadcrumb-item active" aria-current="page">Survey</li>
-{% endblock %}
+  {% endblock %}
 {% block content %}
+   {% include 'survey/common/alerts.html' %}
   {% include 'survey/new_surveylist.html' %}
 {% endblock %}
 

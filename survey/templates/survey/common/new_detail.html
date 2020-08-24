@@ -16,10 +16,14 @@
         </div>
 
     </div>
+    <form>
     <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="chk" checked>
-        <label class="custom-control-label" for="customSwitch1">Live Survey</label>
+        <input type="checkbox" class="custom-control-input" id="chk" checked >
+        <label class="custom-control-label" for="chk">Live Survey</label>
     </div>
+
+    </form>
+
 </div>
 <div class="clearfix"></div>
 
@@ -80,11 +84,11 @@
                         <li class="surveyViewDates">
                             <h4>
                                 {% if object.get_status == "Expired" %}
-                                    <a class=" btn btn-danger text-white">Expired</a>
+                                    <a class=" btn btn-sm btn-danger text-white">Expired</a>
                                 {% elif object.get_status == "Active" %}
-                                    <a class=" btn btn-success text-white">Active</a>
+                                    <a class=" btn btn-sm btn-success text-white">Active</a>
                                 {% elif object.get_status == "Upcoming" %}
-                                    <a class="btn btn-warning text-white">Upcoming</a>
+                                    <a class="btn btn-sm btn-warning text-white">Upcoming</a>
                                 {% endif %}
                             </h4>
                         </li>
@@ -106,7 +110,7 @@
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
                             <input type="hidden" value="{{ object.pk }}" name="objectpk">
-                            <button type="submit" class="btn btn-danger btn-lg">
+                            <button type="submit" class="btn btn-danger btn-md">
                                 <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete Survey
                             </button>
                         </form>
@@ -118,14 +122,14 @@
                             {#              </button>#}
                         {% elif object.check_started %}
                             <!-- ##################### survey started already so only update basic info  ######################  -->
-                            <button type="button" class="btn btn-warning btn-lg text-white" id="update_survey_button_limited"
+                            <button type="button" class="btn btn-warning btn-md text-white" id="update_survey_button_limited"
                                     data-toggle="modal"
                                     data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
                                  &nbsp Edit Basic Info
                             </button>
                         {% else %}
                             <!-- ##################### else full update access  ##############################  -->
-                            <button type="button" class="btn btn-warning btn-lg" id="update_survey_button"
+                            <button type="button" class="btn btn-warning btn-md" id="update_survey_button"
                                     data-toggle="modal"
                                     data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
                                 Edit
@@ -138,7 +142,8 @@
                         </button>
 
                     {% endif %}
-                    <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"
+                <br>
+                    <button type="button" class="btn btn-info btn-md" id="retakeSurveyBtn" data-toggle="modal"
                             data-target="#survey_form_modal">  <i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;
                         Retake survey
                     </button>
@@ -367,7 +372,18 @@
 
                 </div>
             </div>
+
             <div class="col-md-3">
+                <div class="col-md-12">
+                    <br>
+                     <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers" style="float: right;">
+                            <button type="submit" class="btn btn-danger btn-md">
+                                <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete All Answers
+                            </button>
+
+                     </a>
+                    <br><br>
+                </div>
                 <div class="col-md-12">
 
                     <br><br><br>

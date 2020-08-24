@@ -90,7 +90,7 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
         context['search_q'] = self.request.GET.get('query', '')
-        context['category'] = self.request.GET.get('category_name', '').lower()
+        context['cat'] = self.request.GET.get('category_name', '')
         context['filter'] = self.request.GET.get('date_filter', '').lower()
 
         return context
@@ -111,12 +111,15 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
         if date_filter == "expire":
             qs = qs.filter(End_Date__lte=timezone.now())
 
+
+
+
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
             qs = qs.filter(Survey_Title__contains=query)
             if not len(qs):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+                messages.error(self.request, 'Sorry No Survey Found! Try with a different keyword')
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
