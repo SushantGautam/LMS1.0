@@ -37,7 +37,15 @@
 
     </script>
 
+<script>
 
+
+
+
+
+
+
+</script>
 
     <script>
         var current_progress = 0;
@@ -45,11 +53,14 @@
 
 
             var table_main = $('.SATable').DataTable({
+                colReorder: true
                 responsive: true,
                 dom: 'lBfrtip',
                 buttons: [],
                 "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
             });
+
+
 
             $('#survey_form_modal').on('hidden.bs.modal', function () {
                 location.reload();
@@ -381,7 +392,7 @@
                                 //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
                                 let a_r = canvas.width / canvas.height;
                                 var imgHeight = (doc.internal.pageSize.getHeight() * 0.6);
-                                var imgWidth = (imgHeight );
+                                var imgWidth = (imgHeight);
 
                                 //yPos += 5;
                                 //yPos = add_text(doc,
