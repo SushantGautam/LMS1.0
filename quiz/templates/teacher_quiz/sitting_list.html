@@ -36,10 +36,11 @@
                 dom: 'lBfrtip',
                 buttons: [
                     {
-                        text: '<i class="fa fa-paper-plane-o text-success"></i> Export to CSV',
-                        action: function ( e, dt, button, config ) {
-                            window.open('{% url "quiz_marking_csv" quiz.pk %}');
-                        }        
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
                     },
                     {
                         extend: 'print',

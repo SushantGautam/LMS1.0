@@ -1,13 +1,15 @@
 {% load static %}
 {% load i18n %}
 
-    
-
-
-
 
 <br>
-<h3>{% trans 'Marking List of Individual Quiz' %} ({{ quiz }}) </h3>
+<h3>{% trans 'Marking List of Individual Quiz' %} ({{ quiz }})
+    <a href="{% url 'quiz_marking_csv' quiz.pk %}" target="__blank">
+        <button class="btn btn=sm btn-info pull-right">
+            <i class="fa fa-download" aria-hidden="true"></i> Download Detail Result
+        </button>
+    </a>
+</h3>
 <hr><br>
 {% if sitting_list %}
 
