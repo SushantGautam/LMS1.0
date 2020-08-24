@@ -398,13 +398,13 @@
 
                             <a class="button-color-only1" href="#mcans_list_{{ quest.id }}"
                                data-toggle="collapse">
-                             <button class="btn btn-default btn-xs ripple">Options</button>  
+                             <button class="btn btn-light btn-sm ripple">Options</button>  
                             </a>
 
                         {% endif %}
 
                     </div>
-                    <div class="col-md-1 col-sm-2 col-xs-12 text-right">
+                    <div class="col-md-1 col-sm-2 col-xs-12 text-right" style="font-weight: 700;">
                         <input id="mcq_{{ quest.id }}_update_button" class=" btn btn-default btn-xs ripple " type="submit"
                                value="Edit" style="float: right" data-toggle="modal"
                                data-target="#question_form_popup">
@@ -428,7 +428,7 @@
                 {% for ans in quest.get_answers %}
                     <li class="quiz-answer-listing"></li>
                     {{ forloop.counter }} <span>)&nbsp;</span>
-                    {{ ans.content }}{% if ans.correct %}  <i class="fa fa-arrow-right"></i> <span class="btn btn-xs btn-success">Correct</span>
+                    {{ ans.content }}{% if ans.correct %}  <i class="fa fa-arrow-right"></i> <span class="btn btn-sm btn-success">Correct</span>
                     {% endif %}
                 {% endfor %}
             </ul>
