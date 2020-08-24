@@ -283,12 +283,11 @@ class MCQuestion(Question):
         verbose_name=_("Answer Order"))
 
     def check_if_correct(self, guess):
-        answer = Answer.objects.get(id=guess)
-
-        if answer.correct is True:
-            return True
-        else:
-            return False
+        if guess:
+            answer = Answer.objects.get(id=int(guess))
+            if answer.correct is True:
+                return True
+        return False
 
     def order_answers(self, queryset):
         if self.answer_order == 'content':
