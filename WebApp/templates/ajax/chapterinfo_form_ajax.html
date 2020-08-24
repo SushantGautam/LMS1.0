@@ -73,7 +73,7 @@
                 "Course_Code": $('#id_Course_Code').val(),
                 "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
                 "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
-
+                "is_commentable": $('#id_is_commentable').is(":checked"),
             },
             // get the form data
             type: $(this).attr('method'), // GET or POST

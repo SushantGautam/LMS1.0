@@ -22,6 +22,7 @@ class Comment(models.Model):
     edited = models.DateTimeField(auto_now=True)
 
     is_visible = models.BooleanField(default=True)
+    is_closed = models.BooleanField(default=False)
 
     objects = CommentManager()
 
