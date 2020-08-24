@@ -454,6 +454,10 @@ body{
     .video-box{
         width: 350px;
         left: 20%;
+
+    }
+    .video-call-option{
+        display: block!important;
     }
 
 }
@@ -462,6 +466,9 @@ body{
         width: 330px;
         left: 5%;
     }
+    .video-call-option{
+        display: block!important;
+    }
 
 }
 @media (min-width:400px) and (max-width:439px){
@@ -469,12 +476,19 @@ body{
         width: 330px;
         left: 1%;
     }
+    .video-call-option{
+        display: block!important;
+    }
+
 
 }
 @media (min-width:320px) and (max-width:439px){
     .video-box{
         width: 100%;
         left: 0%;
+    }
+    .video-call-option{
+        display: block!important;
     }
 
 }

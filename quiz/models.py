@@ -283,12 +283,11 @@ class MCQuestion(Question):
         verbose_name=_("Answer Order"))
 
     def check_if_correct(self, guess):
-        answer = Answer.objects.get(id=guess)
-
-        if answer.correct is True:
-            return True
-        else:
-            return False
+        if guess:
+            answer = Answer.objects.get(id=int(guess))
+            if answer.correct is True:
+                return True
+        return False
 
     def order_answers(self, queryset):
         if self.answer_order == 'content':
@@ -305,6 +304,10 @@ class MCQuestion(Question):
     def get_answers_list(self):
         return [(answer.id, answer.content) for answer in
                 self.order_answers(Answer.objects.filter(question=self))]
+
+    def get_correct_answer(self):
+        correct_ans = list(Answer.objects.filter(question=self, correct=True).values_list('content', flat=True))
+        return ", ".join( repr(e) for e in correct_ans)
 
     def answer_choice_to_string(self, guess):
         return Answer.objects.get(id=guess).content
