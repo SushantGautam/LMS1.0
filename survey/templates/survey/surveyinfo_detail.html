@@ -44,10 +44,6 @@
         $(document).ready(function () {
 
 
-
-
-
-
             var table_main = $('.SATable').DataTable({
                 colReorder: true
 
@@ -414,6 +410,10 @@
                             let hcanvas = document.createElement("CANVAS");
                             hcanvas.height = 150;
                             hcanvas.width = 400;
+
+
+
+
                             var hctx1 = hcanvas.getContext("2d");
                             let ini_y = 14;
                             hctx1.font = "14px Georgia";
@@ -442,6 +442,11 @@
                             doc.autoTable({
                                 html: source,
                                 didDrawPage: header,
+
+                                styles: {
+
+                                    halign: 'center'
+                                },
                                 margin: {top: margin_top, bottom: 25},
 
                             })
