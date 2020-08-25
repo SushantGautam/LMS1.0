@@ -2527,38 +2527,48 @@ def QuizMarkingCSV(request, quiz_pk):
         df = df.append(new_row, ignore_index=True)
     
     df = df.set_index('S.N.', drop=True)
-
-    # # Styling Dataframe
-    th_props = [
-        ('text-align', 'center'),
-        ('font-weight', 'bold'),
-        ('background-color', 'yellow')
-    ]
-    styles = [
-        dict(selector="th", props=th_props)
-    ]
-
+    
     def color_negative_red(val):
         color = 'white'
         if val == '✔':
-            color = 'lightblue'
+            color = '#00b0f0'
         if val == '❌':
             color = 'red'
         return 'background-color: %s' % color
 
-    df = df.style.applymap(color_negative_red, subset=color_column).set_table_styles(styles)
+    df = df.style.applymap(color_negative_red, subset=color_column)
     # print(df)
     # return HttpResponse("<h4>Student All Course Progress download</h4>")
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
         # df.index += 1
-        # df.index.name = 'S.N.'
+        df.index.name = 'S.N.'
         sheet_name = str(quiz.title)
         sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
         if len(sheet_name) > 28:
             sheet_name = sheet_name[:27] + ' ..'
-        df.to_excel(writer, sheet_name=sheet_name)
+        # df.to_excel(writer, sheet_name=sheet_name)
+
+        df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False)
+
+        # Get the xlsxwriter workbook and worksheet objects.
+        workbook  = writer.book
+        worksheet = writer.sheets[sheet_name]
+
+        # Add a header format.
+        header_format = workbook.add_format({
+            'bold': True,
+            'text_wrap': True,
+            'valign': 'center',
+            'fg_color': 'yellow',
+            'border': 1})
+
+        # Write the column headers with the defined format.
+        for col_num, value in enumerate(df.columns.values):
+            worksheet.write(0, col_num + 1, value, header_format)
+
+        # Close the Pandas Excel writer and output the Excel file.
         writer.save()
         response = HttpResponse(b.getvalue(),
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
