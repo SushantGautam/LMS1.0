@@ -178,9 +178,8 @@ def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
                     )
 
     # --------------------------------------------------------------------------------
-
-    if instance.Start_Date:
-        if instance.Start_Date >= timezone.now():
+    else:
+        if instance.Start_Date and instance.Start_Date >= timezone.now():
             if InningInfo.objects.filter(
                     Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
                 notify.send(
@@ -196,17 +195,17 @@ def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
                     description=student_description,
                     action_object=instance,
                 )
-    else:
-        notify.send(
-            start_notification_date=timezone.now(),
-            end_notification_date=None,
-            sender=request.user,
-            target_audience=InningInfo.objects.filter(
-                Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-            verb=verb,
-            description=student_description,
-            action_object=instance,
-        )
+        else:
+            notify.send(
+                start_notification_date=timezone.now(),
+                end_notification_date=None,
+                sender=request.user,
+                target_audience=InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                verb=verb,
+                description=student_description,
+                action_object=instance,
+            )
 
 
 post_save.connect(ChapterInfoCreate_handler, sender=ChapterInfo)
