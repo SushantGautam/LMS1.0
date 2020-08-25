@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from Notifications.models import Notification
 from Notifications.signals import notify
-from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup
+from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup, AssignmentInfo
 
 
 class NotificationAction:
@@ -37,7 +37,7 @@ class NotificationAction:
             start_notification_date=(
                     self.start_date_field_name - timedelta(hours=1, minutes=0)) if self.start_date_field_name else None,
             end_notification_date=(
-                    self.instance.End_Date - timedelta(hours=1, minutes=0)) if self.end_date_field_name else None,
+                    self.end_date_field_name - timedelta(hours=1, minutes=0)) if self.end_date_field_name else None,
         )
 
 
@@ -278,177 +278,181 @@ def ChapterInfoDelete_handler(sender, instance, **kwargs):
 
 post_delete.connect(ChapterInfoDelete_handler, sender=ChapterInfo)
 
-# def AssignmentInfoCreate_handler(sender, instance, created, **kwargs):
-#     import inspect
-#     for frame_record in inspect.stack():
-#         if frame_record[3] == 'get_response':
-#             request = frame_record[0].f_locals['request']
-#             break
-#     else:
-#         request = None
-#
-#     if isinstance(instance.Assignment_Start, str) or isinstance(instance.Assignment_Deadline, str):
-#         if isinstance(instance.Assignment_Start, str):
-#             assignment_start = datetime.strptime(instance.Assignment_Start, "%Y-%m-%dT%H:%M:%S.%fZ")
-#         if isinstance(instance.Assignment_Deadline, str):
-#             assignment_deadline = datetime.strptime(instance.Assignment_Deadline, "%Y-%m-%dT%H:%M:%S.%fZ")
-#     else:
-#         assignment_start = instance.Assignment_Start
-#         assignment_deadline = instance.Assignment_Deadline
-#
-#     if created:
-#         verb = "created"
-#         description = '{} created Assignment {} in chapter {}'.format(request.user, instance.Assignment_Topic,
-#                                                                       instance.Course_Code.Course_Name)
-#     else:
-#         verb = "updated"
-#         description = '{} updated Assignment {} in chapter {}'.format(request.user, instance.Assignment_Topic,
-#                                                                       instance.Chapter_Code.Chapter_Name)
-#
-#     notify.send(
-#         sender=request.user,
-#         verb=verb,
-#         recipient=MemberInfo.objects.filter(Center_Code=instance.Course_Code.Center_Code, Use_Flag=True,
-#                                             Is_CenterAdmin=True),
-#         description=description,
-#         action_object=instance,
-#     )
-#
-#     '''
-#         Check if the chapter belonging to course is associated with any innings.
-#         If yes, add Session to notification table (target_audience).
-#         When the Notification start date is less than current time, send notification to all students in that session
-#         and delete the current object holding session information.
-#     '''
-#
-#     if not created:
-#         # Update Notifications that have not been sent to receipents if instance is update
-#         NotificationAction(instance, instance.__class__, instance.id, instance.Assignment_Start,
-#                            instance.Assignment_Deadline).update()
-#
-#         '''
-#             When Editing the chapter, if the start date is changed, and start date is set to future date, then create a
-#             future notification with target audience.
-#         '''
-#         if assignment_start:
-#             if assignment_start >= datetime.now():
-#                 if not Notification.objects.filter(is_sent=False, start_notification_date__gt=timezone.now(),
-#                                                    action_object_content_type=ContentType.objects.get_for_model(
-#                                                        instance.__class__),
-#                                                    action_object_object_id=instance.id).exists():
-#                     notify.send(
-#                         start_notification_date=(
-#                                 assignment_start - timedelta(hours=1,
-#                                                                       minutes=0)) if assignment_start else timezone.now(),
-#                         end_notification_date=(
-#                                 assignment_deadline - timedelta(hours=1,
-#                                                                          minutes=0)) if assignment_deadline else None,
-#                         sender=request.user,
-#                         target_audience=InningInfo.objects.filter(
-#                             Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-#                         verb=verb,
-#                         description=description,
-#                         action_object=instance,
-#                     )
-#
-#     # --------------------------------------------------------------------------------
-#
-#     if assignment_start:
-#         print(assignment_start, datetime.now(), assignment_start>=datetime.now())
-#         if assignment_start >= datetime.now():
-#             if InningInfo.objects.filter(
-#                     Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
-#                 notify.send(
-#                     start_notification_date=(
-#                             assignment_start - timedelta(hours=1,
-#                                                                   minutes=0)) if assignment_start else timezone.now(),
-#                     end_notification_date=(
-#                             assignment_deadline - timedelta(hours=1,
-#                                                                      minutes=0)) if assignment_deadline else None,
-#                     sender=request.user,
-#                     target_audience=InningInfo.objects.filter(
-#                         Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-#                     verb=verb,
-#                     description=description,
-#                     action_object=instance,
-#                 )
-#     else:
-#         notify.send(
-#             start_notification_date=timezone.now(),
-#             end_notification_date=None,
-#             sender=request.user,
-#             target_audience=InningInfo.objects.filter(
-#                 Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-#             verb=verb,
-#             description=description,
-#             action_object=instance,
-#         )
-#
-#
-# post_save.connect(AssignmentInfoCreate_handler, sender=AssignmentInfo)
-#
-#
-# def AssignmentInfoDelete_handler(sender, instance, **kwargs):
-#     import inspect
-#     for frame_record in inspect.stack():
-#         if frame_record[3] == 'get_response':
-#             request = frame_record[0].f_locals['request']
-#             break
-#     else:
-#         request = None
-#
-#     verb = 'deleted'
-#
-#     notify.send(
-#         sender=request.user,
-#         verb=verb,
-#         recipient=MemberInfo.objects.filter(Center_Code=instance.Course_Code.Center_Code, Use_Flag=True,
-#                                             Is_CenterAdmin=True),
-#         description='{} deleted Assignment {} in Chapter {}'.format(request.user, instance.Assignment_Topic,
-#                                                                     instance.Chapter_Code.Chapter_Name),
-#         action_object=instance,
-#     )
-#
-#     '''
-#         For Students,
-#
-#         Check if the chapter belonging to course is associated with any innings.
-#         If yes, add Session to notification table (target_audience).
-#         When the Notification start date is less than current time, send notification to all students in that session
-#         and delete the current object holding session information.
-#     '''
-#
-#     # Delete Notifications that have not been sent to receipents if instance is deleted
-#     NotificationAction(instance, instance.__class__, instance.id, instance.Assignment_Start, instance.Assignment_Deadline).delete()
-#
-#     # --------------------------------------------------------------------------------
-#
-#     # If instance has start date and start date has been reached, then send delete notifications, except pass.
-#     if instance.Assignment_Start:
-#         if instance.Assignment_Start <= timezone.now():
-#             if InningInfo.objects.filter(
-#                     Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
-#                 notify.send(
-#                     sender=request.user,
-#                     target_audience=InningInfo.objects.filter(
-#                         Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-#                     verb=verb,
-#                     description='{} deleted Assignment {} in Chapter {}'.format(request.user, instance.Assignment_Topic,
-#                                                                                 instance.Chapter_Code.Chapter_Name),
-#                     action_object=instance,
-#                 )
-#     else:
-#         if InningInfo.objects.filter(
-#                 Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
-#             notify.send(
-#                 sender=request.user,
-#                 target_audience=InningInfo.objects.filter(
-#                     Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
-#                 verb=verb,
-#                 description='{} deleted Assignment {} in Chapter {}'.format(request.user, instance.Assignment_Topic,
-#                                                                             instance.Chapter_Code.Chapter_Name),
-#                 action_object=instance,
-#             )
-#
-#
-# post_delete.connect(AssignmentInfoDelete_handler, sender=AssignmentInfo)
+
+def AssignmentInfoCreate_handler(sender, instance, created, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if instance.Assignment_Start:
+        student_description = 'Assignment {} will start from {} today ({})'.format(instance.Assignment_Topic,
+                                                                                   datetime.strftime(
+                                                                                       instance.Assignment_Start,
+                                                                                       "%H:%M"),
+                                                                                   datetime.strftime(
+                                                                                       instance.Assignment_Start,
+                                                                                       "%d-%m-%Y"))
+    else:
+        student_description = 'Assignment {} will start from {} today ({})'.format(instance.Assignment_Topic,
+                                                                                   datetime.strftime(datetime.now(),
+                                                                                                     "%H:%M"),
+                                                                                   datetime.strftime(datetime.now(),
+                                                                                                     "%d-%m-%Y"))
+    if created:
+        verb = "created"
+        description = '{} created Assignment {} in chapter {}'.format(request.user, instance.Assignment_Topic,
+                                                                      instance.Course_Code.Course_Name)
+    else:
+        verb = "updated"
+        description = '{} updated Assignment {} in chapter {}'.format(request.user, instance.Assignment_Topic,
+                                                                      instance.Chapter_Code.Chapter_Name)
+
+    # notify.send(
+    #     sender=request.user,
+    #     verb=verb,
+    #     recipient=MemberInfo.objects.filter(Center_Code=instance.Course_Code.Center_Code, Use_Flag=True,
+    #                                         Is_CenterAdmin=True),
+    #     description=description,
+    #     action_object=instance,
+    # )
+
+    '''
+        Check if the assignment belonging to course is associated with any innings.
+        If yes, add Session to notification table (target_audience).
+        When the Notification start date is less than current time, send notification to all students in that session
+        and delete the current object holding session information.
+    '''
+
+    if not created:
+        # Update Notifications that have not been sent to receipents if instance is update
+        NotificationAction(instance, instance.__class__, instance.id, instance.Assignment_Start,
+                           instance.Assignment_Deadline).update()
+
+        '''
+            When Editing the chapter, if the start date is changed, and start date is set to future date, then create a 
+            future notification with target audience.
+        '''
+        if instance.Assignment_Start and instance.Assignment_Start >= timezone.now():
+            if not Notification.objects.filter(is_sent=False, start_notification_date__gt=timezone.now(),
+                                               action_object_content_type=ContentType.objects.get_for_model(
+                                                   instance.__class__),
+                                               action_object_object_id=instance.id).exists():
+                notify.send(
+                    start_notification_date=(
+                            instance.Assignment_Start - timedelta(hours=1,
+                                                                  minutes=0)) if instance.Assignment_Start else timezone.now(),
+                    end_notification_date=(
+                            instance.Assignment_Deadline - timedelta(hours=1,
+                                                                     minutes=0)) if instance.Assignment_Deadline else None,
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                    verb=verb,
+                    description=student_description,
+                    action_object=instance,
+                )
+
+    # --------------------------------------------------------------------------------
+    else:
+        if instance.Assignment_Start and instance.Assignment_Start >= timezone.now():
+            if InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+                notify.send(
+                    start_notification_date=(
+                            instance.Assignment_Start - timedelta(hours=1,
+                                                                  minutes=0)) if instance.Assignment_Start else timezone.now(),
+                    end_notification_date=(
+                            instance.Assignment_Deadline - timedelta(hours=1,
+                                                                     minutes=0)) if instance.Assignment_Deadline else None,
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                    verb=verb,
+                    description=student_description,
+                    action_object=instance,
+                )
+        else:
+            notify.send(
+                start_notification_date=timezone.now(),
+                end_notification_date=None,
+                sender=request.user,
+                target_audience=InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                verb=verb,
+                description=student_description,
+                action_object=instance,
+            )
+
+
+post_save.connect(AssignmentInfoCreate_handler, sender=AssignmentInfo)
+
+
+def AssignmentInfoDelete_handler(sender, instance, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    verb = 'deleted'
+
+    notify.send(
+        sender=request.user,
+        verb=verb,
+        recipient=MemberInfo.objects.filter(Center_Code=instance.Course_Code.Center_Code, Use_Flag=True,
+                                            Is_CenterAdmin=True),
+        description='{} deleted Assignment {} in Chapter {}'.format(request.user, instance.Assignment_Topic,
+                                                                    instance.Chapter_Code.Chapter_Name),
+        action_object=instance,
+    )
+
+    '''
+        For Students,
+
+        Check if the chapter belonging to course is associated with any innings.
+        If yes, add Session to notification table (target_audience).
+        When the Notification start date is less than current time, send notification to all students in that session
+        and delete the current object holding session information.
+    '''
+
+    # Delete Notifications that have not been sent to receipents if instance is deleted
+    NotificationAction(instance, instance.__class__, instance.id, instance.Assignment_Start,
+                       instance.Assignment_Deadline).delete()
+
+    # --------------------------------------------------------------------------------
+
+    # If instance has start date and start date has been reached, then send delete notifications, except pass.
+    if instance.Assignment_Start:
+        if instance.Assignment_Start <= timezone.now():
+            if InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+                notify.send(
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                    verb=verb,
+                    description='{} deleted Assignment {} in Chapter {}'.format(request.user, instance.Assignment_Topic,
+                                                                                instance.Chapter_Code.Chapter_Name),
+                    action_object=instance,
+                )
+    else:
+        if InningInfo.objects.filter(
+                Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)).exists():
+            notify.send(
+                sender=request.user,
+                target_audience=InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.Course_Code.pk)),
+                verb=verb,
+                description='{} deleted Assignment {} in Chapter {}'.format(request.user, instance.Assignment_Topic,
+                                                                            instance.Chapter_Code.Chapter_Name),
+                action_object=instance,
+            )
+
+
+post_delete.connect(AssignmentInfoDelete_handler, sender=AssignmentInfo)
