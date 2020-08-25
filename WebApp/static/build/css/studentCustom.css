@@ -293,7 +293,16 @@ float:right;
 .data_table_head{
 background:#5c6bc0;
 text-align:center;
+
 }
+
+
+.sn, .fn, .ds{
+
+width:5px;
+
+}
+
 
 
 .table td{

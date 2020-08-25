@@ -17,6 +17,14 @@
 
 {% block javascript %}
 
+
+<script>
+
+
+</script>
+
+
+
   <script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
   {% for category in categories %}
     <script>
@@ -58,6 +66,32 @@
   <script>
 
       $(document).ready(function () {
+
+
+         // var x = document.forms["search_survey"]["query"].value;
+         // if (x == "") {
+         //   $("#search_survey").click(function(event){
+         //     event.preventDefault();
+         //    }
+         //   ,false);
+         //   }
+
+
+
+        $('#search_survey').submit(function(){
+        $('#search_survey input[type=text]').each(function(n,element){
+            if ($(element).val()=='') {
+                event.preventDefault();
+             // alert('Please Enter Survey Title In order to Search ');
+             // ($element).addClass("error");
+              return false;
+            }
+          });
+          return true;
+        });
+
+
+
 
            $('.repeater').repeater();
 
