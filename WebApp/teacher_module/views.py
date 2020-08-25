@@ -2530,10 +2530,8 @@ def QuizMarkingCSV(request, quiz_pk):
 
     # # Styling Dataframe
     th_props = [
-        ('font-size', '11px'),
         ('text-align', 'center'),
         ('font-weight', 'bold'),
-        ('color', '#6d6d6d'),
         ('background-color', 'yellow')
     ]
     styles = [
