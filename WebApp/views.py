@@ -672,7 +672,7 @@ def ImportCsvFile(request, *args, **kwargs):
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
 
-        df = pd.read_csv(path, encoding='utf-8')
+        df = pd.read_csv(path, encoding='utf-8', dtype={'(*)Username': 'str'})
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
