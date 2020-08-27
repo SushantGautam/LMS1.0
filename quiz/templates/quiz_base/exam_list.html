@@ -64,13 +64,13 @@
         <form action="{% url 'teacher_activate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
           <input type="hidden" value="{{ request.path }}" name="redirect-url">
           <input type="button" value="Take Exam" style="float: right;cursor:pointer"
-            class="btn btn-success confirm-activate">
+            class="btn btn-success btn-sm confirm-activate">
         </form>
         {% else %}
         <form action="{% url 'teacher_deactivate_quiz' pk=object.pk %}" method="post">{% csrf_token %}
           <input type="hidden" value="{{ request.path }}" name="redirect-url">
           <input type="button" value="Stop Exam" style="float: right;cursor:pointer"
-            class="btn btn-danger confirm-deactivate">
+            class="btn btn-danger btn-sm confirm-deactivate">
         </form>
         {% endif %}
         {% endif %}
