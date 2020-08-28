@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView, UpdateView
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 
 from WebApp.models import MemberInfo
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
@@ -57,9 +57,8 @@ class EventListView(ListView):
         return context
 
 
-
-
-
-
-
-
+class EventDeleteView(DeleteView):
+    model = CalendarEvent
+    form_class = CalendarEventUpdateForm
+    template_name = 'event_calendar/index.html'
+    success_url = reverse_lazy('event_calendar')

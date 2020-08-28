@@ -234,18 +234,53 @@
     <div class="modal fade" id="viewEventModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <span class="event-icon mr-2"></span>
-                        <span class="event-title">Modal Title</span>
-                    </h5>
+                <div class="modal-header" style="justify-content:flex-end;">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="ti-close"></i>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="event-body"></div>
+                <div class="modal-header" style="justify-content:center;">
+                    <h5 class=" modal-title">
+                        <span class="event-icon mr-2 " ></span>
+                        <span class="event-title " >Modal Title</span>
+                    </h5>
+
                 </div>
+                <div class="modal-body" style="text-align:center">
+
+                    <div class="event-type "> </div>
+                    <br>
+                    <div class="all_day "> </div>
+                    <br>
+                    <div class="start "> </div>
+                    <br>
+                    <div class="end "> </div>
+                    <br>
+                    <div class="participant "> </div>
+                    <br>
+
+                    <div class="event-body "></div>
+                    <br>
+
+                    <button class="btn btn-sm btn-warning text-white" name="update"  style="float:left;" id="update_event" data-toggle="modal"
+                            data-target="#createEventModal"><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update</button>
+
+
+
+
+                    <form method="POST" action=""
+                              onsubmit="return confirm('Are you sure you want to delete?');">
+                            {% csrf_token %}
+
+                            <button type="submit" class="btn btn-danger btn-sm" style="float:right;">
+                                <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete
+                            </button>
+                        </form>
+
+               </div>
+
+
+
             </div>
         </div>
     </div>
@@ -256,6 +291,7 @@
 
     <!-- Datepicker Example -->
     <script src="{% static 'js/examples/datepicker.js' %}"></script>
+    <script src="{% static 'js/common.js' %}"></script>
 
     <!-- Fullcalendar -->
     <script src="{% static 'vendors/fullcalendar/moment.min.js' %}"></script>
@@ -283,28 +319,32 @@
                     {
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
+                        type: '{{ event.get_event_type_display }}',
                         start: '{{ event.date_start.isoformat }}',
                         end: '{{ event.date_end.isoformat }}',
+                        part: '{{event.get_participation_type_display}}',
                         //icon: "user-o",
                         description: `{{ event.description }}`,
                         {% if event.is_all_day %}
                             allDay: true,
+
                         {% else %}
                             allDay: false,
+
                         {% endif %}
                         {% if event.event_type == "PR" %}
                             icon: "building-o",
-                            className: 'bg-info',
+                            className: 'btn btn-info',
                         {% elif event.event_type == "ME" %}
                             icon: "user-o",
-                            className: 'bg-danger',
+                            className: 'btn btn-danger',
                         {% elif event.event_type == "HO" %}
                             icon: "car",
-                            className: 'bg-success',
+                            className: 'btn btn-success',
                         {% else %}
                             // default values
                             icon: "diamond",
-                            className: 'bg-info',
+                            className: 'btn btn-info',
                         {% endif %}
 
                     },
@@ -359,9 +399,18 @@
                 },
                 eventClick: function (event, jsEvent, view) {
                     var modal = $('#viewEventModal');
-                    modal.find('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
+                    modal.find('.modal-title').addClass(event.className);
+                    modal.find('.event-icon').html("<i class=' fa fa-" + event.icon + " '></i>");
                     modal.find('.event-title').html(event.title);
-                    modal.find('.event-body').html(event.description);
+                    modal.find('.event-type').html("<h6> Event Type: &nbsp </h6>"+  event.type);
+                    if (event.allDay)
+                    { modal.find('.all_day').html("<label for='all_day'> All Day Event :</label> <br> <input type='checkbox' id='all_day' checked >");
+                    }
+                   // modal.find('.all_day').html("<h6> All Day Event : &nbsp </h6>"+  event.allDay);
+                    modal.find('.start').html("<h6> Start At: &nbsp </h6>"+  DateConvert(event.start));
+                    modal.find('.end').html("<h6> End At: &nbsp </h6>"+  DateConvert(event.end));
+                    modal.find('.participant').html("<h6> Participants: &nbsp </h6>"+  event.part);
+                    modal.find('.event-body').html("<h6>Description: &nbsp </h6>" +  event.description);
                     modal.modal();
                 },
                 eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
@@ -452,7 +501,6 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     title: event.title,
                     description: event.description,
-                    event_type: event_type,
                     date_start: start_date,
                     date_end: end_date,
                     is_all_day: true,
@@ -487,7 +535,7 @@
         function iso_to_django(date_obj) {
             let mo = (date_obj.getUTCMonth() + 1).toString();       // month starts form zero
             let y = date_obj.getUTCFullYear().toString();
-            let d = date_obj.getUTCDate().toString();
+            let d = (date_obj.getUTCDate()+1).toString();
             let h = date_obj.getUTCHours().toString();
             let mi = date_obj.getUTCMinutes().toString();
             return y + "-" + mo + "-" + d + " " + h + ":" + mi;
