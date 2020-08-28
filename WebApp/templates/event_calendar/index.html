@@ -262,20 +262,23 @@
                     <div class="event-body "></div>
                     <br>
 
+
+
                     <button class="btn btn-sm btn-warning text-white" name="update"  style="float:left;" id="update_event" data-toggle="modal"
                             data-target="#createEventModal"><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update</button>
 
 
 
 
-                    <form method="POST" action=""
+                    <form method="POST" class="delete_event"  action=""
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
 
                             <button type="submit" class="btn btn-danger btn-sm" style="float:right;">
                                 <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete
                             </button>
-                        </form>
+                    </form>
+
 
                </div>
 
@@ -411,6 +414,8 @@
                     modal.find('.end').html("<h6> End At: &nbsp </h6>"+  DateConvert(event.end));
                     modal.find('.participant').html("<h6> Participants: &nbsp </h6>"+  event.part);
                     modal.find('.event-body').html("<h6>Description: &nbsp </h6>" +  event.description);
+                    let event_id = event.id.replace("event_id_", "");
+                    modal.find('.delete_event').attr('action', '{% url "event_calendar_delete" 12345 %}'.replace("12345", event_id));
                     modal.modal();
                 },
                 eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
