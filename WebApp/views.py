@@ -1917,57 +1917,32 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     form_class = AssignmentInfoForm
     template_name = 'ajax/assignmentinfo_form_ajax.html'
 
-    def post(self, request, *args, **kwargs):
-        Obj = AssignmentInfo()
-        Obj.Assignment_Topic = request.POST["Assignment_Topic"]
-        Obj.Assignment_Start = request.POST["Assignment_Start"]
-        Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
-        Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-        Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-
-        if Obj.Assignment_Start and Obj.Assignment_Deadline:
-            if (Obj.Assignment_Start > Obj.Assignment_Deadline):
-                return JsonResponse(
-                    data={'Message': 'Assignment Deadline must be greater than start date.'}, status=500
-                )
-        Obj.save()
-
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.save()
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
-class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+
+class AssignmentInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     model = AssignmentInfo
+    context_object_name = 'Object'
+    form_class = AssignmentInfoForm
+    template_name = 'ajax/assignmentinfo_form_ajax.html'
 
-    def post(self, request, *args, **kwargs):
-        try:
-            Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
-            Obj.Assignment_Topic = request.POST["Assignment_Topic"]
-            Obj.Assignment_Start = request.POST["Assignment_Start"]
-            Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
-            Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-            Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-            Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
-            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-            if Obj.Assignment_Start and Obj.Assignment_Deadline:
-                if (Obj.Assignment_Start > Obj.Assignment_Deadline):
-                    return JsonResponse(
-                        data={'Message': 'Deadline date must be greater than start date'},
-                        status=500
-                    )
-            Obj.save()
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.save()
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
-            return JsonResponse(
-                data={'Message': 'Success'}
-            )
-
-        except:
-            return JsonResponse(
-                data={'Message': 'Fail'}
-            )
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
 
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):

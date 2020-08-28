@@ -5,10 +5,10 @@
 
     <h4>
         <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
-        {{ notice.creator }}
-        {{ notice.verb }}
         {% if notice.action_object %}
-            <a href=" {{ notice.action_object.get_absolute_url }}"> {{ notice.action_object }} </a>
+            {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}
+            {{ notice.action_object }}
+            {#            </a>#}
         {% endif %}
     </h4>
 

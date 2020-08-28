@@ -26,7 +26,7 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Assignment_Start" class="form-control"
-                       id="id_Assignment_Start" value="{{ Object.Assignment_Start }}" max="9999-12-31">
+                       id="id_Assignment_Start" value="{{ Object.Assignment_Start|date:'c' }}" max="9999-12-31">
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Assignment_Deadline" class="form-control"
-                       id="id_Assignment_Deadline" value="{{ Object.Assignment_Deadline }}" max="9999-12-31">
+                       id="id_Assignment_Deadline" value="{{ Object.Assignment_Deadline|date:'c' }}" max="9999-12-31">
             </div>
         </div>
     </div>
@@ -60,6 +60,11 @@
 
 </form>
 <script>
+    document.getElementById('id_Assignment_Start').value = new Date(document.getElementById('id_Assignment_Start').value).toLocaleString("en-US")
+    document.getElementById('id_Assignment_Deadline').value = new Date(document.getElementById('id_Assignment_Deadline').value).toLocaleString("en-US")
+    $('#id_Assignment_Deadline').datetimepicker();
+    $('#id_Assignment_Start').datetimepicker();
+
     $(document).ready(function () {
         $('#id_Assignment_Deadline').on('dp.change', function (event) {
             const result = document.querySelector('.result');
@@ -82,11 +87,12 @@
     $(".se-pre-con-ajax").fadeOut("fast");
     $('#id_Assignment_Deadline').datetimepicker();
     $('#id_Assignment_Start').datetimepicker();
+
     $("#ajaxassignmentinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $.ajax({
-            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+            url: $(this).attr('action'),  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic').val(),
@@ -105,8 +111,8 @@
                 location.reload()
             },
             error: function (err) {
-                console.log('Error in posting assignment create form', err.responseJSON)
-                $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
+                console.log('Error in posting assignment create form', err.responseJSON.errors.__all__[0])
+                $('.form-errors').empty().append(err.responseJSON.errors.__all__[0]).css('display', 'block')
             }
 
         });
