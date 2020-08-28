@@ -113,7 +113,7 @@ def ProfileView(request):
 
 
 class login(LoginView):
-    redirect_authenticated_user=True
+    redirect_authenticated_user = True
     template_name = 'registration/login.html'
 
     def form_valid(self, form):
@@ -124,7 +124,6 @@ class login(LoginView):
                     return JsonResponse({'msg': 'Account already login in another place'})
 
         return super().form_valid(form)
-
 
 
 # def login(request, template_name='registration/login.html',
@@ -461,6 +460,7 @@ class DepartmentInfoCreateView(CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+
 class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = DepartmentInfo
     form_class = DepartmentInfoForm
@@ -476,6 +476,7 @@ class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
 
 class DepartmentInfoDetailView(DetailView):
     model = DepartmentInfo
@@ -609,6 +610,7 @@ class MemberInfoCreateView(CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+
 def validate_username(request):
     username = request.GET.get('username', None)
     data = {
@@ -670,7 +672,7 @@ def ImportCsvFile(request, *args, **kwargs):
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
 
-        df = pd.read_csv(path, encoding='utf-8')
+        df = pd.read_csv(path, encoding='utf-8', dtype={'(*)Username': 'str'})
         # Drop empty row of excel csv file
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
@@ -693,8 +695,15 @@ def ImportCsvFile(request, *args, **kwargs):
                     birth_date = df.iloc[i]['Birthdate']
                     student = df.iloc[i]['(*)Student(0/1)']
                     teacher = df.iloc[i]['(*)Teacher(0/1)']
+                    department = str(df.iloc[i]['Department'])
 
                     # Validation
+                    if department is not None and department != '-':
+                        if not DepartmentInfo.objects.filter(Department_Name__iexact=department,
+                                                             Center_Code=request.user.Center_Code).exists():
+                            error = "Department Name <strong>" + department + "</strong> does not exists."
+                            raise Exception
+
                     if not username:
                         error = "Username is required"
                         raise Exception
@@ -766,6 +775,8 @@ def ImportCsvFile(request, *args, **kwargs):
                     obj.Is_Teacher = teacher
                     obj.Is_Student = student
                     obj.Center_Code = request.user.Center_Code
+                    obj.Member_Department = DepartmentInfo.objects.get(Department_Name__iexact=department,
+                                                                       Center_Code=request.user.Center_Code)
                     obj.Member_Gender = gender
                     obj.set_password('00000')
                     obj.save()
@@ -1071,6 +1082,7 @@ class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
 
 class CourseInfoListView(ListView):
     model = CourseInfo
+
     # paginate_by = 6
 
     def dispatch(self, request, *args, **kwargs):
@@ -3913,7 +3925,8 @@ def CourseProgressDownload(request, coursepk, sessionpk):
     score_dict = dict()
     for chapter in chapters:
         chapter_name = chapter.Chapter_Name
-        column_names = (column_names + ((chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
+        column_names = (column_names + (
+            (chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
         quizes = Quiz.objects.filter(chapter_code=chapter)
         quiz_total_score = 0.0
         for quiz in quizes:
@@ -3922,39 +3935,40 @@ def CourseProgressDownload(request, coursepk, sessionpk):
         assignment_total_score = 0.0
         for assignemnt in assignments:
             assignment_total_score += assignemnt.get_total_score
-        quiz_total_score = decimal.Decimal(round(quiz_total_score,2))
-        assignment_total_score = decimal.Decimal(round(assignment_total_score,2))
-        score_dict[chapter.pk] = [quiz_total_score,assignment_total_score]
+        quiz_total_score = decimal.Decimal(round(quiz_total_score, 2))
+        assignment_total_score = decimal.Decimal(round(assignment_total_score, 2))
+        score_dict[chapter.pk] = [quiz_total_score, assignment_total_score]
     cols = pd.MultiIndex.from_tuples(column_names)
     df = pd.DataFrame(columns=column_names)
-
 
     for i, student in enumerate(students):
         new_row = {("Student Name", "Full Name"): student.get_full_name(), ("Username", "User ID"): student.username}
         for chapter in chapters:
             chapter_name = chapter.Chapter_Name
-            
+
             student_quiz_scores = []
             student_quiz_score = 0.0
             quiz_sittings = Sitting.objects.filter(quiz__chapter_code=chapter, user=student, complete=True)
             for quiz_sitting in quiz_sittings:
                 student_quiz_scores.append(quiz_sitting.get_score_correct)
             student_quiz_score = max(student_quiz_scores) if student_quiz_scores else 0
-            student_quiz_score = decimal.Decimal(round(student_quiz_score,2))
+            student_quiz_score = decimal.Decimal(round(student_quiz_score, 2))
 
             student_assignment_score = AssignAnswerInfo.objects.filter(
-                                            Question_Code__Assignment_Code__Chapter_Code=chapter, Student_Code=student).aggregate(
-                                            Sum('Assignment_Score'))['Assignment_Score__sum']
+                Question_Code__Assignment_Code__Chapter_Code=chapter, Student_Code=student).aggregate(
+                Sum('Assignment_Score'))['Assignment_Score__sum']
             if student_assignment_score:
-                student_assignment_score = decimal.Decimal(round(student_assignment_score,2))
+                student_assignment_score = decimal.Decimal(round(student_assignment_score, 2))
             else:
                 student_assignment_score = 0
 
             data = get_study_time(course.pk, chapter, student)
             progress = data['progress']
 
-            new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(student_quiz_score) + ')'
-            new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(student_assignment_score) + ')'
+            new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(
+                student_quiz_score) + ')'
+            new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(
+                student_assignment_score) + ')'
             new_row[(chapter_name, "Progress Complete")] = str(progress)
 
         df = df.append(new_row, ignore_index=True)
