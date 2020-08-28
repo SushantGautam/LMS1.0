@@ -62,3 +62,15 @@ class EventDeleteView(DeleteView):
     form_class = CalendarEventUpdateForm
     template_name = 'event_calendar/index.html'
     success_url = reverse_lazy('event_calendar')
+
+
+class EventUpdatedView(UpdateView):
+    model = CalendarEvent
+    template_name = 'event_calendar/index.html'
+    form_class = CalendarEventForm
+    success_url = reverse_lazy('event_calendar')
+
+    def form_invalid(self, form):
+        print(form.errors)
+        raise Exception
+        return super().form_invalid(form)

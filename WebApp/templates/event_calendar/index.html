@@ -529,8 +529,8 @@
                     location.reload();
 
                     })
-                    let event_id = event.id.replace("event_id_", "");
-                    modal.find("#calendar_event_form").attr('action', '{% url "event_calendar_update" 12345 %}'.replace("12345", event_id));
+
+                    modal.find("#calendar_event_form").attr('action', "{% url 'event_calendar_updated' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")));
 
 
                     modal.modal();
