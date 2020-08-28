@@ -42,6 +42,10 @@ def mark_all_as_read(request):
 
     if _next:
         return redirect(_next)
+
+    if request.is_ajax():
+        return JsonResponse({'message': 'success'}, status=200)
+
     return redirect('notifications:unread')
 
 

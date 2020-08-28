@@ -1,0 +1,26 @@
+<a href="javascript:void(0)" id="markreadAll">
+    Mark All as read
+</a>
+
+<script>
+    // Mark All as read
+
+    var markAllReadurl = '/inbox/notifications/mark-all-as-read/';
+
+    $(document).ready(function () {
+        $('#markreadAll').on('click', function (e) {
+            e.preventDefault()
+            $.ajax({
+                url: markAllReadurl,
+                method: 'GET',
+                success: function (data) {
+                    $('#notification_count').text('').text(data.unread_count);
+                    getNotifications();
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        })
+    })
+</script>
