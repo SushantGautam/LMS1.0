@@ -142,30 +142,32 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Participants Type</label>
                             <div class="col-sm-9">
-                                <div class="mt-2" id="participant-type">
+                                <div class="mt-2" >
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_participant_type_1" name="participant_type"
-                                               class="custom-control-input" value="AL">
-                                        <label class="custom-control-label"
-                                               for="id_participant_type_1">All Users</label>
+                                        <input type="radio" id="id_participant_type_1" name="participation_type" class="custom-control-input" value="AL" >
+
+                                        <label class="custom-control-label" for="id_participant_type_1">All Users</label>
+
+
+                                    </div>
+
+
+
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_participant_type_2" name="participation_type"  class="custom-control-input" value="AS" >
+
+                                        <label class="custom-control-label" for="id_participant_type_2">All Students</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_participant_type_2" name="participant_type"
-                                               class="custom-control-input" value="AS">
-                                        <label class="custom-control-label"
-                                               for="id_participant_type_2">All Students</label>
+                                        <input type="radio" id="id_participant_type_3" name="participation_type" class="custom-control-input" value="AT">
+
+                                        <label class="custom-control-label" for="id_participant_type_3">All Teachers</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_participant_type_3" name="participant_type"
-                                               class="custom-control-input" value="AT">
-                                        <label class="custom-control-label"
-                                               for="id_participant_type_3">All Teachers</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_participant_type_4" name="participant_type"
-                                               class="custom-control-input" value="CH">
-                                        <label class="custom-control-label"
-                                               for="id_participant_type_4">Choose</label>
+                                        <input type="radio" id="id_participant_type_4" name="participation_type"  class="custom-control-input" value="CH">
+
+                                        <label class="custom-control-label" for="id_participant_type_4">Choose</label>
+
                                     </div>
                                 </div>
                             </div>
@@ -264,8 +266,8 @@
 
 
 
-                    <button class="btn btn-sm btn-warning text-white" name="update"  style="float:left;" id="update_event" data-toggle="modal"
-                            data-target="#createEventModal"><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update</button>
+                    <button class="btn btn-sm btn-warning text-white" name="update"  style="float:left;" id="update_event_btn"
+                           ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update</button>
 
 
 
@@ -288,6 +290,177 @@
         </div>
     </div>
     <!-- end::Event Info Modal -->
+
+
+      <!-- begin::Update Event Modal -->
+    <div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="update_event_form" method="post"
+                          action=" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Title</label>
+                            <div class="col-sm-9">
+                                <input id="id_update_title" type="text" name="title" value="Program" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Event type</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="event_update_type">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="updateRadioInline1" name="event_type"
+                                               class="custom-control-input pr_radio" value="PR" >
+                                        <label class="custom-control-label" for="updateRadioInline1">Program</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="updateRadioInline2" name="event_type"
+                                               class="custom-control-input me_radio" value="ME">
+                                        <label class="custom-control-label" for="updateRadioInline2">Meeting</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="updateRadioInline3" name="event_type"
+                                               class="custom-control-input ho_radio" value="HO">
+                                        <label class="custom-control-label" for="updateRadioInline3">Holiday</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">All Day Event</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="update_all-day">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="is_all_day" class="custom-control-input"
+                                               id="id_update_is_all_day" >
+                                        <label class="custom-control-label" for="id_update_is_all_day"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row row-sm">
+                            <label class="col-sm-3 col-form-label">Start</label>
+                            <div class="col-sm-5">
+                                <input id="event_update-start-date" type="text"
+                                       class="form-control create-event-datepicker"
+                                       placeholder="Date">
+                            </div>
+                            <div class="col-sm-4 datetime_dynamic">
+                                <input id="event_update-start-time" type="text" class="form-control create-event-demo"
+                                       placeholder="Time">
+                            </div>
+                            <input type="hidden" name="date_start" id="id_update_date_start">
+                        </div>
+                        <div class="form-group row row-sm">
+                            <label class="col-sm-3 col-form-label">End</label>
+                            <div class="col-sm-5">
+                                <input id="event_update-end-date" type="text" class="form-control create-event-datepicker"
+                                       placeholder="Date">
+                            </div>
+                            <div class="col-sm-4 datetime_dynamic">
+                                <input id="event_update-end-time" type="text" class="form-control create-event-demo"
+                                       placeholder="Time">
+                            </div>
+                            <input type="hidden" name="date_end" id="id_update_date_end">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Participants Type</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="update_participant-type">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_participant_type_1"
+                                               class="custom-control-input" >
+                                        <label class="custom-control-label"
+                                               for="id_update_participant_type_1">All Users</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_participant_type_2"
+                                               class="custom-control-input" >
+                                        <label class="custom-control-label"
+                                               for="id_update_participant_type_2">All Students</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_participant_type_3"
+                                               class="custom-control-input" >
+                                        <label class="custom-control-label"
+                                               for="id_update_participant_type_3">All Teachers</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_participant_type_4"
+                                               class="custom-control-input" >
+                                        <label class="custom-control-label"
+                                               for="id_update_participant_type_4">Choose</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row participant_dynamic">
+                            <label class="col-sm-3 col-form-label">Filter By</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="update_filter-type">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_filter_type_1" name="filter_type"
+                                               class="custom-control-input" value="A" checked>
+                                        <label class="custom-control-label"
+                                               for="id_update_filter_type_1">Any</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_filter_type_2" name="filter_type"
+                                               class="custom-control-input" value="S">
+                                        <label class="custom-control-label"
+                                               for="id_update_filter_type_2">Students</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_update_filter_type_3" name="filter_type"
+                                               class="custom-control-input" value="T">
+                                        <label class="custom-control-label"
+                                               for="id_update_filter_type_3">Teachers</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row participant_dynamic">
+                            <label class="col-sm-3 col-form-label">Participants</label>
+                            <div class="col-sm-9">
+                                <select name="participants" class="form-control select2-example"
+                                        id="id_update_participants" multiple>
+                                    {% for u in user_list %}
+                                        <option
+                                                {% if u.Is_Student %}data-is_student="true"{% endif %}
+                                                {% if u.Is_Teacher %}data-is_teacher="true"{% endif %}
+                                                value="{{ u.pk }}">{{ u.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea id="id_update_description" name="description" class="form-control" rows="6">
+
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3"></label>
+                            <div class="col-sm-9">
+                                <button type="submit" id="btn-update" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end::Update Event Modal -->
 {% endblock %}
 
 {% block javascript %}
@@ -312,7 +485,60 @@
     <script>
         $(document).ready(function () {
 
-            $("input[name='participant_type']").change();
+
+
+        // Detail For Update Modal
+
+        function update_fxn(e){
+                    let event = e.data.param1;
+                //    console.log("update fxn");
+                //    console.log(event);
+                    var modal = $('#createEventModal');
+                    modal.find('.modal-title').text("Update Event");
+                    modal.find('#id_title').attr('value', event.title);
+                   if (event.type === "Holiday")
+                   {
+                        modal.find("#customRadioInline3").prop("checked", true);
+                   }else if (event.type === "Meeting")
+                    {
+                        modal.find("#customRadioInline2").prop( "checked", true );
+                   }else{
+                         modal.find("#customRadioInline1").prop( "checked", true );
+                    }
+                   if (event.allDay)
+                   { modal.find('#id_is_all_day').prop("checked", true);
+                   }
+                    modal.find('#event-start-date').attr("value", DateConvert(event.start) );
+                    modal.find('#event-end-date').attr("value", DateConvert(event.end));
+                    if (event.part === "All User")
+                     {
+                     modal.find("#id_participant_type_1").prop( "checked", true );
+                    }else if (event.part === "All Student")
+                    {
+                    modal.find("#id_participant_type_2").prop( "checked", true );
+                    }else if (event.part === "All Teacher")
+                    {
+                     modal.find("#id_participant_type_3").prop( "checked", true );
+                    }else
+                    {
+                     modal.find("#id_participant_type_4").prop( "checked", true );
+                    }
+                    modal.find("#id_description").html(event.description);
+                    modal.find("#btn-save").text("Update");
+                    modal.find(".ti-close").click(function() {
+                    location.reload();
+
+                    })
+                    let event_id = event.id.replace("event_id_", "");
+                    modal.find("#calendar_event_form").attr('action', '{% url "event_calendar_update" 12345 %}'.replace("12345", event_id));
+
+
+                    modal.modal();
+        }
+
+
+
+            $("input[name='participation_type']").change();
             $("#id_is_all_day").change();
 
             var date = new Date();
@@ -325,7 +551,7 @@
                         type: '{{ event.get_event_type_display }}',
                         start: '{{ event.date_start.isoformat }}',
                         end: '{{ event.date_end.isoformat }}',
-                        part: '{{event.get_participation_type_display}}',
+                        part: '{{ event.get_participation_type_display }}',
                         //icon: "user-o",
                         description: `{{ event.description }}`,
                         {% if event.is_all_day %}
@@ -371,6 +597,7 @@
                 });
             });
 
+
             $('#calendar-demo').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -409,15 +636,24 @@
                     if (event.allDay)
                     { modal.find('.all_day').html("<label for='all_day'> All Day Event :</label> <br> <input type='checkbox' id='all_day' checked >");
                     }
-                   // modal.find('.all_day').html("<h6> All Day Event : &nbsp </h6>"+  event.allDay);
+
                     modal.find('.start').html("<h6> Start At: &nbsp </h6>"+  DateConvert(event.start));
-                    modal.find('.end').html("<h6> End At: &nbsp </h6>"+  DateConvert(event.end));
+                    if (event.end){
+                          modal.find('.end').html("<h6> End At: &nbsp </h6>"+  DateConvert(event.end._d));
+                    }
                     modal.find('.participant').html("<h6> Participants: &nbsp </h6>"+  event.part);
                     modal.find('.event-body').html("<h6>Description: &nbsp </h6>" +  event.description);
                     let event_id = event.id.replace("event_id_", "");
                     modal.find('.delete_event').attr('action', '{% url "event_calendar_delete" 12345 %}'.replace("12345", event_id));
+
+
+                  //// update button upon pressing display Form Detail Modal
+                     $("#update_event_btn").click({param1: event}, update_fxn);
                     modal.modal();
+
                 },
+
+
                 eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
                     console.log("event resized", event);
                     if (event.id) {
@@ -588,8 +824,8 @@
             }
         });
 
-        $("input[name='participant_type']").change(function () {
-            let ch_val = $("input[name='participant_type']:checked").val();
+        $("input[name='participation_type']").change(function () {
+            let ch_val = $("input[name='participation_type']:checked").val();
             //console.log("part_type changed: ", ch_val, ch_val === "CH");
             if (ch_val === "CH") {
                 $(".participant_dynamic").show();
@@ -614,6 +850,15 @@
             }
         })
     </script>
+
+<script>
+    $("#update_event_btn").click(function(){
+
+    $('#viewEventModal').modal('toggle');
+
+    })
+
+</script>
 
 
 {% endblock %}
