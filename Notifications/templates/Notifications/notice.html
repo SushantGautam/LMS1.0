@@ -16,9 +16,83 @@
 
     <p>{{ notice.description|linebreaksbr }}</p>
 
+    <p>
+        {% if notice.unread %}
+            <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread" data-id="{{ notice.id }}">
+                Mark As Read
+            </a>
+        {% else %}
+            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread" data-id="{{ notice.id }}">
+                Mark As Unread
+            </a>
+        {% endif %}
+        <a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
+           onclick="deleteNotification('{{ notice.id }}')">
+            Delete Notification
+        </a>
+    </p>
+
     <div class="notice-actions">
         {% for action in notice.data.actions %}
             <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
         {% endfor %}
     </div>
 </div>
+
+
+<script>
+    $('.markread').on('click', function (e) {
+        e.preventDefault();
+        let id = $(this).attr('data-id');
+        var markAllReadurl = '/inbox/notifications/mark-as-read/' + id;
+
+        $.ajax({
+            url: markAllReadurl,
+            method: 'GET',
+            success: function (data) {
+                $('#notification_count').text('').text(data.unread_count);
+                getLiveNotification();
+            },
+            error: function (e) {
+                console.log(e.responseText)
+            }
+        })
+    });
+
+    $('.markunread').on('click', function (e) {
+        e.preventDefault();
+        let id = $(this).attr('data-id');
+        var markAllReadurl = '/inbox/notifications/mark-as-unread/' + id;
+
+        $.ajax({
+            url: markAllReadurl,
+            method: 'GET',
+            success: function (data) {
+                getLiveNotification()
+            },
+            error: function (e) {
+                console.log(e.responseText)
+            }
+        })
+    });
+
+    function deleteNotification(id) {
+        let confirmation = confirm('Are you sure you want to delete this notification?');
+        if (!confirmation) {
+            return false;
+        }
+        {#let id = $(this).attr('data-id');#}
+        var deleteurl = '/inbox/notifications/delete/' + id;
+
+        $.ajax({
+            url: deleteurl,
+            method: 'GET',
+            success: function (data) {
+                getLiveNotification();
+            },
+            error: function (e) {
+                console.log(e.responseText)
+            }
+        })
+    }
+</script>

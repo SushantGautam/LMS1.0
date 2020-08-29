@@ -35,6 +35,4 @@ function getLiveNotification() {
 }
 
 getLiveNotification()
-setInterval(getLiveNotification, 10000);
-
-
+setInterval(getLiveNotification, 1000000);

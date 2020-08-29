@@ -15,7 +15,7 @@
                 method: 'GET',
                 success: function (data) {
                     $('#notification_count').text('').text(data.unread_count);
-                    getNotifications();
+                    getLiveNotification();
                 },
                 error: function (e) {
                     console.log(e.responseText)
