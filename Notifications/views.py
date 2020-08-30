@@ -2,10 +2,12 @@
 from django.contrib.auth.decorators import login_required
 from django.forms import model_to_dict
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import ListView
+
+from Notifications.models import Notification
 
 
 class NotificationViewList(ListView):
@@ -42,7 +44,68 @@ def mark_all_as_read(request):
 
     if _next:
         return redirect(_next)
-    return redirect('notifications:unread')
+
+    if request.is_ajax():
+        return JsonResponse({'message': 'success'}, status=200)
+
+    return redirect('Notifications:unread')
+
+
+@login_required
+def mark_as_read(request, pk=None):
+    notification_id = pk
+
+    notification = get_object_or_404(
+        Notification, recipient=request.user, id=notification_id)
+    notification.mark_as_read()
+
+    _next = request.GET.get('next')
+
+    if _next:
+        return redirect(_next)
+
+    if request.is_ajax():
+        return JsonResponse({'message': 'success'}, status=200)
+
+    return redirect('Notifications:all')
+
+
+@login_required
+def mark_as_unread(request, pk):
+    notification_id = pk
+
+    notification = get_object_or_404(
+        Notification, recipient=request.user, id=notification_id)
+    notification.mark_as_unread()
+
+    _next = request.GET.get('next')
+
+    if _next:
+        return redirect(_next)
+
+    if request.is_ajax():
+        return JsonResponse({'message': 'success'}, status=200)
+
+    return redirect('Notifications:all')
+
+
+@login_required
+def delete(request, pk):
+    notification_id = pk
+
+    notification = get_object_or_404(
+        Notification, recipient=request.user, id=notification_id)
+    notification.delete()
+
+    _next = request.GET.get('next')
+
+    if _next:
+        return redirect(_next)
+
+    if request.is_ajax():
+        return JsonResponse({'message': 'success'}, status=200)
+
+    return redirect('Notifications:all')
 
 
 @never_cache
