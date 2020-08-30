@@ -525,10 +525,8 @@
     {#    </script>#}
 
     <script>
-        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
-        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
-        $('#id_Assignment_Deadline_edit').datetimepicker();
-        $('#id_Assignment_Start_edit').datetimepicker();
+
+        {% comment %}
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
@@ -557,6 +555,7 @@
 
             });
         });
+        {% endcomment %}
         $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
             const result = document.querySelector('.result');
             var date = new Date();
@@ -572,6 +571,40 @@
             ;
         });
     </script>
+
+    <script>
+        $('#editAssignment-btn').on('click', function () {
+            $('#editAssignment_modal_body').empty();
+
+
+            $.ajax({
+                type: "GET",
+                url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
+                success: function (response) {
+                    let url = '/assignmentinfo/edit/{{ object.pk }}/ajax/';
+                    $('#editAssignment_modal_body').append(response);
+                    $('#ajaxassignmentinfoform').attr('action', url);
+                    $('#editAssignment_modal_body').append(`
+                        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
+                               value="{{ object.Chapter_Code.id }}" class="select form-control">
+                    `)
+
+                    Switchery(document.querySelector('.js-switch'));
+                },
+                error: function () {
+                    console.log('Error in generating assignment edit form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+    </script>
+
     <script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
@@ -778,7 +811,6 @@
         // $('input[type=datetime-local]').each(function () {
         //    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)
         // })
-
 
 
     </script>

@@ -583,7 +583,10 @@
                 type: "GET",
                 url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
                 success: function (response) {
+                    let url = "{% url 'assignmentinfo_create_ajax' %}";  // URL to your view that serves new info
                     $('#create_assignment_modal_body').append(response);
+                    $('#ajaxassignmentinfoform').attr('action', url);
+
                     $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
                     Switchery(document.querySelector('.js-switch'));
                 },
