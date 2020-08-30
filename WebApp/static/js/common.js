@@ -27,6 +27,15 @@ function TimeConvert(date) {
     return newdate.split(' ')[1] + ' ' + newdate.split(' ')[2]
 }
 
+
+
+
+
+
+
+
+
+
 function DateConvertFullMonth(date) {
     if (date == "") {
         return 'None'

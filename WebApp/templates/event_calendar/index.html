@@ -232,235 +232,101 @@
     </div>
     <!-- end::Create Event Modal -->
 
-    <!-- begin::Event Info Modal -->
-    <div class="modal fade" id="viewEventModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="justify-content:flex-end;">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <i class="ti-close"></i>
+<!-- begin::Event Info Modal -->
+<div class="modal fade" id="viewEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="justify-content:flex-end;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-header" style="justify-content:center;">
+                <h5 class=" modal-title">
+                    <span class="event-icon mr-2 "></span>
+                    <span class="event-title ">Modal Title</span>
+                </h5>
+
+            </div>
+
+
+            <div class="modal-body" style="text-align:center">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6" style="float:left;text-align:left;">
+                            <h6> Event Type:</h6>
+                            <div class="type_event">
+                                <span class="btn btn-sm  event-type"> </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+
+                        <div class="col-md-6" style="text-align:left;">
+                            <h6> Start At:</h6>
+                            <div class="start_at"></div>
+                            <br>
+                        </div>
+
+                        <div class="col-md-6" style="text-align:left;">
+                            <h6> End At:</h6>
+                            <div class="end_at"></div>
+                        </div>
+
+
+                    </div>
+                    <br>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="participant" style="text-align:left;"> Participants:&nbsp;&nbsp;</h6>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-12" style="text-align:left;">
+                            <h6> Description:&nbsp;&nbsp;</h6>
+                            <div class="desc"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <br>
+
+
+                <button class="btn btn-sm btn-warning text-white" name="update" style="float:left;"
+                        id="update_event_btn"
+                ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update
+                </button>
+
+
+                <form method="POST" class="delete_event" action=""
+                      onsubmit="return confirm('Are you sure you want to delete?');">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger btn-sm" style="float:right;">
+                        <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete
                     </button>
-                </div>
-                <div class="modal-header" style="justify-content:center;">
-                    <h5 class=" modal-title">
-                        <span class="event-icon mr-2 " ></span>
-                        <span class="event-title " >Modal Title</span>
-                    </h5>
-
-                </div>
-                <div class="modal-body" style="text-align:center">
-
-                    <div class="event-type "> </div>
-                    <br>
-                    <div class="all_day "> </div>
-                    <br>
-                    <div class="start "> </div>
-                    <br>
-                    <div class="end "> </div>
-                    <br>
-                    <div class="participant "> </div>
-                    <br>
-
-                    <div class="event-body "></div>
-                    <br>
-
-
-
-                    <button class="btn btn-sm btn-warning text-white" name="update"  style="float:left;" id="update_event_btn"
-                           ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update</button>
-
-
-
-
-                    <form method="POST" class="delete_event"  action=""
-                              onsubmit="return confirm('Are you sure you want to delete?');">
-                            {% csrf_token %}
-
-                            <button type="submit" class="btn btn-danger btn-sm" style="float:right;">
-                                <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete
-                            </button>
-                    </form>
-
-
-               </div>
-
+                </form>
 
 
             </div>
+
+
         </div>
     </div>
-    <!-- end::Event Info Modal -->
+</div>
+<!-- end::Event Info Modal -->
 
 
-      <!-- begin::Update Event Modal -->
-    <div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update Event</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <i class="ti-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="update_event_form" method="post"
-                          action=" autocomplete="off">
-                        {% csrf_token %}
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Title</label>
-                            <div class="col-sm-9">
-                                <input id="id_update_title" type="text" name="title" value="Program" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Event type</label>
-                            <div class="col-sm-9">
-                                <div class="mt-2" id="event_update_type">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="updateRadioInline1" name="event_type"
-                                               class="custom-control-input pr_radio" value="PR" >
-                                        <label class="custom-control-label" for="updateRadioInline1">Program</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="updateRadioInline2" name="event_type"
-                                               class="custom-control-input me_radio" value="ME">
-                                        <label class="custom-control-label" for="updateRadioInline2">Meeting</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="updateRadioInline3" name="event_type"
-                                               class="custom-control-input ho_radio" value="HO">
-                                        <label class="custom-control-label" for="updateRadioInline3">Holiday</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">All Day Event</label>
-                            <div class="col-sm-9">
-                                <div class="mt-2" id="update_all-day">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="is_all_day" class="custom-control-input"
-                                               id="id_update_is_all_day" >
-                                        <label class="custom-control-label" for="id_update_is_all_day"></label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">Start</label>
-                            <div class="col-sm-5">
-                                <input id="event_update-start-date" type="text"
-                                       class="form-control create-event-datepicker"
-                                       placeholder="Date">
-                            </div>
-                            <div class="col-sm-4 datetime_dynamic">
-                                <input id="event_update-start-time" type="text" class="form-control create-event-demo"
-                                       placeholder="Time">
-                            </div>
-                            <input type="hidden" name="date_start" id="id_update_date_start">
-                        </div>
-                        <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">End</label>
-                            <div class="col-sm-5">
-                                <input id="event_update-end-date" type="text" class="form-control create-event-datepicker"
-                                       placeholder="Date">
-                            </div>
-                            <div class="col-sm-4 datetime_dynamic">
-                                <input id="event_update-end-time" type="text" class="form-control create-event-demo"
-                                       placeholder="Time">
-                            </div>
-                            <input type="hidden" name="date_end" id="id_update_date_end">
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Participants Type</label>
-                            <div class="col-sm-9">
-                                <div class="mt-2" id="update_participant-type">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_participant_type_1"
-                                               class="custom-control-input" >
-                                        <label class="custom-control-label"
-                                               for="id_update_participant_type_1">All Users</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_participant_type_2"
-                                               class="custom-control-input" >
-                                        <label class="custom-control-label"
-                                               for="id_update_participant_type_2">All Students</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_participant_type_3"
-                                               class="custom-control-input" >
-                                        <label class="custom-control-label"
-                                               for="id_update_participant_type_3">All Teachers</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_participant_type_4"
-                                               class="custom-control-input" >
-                                        <label class="custom-control-label"
-                                               for="id_update_participant_type_4">Choose</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row participant_dynamic">
-                            <label class="col-sm-3 col-form-label">Filter By</label>
-                            <div class="col-sm-9">
-                                <div class="mt-2" id="update_filter-type">
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_filter_type_1" name="filter_type"
-                                               class="custom-control-input" value="A" checked>
-                                        <label class="custom-control-label"
-                                               for="id_update_filter_type_1">Any</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_filter_type_2" name="filter_type"
-                                               class="custom-control-input" value="S">
-                                        <label class="custom-control-label"
-                                               for="id_update_filter_type_2">Students</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="id_update_filter_type_3" name="filter_type"
-                                               class="custom-control-input" value="T">
-                                        <label class="custom-control-label"
-                                               for="id_update_filter_type_3">Teachers</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row participant_dynamic">
-                            <label class="col-sm-3 col-form-label">Participants</label>
-                            <div class="col-sm-9">
-                                <select name="participants" class="form-control select2-example"
-                                        id="id_update_participants" multiple>
-                                    {% for u in user_list %}
-                                        <option
-                                                {% if u.Is_Student %}data-is_student="true"{% endif %}
-                                                {% if u.Is_Teacher %}data-is_teacher="true"{% endif %}
-                                                value="{{ u.pk }}">{{ u.username }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Description</label>
-                            <div class="col-sm-9">
-                                <textarea id="id_update_description" name="description" class="form-control" rows="6">
 
-                                </textarea>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3"></label>
-                            <div class="col-sm-9">
-                                <button type="submit" id="btn-update" class="btn btn-primary">Update</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end::Update Event Modal -->
 {% endblock %}
 
 {% block javascript %}
@@ -496,7 +362,8 @@
         function update_fxn(e){
                     let event = e.data.param1;
                 //    console.log("update fxn");
-                //    console.log(event);
+
+
                     var modal = $('#createEventModal');
                     modal.find('.modal-title').text("Update Event");
                     modal.find('#id_title').attr('value', event.title);
@@ -512,20 +379,66 @@
 
 
 
-                  let start = DateConvert(event.start);
+
+             //     let start = DateConvert(event.start);
+                  let start = event.start;
+                  start = start._d.toLocaleString();
                   let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
                   let start_time = start.split(' ')[1];
+                  let st = start.split(' ')[2];
+                  let hours = Number(start_time.match(/^(\d+)/)[1]);
+                  let minutes = Number(start_time.match(/:(\d+)/)[1]);
+                  if (st == 'PM' && hours<12) hours = hours+12;
+                  if(st == "AM" && hours==12) hours = hours-12;
+                  var sHours = hours.toString();
+                  var sMinutes = minutes.toString();
+                  if(hours<10) sHours = "0" + sHours;
+                  if(minutes<10) sMinutes = "0" + sMinutes;
+                  stime = sHours + ":" + sMinutes
 
-                  let end = DateConvert(event.end);
+
+
+
+                 // let end = DateConvert(event.end);
+                  let end = event.end;
+                  if (!end)
+                  {
+                  end = event.start;
+                  }
+                  end = end._d.toLocaleString();
                   let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                   let end_time = end.split(' ')[1];
 
 
+                  let et = end.split(' ')[2];
+                  let hours1 = Number(end_time.match(/^(\d+)/)[1]);
+                  let minutes1 = Number(end_time.match(/:(\d+)/)[1]);
+                  if (et == 'PM' && hours1<12) hours1 = hours1+12;
+                  if(et == "AM" && hours1==12) hours1 = hours1-12;
+                  var eHours = hours1.toString();
+                  var eMinutes = minutes1.toString();
+                  if(hours1<10) eHours = "0" + eHours;
+                  if(minutes1<10) eMinutes = "0" + eMinutes;
+                  etime = eHours + ":" + eMinutes
 
-                    modal.find('#event-start-date').attr("value", start_date );
-                    modal.find('#event-start-time').attr("value", start_time);
+
+
+
+
+                //  let sr = event.start.isoformat;
+                //  let ed = event.end.isoformat;
+
+
+                //  let st = iso_to_django(sr);
+                //  let en = iso_to_django(ed);
+
+
+                 //   modal.find('#event-start-date').attr("value", st._d.toLocaleString());
+                    modal.find('#event-start-date').attr("value", start_date);
+                    modal.find('#event-start-time').attr("value", stime);
+                 //   modal.find('#event-end-date').attr("value", en._d.toLocaleString());
                     modal.find('#event-end-date').attr("value", end_date);
-                    modal.find('#event-end-time').attr("value", end_time);
+                    modal.find('#event-end-time').attr("value", etime);
 
                    if (event.allDay)
                    { modal.find('#id_is_all_day').prop("checked", true);
@@ -553,7 +466,7 @@
                     }
                     modal.find("#id_description").html(event.description);
                     modal.find("#btn-save").text("Update");
-                    modal.find(".ti-close").click(function() {
+                    modal.find(".close").click(function() {
                     location.reload();
 
                     })
@@ -577,7 +490,7 @@
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
-                        start: '{{ event.date_start.isoformat }}',
+                        start: '{{ event.date_start.isoformat}}',
                         end: '{{ event.date_end.isoformat }}',
                         part: '{{ event.get_participation_type_display }}',
                         //icon: "user-o",
@@ -632,6 +545,7 @@
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay,listMonth'
                 },
+                timezone:"local",
                 editable: true,
                 droppable: true,
                 drop: function () {
@@ -655,31 +569,46 @@
                 dayClick: function () {
                     $('#createEventModal').modal();
                 },
-                eventClick: function (event, jsEvent, view) {
-                    var modal = $('#viewEventModal');
-                    modal.find('.modal-title').addClass(event.className);
-                    modal.find('.event-icon').html("<i class=' fa fa-" + event.icon + " '></i>");
-                    modal.find('.event-title').html(event.title);
-                    modal.find('.event-type').html("<h6> Event Type: &nbsp </h6>"+  event.type);
-                    if (event.allDay)
-                    { modal.find('.all_day').html("<label for='all_day'> All Day Event :</label> <br> <input type='checkbox' id='all_day' checked >");
-                    }
 
-                    modal.find('.start').html("<h6> Start At: &nbsp </h6>"+  DateConvert(event.start));
-                    if (event.end){
-                          modal.find('.end').html("<h6> End At: &nbsp </h6>"+  DateConvert(event.end._d));
+
+
+                  eventClick: function (event, jsEvent, view) {
+                    var modal = $('#viewEventModal');
+
+                    modal.find('.event-type').addClass(event.className);;
+                    modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
+                    modal.find('.event-title').html(event.title);
+
+                    if (event.allDay)
+                    { modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
                     }
-                    modal.find('.participant').html("<h6> Participants: &nbsp </h6>"+  event.part);
-                    modal.find('.event-body').html("<h6>Description: &nbsp </h6>" +  event.description);
+                     modal.find('.start_at').html(event.start._d.toLocaleString());
+                     if (event.end){
+                          modal.find('.end_at').html(event.end._d.toLocaleString());
+                    }
+                    modal.find('.participant').append(event.part);
+                    modal.find('.desc').html(event.description);
+
+
                     let event_id = event.id.replace("event_id_", "");
                     modal.find('.delete_event').attr('action', '{% url "event_calendar_delete" 12345 %}'.replace("12345", event_id));
 
 
                   //// update button upon pressing display Form Detail Modal
-                     $("#update_event_btn").click({param1: event}, update_fxn);
+                    $("#update_event_btn").click({param1: event}, update_fxn);
+                    modal.find(".close").click(function() {
+                        location.reload();
+                    })
                     modal.modal();
 
                 },
+
+
+
+
+
+
+
 
 
                 eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
@@ -804,7 +733,7 @@
         function iso_to_django(date_obj) {
             let mo = (date_obj.getUTCMonth() + 1).toString();       // month starts form zero
             let y = date_obj.getUTCFullYear().toString();
-            let d = (date_obj.getUTCDate()+1).toString();
+            let d = (date_obj.getUTCDate()).toString();
             let h = date_obj.getUTCHours().toString();
             let mi = date_obj.getUTCMinutes().toString();
             return y + "-" + mo + "-" + d + " " + h + ":" + mi;
