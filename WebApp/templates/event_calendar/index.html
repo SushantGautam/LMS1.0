@@ -487,6 +487,10 @@
 
 
 
+
+
+
+
         // Detail For Update Modal
 
         function update_fxn(e){
@@ -505,11 +509,35 @@
                    }else{
                          modal.find("#customRadioInline1").prop( "checked", true );
                     }
+
+
+
+                  let start = DateConvert(event.start);
+                  let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
+                  let start_time = start.split(' ')[1];
+
+                  let end = DateConvert(event.end);
+                  let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
+                  let end_time = end.split(' ')[1];
+
+
+
+                    modal.find('#event-start-date').attr("value", start_date );
+                    modal.find('#event-start-time').attr("value", start_time);
+                    modal.find('#event-end-date').attr("value", end_date);
+                    modal.find('#event-end-time').attr("value", end_time);
+
                    if (event.allDay)
                    { modal.find('#id_is_all_day').prop("checked", true);
+
+                   }else {
+                    modal.find('#id_is_all_day').prop("checked", false);
+                    $(".datetime_dynamic").show();
                    }
-                    modal.find('#event-start-date').attr("value", DateConvert(event.start) );
-                    modal.find('#event-end-date').attr("value", DateConvert(event.end));
+
+
+
+
                     if (event.part === "All User")
                      {
                      modal.find("#id_participant_type_1").prop( "checked", true );
@@ -849,6 +877,9 @@
                 $(".datetime_dynamic").show();
             }
         })
+
+
+
     </script>
 
 <script>
