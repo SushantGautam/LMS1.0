@@ -48,7 +48,7 @@ def mark_all_as_read(request):
     if request.is_ajax():
         return JsonResponse({'message': 'success'}, status=200)
 
-    return redirect('notifications:unread')
+    return redirect('Notifications:unread')
 
 
 @login_required
@@ -67,7 +67,7 @@ def mark_as_read(request, pk=None):
     if request.is_ajax():
         return JsonResponse({'message': 'success'}, status=200)
 
-    return redirect('notifications:all')
+    return redirect('Notifications:all')
 
 
 @login_required
@@ -86,7 +86,7 @@ def mark_as_unread(request, pk):
     if request.is_ajax():
         return JsonResponse({'message': 'success'}, status=200)
 
-    return redirect('notifications:all')
+    return redirect('Notifications:all')
 
 
 @login_required
@@ -105,7 +105,7 @@ def delete(request, pk):
     if request.is_ajax():
         return JsonResponse({'message': 'success'}, status=200)
 
-    return redirect('notifications:all')
+    return redirect('Notifications:all')
 
 
 @never_cache

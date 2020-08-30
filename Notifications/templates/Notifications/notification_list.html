@@ -4,7 +4,7 @@
     </div>
     <div class="col-md-4">
         {% if notifications %}
-            <h6>{% include 'notifications/mark_all_as_read.html' %}</h6>
+            <h6>{% include 'Notifications/mark_all_as_read.html' %}</h6>
         {% endif %}
     </div>
 </li>
@@ -12,7 +12,7 @@
 {% if notifications %}
     <li>
         {% for notice in notifications %}
-            {% include 'notifications/notice.html' %}
+            {% include 'Notifications/notice.html' %}
         {% endfor %}
     </li>
 
