@@ -1,34 +1,58 @@
+
+<style>
+.notification-icon1{
+    background-color: white; padding:2px 4px; ; font-size:20px;color:black;
+    transition: transform .2s;
+}
+.notification-icon1:hover{
+    cursor: pointer;
+    transform: scale(1.5);
+    background-color:rgba(52, 152, 219, .88);
+
+    color: white;
+}
+</style>
+
+
 <div class="alert alert-block alert-{{ notice.level }}">
     <a class="close pull-right" href="#">
         <i class="icon-clo  se"></i>
     </a>
+ <div class="row">
+     <div class="col-md-9"> 
+        <h4 style="color: white;">
+            <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
+            {% if notice.action_object %}
+                {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}
+                {{ notice.action_object }}
+                {#            </a>#}
+            {% endif %}
+        </h4>
+    
+        <p>{{ notice.timesince }} ago</p>
+    
+        <p >  {{ notice.description|linebreaksbr }}</p>
 
-    <h4>
-        <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
-        {% if notice.action_object %}
-            {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}
-            {{ notice.action_object }}
-            {#            </a>#}
-        {% endif %}
-    </h4>
+     </div>
+     <div class="col-md-3 text-right " id="notification-icon-click">
+        <i class="notification-icon1 fa fa-ellipsis-h"></i>
+     </div>
+ </div>
+  
 
-    <p>{{ notice.timesince }} ago</p>
-
-    <p>{{ notice.description|linebreaksbr }}</p>
-
-    <p>
+    <p id="notification-buttons">
         {% if notice.unread %}
             <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread" data-id="{{ notice.id }}">
-                Mark As Read
+               <b style="color:black"><i class="fa fa-check-circle"></i> Mark As Read</b>  
             </a>
         {% else %}
             <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread" data-id="{{ notice.id }}">
-                Mark As Unread
+               <b style="color: black;"> Mark As Unread</b> 
             </a>
         {% endif %}
         <a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
            onclick="deleteNotification('{{ notice.id }}')">
-            Delete Notification
+           <b style="color: black;"> <i class="fa fa-trash"></i> Delete Notification</b>
         </a>
     </p>
 
