@@ -265,13 +265,13 @@
                     <div class="row">
 
                         <div class="col-md-6" style="text-align:left;">
-                            <h6> Start At:</h6>
+                            <h6 class="strt_at"> Start At:</h6>
                             <div class="start_at"></div>
                             <br>
                         </div>
 
                         <div class="col-md-6" style="text-align:left;">
-                            <h6> End At:</h6>
+                            <h6 class="en_at"> End At:</h6>
                             <div class="end_at"></div>
                         </div>
 
@@ -284,6 +284,11 @@
                         <div class="col-md-6">
                             <h6 class="participant" style="text-align:left;"> Participants:&nbsp;&nbsp;</h6>
                         </div>
+                        <div class="col-md-6 part_custom" style="text-align:left;">
+                            <a class='btn btn-success btn-sm' data-toggle="modal"
+                        data-target="#custom_Participant_Modal">Details</a>
+                        </div>
+
                     </div>
                     <br>
 
@@ -324,6 +329,98 @@
     </div>
 </div>
 <!-- end::Event Info Modal -->
+
+
+
+
+  <!-- begin::Custom Participant Modal -->
+    <div class="modal fade" id="custom_Participant_Modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Participants</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                  <div class="list-group list-group-flush">
+                      <a href="#" class="list-group-item d-flex align-items-center">
+                            <div class="pr-3">
+                                <div class="avatar">
+                                    <img src="{% static 'media/image/photo1.jpg' %}"
+                                         class="rounded-circle"
+                                         alt="image">
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1 participant_name">Francisco Ubsdale</h6>
+
+                            </div>
+
+                        </a>
+                      <a href="#" class="list-group-item d-flex align-items-center">
+                            <div class="pr-3">
+                                <div class="avatar">
+                                    <img src="{% static 'media/image/photo1.jpg' %}"
+                                         class="rounded-circle"
+                                         alt="image">
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Francisco Ubsdale</h6>
+
+                            </div>
+
+                        </a>
+                      <a href="#" class="list-group-item d-flex align-items-center">
+                            <div class="pr-3">
+                                <div class="avatar">
+                                    <img src="{% static 'media/image/photo1.jpg' %}"
+                                         class="rounded-circle"
+                                         alt="image">
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Francisco Ubsdale</h6>
+
+                            </div>
+
+                        </a>
+                      <a href="#" class="list-group-item d-flex align-items-center">
+                            <div class="pr-3">
+                                <div class="avatar">
+                                    <img src="{% static 'media/image/photo1.jpg' %}"
+                                         class="rounded-circle"
+                                         alt="image">
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Francisco Ubsdale</h6>
+
+                            </div>
+
+                        </a>
+                      <a href="#" class="list-group-item d-flex align-items-center">
+                            <div class="pr-3">
+                                <div class="avatar">
+                                    <img src="{% static 'media/image/photo1.jpg' %}"
+                                         class="rounded-circle"
+                                         alt="image">
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Francisco Ubsdale</h6>
+
+                            </div>
+
+                        </a>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end::Custom Participant Modal -->
 
 
 
@@ -493,6 +590,7 @@
                         start: '{{ event.date_start.isoformat}}',
                         end: '{{ event.date_end.isoformat }}',
                         part: '{{ event.get_participation_type_display }}',
+                        event_part: '{{ event.participants }}',
                         //icon: "user-o",
                         description: `{{ event.description }}`,
                         {% if event.is_all_day %}
@@ -579,14 +677,102 @@
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
                     modal.find('.event-title').html(event.title);
 
-                    if (event.allDay)
-                    { modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
+
+
+
+
+
+
+
+                  let start = event.start;
+                  start = start._d.toLocaleString();
+                  let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
+                  let start_time = start.split(' ')[1];
+                  let st = start.split(' ')[2];
+                  let hours = Number(start_time.match(/^(\d+)/)[1]);
+                  let minutes = Number(start_time.match(/:(\d+)/)[1]);
+                  if (st == 'PM' && hours<12) hours = hours+12;
+                  if(st == "AM" && hours==12) hours = hours-12;
+                  var sHours = hours.toString();
+                  var sMinutes = minutes.toString();
+                  if(hours<10) sHours = "0" + sHours;
+                  if(minutes<10) sMinutes = "0" + sMinutes;
+                  stime = sHours + ":" + sMinutes
+
+
+
+
+
+                  let end = event.end;
+                  if (!end)
+                  {
+                  end = event.start;
+                  }
+                  end = end._d.toLocaleString();
+                  let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
+                  let end_time = end.split(' ')[1];
+                  let et = end.split(' ')[2];
+                  let hours1 = Number(end_time.match(/^(\d+)/)[1]);
+                  let minutes1 = Number(end_time.match(/:(\d+)/)[1]);
+                  if (et == 'PM' && hours1<12) hours1 = hours1+12;
+                  if(et == "AM" && hours1==12) hours1 = hours1-12;
+                  var eHours = hours1.toString();
+                  var eMinutes = minutes1.toString();
+                  if(hours1<10) eHours = "0" + eHours;
+                  if(minutes1<10) eMinutes = "0" + eMinutes;
+                  etime = eHours + ":" + eMinutes
+
+
+
+                  if (event.allDay)
+                    {
+                     modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
+                     modal.find('.start_at').html(start_date);
+                     modal.find('.end_at').html(end_date);
+
+                    }else{
+
+                    modal.find('.start_at').html(start_date + stime);
+                    modal.find('.end_at').html(end_date + etime);
+
                     }
-                     modal.find('.start_at').html(event.start._d.toLocaleString());
-                     if (event.end){
-                          modal.find('.end_at').html(event.end._d.toLocaleString());
-                    }
+
+                  if( start_date == end_date ){
+
+                     modal.find('.strt_at').html("Date:");
+                     modal.find('.start_at').html(start_date);
+                     modal.find('.en_at').hide();
+                     modal.find('.end_at').hide();
+
+                  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    if (event.part == 'Choose User')
+                    {
+                    modal.find('.participant').append("10");
+
+                    console.log(event.event_part);
+                    modal.find('.participant_name').html(event.event_part);
+                    modal.find('.part_custom').show();
+
+
+
+                    }else{
                     modal.find('.participant').append(event.part);
+                     modal.find('.part_custom').hide();
+                    }
                     modal.find('.desc').html(event.description);
 
 

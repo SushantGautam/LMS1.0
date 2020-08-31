@@ -52,6 +52,7 @@ class EventListView(ListView):
         context = super().get_context_data()
         users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
         context['user_list'] = users
+
         # context['teacher_list'] = users.filter(Is_Teacher=True)
         # context['student_list'] = users.filter(Is_Student=True)
         return context
