@@ -244,14 +244,14 @@ class QuizForm2(forms.ModelForm):
         self.helper.layout = Layout(
 
             Row(
-                Column('chapter_code', css_class='form-group col-md-4 mb-0'),
+                Column('chapter_code', css_class='form-group col-md-4 mb-0 text-primary'),
                 Column(
                     PrependedText(
                         'success_text',
                         '<i class="fa fa-edit"></i>',
-                        rows='5'
+                        rows='1'
                     ),
-                    css_class='form-group col-md-4 mb-0'
+                    css_class='form-group col-md-4 mb-0 text-primary'
                 ),
                 Column(
                     PrependedText(
@@ -259,13 +259,13 @@ class QuizForm2(forms.ModelForm):
                         '<i class="fa fa-edit"></i>',
                         rows='1'
                     ),
-                    css_class='form-group col-md-4 mb-0'
+                    css_class='form-group col-md-4 mb-0 text-primary'
                 ),
-                css_class='form-row'
+                css_class='form-row '
             ),
             HTML('''<hr size="10">'''),
 
-            HTML('''<label class=quiz-add-label > <span class="text-secondary">
+            HTML('''<label class=quiz-add-label > <span class="text-primary">
              <b> Quiz Type </b> </span></label>'''),
             Row(
                 Column('pre_test', css_class='form-group col-md-4 mb-0'),
@@ -287,7 +287,7 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
-            HTML('''<label class=quiz-add-label> <b class="text-secondary">Quiz Features </b></label>'''),
+            HTML('''<label class=quiz-add-label> <b class="text-primary">Quiz Features </b></label>'''),
             Row(
                 Column('random_order', css_class='form-group col-md-4 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-4 mb-0'),
@@ -295,9 +295,9 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('negative_marking', css_class='form-group col-md-6 mb-0'),
-                Column('negative_percentage', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
+                Column('negative_marking', css_class='form-group col-md-6 mb-0 '),
+                Column('negative_percentage', css_class='form-group col-md-6 mb-0 '),
+                css_class='form-row text-primary'
             ),
             Row(
                 Column(css_class='col-md-4 mb-0'),
@@ -380,25 +380,25 @@ class QuizBasicInfoForm(forms.ModelForm):
         self.helper.label_class = 'quiz-add-label'
         self.helper.layout = Layout(
             Row(
-                Column('title', css_class='form-group col-md-4 mb-0'),
-                Column('course_code', css_class='form-group col-md-4 mb-0'),
-                Column('chapter_code', css_class='form-group col-md-4 mb-0'),
+                Column('title', css_class='form-group col-md-4 text-primary mb-0'),
+                Column('course_code', css_class='form-group col-md-4 text-primary mb-0'),
+                Column('chapter_code', css_class='form-group col-md-4 text-primary mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column(PrependedText('description', '<i class="fa fa-edit"></i>', rows='5'),
-                       css_class='form-group col-md-4 mb-0'
+                       css_class='form-group col-md-4 mb-0 text-primary'
                        ),
                 Column(PrependedText('success_text', '<i class="fa fa-edit"></i>', rows='2'),
-                       css_class='form-group col-md-4 mb-0'
+                       css_class='form-group text-primary col-md-4 mb-0'
                        ),
                 Column(PrependedText('fail_text', '<i class="fa fa-edit"></i>', rows='2'),
-                       css_class='form-group col-md-4 mb-0'
+                       css_class='form-group text-primary col-md-4 mb-0'
                        ),
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
-            HTML('''<label class=quiz-add-label>Quiz Type</label>'''),
+            HTML('''<label class= "quiz-add-label text-primary"> Quiz Type</label>'''),
             Row(
                 Column('pre_test', css_class='form-group col-md-4 mb-0'),
                 Column('post_test', css_class='form-group col-md-4 mb-0'),
@@ -419,7 +419,7 @@ class QuizBasicInfoForm(forms.ModelForm):
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
-            HTML('''<label class=quiz-add-label>Quiz Features</label>'''),
+            HTML('''<label class= "quiz-add-label text-primary ">Quiz Features</label>'''),
             Row(
                 Column('negative_marking', css_class='form-group col-md-3 mb-0'),
                 Column('random_order', css_class='form-group col-md-3 mb-0'),
@@ -435,7 +435,7 @@ class QuizBasicInfoForm(forms.ModelForm):
                 Column(css_class='col-md-4 mb-0'),
                 Column(css_class='col-md-4 mb-0'),
                 Column(
-                    StrictButton('Save', css_class='add-mcq btn btn-default ripple ', type='submit'),
+                    StrictButton('Save', css_class='add-mcq btn btn-light    ripple ', type='submit'),
                     css_class='col-md-4 mb-0 text-right'
                 ),
                 css_class='form-row'
