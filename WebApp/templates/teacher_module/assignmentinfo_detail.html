@@ -500,7 +500,7 @@
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
-                url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
                 data: {
                     "csrfmiddlewaretoken": '{{ csrf_token }}',
                     "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
