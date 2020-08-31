@@ -477,7 +477,7 @@
 
 
 
-             //     let start = DateConvert(event.start);
+
                   let start = event.start;
                   start = start._d.toLocaleString();
                   let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
@@ -496,7 +496,7 @@
 
 
 
-                 // let end = DateConvert(event.end);
+
                   let end = event.end;
                   if (!end)
                   {
@@ -520,30 +520,19 @@
 
 
 
+                modal.find('#event-start-date').attr("value", start_date);
+                modal.find('#event-start-time').attr("value", stime);
 
+                modal.find('#event-end-date').attr("value", end_date);
+                modal.find('#event-end-time').attr("value", etime);
 
-                //  let sr = event.start.isoformat;
-                //  let ed = event.end.isoformat;
+               if (event.allDay)
+               { modal.find('#id_is_all_day').prop("checked", true);
 
-
-                //  let st = iso_to_django(sr);
-                //  let en = iso_to_django(ed);
-
-
-                 //   modal.find('#event-start-date').attr("value", st._d.toLocaleString());
-                    modal.find('#event-start-date').attr("value", start_date);
-                    modal.find('#event-start-time').attr("value", stime);
-                 //   modal.find('#event-end-date').attr("value", en._d.toLocaleString());
-                    modal.find('#event-end-date').attr("value", end_date);
-                    modal.find('#event-end-time').attr("value", etime);
-
-                   if (event.allDay)
-                   { modal.find('#id_is_all_day').prop("checked", true);
-
-                   }else {
-                    modal.find('#id_is_all_day').prop("checked", false);
-                    $(".datetime_dynamic").show();
-                   }
+               }else {
+                modal.find('#id_is_all_day').prop("checked", false);
+                $(".datetime_dynamic").show();
+               }
 
 
 
@@ -561,6 +550,11 @@
                     {
                      modal.find("#id_participant_type_4").prop( "checked", true );
                     }
+
+
+
+
+
                     modal.find("#id_description").html(event.description);
                     modal.find("#btn-save").text("Update");
                     modal.find(".close").click(function() {
@@ -726,6 +720,7 @@
 
                   if (event.allDay)
                     {
+
                      modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
                      modal.find('.start_at').html(start_date);
                      modal.find('.end_at').html(end_date);
@@ -762,8 +757,6 @@
                     if (event.part == 'Choose User')
                     {
                     modal.find('.participant').append("10");
-
-                    console.log(event.event_part);
                     modal.find('.participant_name').html(event.event_part);
                     modal.find('.part_custom').show();
 

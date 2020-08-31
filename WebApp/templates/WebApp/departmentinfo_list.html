@@ -23,7 +23,9 @@
 <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
 <script type="text/javascript">
+        var form_url = "";
         $(document).ready(function () {
+
             $('.table').DataTable({
                 dom: 'lBfrtip',
                 responsive: true,
@@ -38,6 +40,54 @@
                         fieldSeparator: '\t'
                     }]
             });
+
+
+
+            $('#create_department-btn').on('click', function () {
+                $('#department-modal .modal-body').empty();
+                $('#department-modal .modal-title').text("Create New Department");
+                $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
+
+                let url = "{% url 'departmentinfo_create_ajax' %}";
+                $.ajax({
+                    type: "GET",
+                    url: url,  // URL to your view that serves new info
+                    success: function (response) {
+                        form_url = url;
+                        $('#department-modal .modal-body').append(response);
+                    },
+                    error: function () {
+                        console.log('Error in generating form')
+                    },
+                    complete: function () {
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    }
+                });
+            });
+
+            $('.edit_department-btn').on('click', function () {
+                $('#department-modal .modal-body').empty();
+                $('#department-modal .modal-title').text("Edit Department");
+                $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
+
+                let url = "/departmentinfo/update/" + this.value + "/ajax/";
+                $.ajax({
+                    type: "GET",
+                    url: url,  // URL to your view that serves new info
+                    success: function (response) {
+                        form_url = url;
+                        $('#department-modal .modal-body').append(response);
+                    },
+                    error: function () {
+                        console.log('Error in generating form')
+                    },
+                    complete: function () {
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    }
+                });
+            });
+
+
         });
     </script>
 {% endblock %}

@@ -17,6 +17,7 @@ class CalendarEvent(models.Model):
     event_type = models.CharField(max_length=2, default='PR', choices=EVENT_TYPE_CHOICES, verbose_name=_('Event Type'))
     participation_type = models.CharField(max_length=2, default='AL', choices=PART_TYPE_CHOICES,
                                           verbose_name=_('Participation Type'))
+
     date_created = models.DateTimeField(auto_now_add=True, verbose_name=_('Created Date'))
     date_updated = models.DateTimeField(auto_now=True, verbose_name=_('Updated Date'))
     date_start = models.DateTimeField(verbose_name=_('Start Date'))

@@ -1,10 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-
-
-
-
 <div class="container">
     <div class="page-section">
         <div class="media v-middle">
@@ -12,7 +8,13 @@
                 <h1 class="text-display-1 margin-none">List of Department </h1>
             </div>
             <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'departmentinfo_create' %}">Create new Department</a>
+
+                 <button type="button" class="btn btn-success" id="create_department-btn" data-toggle="modal"
+                    data-target="#department-modal">
+                Create New Department
+                 </button>
+
+           {# <a class="btn btn-success" href="{% url 'departmentinfo_create' %}">Create new Department</a> #}
             </div>
 
         </div>
@@ -36,6 +38,7 @@
                     <td>Register Agent</td>
                     <td>Register Date</td>
                     <td>Updated Date</td>
+                    <td>Actions</td>
                 </tr>
                 </thead>
                 {% for object in object_list %}
@@ -46,6 +49,17 @@
                         <td>{{ object.Register_Agent }}</td>
                         <td>{{ object.Register_DateTime }}</td>
                         <td>{{ object.Updated_DateTime }}</td>
+                        <td>
+                            <button class="btn btn-primary edit_department-btn" data-toggle="modal"
+                                    data-target="#department-modal" value="{{ object.pk }}">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <a class="btn btn-danger" href="{% url 'departmentinfo_delete' pk=object.pk %}"
+                               onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+
 
                     </tr>
                 {% endfor %}
@@ -53,13 +67,29 @@
 
         </div>
     </div>
+
 </div>
 
 
 
 
+  <!-- Modal -->
+    <div class="modal fade" id="department-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
-
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

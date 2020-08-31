@@ -4104,7 +4104,7 @@ class TeacherIndividualReport(TemplateView):
 
 class DepartmentInfoListView(ListView):
     model = DepartmentInfo
-    template_name = 'center_admin/departmentinfo_list.html'
+    template_name = 'WebApp/departmentinfo_list.html'
 
     def get_queryset(self):
         return DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code)
@@ -4117,7 +4117,7 @@ class DepartmentInfoListView(ListView):
 class DepartmentInfoCreateView(CreateView):
     model = DepartmentInfo
     form_class = DepartmentInfoForm
-    template_name = 'center_admin/departmentinfo_form.html'
+    template_name = 'WebApp/departmentinfo_form.html'
     success_url = reverse_lazy('departmentinfo_list')
 
     def get_form_kwargs(self):
@@ -4128,16 +4128,32 @@ class DepartmentInfoCreateView(CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
+
 
 class DepartmentInfoDetailView(DetailView):
     model = DepartmentInfo
-    template_name = 'center_admin/departmentinfo_detail.html'
+    template_name = 'WebApp/departmentinfo_detail.html'
 
 
 class DepartmentInfoUpdateView(UpdateView):
     model = DepartmentInfo
     form_class = DepartmentInfoForm
-    template_name = 'center_admin/departmentinfo_form.html'
+    template_name = 'WebApp/departmentinfo_form.html'
     success_url = reverse_lazy('departmentinfo_list')
 
     def get_form_kwargs(self):
@@ -4147,6 +4163,23 @@ class DepartmentInfoUpdateView(UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+class DepartmentInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
+    model = DepartmentInfo
+    form_class = DepartmentInfoForm
+    template_name = 'WebApp/departmentinfo_form.html'
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
+
 
 
 def DepartmentInfoDeleteView(request, pk):
