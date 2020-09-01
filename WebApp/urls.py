@@ -77,6 +77,12 @@ urlpatterns += (
          views.MemberInfoUpdateView.as_view(), name='memberinfo_update'),
     path('memberinfo/delete/<int:pk>/',
          views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
+    path('memberinfo/delete/checked/',
+         views.MemberInfoDeleteViewChecked, name='memberinfo_delete_checked'),
+    path('memberinfo/update/checked/',
+         views.MemberInfoEditViewChecked, name='memberinfo_edit_checked'),
+    path('memberinfo/inactive/update/checked/',
+         views.MemberInfoEditViewChecked, name='memberinfo_inactive_edit_checked'),
     path('importcsvajax', views.ImportCsvFile, name='csv_import_ajax'),
 )
 
@@ -381,7 +387,8 @@ urlpatterns += (
          views.StudentChapterProgressView, name='student_chapter_progress'),
     path('editstudentChapterProgressTime/<int:chapterid>/<int:studentid>/', views.editStudentChapterProgressTime,
          name="editStudentChapterProgressTime"),
-    path('courseinfo/detail/<int:coursepk>/<int:sessionpk>/download/', views.CourseProgressDownload, name="progress_download")
+    path('courseinfo/detail/<int:coursepk>/<int:sessionpk>/download/', views.CourseProgressDownload,
+         name="progress_download")
 )
 
 # Notice URL
