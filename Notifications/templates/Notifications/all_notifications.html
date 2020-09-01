@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+    <div class="notification_menu1">
+        <li class="row">
+            <div class="col-md-7">
+                <h2> Notifications </h2>
+            </div>
+            <div class="col-md-5">
+                {% if notifications %}
+                    <h6>{% include 'Notifications/mark_all_as_read.html' %}</h6>
+                {% endif %}
+            </div>
+        </li>
+
+        {% if notifications %}
+            <li>
+                {% for notice in notifications %}
+                    {% include 'Notifications/notice.html' %}
+                {% endfor %}
+            </li>
+        {% else %}
+            <li>
+                <div class="text-center">
+                    <strong>No Notifications</strong>
+                </div>
+            </li>
+
+        {% endif %}
+    </div>
+
+    {% include "Notifications/pagination.html" %}
+{% endblock content %}
+

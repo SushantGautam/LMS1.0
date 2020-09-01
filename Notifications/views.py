@@ -13,7 +13,7 @@ from Notifications.models import Notification
 class NotificationViewList(ListView):
     template_name = 'Notifications/notification_list.html'
     context_object_name = 'notifications'
-    paginate_by = 10
+    paginate_by = 1
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -30,6 +30,16 @@ class AllNotificationsList(NotificationViewList):
         qset = self.request.user.notifications.all()
         return qset
 
+
+class SeeAllNotificationsList(NotificationViewList):
+    """
+    Index page for authenticated user
+    """
+    template_name = "Notifications/all_notifications.html"
+
+    def get_queryset(self):
+        qset = self.request.user.notifications.all()
+        return qset
 
 class UnreadNotificationsList(NotificationViewList):
     def get_queryset(self):
