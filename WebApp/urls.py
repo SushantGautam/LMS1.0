@@ -79,6 +79,8 @@ urlpatterns += (
          views.MemberInfoDeleteView.as_view(), name='memberinfo_delete'),
     path('memberinfo/delete/checked/',
          views.MemberInfoDeleteViewChecked, name='memberinfo_delete_checked'),
+    path('memberinfo/inactive/delete/checked/',
+         views.MemberInfoDeleteViewChecked, name='memberinfo_inactive_delete_checked'),
     path('memberinfo/update/checked/',
          views.MemberInfoEditViewChecked, name='memberinfo_edit_checked'),
     path('memberinfo/inactive/update/checked/',
