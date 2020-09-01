@@ -344,77 +344,22 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                  <div class="list-group list-group-flush">
-                      <a href="#" class="list-group-item d-flex align-items-center">
-                            <div class="pr-3">
-                                <div class="avatar">
-                                    <img src="{% static 'media/image/photo1.jpg' %}"
-                                         class="rounded-circle"
-                                         alt="image">
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1 participant_name">Francisco Ubsdale</h6>
+                  <div class="list-group list-group-flush part_list">
+<!--                      <a href="#" class="list-group-item d-flex align-items-center">-->
+<!--                            <div class="pr-3">-->
+<!--                                <div class="avatar">-->
+<!--                                  {#  <img src="{% static 'media/image/photo1.jpg' %}"   #}  -->
+<!--                                         class="rounded-circle"-->
+<!--                                         alt="image">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <h6 class="mb-1 participant_name">Francisco Ubsdale</h6>-->
 
-                            </div>
+<!--                            </div>-->
 
-                        </a>
-                      <a href="#" class="list-group-item d-flex align-items-center">
-                            <div class="pr-3">
-                                <div class="avatar">
-                                    <img src="{% static 'media/image/photo1.jpg' %}"
-                                         class="rounded-circle"
-                                         alt="image">
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Francisco Ubsdale</h6>
+<!--                        </a>-->
 
-                            </div>
-
-                        </a>
-                      <a href="#" class="list-group-item d-flex align-items-center">
-                            <div class="pr-3">
-                                <div class="avatar">
-                                    <img src="{% static 'media/image/photo1.jpg' %}"
-                                         class="rounded-circle"
-                                         alt="image">
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Francisco Ubsdale</h6>
-
-                            </div>
-
-                        </a>
-                      <a href="#" class="list-group-item d-flex align-items-center">
-                            <div class="pr-3">
-                                <div class="avatar">
-                                    <img src="{% static 'media/image/photo1.jpg' %}"
-                                         class="rounded-circle"
-                                         alt="image">
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Francisco Ubsdale</h6>
-
-                            </div>
-
-                        </a>
-                      <a href="#" class="list-group-item d-flex align-items-center">
-                            <div class="pr-3">
-                                <div class="avatar">
-                                    <img src="{% static 'media/image/photo1.jpg' %}"
-                                         class="rounded-circle"
-                                         alt="image">
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Francisco Ubsdale</h6>
-
-                            </div>
-
-                        </a>
                   </div>
                 </div>
             </div>
@@ -584,7 +529,23 @@
                         start: '{{ event.date_start.isoformat}}',
                         end: '{{ event.date_end.isoformat }}',
                         part: '{{ event.get_participation_type_display }}',
-                        event_part: '{{ event.participants }}',
+                        event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
+                        event_part_list: [
+                            {% for part in event.get_participants %}
+                                {
+                                    username: '{{ part.username }}',
+                                    fullname: '{{ part.getFullName }}',
+                                    avatar: '{{ part.Avatar }}',
+
+                                },
+                            {% endfor %}
+                            ],
+
+
+
+
+
+
                         //icon: "user-o",
                         description: `{{ event.description }}`,
                         {% if event.is_all_day %}
@@ -756,14 +717,45 @@
 
                     if (event.part == 'Choose User')
                     {
-                    modal.find('.participant').append("10");
-                    modal.find('.participant_name').html(event.event_part);
-                    modal.find('.part_custom').show();
+
+
+                                console.log(event.event_part_list);
+                                 modal.find('.participant').append(event.event_part_list.length);
+                                for (i = 0; i < event.event_part_list.length; i++){
+
+
+
+                                 $('.part_list').append(` <a href='#' class='list-group-item d-flex align-items-center'>
+                                    <div class='pr-3'>
+                                        <div class='avatar'>
+                                            <img src="${event.event_part_list[i].avatar}"
+                                                 class='rounded-circle'
+                                                 alt='image'>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class='mb-1 participant_name '> ${event.event_part_list[i].fullname} </h6>
+                                    </div>
+                                 </a>`);
+
+
+
+
+                                }
+
+
+
+
+
+
+
+                           // modal.find('.participant_name').text(event.event_part);
+                            modal.find('.part_custom').show();
 
 
 
                     }else{
-                    modal.find('.participant').append(event.part);
+                     modal.find('.participant').append(event.part);
                      modal.find('.part_custom').hide();
                     }
                     modal.find('.desc').html(event.description);

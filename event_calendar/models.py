@@ -33,6 +33,12 @@ class CalendarEvent(models.Model):
     def __str__(self):
         return self.title
 
+    def get_participants(self):
+        participant_list = self.participants.all()
+        print(type(participant_list))
+        print(participant_list)
+        return participant_list
+
     class Meta:
         verbose_name = _("Calendar Event")
         verbose_name_plural = _("Calendar Events")

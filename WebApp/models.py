@@ -210,11 +210,11 @@ class MemberInfo(AbstractUser):
             default_avatar = self.Member_Avatar.url
         else:
             if self.Member_Gender == 'F':
-                default_avatar = '/static/images/profile/female.png'
+                default_avatar = '/static/media/image/user/women_avatar1.jpg'
             elif self.Member_Gender == 'M':
-                default_avatar = '/static/images/profile/male.jpg'
+                default_avatar = '/static/media/image/user/man_avatar1.jpg'
             else:
-                default_avatar = '/static/images/profile/profile.png'
+                default_avatar = '/static/media/image/user/women_avatar1.jpg'
         return default_avatar
 
     class Meta:
