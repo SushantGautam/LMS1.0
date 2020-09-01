@@ -35,3 +35,75 @@
     {% include "Notifications/pagination.html" %}
 {% endblock content %}
 
+{% block customjss %}
+    <script>
+        console.log("jsfdsgh")
+        $('.markread').on('click', function (e) {
+            e.preventDefault();
+            let id = $(this).attr('data-id');
+            var markAllReadurl = '/inbox/notifications/mark-as-read/' + id;
+
+            $.ajax({
+                url: markAllReadurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        });
+
+        $('.markunread').on('click', function (e) {
+            e.preventDefault();
+            let id = $(this).attr('data-id');
+            var markAllReadurl = '/inbox/notifications/mark-as-unread/' + id;
+
+            $.ajax({
+                url: markAllReadurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        });
+
+        function deleteNotification(id) {
+            let confirmation = confirm('Are you sure you want to delete this notification?');
+            if (!confirmation) {
+                return false;
+            }
+            {#let id = $(this).attr('data-id');#}
+            var deleteurl = '/inbox/notifications/delete/' + id;
+
+            $.ajax({
+                url: deleteurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        }
+
+        $('#markreadAll').on('click', function (e) {
+            e.preventDefault()
+            $.ajax({
+                url: markAllReadurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        })
+    </script>
+{% endblock %}
