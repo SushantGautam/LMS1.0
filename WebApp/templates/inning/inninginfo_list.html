@@ -74,12 +74,13 @@
                                 <a href="
 
 
+
                                         {% if '/mysessions' not in request.path %}{{ object.get_absolute_url }}{% elif 'mysessions' in request.path %}{% url 'teachers_mysession_detail' object.pk %}{% endif %}">{{ object.Inning_Name }}</a>
                             </b></td>
                             <td style="vertical-align: middle;">{{ object.Groups }}</td>
                             <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
-                            <td style="vertical-align: middle;">{{ object.Start_Date }}</td>
-                            <td style="vertical-align: middle;">{{ object.End_Date }}</td>
+                            <td style="vertical-align: middle;">{{ object.Start_Date|date:"M d, Y h:i A" }}</td>
+                            <td style="vertical-align: middle;">{{ object.End_Date|date:"M d, Y h:i A" }}</td>
                             <td class="text-center"><a class="btn btn-sm btn-info"
                                                        href="   {% if '/mysessions' not in request.path %}
                                         {{ object.get_absolute_url }}
@@ -113,8 +114,10 @@
                           </p>
                         </span><br>
 
-                            <h5 class="card-title"><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}</h5>
-                            <h5 class="card-title"><b>End Date : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</h5>
+                            <h5 class="card-title"><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:"M d, Y h:i A" }}
+                            </h5>
+                            <h5 class="card-title"><b>End Date : </b>&nbsp;{{ object.End_Date|date:"M d, Y h:i A" }}
+                            </h5>
                         </div>
 
                     </div>
