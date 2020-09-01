@@ -14,12 +14,13 @@
 
         color: white;
     }
+  
 </style>
 
 
 <div class="alert alert-block alert-{{ notice.level }} {% if notice.unread %}markread{% endif %}"
      data-id="{{ notice.id }}"
-     style="background-color: {% if not notice.unread %}#888897{% endif %}">
+     style="background-color: {% if not notice.unread %}#6b6666{% endif %}">
     <a class="close pull-right" href="#">
         <i class="icon-clo  se"></i>
     </a>
@@ -45,19 +46,19 @@
     </div>
 
 
-    <p id="notification-buttons">
+    <p id="notification-buttons hovereffect">
         {% if notice.unread %}
-            <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread" data-id="{{ notice.id }}">
-                <b style="color:black"><i class="fa fa-check-circle"></i> Mark As Read</b>
+            <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread " data-id="{{ notice.id }}">
+                <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> Mark As Read</b>
             </a>
         {% else %}
-            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread" data-id="{{ notice.id }}">
-                <b style="color: black;"> Mark As Unread</b>
+            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread " data-id="{{ notice.id }}">
+                <b style="color: black; "> Mark As Unread</b>
             </a>
         {% endif %}
-        <a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
+        &nbsp;<a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
            onclick="deleteNotification('{{ notice.id }}')">
-            <b style="color: black;"> <i class="fa fa-trash"></i> Delete Notification</b>
+            <b style="color: black;"> <i style="color: rgb(170, 29, 29);" class="fa fa-trash"></i> Delete Notification</b>
         </a>
     </p>
 
