@@ -32,4 +32,4 @@ function getLiveNotification() {
 }
 
 getLiveNotification()
-setInterval(getLiveNotification, 600000);
+setInterval(getLiveNotification, 600000); // 10*60*1000 (10 minutes)

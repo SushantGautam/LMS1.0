@@ -13,7 +13,7 @@ from Notifications.models import Notification
 class NotificationViewList(ListView):
     template_name = 'Notifications/notification_list.html'
     context_object_name = 'notifications'
-    paginate_by = 1
+    paginate_by = 10
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
