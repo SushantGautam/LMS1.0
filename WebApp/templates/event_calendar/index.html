@@ -679,28 +679,42 @@
 
 
 
-                  if (event.allDay)
-                    {
 
-                     modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
-                     modal.find('.start_at').html(start_date);
-                     modal.find('.end_at').html(end_date);
+                    if (event.allDay){
+                        modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
+                        if (start_date == end_date){
+                             modal.find('.strt_at').html("Date:");
+                             modal.find('.start_at').html(start_date);
+                             modal.find('.en_at').hide();
+
+
+                        }
+                        else{
+                            modal.find('.start_at').html(start_date);
+                            modal.find('.end_at').html(end_date);
+
+                        }
 
                     }else{
+                        modal.find('.en_at').html("Time:");
+                        modal.find('.end_at').html(stime + "&nbsp; to &nbsp;" + etime );
+                        if(start_date == end_date){
+                             modal.find('.strt_at').html("Date:");
+                             modal.find('.start_at').html(start_date);
 
-                    modal.find('.start_at').html(start_date + stime);
-                    modal.find('.end_at').html(end_date + etime);
+                        }
+                        else{
+                             modal.find('.strt_at').html("From:");
+                             modal.find('.start_at').html(start_date +" &nbsp; to &nbsp; "+ end_date);
+
+
+                        }
+
 
                     }
 
-                  if( start_date == end_date ){
 
-                     modal.find('.strt_at').html("Date:");
-                     modal.find('.start_at').html(start_date);
-                     modal.find('.en_at').hide();
-                     modal.find('.end_at').hide();
 
-                  }
 
 
 
