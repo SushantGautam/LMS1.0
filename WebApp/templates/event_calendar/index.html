@@ -502,10 +502,10 @@
 
                     modal.find("#id_description").html(event.description);
                     modal.find("#btn-save").text("Update");
-                    modal.find(".close").click(function() {
-                    location.reload();
+                  //  modal.find(".close").click(function() {
+                  //  location.reload();
 
-                    })
+                 //   })
 
                     modal.find("#calendar_event_form").attr('action', "{% url 'event_calendar_updated' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")));
 
@@ -783,7 +783,7 @@
                     $("#update_event_btn").click({param1: event}, update_fxn);
                     modal.find(".close").click(function() {
                         location.reload();
-                    })
+                     })
                     modal.modal();
 
                 },
@@ -980,6 +980,26 @@
 
         $(".create_event_button").click(function () {
             //console.log("event create button click");
+            $("#calendar_event_form").trigger("reset");
+            $('#createEventModal .modal-title').text("Create Event");
+            $('#createEventModal #id_is_all_day').prop("checked", true);
+
+                    if ($("#createEventModal #id_is_all_day").is(':checked')) {
+                        $(".datetime_dynamic").hide();
+                    } else {
+                        $(".datetime_dynamic").show();
+                    }
+            $("#event-start-date").val("Date");
+            $("#event-end-date").val("Date");
+            $("#event-start-time").val("00:00");
+            $("#event-end-time").val("00:00");
+            $("#createEventModal #id_title").val("Program");
+            $("#createEventModal #id_description").val("");
+            $("#createEventModal #btn-save").text("Create");
+            $("#createEventModal").trigger("change");
+
+
+
             $("#id_participant_type_1").click();
             $("#id_filter_type_1").click();
         })
