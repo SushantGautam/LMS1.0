@@ -960,6 +960,53 @@
 
             //// Validation Here:
             let is_valid = true;
+
+
+             let title = $("#createEventModal #id_title").val();
+             let sd = $("#event-start-date").val();
+             let st = $("#event-start-time").val();
+             let ed = $("#event-end-date").val();
+             let et = $("#event-end-time").val();
+             let is_ad = $("#createEventModal #id_is_all_day").is(':checked');
+             let is_custom = $("#createEventModal #id_participant_type_4").is(':checked');
+             let p_l = $(".select2-selection__rendered > li").length;
+
+             if (title.length < 1){
+                 $("#createEventModal #id_title").after('<span class="error">This field is required</span>');
+                is_valid = false;
+
+             }
+              if (sd === "Date"){
+                 $("#event-start-date").after('<span class="error">This field is required</span>');
+                is_valid = false;
+
+             }
+              if (ed === "Date"){
+                 $("#event-end-date").after('<span class="error">This field is required</span>');
+                is_valid = false;
+
+             }
+             if(!is_ad){
+                if(st === "00:00"){
+                    $("#event-start-time").after('<span class="error">This field is required</span>');
+                    is_valid = false;
+                }
+                if(et === "00:00"){
+                    $("#event-end-time").after('<span class="error">This field is required</span>');
+                    is_valid = false;
+                }
+
+             }
+            if(is_custom){
+                if( p_l < 2 ){
+                     $("#id_participants").after('<span class="error">This field is required</span>');
+                     is_valid = false;
+
+                }
+            }
+
+
+
             if (!is_valid) {
                 e.preventDefault();
                 return false;
