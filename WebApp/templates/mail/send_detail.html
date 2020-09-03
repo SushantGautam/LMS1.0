@@ -98,18 +98,18 @@
 <div class="app-detail-article">
         <div class="card-body">
             <div class="d-flex mb-4">
-                <div class="d-flex align-items-center">
+                <div class="d-flex col-md-8 align-items-center">
                     <figure class="avatar mr-3">
                         <img src="{%static "media/image/user/women_avatar5.jpg"%}"
                         class="rounded-circle"
                         alt="image">
                     </figure>
                     <div>
+
+
                         <h6 class="m-b-0">
                         <span class="text-primary"
-                              id="card_content_sender">From:{{ object.sender }} &lt  {{ object.sender.email}} &gt</span>
-                            <!--                                            <span class="d-sm-inline d-none text-muted"> &lt;elnora@gmail.com&gt;</span>-->
-                        </h6>
+                              id="card_content_sender">From:{{ object.sender }} &lt  {{ object.sender.email}} &gt </span></h6>
 
                         <span class="small text-muted" id="card_content_receiver">To:
                             {% for u in user_list %}
@@ -124,7 +124,9 @@
 <!--                        <span class="small text-muted" id="card_content_receiver">{{ object.receiver }}</span>-->
                     </div>
                 </div>
-                <div class="ml-auto">
+
+
+                    <div class="col-md-4" style="float:right;">
                     {%if object.attachment%}
                     <a href="{{ MEDIA_URL }}{{ object.attachment.url }}" data-toggle="tooltip" title="{{ object.get_file_upload_name }}" class="mr-2">
                         <i class="fa fa-paperclip"></i>
@@ -137,7 +139,21 @@
                     {%endif%}
 
                     <span class="text-muted" id="card_content_viewed_date">{{ object.created_date }}</span>
-                </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
 
             <p id="card_content_body">

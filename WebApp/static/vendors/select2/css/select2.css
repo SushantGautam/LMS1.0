@@ -30,12 +30,20 @@
     min-height: 32px;
     user-select: none;
     -webkit-user-select: none; }
+
+
+    /* Scroll Option Added when receivers are larger     */
     .select2-container .select2-selection--multiple .select2-selection__rendered {
       display: inline-block;
       overflow: hidden;
       padding-left: 8px;
       text-overflow: ellipsis;
-      white-space: nowrap; }
+      white-space: nowrap;
+      overflow-y: scroll;
+      height: inherit;
+
+
+      }
   .select2-container .select2-search--inline {
     float: left; }
     .select2-container .select2-search--inline .select2-search__field {

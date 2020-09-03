@@ -3357,7 +3357,7 @@ body.no-scroll {
 }
 
 * {
-  min-width: 0;
+ /* min-width: 0; */
 }
 
 .preloader {
@@ -7678,10 +7678,14 @@ body.modal-open .modal.show .modal-dialog {
 
 .avatar > a > img,
 .avatar > img {
-  width: 100%;
+  width: auto;
   height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
+}
+
+.card_content_body > p{
+    margin-left:20px;
 }
 
 .avatar.avatar-sm {

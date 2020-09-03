@@ -265,13 +265,13 @@
                     <div class="row">
 
                         <div class="col-md-6" style="text-align:left;">
-                            <h6 class="strt_at"> Start At:</h6>
+                            <h6 class="strt_at"> Start At: (MM/DD/YYYY)</h6>
                             <div class="start_at"></div>
                             <br>
                         </div>
 
                         <div class="col-md-6" style="text-align:left;">
-                            <h6 class="en_at"> End At:</h6>
+                            <h6 class="en_at"> End At: (MM/DD/YYYY)</h6>
                             <div class="end_at"></div>
                         </div>
 
@@ -683,7 +683,7 @@
                     if (event.allDay){
                         modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
                         if (start_date == end_date){
-                             modal.find('.strt_at').html("Date:");
+                             modal.find('.strt_at').html("Date: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date);
                              modal.find('.en_at').hide();
                         }
@@ -693,15 +693,15 @@
                         }
 
                     }else{
-                        modal.find('.en_at').html("Time:");
+                        modal.find('.en_at').html("Time: (24Hrs.)");
                         modal.find('.end_at').html(stime + "&nbsp; to &nbsp;" + etime );
                         if(start_date == end_date){
-                             modal.find('.strt_at').html("Date:");
+                             modal.find('.strt_at').html("Date: MM/DD/YYYY")
                              modal.find('.start_at').html(start_date);
 
                         }
                         else{
-                             modal.find('.strt_at').html("From:");
+                             modal.find('.strt_at').html("From: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date +" &nbsp; to &nbsp; "+ end_date);
                         }
                     }
@@ -888,6 +888,8 @@
     <script>
         $(".select2-example").select2({
             placeholder: 'Select',
+           width: "element",
+             multiple: true,
             templateResult: function (state) {
                 // how dropdown list is displayed
                 let filter_type = $("input[name='filter_type']:checked").val();

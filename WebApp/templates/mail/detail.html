@@ -138,7 +138,7 @@
     <div class="app-detail-article">
         <div class="card-body">
             <div class="d-flex mb-4">
-                <div class="d-flex align-items-center">
+                <div class="d-flex col-md-8 align-items-center">
                     <figure class="avatar mr-3">
                         <img src="{%static 'media/image/user/women_avatar5.jpg'%}"
                         class="rounded-circle"
@@ -148,8 +148,9 @@
                         <h6 class="m-b-0">
                         <span class="text-primary"
                               id="card_content_sender"> From: {{ object.mail.sender }} &lt {{object.mail.sender.email}} &gt</span>
-                            <!--                                            <span class="d-sm-inline d-none text-muted"> &lt;elnora@gmail.com&gt;</span>-->
-                        </h6>
+
+</h6>
+
 
                         <span class="small text-muted" id="card_content_receiver">To:
 
@@ -164,9 +165,9 @@
                         {%endfor%}
 
                             </span>
-                    </div>
                 </div>
-                <div class="ml-auto">
+                </div>
+                <div class="col-md-4" style="float:right;">
                     {%if object.mail.attachment%}
                     <a href="{{ MEDIA_URL }}{{ object.mail.attachment.url }}" data-toggle="tooltip" title="{{ object.get_file_upload_name }}" class="mr-2">
                         <i class="fa fa-paperclip"></i>
@@ -179,10 +180,12 @@
                     {%endif%}
 
                     <span class="text-muted" id="card_content_viewed_date">{{ object.received_date }}</span>
-                </div>
+                    </div>
+
+
             </div>
 
-            <p id="card_content_body">
+            <p id="card_content_body" >
                 {{ object.mail.body|safe }}
             </p>
             {%if object.mail.attachment%}
