@@ -18,7 +18,7 @@
 </style>
 
 
-<div class="alert alert-block alert-{{ notice.level }} {% if notice.unread %}markread{% endif %}"
+<div class="notific-div alert alert-block alert-{{ notice.level }} {% if notice.unread %}markread{% endif %}"
      data-id="{{ notice.id }}"
      style="background-color: {% if not notice.unread %}#6b6666{% endif %}">
     <a class="close pull-right" href="#">
@@ -40,13 +40,14 @@
             <p class="notific-desc">  {{ notice.description|linebreaksbr }}</p>
 
         </div>
-        <div class="col-md-3 text-right " id="notification-icon-click">
+        <div class="col-md-3 text-right notification-icon-click" id="notification-icon-click"
+             onclick="notificationIconClick($(this))">
             <i class="notification-icon1 fa fa-ellipsis-h"></i>
         </div>
     </div>
 
 
-    <p id="notification-buttons hovereffect">
+    <p class="notification-buttons" id="notification-buttons hovereffect" style="display: none">
         {% if notice.unread %}
             <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread " data-id="{{ notice.id }}">
                 <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> Mark As Read</b>
@@ -74,11 +75,15 @@
 <script>
     $('.markread').on('click', function (e) {
         e.preventDefault();
+        if ($(e.target).hasClass('notification-icon1') || $(e.target).hasClass('notification-icon-click') ||
+            $(e.target).hasClass('delete-notification') || $(e.target).parent().hasClass('delete-notification')) {
+            return false
+        }
         let id = $(this).attr('data-id');
-        var markAllReadurl = '/inbox/notifications/mark-as-read/' + id;
+        var markReadurl = '/inbox/notifications/mark-as-read/' + id;
 
         $.ajax({
-            url: markAllReadurl,
+            url: markReadurl,
             method: 'GET',
             success: function (data) {
                 getLiveNotification();
@@ -92,10 +97,10 @@
     $('.markunread').on('click', function (e) {
         e.preventDefault();
         let id = $(this).attr('data-id');
-        var markAllReadurl = '/inbox/notifications/mark-as-unread/' + id;
+        var markunReadurl = '/inbox/notifications/mark-as-unread/' + id;
 
         $.ajax({
-            url: markAllReadurl,
+            url: markunReadurl,
             method: 'GET',
             success: function (data) {
                 getLiveNotification()
@@ -157,5 +162,7 @@
         })
     })
 
-
+    function notificationIconClick(elem) {
+        $(elem).closest('.notific-div').find('.notification-buttons').toggle()
+    }
 </script>

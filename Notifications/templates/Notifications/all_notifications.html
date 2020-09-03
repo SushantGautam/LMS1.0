@@ -7,9 +7,9 @@
     <div class="notification_menu1">
         <li class="row" style="list-style:none">
             <div class="col-md-7">
-                <h2> <b>Notifications</b>
+                <h2><b>Notifications</b>
 
-                     </h2>
+                </h2>
             </div>
             <div class="col-md-5 text-right">
                 {% if notifications %}
@@ -41,11 +41,15 @@
     <script>
         $('.markread').on('click', function (e) {
             e.preventDefault();
+            if ($(e.target).hasClass('notification-icon1') || $(e.target).hasClass('notification-icon-click') ||
+                $(e.target).hasClass('delete-notification') || $(e.target).parent().hasClass('delete-notification')) {
+                return false
+            }
             let id = $(this).attr('data-id');
-            var markAllReadurl = '/inbox/notifications/mark-as-read/' + id;
+            {#var markReadurl = '/inbox/notifications/mark-as-read/' + id;#}
 
             $.ajax({
-                url: markAllReadurl,
+                url: markReadurl,
                 method: 'GET',
                 success: function (data) {
                     location.reload()
@@ -59,10 +63,10 @@
         $('.markunread').on('click', function (e) {
             e.preventDefault();
             let id = $(this).attr('data-id');
-            var markAllReadurl = '/inbox/notifications/mark-as-unread/' + id;
+            var markunReadurl = '/inbox/notifications/mark-as-unread/' + id;
 
             $.ajax({
-                url: markAllReadurl,
+                url: markunReadurl,
                 method: 'GET',
                 success: function (data) {
                     location.reload()
