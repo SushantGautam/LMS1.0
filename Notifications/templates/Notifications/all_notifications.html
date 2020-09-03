@@ -46,7 +46,7 @@
                 return false
             }
             let id = $(this).attr('data-id');
-            {#var markReadurl = '/inbox/notifications/mark-as-read/' + id;#}
+            var markReadurl = '/inbox/notifications/mark-as-read/' + id;
 
             $.ajax({
                 url: markReadurl,
