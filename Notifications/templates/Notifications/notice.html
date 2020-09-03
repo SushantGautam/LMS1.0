@@ -130,20 +130,25 @@
         var notificDescriptionString = notificDescriptionString;
         var patt = /(from)\s(\d{2}:\d{2})\s(.*?)(\d{2}-\d{2}-\d{4})/;
         var result = notificDescriptionString.match(patt);
-        var time = result[2];
-        var date = result[4];
-        let localtime = TimeConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
-        let localdate = DateConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
-        return [localtime, localdate]
+        if (result) {
+            var time = result[2];
+            var date = result[4];
+            let localtime = TimeConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+            let localdate = DateConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+            return [localtime, localdate]
+        }
+        return null
     }
 
     function replaceNotificationDescriptionWithLocalDate(elem, notificDescriptionString) {
         let datetimearr = getNotificationDateTimeFromString(notificDescriptionString);
-        var timepatt = /(from)\s\d{2}:\d{2}/;
-        var datepatt = /\d{2}-\d{2}-\d{4}/;
-        var result = notificDescriptionString.replace(timepatt, "from " + datetimearr[0]);
-        var result = result.replace(datepatt, datetimearr[1].split(',')[0]);
-        $(elem).text('').text(result)
+        if (datetimearr) {
+            var timepatt = /(from)\s\d{2}:\d{2}/;
+            var datepatt = /\d{2}-\d{2}-\d{4}/;
+            var result = notificDescriptionString.replace(timepatt, "from " + datetimearr[0]);
+            var result = result.replace(datepatt, datetimearr[1].split(',')[0]);
+            $(elem).text('').text(result)
+        }
     }
 
     $(document).ready(function () {
