@@ -36,7 +36,7 @@
 
             <p>{{ notice.timesince }} ago</p>
 
-            <p>  {{ notice.description|linebreaksbr }}</p>
+            <p class="notific-desc">  {{ notice.description|linebreaksbr }}</p>
 
         </div>
         <div class="col-md-3 text-right " id="notification-icon-click">
@@ -123,4 +123,29 @@
             }
         })
     }
+
+    function getNotificationDateTimeFromString(notificDescriptionString) {
+        var notificDescriptionString = notificDescriptionString;
+        var patt = /(from)\s(\d{2}:\d{2})\s(.*?)(\d{2}-\d{2}-\d{4})/;
+        var result = notificDescriptionString.match(patt);
+        var time = result[2];
+        var date = result[4];
+        time = TimeConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+        date = DateConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+        return [time, date]
+    }
+
+    function replaceNotificationDescriptionWithLocalDate(elem, notificDescriptionString) {
+        let datetimearr = getNotificationDateTimeFromString(notificDescriptionString);
+        var timepatt = /(from)\s\d{2}:\d{2}/;
+        var datepatt = /\d{2}-\d{2}-\d{4}/;
+        var result = notificDescriptionString.replace(timepatt, "from " + datetimearr[0]);
+        var result = result.replace(datepatt, datetimearr[1].split(',')[0]);
+        $(elem).text('').text(result)
+    }
+
+    $('.notific-desc').each(function () {
+        replaceNotificationDescriptionWithLocalDate($(this), $(this).text())
+    })
+
 </script>
