@@ -14,7 +14,7 @@
 
         color: white;
     }
-  
+
 </style>
 
 
@@ -52,14 +52,15 @@
                 <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> Mark As Read</b>
             </a>
         {% else %}
-            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread " data-id="{{ notice.id }}">
+            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread "
+               data-id="{{ notice.id }}">
                 <b style="color: black; "> Mark As Unread</b>
             </a>
         {% endif %}
         &nbsp;<a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
-           onclick="deleteNotification('{{ notice.id }}')">
-            <b style="color: black;"> <i style="color: rgb(170, 29, 29);" class="fa fa-trash"></i> Delete Notification</b>
-        </a>
+                 onclick="deleteNotification('{{ notice.id }}')">
+        <b style="color: black;"> <i style="color: rgb(170, 29, 29);" class="fa fa-trash"></i> Delete Notification</b>
+    </a>
     </p>
 
     <div class="notice-actions">
@@ -131,9 +132,9 @@
         var result = notificDescriptionString.match(patt);
         var time = result[2];
         var date = result[4];
-        time = TimeConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
-        date = DateConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
-        return [time, date]
+        let localtime = TimeConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+        let localdate = DateConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+        return [localtime, localdate]
     }
 
     function replaceNotificationDescriptionWithLocalDate(elem, notificDescriptionString) {
@@ -145,8 +146,11 @@
         $(elem).text('').text(result)
     }
 
-    $('.notific-desc').each(function () {
-        replaceNotificationDescriptionWithLocalDate($(this), $(this).text())
+    $(document).ready(function () {
+        $('.notific-desc').each(function () {
+            replaceNotificationDescriptionWithLocalDate($(this), $(this).text())
+        })
     })
+
 
 </script>
