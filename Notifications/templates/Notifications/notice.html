@@ -1,35 +1,67 @@
-<div class="alert alert-block alert-{{ notice.level }}">
+<style>
+    .notification-icon1 {
+        background-color: white;
+        padding: 2px 4px;;
+        font-size: 20px;
+        color: black;
+        transition: transform .2s;
+    }
+
+    .notification-icon1:hover {
+        cursor: pointer;
+        transform: scale(1.5);
+        background-color: rgba(52, 152, 219, .88);
+
+        color: white;
+    }
+
+</style>
+
+
+<div class="notific-div alert alert-block alert-{{ notice.level }} {% if notice.unread %}markread{% endif %}"
+     data-id="{{ notice.id }}"
+     style="background-color: {% if not notice.unread %}#6b6666{% endif %}">
     <a class="close pull-right" href="#">
         <i class="icon-clo  se"></i>
     </a>
+    <div class="row">
+        <div class="col-md-9">
+            <h4 style="color: white;">
+                <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
+                {% if notice.action_object %}
+                    {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}
+                    {{ notice.action_object }}
+                    {#            </a>#}
+                {% endif %}
+            </h4>
 
-    <h4>
-        <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
-        {% if notice.action_object %}
-            {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}
-            {{ notice.action_object }}
-            {#            </a>#}
-        {% endif %}
-    </h4>
+            <p>{{ notice.timesince }} ago</p>
 
-    <p>{{ notice.timesince }} ago</p>
+            <p class="notific-desc">  {{ notice.description|linebreaksbr }}</p>
 
-    <p>{{ notice.description|linebreaksbr }}</p>
+        </div>
+        <div class="col-md-3 text-right notification-icon-click" id="notification-icon-click"
+             onclick="notificationIconClick($(this))">
+            <i class="notification-icon1 fa fa-ellipsis-h"></i>
+        </div>
+    </div>
 
-    <p>
+
+    <p class="notification-buttons" id="notification-buttons hovereffect" style="display: none">
         {% if notice.unread %}
-            <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread" data-id="{{ notice.id }}">
-                Mark As Read
+            <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread " data-id="{{ notice.id }}">
+                <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> Mark As Read</b>
             </a>
         {% else %}
-            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread" data-id="{{ notice.id }}">
-                Mark As Unread
+            <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread "
+               data-id="{{ notice.id }}">
+                <b style="color: black; "> Mark As Unread</b>
             </a>
         {% endif %}
-        <a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
-           onclick="deleteNotification('{{ notice.id }}')">
-            Delete Notification
-        </a>
+        &nbsp;<a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
+                 onclick="deleteNotification('{{ notice.id }}')">
+        <b style="color: black;"> <i style="color: rgb(170, 29, 29);" class="fa fa-trash"></i> Delete Notification</b>
+    </a>
     </p>
 
     <div class="notice-actions">
@@ -43,14 +75,17 @@
 <script>
     $('.markread').on('click', function (e) {
         e.preventDefault();
+        if ($(e.target).hasClass('notification-icon1') || $(e.target).hasClass('notification-icon-click') ||
+            $(e.target).hasClass('delete-notification') || $(e.target).parent().hasClass('delete-notification')) {
+            return false
+        }
         let id = $(this).attr('data-id');
-        var markAllReadurl = '/inbox/notifications/mark-as-read/' + id;
+        var markReadurl = '/inbox/notifications/mark-as-read/' + id;
 
         $.ajax({
-            url: markAllReadurl,
+            url: markReadurl,
             method: 'GET',
             success: function (data) {
-                $('#notification_count').text('').text(data.unread_count);
                 getLiveNotification();
             },
             error: function (e) {
@@ -62,10 +97,10 @@
     $('.markunread').on('click', function (e) {
         e.preventDefault();
         let id = $(this).attr('data-id');
-        var markAllReadurl = '/inbox/notifications/mark-as-unread/' + id;
+        var markunReadurl = '/inbox/notifications/mark-as-unread/' + id;
 
         $.ajax({
-            url: markAllReadurl,
+            url: markunReadurl,
             method: 'GET',
             success: function (data) {
                 getLiveNotification()
@@ -94,5 +129,40 @@
                 console.log(e.responseText)
             }
         })
+    }
+
+    function getNotificationDateTimeFromString(notificDescriptionString) {
+        var notificDescriptionString = notificDescriptionString;
+        var patt = /(from)\s(\d{2}:\d{2})\s(.*?)(\d{2}-\d{2}-\d{4})/;
+        var result = notificDescriptionString.match(patt);
+        if (result) {
+            var time = result[2];
+            var date = result[4];
+            let localtime = TimeConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+            let localdate = DateConvert(moment(moment(date, 'DD-MM-YYYY')).format('MM-DD-YYYY') + "," + time);
+            return [localtime, localdate]
+        }
+        return null
+    }
+
+    function replaceNotificationDescriptionWithLocalDate(elem, notificDescriptionString) {
+        let datetimearr = getNotificationDateTimeFromString(notificDescriptionString);
+        if (datetimearr) {
+            var timepatt = /(from)\s\d{2}:\d{2}/;
+            var datepatt = /\d{2}-\d{2}-\d{4}/;
+            var result = notificDescriptionString.replace(timepatt, "from " + datetimearr[0]);
+            var result = result.replace(datepatt, datetimearr[1].split(',')[0]);
+            $(elem).text('').text(result)
+        }
+    }
+
+    $(document).ready(function () {
+        $('.notific-desc').each(function () {
+            replaceNotificationDescriptionWithLocalDate($(this), $(this).text())
+        })
+    })
+
+    function notificationIconClick(elem) {
+        $(elem).closest('.notific-div').find('.notification-buttons').toggle()
     }
 </script>

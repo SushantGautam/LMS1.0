@@ -13,6 +13,7 @@ app_name = 'Notifications'
 
 urlpatterns = [
     pattern(r'^$', views.AllNotificationsList.as_view(), name='all'),
+    pattern(r'^all/', views.SeeAllNotificationsList.as_view(), name='see_all'),
     # pattern(r'^unread/$', views.UnreadNotificationsList.as_view(), name='unread'),
     pattern(r'^mark-all-as-read/$', views.mark_all_as_read, name='mark_all_as_read'),
     pattern(r'^mark-as-read/(?P<pk>\d+)/$', views.mark_as_read, name='mark_as_read'),

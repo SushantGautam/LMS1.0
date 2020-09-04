@@ -31,6 +31,16 @@ class AllNotificationsList(NotificationViewList):
         return qset
 
 
+class SeeAllNotificationsList(NotificationViewList):
+    """
+    Index page for authenticated user
+    """
+    template_name = "Notifications/all_notifications.html"
+
+    def get_queryset(self):
+        qset = self.request.user.notifications.all()
+        return qset
+
 class UnreadNotificationsList(NotificationViewList):
     def get_queryset(self):
         return self.request.user.notifications.unread()
