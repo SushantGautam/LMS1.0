@@ -404,7 +404,7 @@
 
                     var modal = $('#createEventModal');
                     modal.find('.modal-title').text("Update Event");
-                    modal.find('#id_title').attr('value', event.title);
+                    modal.find('#id_title').val(event.title);
                    if (event.type === "Holiday")
                    {
                         modal.find("#customRadioInline3").prop("checked", true);
@@ -416,6 +416,17 @@
                     }
 
 
+
+                   if (event.allDay)
+                    {
+                      modal.find('#id_is_all_day').prop("checked", true);
+                      $(".datetime_dynamic").hide();
+
+
+                   }else {
+                    modal.find('#id_is_all_day').prop("checked", false);
+                    $(".datetime_dynamic").show();
+                   }
 
 
 
@@ -461,22 +472,13 @@
 
 
 
-                modal.find('#event-start-date').attr("value", start_date);
-                modal.find('#event-start-time').attr("value", stime);
+                modal.find('#event-start-date').val(start_date);
+                modal.find('#event-start-time').val(stime);
 
-                modal.find('#event-end-date').attr("value", end_date);
-                modal.find('#event-end-time').attr("value", etime);
-
-               if (event.allDay)
-               {
-                  modal.find('#id_is_all_day').prop("checked", true);
-                  $(".datetime_dynamic").hide();
+                modal.find('#event-end-date').val( end_date);
+                modal.find('#event-end-time').val(etime);
 
 
-               }else {
-                modal.find('#id_is_all_day').prop("checked", false);
-                $(".datetime_dynamic").show();
-               }
 
 
 
@@ -616,6 +618,7 @@
                     right: 'month,agendaWeek,agendaDay,listMonth'
                 },
                 timezone:"local",
+                nextDayThreshold: '00:00',
                 editable: true,
                 droppable: true,
                 drop: function () {
@@ -948,36 +951,36 @@
              let p_l = $(".select2-selection__rendered > li").length;
 
              if (title.length < 1){
-                 $("#createEventModal #id_title").after('<span class="error">This field is required</span>');
+                 $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
 
              }
-              if (sd === "Date"){
-                 $("#event-start-date").after('<span class="error">This field is required</span>');
+              if (sd === ""){
+                 $("#event-start-date").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
 
              }
-              if (ed === "Date"){
-                 $("#event-end-date").after('<span class="error">This field is required</span>');
-                // $("#event-end-date").siblings('<span class="error">This field is required</span>').remove();
+              if (ed === ""){
+                 $("#event-end-date").after('<span class="text-danger">This field is required</span>');
+
 
                 is_valid = false;
 
              }
              if(!is_ad){
-                if(st === "00:00"){
-                    $("#event-start-time").after('<span class="error">This field is required</span>');
+                if(st === ""){
+                    $("#event-start-time").after('<span class=" text-danger">This field is required</span>');
                     is_valid = false;
                 }
-                if(et === "00:00"){
-                    $("#event-end-time").after('<span class="error">This field is required</span>');
+                if(et === ""){
+                    $("#event-end-time").after('<span class=" text-danger">This field is required</span>');
                     is_valid = false;
                 }
 
              }
             if(is_custom){
                 if( p_l < 2 ){
-                     $("#id_participants").after('<span class="error">This field is required</span>');
+                     $("#id_participants").after('<span class=" text-danger">This field is required</span>');
                      is_valid = false;
 
                 }
@@ -1013,14 +1016,16 @@
             $('#createEventModal #id_is_all_day').prop("checked", true);
 
                     if ($("#createEventModal #id_is_all_day").is(':checked')) {
-                        $(".datetime_dynamic").hide();
+                         $(".datetime_dynamic").hide();
+                         $("#event-start-time").val("00:00");
+                         $("#event-end-time").val("00:00");
                     } else {
                         $(".datetime_dynamic").show();
                     }
-            $("#event-start-date").val("Date");
-            $("#event-end-date").val("Date");
-            $("#event-start-time").val("00:00");
-            $("#event-end-time").val("00:00");
+            $("#event-start-date").val("");
+            $("#event-end-date").val("");
+            $("#event-start-time").val("");
+            $("#event-end-time").val("");
             $("#createEventModal #id_title").val("Program");
             $("#createEventModal #id_description").val("");
             $("#createEventModal #btn-save").text("Create");
