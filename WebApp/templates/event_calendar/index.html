@@ -256,8 +256,9 @@
                     <div class="row">
                         <div class="col-md-6" style="float:left;text-align:left;">
                             <h6> Event Type:</h6>
-                            <div class="type_event">
-                                <span class="btn btn-sm  event-type"> </span>
+                            <div>
+                                <span class="btn btn-sm col-md-6  event-type"> </span>
+                                <span class="btn btn-sm col-md-6 type_event"> </span>
                             </div>
                         </div>
                     </div>
@@ -467,7 +468,10 @@
                 modal.find('#event-end-time').attr("value", etime);
 
                if (event.allDay)
-               { modal.find('#id_is_all_day').prop("checked", true);
+               {
+                  modal.find('#id_is_all_day').prop("checked", true);
+                  $(".datetime_dynamic").hide();
+
 
                }else {
                 modal.find('#id_is_all_day').prop("checked", false);
@@ -480,11 +484,14 @@
                     if (event.part === "All User")
                      {
                      modal.find("#id_participant_type_1").prop( "checked", true );
+                     $(".participant_dynamic").hide();
                     }else if (event.part === "All Student")
                     {
+                    $(".participant_dynamic").hide();
                     modal.find("#id_participant_type_2").prop( "checked", true );
                     }else if (event.part === "All Teacher")
                     {
+                     $(".participant_dynamic").hide();
                      modal.find("#id_participant_type_3").prop( "checked", true );
                     }else
                     {
@@ -636,6 +643,7 @@
 
 
                   eventClick: function (event, jsEvent, view) {
+
                     var modal = $('#viewEventModal');
 
                     modal.find('.event-type').addClass(event.className);;
@@ -681,22 +689,27 @@
 
 
                     if (event.allDay){
-                        modal.find('.type_event').append("<a class='btn btn-sm btn-light'>All Day Event</a>");
+                        modal.find('.type_event').html("<a class='btn btn-sm btn-light'>All Day Event</a>");
                         if (start_date == end_date){
                              modal.find('.strt_at').html("Date: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date);
-                             modal.find('.en_at').hide();
+                             modal.find('.end_at').empty();
+                             modal.find('.en_at').empty();
+                           //  modal.find('.en_at').hide();
                         }
                         else{
+                            modal.find('.strt_at').html("Start At: (MM/DD/YYYY)")
+                            modal.find('.en_at').html("End At: (MM/DD/YYYY)")
                             modal.find('.start_at').html(start_date);
                             modal.find('.end_at').html(end_date);
                         }
 
                     }else{
+                        modal.find('.type_event').empty();
                         modal.find('.en_at').html("Time: (24Hrs.)");
                         modal.find('.end_at').html(stime + "&nbsp; to &nbsp;" + etime );
                         if(start_date == end_date){
-                             modal.find('.strt_at').html("Date: MM/DD/YYYY")
+                             modal.find('.strt_at').html("Date: (MM/DD/YYYY)")
                              modal.find('.start_at').html(start_date);
 
                         }
@@ -710,7 +723,8 @@
                     if (event.part == 'Choose User')
                     {
                         console.log(event.event_part_list);
-                         modal.find('.participant').append(event.event_part_list.length);
+                         modal.find('.participant').html("Participants:&nbsp;"+event.event_part_list.length);
+                         $('.part_list').empty();
                         for (i = 0; i < event.event_part_list.length; i++){
                              $('.part_list').append(` <a href='#' class='list-group-item d-flex align-items-center'>
                                 <div class='pr-3'>
@@ -733,7 +747,8 @@
 
 
                     }else{
-                     modal.find('.participant').append(event.part);
+                  //   modal.find('.participant').append(event.part);
+                     modal.find('.participant').html("Participants:&nbsp;"+ event.part);
                      modal.find('.part_custom').hide();
                     }
                     modal.find('.desc').html(event.description);
@@ -746,7 +761,7 @@
                   //// update button upon pressing display Form Detail Modal
                     $("#update_event_btn").click({param1: event}, update_fxn);
                     modal.find(".close").click(function() {
-                        location.reload();
+                    //    location.reload();
                      })
 
 
@@ -989,6 +1004,8 @@
         });
 
         $(".create_event_button").click(function () {
+
+
 
             //console.log("event create button click");
             $("#calendar_event_form").trigger("reset");
