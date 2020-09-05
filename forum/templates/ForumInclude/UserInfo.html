@@ -26,7 +26,7 @@
                 {% elif '/forum' in request.path %}
                 {% url 'forum:user_info' pk=thread.user.pk %}
                 {% endif %}">
-                    <img  src="
+                    <img style="height:45px;width:45px; border-radius:50%"src="
                                                                             {% if thread.user.Member_Avatar %}
                                                                                 {{ thread.user.Member_Avatar.url }}
                                                                             {% elif thread.user.Member_Gender == 'M' %}
@@ -152,7 +152,7 @@
                     <p>
                         <h2>
                             <div class="content_reply">
-                                <img src="
+                                <img  style="height:45px;width:45px; border-radius:50%" src="
                                     {% if reply.user.Member_Avatar %}
                                         {{ reply.user.Member_Avatar.url }}
                                     {% elif reply.user.Member_Gender == 'M' %}
