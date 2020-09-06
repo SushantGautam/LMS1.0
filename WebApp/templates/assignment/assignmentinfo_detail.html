@@ -271,7 +271,7 @@
                                 {% for answer in Answers %}
                                     {% if questions.id == answer.Question_Code.id %}
                                         {% if answer.Assignment_Answer != '' %}
-                                            <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
+                                            <p class="short_answer" data-answer="{{ answer.Assignment_Answer|safe }}" style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
                                             {% now "Y-m-d H:i" as todays_date %}
                                             {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
                                                 <button class="btn btn-info editanswer"
@@ -288,6 +288,30 @@
                                                         aria-hidden="true"></i>
                                                 </button>
                                             {% endif %}
+                                            <div class="assignment_update_form" style="display: none;">
+                                                <form class="form_{{ questions.id }}">
+                                                        <div class="form-group">
+                                                            {{ form.Assignment_Answer }}
+                                                            <input type="hidden" value="{{ request.user.id }}"
+                                                                   name="Student_Code"
+                                                                   id="id_Student_Code{{ questions.id }}">
+                                                            <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                                   id="id_Question_Code{{ questions.id }}">
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <button class="btn btn-sm btn-primary cancelBtn" type="button" id="cancelButton{{ questions.pk }}">
+                                                               Cancel
+                                                            </button>
+                                                            <button class="btn btn-sm btn-primary resetBtn" type="reset">Reset</button>
+                               
+                                                            <button type="button" class="btn btn-sm btn-success submitAnswer"
+                                                                   id="answer{{ questions.id }}"
+                                                                   data-id="{{ questions.id }}"
+                                                                   data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer={{ answer.pk }}">Submit
+                                                            </button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
                                         {% else %}
                                             <p style="margin: 0;color:#000000;">File has been Submitted</p>
 
@@ -309,12 +333,13 @@
                                         {#                                              class="form-horizontal form-label-left submitAnswer"#}
                                         {#                                              novalidate="" data-id="{{ questions.id }}">#}
                                         {#                                            {% csrf_token %}#}
-                                        <form>
+                                        <form class="form_{{ questions.id }}">
                                             {% if questions.Answer_Type == 'S' %}
                                                 <div class="form-group">
-                                    <textarea class="form-control rounded-0" rows="5" cols="100"
-                                              name="Assignment_Answer" id="id_Assignment_Answer{{ questions.id }}"
-                                              placeholder="Enter your Answer" required></textarea>
+                                                    {{ form.Assignment_Answer }}
+                                                <!-- <textarea type="hidden" name="Assignment_Answer"
+                                                     id="id_Assignment_Answer{{ questions.id }}" 
+                                                     required></textarea> -->
                                                     <input type="hidden" value="{{ request.user.id }}"
                                                            name="Student_Code"
                                                            id="id_Student_Code{{ questions.id }}">
@@ -695,11 +720,10 @@
             } else {
                 var answer_file = 0;
             }
+            var answer_text = $(`.form_${$(this).attr('data-id')}`).find(`#id_Assignment_Answer`).val();
 
-            if ($(`#id_Assignment_Answer${$(this).attr('data-id')}`).val()) {
-                var answer_text = $(`#id_Assignment_Answer${$(this).attr('data-id')}`).val();
-            } else {
-                var answer_text = '';
+            if (! answer_text) {
+                answer_text = '';
             }
 
             if (answer_file == 0 && answer_text == '') {
@@ -768,39 +792,21 @@
             });
 
             $('.editanswer').click(function () {
-                $(this).parent().children().css('display', 'none')
-                $(this).parent().append(`
-                <div class="editdiv">
-                <form>
-                    <textarea class="form-control rounded-0" rows="5" cols="100"
-                              name="Assignment_Answer"
-                              placeholder="Enter your Answer"
-                              id="id_Assignment_Answer${$(this).attr('data-Question_Code')}" required>${$(this).parent().find('p').text()}</textarea>
-                    <input type="hidden" value="${$(this).attr('data-Student_Code')}" name="Student_Code"
-                    id=id_Student_Code${$(this).attr('data-Question_Code')}>
-                    <input type="hidden" value="${$(this).attr('data-Question_Code')}" name="Question_Code"
-                    id=id_Question_Code${$(this).attr('data-Question_Code')}>
-                    <div class="form-group text-center">
+                var assignementForm = $(this).parent().find(`.assignment_update_form`);
+                var iframe = $(this).parent().find(`iframe`);
+                var innerDoc = iframe.contents();
+                var shortAns = $(this).parent().find(`.short_answer`).attr('data-answer');
 
-                             <button class="btn btn-sm btn-primary cancelBtn" type="button" id="cancelButton{{ questions.pk }}">
-                                Cancel
-                            </button>
-                            <button class="btn btn-sm btn-primary resetBtn" type="reset">Reset</button>
-
-                            <button type="button" class="btn btn-sm btn-success submitAnswer"
-                                    id="answer${$(this).attr('data-Question_Code')}"
-                                    data-id="${$(this).attr('data-Question_Code')}"
-                                    data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer=${this.value}">Submit
-                            </button>
-                    </div>
-                    </form>
-                </div>
-                `)
-            })
+                $(this).parent().children().css('display', 'none');
+                assignementForm.show();
+                
+                innerDoc.find(`.note-editable`).html(shortAns);
+                $(this).parent().find(`#id_Assignment_Answer`).html(shortAns);
+            });
 
             $('.qacontainer').on('click', '.cancelBtn', function () {
-                $(this).closest('.editdiv').parent().children().css('display', 'block')
-                $(this).closest('.editdiv').remove()
+                $(this).closest('.assignment_update_form').parent().children().css('display', 'block');
+                $(this).closest('.assignment_update_form').hide();
             })
             //$('.qacontainer').on('click', '.resetBtn', function () {
             //  $(this).closest('.editdiv').find('textarea').val('')
