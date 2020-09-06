@@ -35,8 +35,8 @@ class CalendarEvent(models.Model):
 
     def get_participants(self):
         participant_list = self.participants.all()
-        print(type(participant_list))
-        print(participant_list)
+        # print(type(participant_list))
+        # print(participant_list)
         return participant_list
 
     class Meta:

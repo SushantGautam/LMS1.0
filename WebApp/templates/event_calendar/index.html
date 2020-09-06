@@ -241,11 +241,34 @@
                     <i class="ti-close"></i>
                 </button>
             </div>
-            <div class="modal-header" style="justify-content:center;">
-                <h5 class=" modal-title">
-                    <span class="event-icon mr-2 "></span>
+            <div class="modal-header" >
+                <h5 class=" modal-title col-md-8">
+
                     <span class="event-title ">Modal Title</span>
                 </h5>
+
+
+                <button class="btn btn-sm btn-warning text-white "  data-toggle="tooltip"
+                   title="Update" name="update"
+                        id="update_event_btn" style="text-align:center;"
+                ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp;
+                </button>
+
+
+
+
+
+
+                <form method="POST" class="delete_event" action=""
+                      onsubmit="return confirm('Are you sure you want to delete?');">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger btn-sm" data-toggle="tooltip"
+                   title="Delete">
+                        <i class="fa fa-trash" aria-hidden="true"></i> &nbsp;
+                    </button>
+                </form>
+
 
             </div>
 
@@ -307,20 +330,7 @@
                 <br>
 
 
-                <button class="btn btn-sm btn-warning text-white" name="update" style="float:left;"
-                        id="update_event_btn"
-                ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp; Update
-                </button>
 
-
-                <form method="POST" class="delete_event" action=""
-                      onsubmit="return confirm('Are you sure you want to delete?');">
-                    {% csrf_token %}
-
-                    <button type="submit" class="btn btn-danger btn-sm" style="float:right;">
-                        <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete
-                    </button>
-                </form>
 
 
             </div>
@@ -670,11 +680,14 @@
 
 
                       let end = event.end;
+                    //  console.log(end);
                       if (!end)
                       {
                       end = event.start;
                       }
+                   //   console.log(end);
                       end = end._d.toLocaleString();
+                      console.log(end);
                       let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                       let end_time = end.split(' ')[1];
                       let et = end.split(' ')[2];
@@ -701,6 +714,8 @@
                            //  modal.find('.en_at').hide();
                         }
                         else{
+
+
                             modal.find('.strt_at').html("Start At: (MM/DD/YYYY)")
                             modal.find('.en_at').html("End At: (MM/DD/YYYY)")
                             modal.find('.start_at').html(start_date);
@@ -928,6 +943,10 @@
 
         //// Calendar Event Create Form Submit:
         $("#calendar_event_form").submit(function (e) {
+
+
+
+
             //// Convert date and time inputs to UTC and required format for django:
 
             let d_end = new Date($("#event-end-date").val() + " " + $("#event-end-time").val());
@@ -949,6 +968,9 @@
              let is_ad = $("#createEventModal #id_is_all_day").is(':checked');
              let is_custom = $("#createEventModal #id_participant_type_4").is(':checked');
              let p_l = $(".select2-selection__rendered > li").length;
+
+
+
 
              if (title.length < 1){
                  $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');

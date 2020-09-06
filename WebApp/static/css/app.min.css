@@ -7678,7 +7678,7 @@ body.modal-open .modal.show .modal-dialog {
 
 .avatar > a > img,
 .avatar > img {
-  width: auto;
+  width: inherit;
   height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
