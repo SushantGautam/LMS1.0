@@ -554,11 +554,15 @@ class DepartmentInfoForm(forms.ModelForm):
                   'Register_Agent', 'Use_Flag']
         widgets = {
             'Center_Code': forms.HiddenInput(),
+            'Register_Agent': forms.HiddenInput(),
+            'Use_Flag':forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
+        self.fields['Register_Agent'].initial = self.request.user.username
+        self.fields['Use_Flag'].initial = True
         self.fields['Center_Code'].initial = self.request.user.Center_Code
         if '/edit' in self.request.path:
             del self.fields['Register_Agent']
@@ -573,3 +577,21 @@ class DepartmentInfoForm(forms.ModelForm):
                     if department.get(pk=self.instance.id).Department_Name == name:
                         return cleaned_data
             raise forms.ValidationError('Department Name already Exists')
+
+
+class DepartmentInfoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = DepartmentInfo
+        fields = ['Department_Name', 'Center_Code',
+                  'Register_Agent', 'Use_Flag']
+        widgets = {
+            'Center_Code': forms.HiddenInput(),
+            'Register_Agent': forms.HiddenInput(),
+
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Register_Agent'].initial = self.request.user.username
+        self.fields['Center_Code'].initial = self.request.user.Center_Code

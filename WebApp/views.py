@@ -50,7 +50,7 @@ from survey.models import SurveyInfo
 from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoForm, InningInfoForm, UserRegisterForm, \
     AssignmentInfoForm, QuestionInfoForm, AssignAssignmentInfoForm, MessageInfoForm, \
     AssignAnswerInfoForm, InningGroupForm, GroupMappingForm, MemberInfoForm, ChangeOthersPasswordForm, MemberUpdateForm, \
-    InningManagerForm, DepartmentInfoForm
+    InningManagerForm, DepartmentInfoForm, DepartmentInfoUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
     InningManager, Notice, NoticeView, DepartmentInfo
@@ -1076,6 +1076,7 @@ class CourseInfoGridView(ListView):
 class CourseInfoListView(ListView):
     model = CourseInfo
     template_name = 'WebApp/courseinfo_list.html'
+
     # paginate_by = 6
 
     def dispatch(self, request, *args, **kwargs):
@@ -1526,6 +1527,7 @@ def InningInfoDeleteView(request, pk):
             messages.error(request, "Cannot delete inning")
             return redirect('inninginfo_detail', pk=pk)
 
+
 def InningInfoDeleteViewChecked(request):
     if request.method == 'POST':
         print(request.POST.getlist('inning_id[]'))
@@ -1963,7 +1965,6 @@ class GroupMappingUpdateView(GroupMappingAuthMxnCls, UpdateView):
     model = GroupMapping
     form_class = GroupMappingForm
     template_name = 'WebApp/groupmapping_form.html'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -4128,6 +4129,7 @@ class DepartmentInfoCreateView(CreateView):
         kwargs['request'] = self.request
         return kwargs
 
+
 class DepartmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     model = DepartmentInfo
     form_class = DepartmentInfoForm
@@ -4164,9 +4166,10 @@ class DepartmentInfoUpdateView(UpdateView):
         kwargs['request'] = self.request
         return kwargs
 
+
 class DepartmentInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
     model = DepartmentInfo
-    form_class = DepartmentInfoForm
+    form_class = DepartmentInfoUpdateForm
     template_name = 'WebApp/departmentinfo_form.html'
 
     def get_form_kwargs(self):
@@ -4179,7 +4182,6 @@ class DepartmentInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
-
 
 
 def DepartmentInfoDeleteView(request, pk):

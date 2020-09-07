@@ -38,6 +38,7 @@
                     <td>Register Agent</td>
                     <td>Register Date</td>
                     <td>Updated Date</td>
+                    <td>Status</td>
                     <td>Actions</td>
                 </tr>
                 </thead>
@@ -49,6 +50,13 @@
                         <td>{{ object.Register_Agent }}</td>
                         <td>{{ object.Register_DateTime }}</td>
                         <td>{{ object.Updated_DateTime }}</td>
+                        <td>
+                    {% if object.Use_Flag == True %}
+                        <span class="text-success">Active</span>
+                    {% else %}
+                        <span class="text-danger">In-Active</span>
+                    {% endif %}
+                        </td>
                         <td>
                             <button class="btn btn-primary edit_department-btn" data-toggle="modal"
                                     data-target="#department-modal" value="{{ object.pk }}">
