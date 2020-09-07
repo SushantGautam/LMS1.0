@@ -555,7 +555,7 @@ class DepartmentInfoForm(forms.ModelForm):
         widgets = {
             'Center_Code': forms.HiddenInput(),
             'Register_Agent': forms.HiddenInput(),
-            'Use_Flag':forms.HiddenInput(),
+            'Use_Flag': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -595,3 +595,4 @@ class DepartmentInfoUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['Register_Agent'].initial = self.request.user.username
         self.fields['Center_Code'].initial = self.request.user.Center_Code
+        self.fields['Use_Flag'].label = 'Active'

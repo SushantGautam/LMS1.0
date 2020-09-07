@@ -241,14 +241,25 @@
                     <i class="ti-close"></i>
                 </button>
             </div>
-            <div class="modal-header" >
-                <h5 class=" modal-title col-md-8">
+            <div class="modal-header d-inline" >
+                <h5 class=" modal-title d-inline  ml-3">
 
                     <span class="event-title ">Modal Title</span>
                 </h5>
 
 
-                <button class="btn btn-sm btn-warning text-white "  data-toggle="tooltip"
+
+                <form method="POST" class="delete_event d-inline " action=""
+                      onsubmit="return confirm('Are you sure you want to delete?');">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger btn-sm d-inline pull-right ml-2 mr-5" data-toggle="tooltip"
+                   title="Delete">
+                        <i class="fa fa-trash" aria-hidden="true"></i> &nbsp;
+                    </button>
+                </form>
+
+                <button class="btn btn-sm btn-primary text-white pull-right "  data-toggle="tooltip"
                    title="Update" name="update"
                         id="update_event_btn" style="text-align:center;"
                 ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp;
@@ -259,15 +270,7 @@
 
 
 
-                <form method="POST" class="delete_event" action=""
-                      onsubmit="return confirm('Are you sure you want to delete?');">
-                    {% csrf_token %}
 
-                    <button type="submit" class="btn btn-danger btn-sm" data-toggle="tooltip"
-                   title="Delete">
-                        <i class="fa fa-trash" aria-hidden="true"></i> &nbsp;
-                    </button>
-                </form>
 
 
             </div>
@@ -489,6 +492,21 @@
                 modal.find('#event-end-time').val(etime);
 
 
+                $("#event-start-date").daterangepicker({
+                        startDate: new Date(start_date),
+                        endDate: new Date(start_date),
+                        singleDatePicker: true,
+                    })
+
+               $("#event-end-date").daterangepicker({
+                        startDate: new Date(end_date),
+                        endDate: new Date(end_date),
+                        singleDatePicker: true,
+                    })
+
+
+
+
 
 
 
@@ -556,7 +574,9 @@
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
                         start: '{{ event.date_start.isoformat}}',
-                        end: '{{ event.date_end.isoformat }}',
+                       // end: '{{ event.date_end.isoformat }}',
+                        end: '{{ event.get_end_date.isoformat }}',
+                      //  allDay: false,
                         part: '{{ event.get_participation_type_display }}',
                         event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
                         event_part_list: [
@@ -577,6 +597,7 @@
 
                         //icon: "user-o",
                         description: `{{ event.description }}`,
+
                         {% if event.is_all_day %}
                             allDay: true,
 
@@ -584,6 +605,8 @@
                             allDay: false,
 
                         {% endif %}
+
+
                         {% if event.event_type == "PR" %}
                             icon: "building-o",
                             className: 'btn btn-info',

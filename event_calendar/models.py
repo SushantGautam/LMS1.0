@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.utils.translation import gettext, ugettext_lazy as _
 
@@ -38,6 +40,13 @@ class CalendarEvent(models.Model):
         # print(type(participant_list))
         # print(participant_list)
         return participant_list
+
+    def get_end_date(self):
+        if self.is_all_day:
+            dt_string = str(self.date_end.date()) + " 23:59"
+            return datetime.strptime(dt_string, "%Y-%m-%d %H:%M")
+        else:
+            return self.date_end
 
     class Meta:
         verbose_name = _("Calendar Event")

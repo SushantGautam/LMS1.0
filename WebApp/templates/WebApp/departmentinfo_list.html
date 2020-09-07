@@ -78,6 +78,8 @@
                 $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
 
 
+
+
                 let url = "/departmentinfo/update/" + this.value + "/ajax/";
                 $.ajax({
                     type: "GET",
@@ -85,6 +87,7 @@
                     success: function (response) {
                         form_url = url;
                         $('#department-modal .modal-body').append(response);
+
                     },
                     error: function () {
                         console.log('Error in generating form')
