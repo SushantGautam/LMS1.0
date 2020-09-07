@@ -32,7 +32,11 @@
                 buttons: [
                     {
                         extend: 'csv',
-                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                        title: 'Department List',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                        columns: [1, 2, 3, 4, 5]
+                        },
                     },
                     {
                         extend: 'print',
