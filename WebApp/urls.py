@@ -127,6 +127,7 @@ urlpatterns += (
 
     path('courseinfo/<int:course>/chapterinfo/<int:pk>/discussion/', views.ChapterInfoDiscussionView.as_view(),
          name='chapterinfo_discussion'),
+    path('chapter/inninginfomap/', views.ChapterInningInfoMappingView, name='chapterinninginfomap'),
 )
 
 urlpatterns += (
@@ -146,6 +147,7 @@ urlpatterns += (
          name='assignmentinfo_edit_ajax'),
     path('assignmentinfo/<int:pk>/',
          views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
+    path('assignment/inninginfomap/', views.AssignmentInningInfoMappingView, name='assignmentinninginfomap'),
 )
 
 urlpatterns += (

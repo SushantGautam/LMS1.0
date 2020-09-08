@@ -7,7 +7,7 @@ from import_export.resources import ModelResource
 from Notifications.models import Notification
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager, Attendance, Notice, NoticeView
+    InningManager, Attendance, Notice, NoticeView, SessionMapInfo
 
 
 class CenterInfoAdminForm(forms.ModelForm):
@@ -295,3 +295,5 @@ class NoticeViewAdmin(admin.ModelAdmin):
 
 admin.site.register(NoticeView, NoticeViewAdmin)
 admin.site.register(Notification)
+
+admin.site.register(SessionMapInfo)

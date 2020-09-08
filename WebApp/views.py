@@ -24,6 +24,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
@@ -58,7 +59,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     InningManagerForm, DepartmentInfoForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice, NoticeView, DepartmentInfo
+    InningManager, Notice, NoticeView, DepartmentInfo, SessionMapInfo
 
 
 # from pathlib import Path
@@ -1267,10 +1268,10 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
+        # if form.cleaned_data['Start_Date'] == "":
+        #     form.instance.Start_Date = None
+        # if form.cleaned_data['End_Date'] == "":
+        #     form.instance.End_Date = None
         form.save()
         return JsonResponse(
             data={'Message': 'Success'}
@@ -1402,10 +1403,10 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
+        # if form.cleaned_data['Start_Date'] == "":
+        #     form.instance.Start_Date = None
+        # if form.cleaned_data['End_Date'] == "":
+        #     form.instance.End_Date = None
 
         # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         # form.save()
@@ -4048,3 +4049,55 @@ def CourseProgressDownload(request, coursepk, sessionpk):
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
         response['Content-Disposition'] = 'attachment; filename="' + 'StudentProgress_' + sheet_name + '.xlsx"'
         return response
+
+
+from django.contrib.admin.options import get_content_type_for_model
+from django.apps import apps
+
+
+def InningInfoMappingView(request, model_name):
+    inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
+    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+
+    if (request.POST['Start_Date'] and request.POST['End_Date']):
+        if (request.POST['Start_Date'] > request.POST['End_Date']):
+            return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
+    if SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
+                                     content_type=get_content_type_for_model(Obj), object_id=Obj.pk):
+        sessionmap = SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
+                                                   content_type=get_content_type_for_model(Obj), object_id=Obj.pk)
+        sessionmap.update(
+            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
+            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            content_type=ContentType.objects.get_for_model(Obj.__class__),
+            object_id=Obj.id,
+            Session_Code=inninginfoObj
+        )
+    else:
+        sessionmap = SessionMapInfo.objects.create(
+            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
+            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            content_type=ContentType.objects.get_for_model(Obj.__class__),
+            object_id=Obj.id,
+            Session_Code=inninginfoObj
+        )
+        sessionmap.save()
+    return JsonResponse({'message': 'Success '}, status=200)
+
+
+def ChapterInningInfoMappingView(request):
+    if request.method == "POST":
+        requestStatus = InningInfoMappingView(request, 'ChapterInfo')
+        if requestStatus.status_code == 200:
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            message = json.loads(requestStatus.content)
+            return JsonResponse(message, status=requestStatus.status_code)
+    return HttpResponse('GET Request Not Allowed', status=405)
+
+
+def AssignmentInningInfoMappingView(request):
+    if request.method == "POST":
+        InningInfoMappingView(request, 'AssignmentInfo')
+        return JsonResponse({'message': 'success'}, status=200)
+    return HttpResponse('GET Request Not Allowed', status=405)
