@@ -255,14 +255,14 @@
 
                     <button type="submit" class="btn btn-danger btn-sm d-inline pull-right ml-2 mr-5" data-toggle="tooltip"
                    title="Delete">
-                        <i class="fa fa-trash" aria-hidden="true"></i> &nbsp;
+                        <i class="fa fa-trash ml-1"  aria-hidden="true" ></i> &nbsp;
                     </button>
                 </form>
 
                 <button class="btn btn-sm btn-primary text-white pull-right "  data-toggle="tooltip"
                    title="Update" name="update"
-                        id="update_event_btn" style="text-align:center;"
-                ><i class="fa fa-edit " aria-hidden="true"></i> &nbsp;
+                        id="update_event_btn"
+                ><i class="fa fa-edit ml-1"  aria-hidden="true"></i> &nbsp;
                 </button>
 
 
@@ -280,11 +280,11 @@
 
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-6" style="float:left;text-align:left;">
+                        <div class="col-md-8" style="float:left;text-align:left;">
                             <h6> Event Type:</h6>
                             <div>
-                                <span class="btn btn-sm col-md-6  event-type"> </span>
-                                <span class="btn btn-sm col-md-6 type_event"> </span>
+                                <span class="btn btn-sm   event-type"> </span>
+                                <span class="btn btn-sm  type_event"> </span>
                             </div>
                         </div>
                     </div>
@@ -546,6 +546,7 @@
 
 
 
+                    modal.find("#id_description").html(" ");
                     modal.find("#id_description").html(event.description);
                     modal.find("#btn-save").text("Update");
                   //  modal.find(".close").click(function() {
@@ -682,7 +683,29 @@
 
                     var modal = $('#viewEventModal');
 
-                    modal.find('.event-type').addClass(event.className);;
+
+                        if (event.type == "Program")
+                            {
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success');
+                            modal.find('.event-type').addClass('btn btn-info');
+
+
+                            }
+                          if (event.type == "Holiday")
+                            {
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info');
+                            modal.find('.event-type').addClass('btn btn-success');
+
+                            }
+                          if (event.type == "Meeting")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info");
+                            modal.find('.event-type').addClass("btn btn-danger");
+
+                            }
+
+
+                    // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
                     modal.find('.event-title').html(event.title);
 
@@ -792,6 +815,7 @@
                      modal.find('.participant').html("Participants:&nbsp;"+ event.part);
                      modal.find('.part_custom').hide();
                     }
+                    modal.find('.desc').html(" ");
                     modal.find('.desc').html(event.description);
 
 
@@ -831,14 +855,51 @@
                         create_event(event, delta, revertFunc, jsEvent, ui, view);
                     }
                 },
-                eventReceive: function (event, delta, revertFunc, jsEvent, ui, view) {
+                eventReceive: function (event,  delta, revertFunc, jsEvent, ui, view) {
                     console.log("event received", event);
                     if (event.id) {
                         console.log("event update", event.id);
                         update_event(event, delta, revertFunc, jsEvent, ui, view);
                     } else {
                         console.log("event create", event.id);
-                        create_event(event, delta, revertFunc, jsEvent, ui, view);
+                    //    create_event(event, delta, revertFunc, jsEvent, ui, view);
+                       $('#createEventModal').modal();
+
+                       $(".modal-title").text("Create Event");
+                       $("#id_title").val(" ");
+
+                       if (event.title === "Holiday"){
+                            $("#customRadioInline3").prop("checked", true);
+
+                         }
+                         if (event.title === "Program"){
+                            $("#customRadioInline1").prop("checked", true);
+                         }
+                         if (event.title === "Meeting"){
+                            $("#customRadioInline2").prop("checked", true);
+                         }
+
+                       let start_date = iso_to_django(event.start._d);
+                       let end_date = start_date;
+
+                            $("#event-start-date").daterangepicker({
+                                    startDate: new Date(start_date),
+                                    endDate: new Date(start_date),
+                                    singleDatePicker: true,
+                                })
+
+                           $("#event-end-date").daterangepicker({
+                                    startDate: new Date(end_date),
+                                    endDate: new Date(end_date),
+                                    singleDatePicker: true,
+                                })
+
+
+                         $("#id_participant_type_1").prop("checked", true);
+                         $("#id_description").html(" ");
+                         $("#createEventModal #btn-save").text("Create");
+
+
                     }
                 },
 
@@ -880,7 +941,9 @@
 
             function create_event(event, delta, revertFunc, jsEvent, ui, view) {
                 //// obtain event data
+
                 let start_date = iso_to_django(event.start._d);
+                console.log("sd_create",start_date);
                 let end_date = null;
                 let event_type = "PR";
                 if (event.title === "Holiday") {
@@ -890,20 +953,24 @@
                 } else if (event.title === "Program") {
                     event_type = "PR";
                 }
+                console.log("et_create",event_type);
                 if (event.end) {
                     end_date = iso_to_django(event.end._d);
                 } else {
                     end_date = start_date;
                 }
+                console.log("ed_create", end_date);
                 let post_data = {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     title: event.title,
+                    event_type: event_type,
+                    participation_type:"AL",
                     description: event.description,
                     date_start: start_date,
                     date_end: end_date,
                     is_all_day: true,
                 }
-
+                console.log(post_data);
                 //// make ajax request to change the related object in the database
                 $.ajax({
                     url: "{% url 'event_calendar_create' %}?return=json", // URL to your view that serves new info
@@ -914,6 +981,9 @@
                         alert("Event Create Success !!!");
                         console.log(response['pk']);
                         event.id = "event_id_" + response['pk'];
+                        event.type = response['type'];
+                        event.part = response['part'];
+
                         $('#calendar-demo').fullCalendar('updateEvent', event);
                     },
                     error: function () {
@@ -926,6 +996,8 @@
                     complete: function () {
                     }
                 });
+
+
             }
         });
 

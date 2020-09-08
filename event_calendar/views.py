@@ -26,7 +26,10 @@ class EventCreateView(CreateView):
         self.object.register_agent = self.request.user
         self.object.save()
         if self.request.GET.get("return", None) == "json":
-            response = {'pk': self.object.pk}
+            response = {'pk': self.object.pk,
+                        'part': self.object.get_participation_type_display(),
+                        'type': self.object.get_event_type_display(),
+                        }
             return JsonResponse(response)
         else:
             return super().form_valid(form)

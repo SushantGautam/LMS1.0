@@ -167,7 +167,7 @@
                             </span>
                 </div>
                 </div>
-                <div class="col-md-4" style="float:right;">
+                <div class="col-md-4" style="float:right;white-space: nowrap;">
                     {%if object.mail.attachment%}
                     <a href="{{ MEDIA_URL }}{{ object.mail.attachment.url }}" data-toggle="tooltip" title="{{ object.get_file_upload_name }}" class="mr-2">
                         <i class="fa fa-paperclip"></i>
@@ -185,7 +185,7 @@
 
             </div>
 
-            <p id="card_content_body" >
+            <p id="card_content_body">
                 {{ object.mail.body|safe }}
             </p>
             {%if object.mail.attachment%}
