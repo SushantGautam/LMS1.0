@@ -30,7 +30,7 @@ from LMS import settings
 from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAuthMxnCls, StudentChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls
 from WebApp.filters import MyCourseFilter
-from WebApp.forms import UserUpdateForm
+from WebApp.forms import UserUpdateForm, AssignAnswerInfoForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
@@ -414,6 +414,11 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls, DetailView):
     model = AssignmentInfo
     template_name = 'student_module/assignmentinfo_detail.html'
+    form_class = AssignAnswerInfoForm
+
+    def get_form(self):
+        form = self.form_class() # instantiate the form
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -440,6 +445,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
         # print(context['AnsweredQuestion'])
         context['notAnswered'] = Question - AnsweredQuestion
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
+        context['form'] = self.get_form()
         return context
 
 

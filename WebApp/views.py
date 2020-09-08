@@ -524,8 +524,6 @@ class MemberInfoListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['department_list'] = DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                                                   Use_Flag=True)
         context['partial_member_form'] = MemberInfoForm(request=self.request)
         return context
 
@@ -593,6 +591,11 @@ class MemberInfoListViewInactive(ListView):
 
     def get_queryset(self):
         return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['partial_member_form'] = MemberInfoForm(request=self.request)
+        return context
 
 
 class MemberInfoCreateView(CreateView):
