@@ -20,7 +20,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
@@ -112,14 +112,34 @@ def ProfileView(request):
         return redirect('login')
     return render(request, 'WebApp/profile.html')
 
+class CustomAuthForm(AuthenticationForm):
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username is not None and password:
+            if authenticate(self.request, username=username, password=password) is None:
+                messages.error(self.request, _(
+                        "Please enter a correct username and password. Note that both "
+                        "fields may be case-sensitive."
+                    ))
+                return JsonResponse({'msg': 'Inavild Login'})
+                
+        return super().clean()
+    
 
 class login(LoginView):
     redirect_authenticated_user = True
     template_name = 'registration/login.html'
+    authentication_form = CustomAuthForm
 
     def form_valid(self, form):
         forcelogin = bool(self.request.POST['forcelogin'])
         if not forcelogin:
+            if not form.get_user():
+                return JsonResponse({'error': _(
+                      "Please enter a correct username and password. Note that both fields may be case-sensitive."
+                    )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
                     return JsonResponse({'msg': 'Account already login in another place'})
