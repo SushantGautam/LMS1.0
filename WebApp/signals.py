@@ -120,9 +120,9 @@ def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
                                                                                           "%d-%m-%Y"))
     else:
         student_description = '{} will start from {} today ({})'.format(instance.Chapter_Name,
-                                                                        datetime.strftime(datetime.now(),
+                                                                        datetime.strftime(datetime.utcnow(),
                                                                                           "%H:%M"),
-                                                                        datetime.strftime(datetime.now(),
+                                                                        datetime.strftime(datetime.utcnow(),
                                                                                           "%d-%m-%Y"))
     if created:
         verb = "created"
@@ -298,9 +298,9 @@ def AssignmentInfoCreate_handler(sender, instance, created, **kwargs):
                                                                                        "%d-%m-%Y"))
     else:
         student_description = 'Assignment {} will start from {} today ({})'.format(instance.Assignment_Topic,
-                                                                                   datetime.strftime(datetime.now(),
+                                                                                   datetime.strftime(datetime.utcnow(),
                                                                                                      "%H:%M"),
-                                                                                   datetime.strftime(datetime.now(),
+                                                                                   datetime.strftime(datetime.utcnow(),
                                                                                                      "%d-%m-%Y"))
     if created:
         verb = "created"
