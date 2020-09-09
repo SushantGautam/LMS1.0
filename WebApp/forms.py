@@ -476,16 +476,16 @@ class InningInfoForm(forms.ModelForm):
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
-    Assignment_Start = forms.CharField(
-        required=True,
-    )
-    Assignment_Deadline = forms.CharField(
-        required=True,
-    )
+    # Assignment_Start = forms.CharField(
+    #     required=True,
+    # )
+    # Assignment_Deadline = forms.CharField(
+    #     required=True,
+    # )
 
     class Meta:
         model = AssignmentInfo
-        fields = '__all__'
+        fields = ['Assignment_Topic', 'Use_Flag', 'Course_Code', 'Chapter_Code', 'Register_Agent', ]
 
 
 class QuestionInfoForm(forms.ModelForm):

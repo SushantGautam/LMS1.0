@@ -138,13 +138,13 @@
                                 {% endif %}
                             {% endfor %}
                             {% if '/students' not in request.path %}
-                            <td>
-                                <button type="button" class="btn btn-primary inningmap-btn" data-toggle="modal"
-                                        data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
-                                        data-objectid="{{ object.id }}">
-                                    Change
-                                </button>
-                            </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary inningmap-btn" data-toggle="modal"
+                                            data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                            data-objectid="{{ object.id }}">
+                                        Change
+                                    </button>
+                                </td>
                             {% endif %}
                         </tr>
                     {% endfor %}

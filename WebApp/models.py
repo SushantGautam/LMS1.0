@@ -448,6 +448,7 @@ class AssignmentInfo(models.Model):
         'MemberInfo',
         related_name="assignmentinfos", on_delete=models.CASCADE
     )
+    assignment_sessionmaps = GenericRelation('SessionMapInfo')
 
     def __str__(self):
         return self.Assignment_Topic

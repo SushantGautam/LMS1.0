@@ -51,20 +51,41 @@
             {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h5><b>
-                    <table class="table table-striped table-bordered">
+                    <table class="table">
                         <tr>
                             <td>Assignment Topic</td>
                             <td>{{ object.Assignment_Topic }}</td>
                         </tr>
+                        <!-- Start/End Date from different session -->
                         <tr>
-                            <td>Assignment Start Date</td>
-                            {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td class="dateconFullMonth">{{ object.Assignment_Start|date:'d M, Y h:i A' }} </td>
-                        </tr>
                         <tr>
-                            <td>Assignment Deadline</td>
-                            <td class="dateconFullMonth">{{ object.Assignment_Deadline|date:'d M, Y h:i A' }}</td>
+                            <th>Session</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th></th>
                         </tr>
+                        {% for sessions in object.Course_Code.innings_of_this_course %}
+                            <tr>
+                                <td>{{ sessions }}</td>
+                                {% for sessionmap in object.assignment_sessionmaps.all %}
+                                    {% if  sessionmap.Session_Code == sessions %}
+                                        <td class="start-date dateconFullMonth">{{ sessionmap.Start_Date|date:"d M, Y h:i A" }}</td>
+                                        <td class="end-date dateconFullMonth">{{ sessionmap.End_Date|date:"d M, Y h:i A" }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if '/students' not in request.path %}
+                                    <td>
+                                        <button type="button" class="btn btn-primary inningmap-btn" data-toggle="modal"
+                                                data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                                data-objectid="{{ object.id }}">
+                                            Change
+                                        </button>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tr>
+                        <!-- End Of start/end date -->
                         <tr>
                             <td>Course Code</td>
                             <td>{{ object.Course_Code }}</td>
@@ -812,6 +833,10 @@
         //    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)
         // })
 
-
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
+        })
     </script>
 {% endblock %}
+
+{% include 'inning/inningmapFormModal.html' %}

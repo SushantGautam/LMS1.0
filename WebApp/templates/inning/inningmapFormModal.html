@@ -62,8 +62,12 @@
     })
 
     function inningMapDataLoad($element, sessionid, objectid, formaction) {
-        document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")
-        document.getElementById('id_End_Date').value = new Date($element.closest('tr').find('.end-date').text()).toLocaleString("en-US")
+        if ($element.closest('tr').find('.start-date').text() != "") {
+            document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")
+        }
+        if ($element.closest('tr').find('.end-date').text() != "") {
+            document.getElementById('id_End_Date').value = new Date($element.closest('tr').find('.end-date').text()).toLocaleString("en-US")
+        }
         $('#id_End_Date').datetimepicker();
         $('#id_Start_Date').datetimepicker();
         $('#sessionid').val(sessionid)
