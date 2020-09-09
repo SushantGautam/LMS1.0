@@ -517,6 +517,17 @@ class AssignAssignmentInfoForm(forms.ModelForm):
 
 
 class AssignAnswerInfoForm(forms.ModelForm):
+    Assignment_Answer = forms.CharField(widget=SummernoteWidget(attrs=
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '200px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
     class Meta:
         model = AssignAnswerInfo
         fields = '__all__'
