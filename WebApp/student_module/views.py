@@ -404,10 +404,9 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         datetime_now = timezone.now().replace(microsecond=0)
         # context['assignments'] = AssignmentInfo.objects.filter(
         #     Chapter_Code=self.kwargs.get('pk'), Assignment_Start__lte=datetime_now, Use_Flag=True)
-        context['assignments'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
-            Q(assignment_sessionmaps__Start_Date__lte=datetime.utcnow())) \
-            .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow())) \
-            .order_by('Chapter_No').distinct()
+        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'),
+                                                               Use_Flag=True).filter(
+            Q(assignment_sessionmaps__Start_Date__lte=datetime.utcnow())).distinct()
         context['post_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(
@@ -428,7 +427,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
     form_class = AssignAnswerInfoForm
 
     def get_form(self):
-        form = self.form_class() # instantiate the form
+        form = self.form_class()  # instantiate the form
         return form
 
     def get_context_data(self, **kwargs):
