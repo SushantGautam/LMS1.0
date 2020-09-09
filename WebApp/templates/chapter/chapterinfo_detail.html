@@ -85,7 +85,7 @@
                     <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
                           id="deleteChapter{{ object.pk }}">
                         {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                        {#                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->#}
                         <input type="hidden" value="{{ object.pk }}" name="chapter_id">
                         <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                     </form>
@@ -137,6 +137,7 @@
                                     <td class="end-date dateconFullMonth">{{ sessionmap.End_Date|date:"d M, Y h:i A" }}</td>
                                 {% endif %}
                             {% endfor %}
+                            {% if '/students' not in request.path %}
                             <td>
                                 <button type="button" class="btn btn-primary inningmap-btn" data-toggle="modal"
                                         data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
@@ -144,6 +145,7 @@
                                     Change
                                 </button>
                             </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tr>

@@ -361,11 +361,18 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['chapters'] = ChapterInfo.objects.filter(
-            Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
-            .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-            .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
-            .order_by('Chapter_No')
+        # context['chapters'] = ChapterInfo.objects.filter(
+        #     Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
+        #     .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
+        #     .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
+        #     .order_by('Chapter_No')
+
+        context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
+            Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow())) \
+            .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow())) \
+            .order_by('Chapter_No').distinct()
+
+        print(context['chapters'])
         surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]
@@ -1368,6 +1375,7 @@ def progress(user, coursepk):
         'student_data': student_data,
         'avgCourseProgress': totalCourseProgress / len(chapters_list) if len(chapters_list) > 0 else 0
     }
+
 
 def getStudentAssignmentDetail(request, assignmentpk):
     assgObj = AssignmentInfo.objects.get(pk=assignmentpk)

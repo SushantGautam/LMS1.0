@@ -4098,6 +4098,10 @@ def ChapterInningInfoMappingView(request):
 
 def AssignmentInningInfoMappingView(request):
     if request.method == "POST":
-        InningInfoMappingView(request, 'AssignmentInfo')
-        return JsonResponse({'message': 'success'}, status=200)
+        requestStatus = InningInfoMappingView(request, 'AssignmentInfo')
+        if requestStatus.status_code == 200:
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            message = json.loads(requestStatus.content)
+            return JsonResponse(message, status=requestStatus.status_code)
     return HttpResponse('GET Request Not Allowed', status=405)
