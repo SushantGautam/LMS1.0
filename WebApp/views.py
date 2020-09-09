@@ -541,7 +541,6 @@ class MemberInfoListViewAjax(BaseDatatableView):
         return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
-
 class MemberInfoListViewInactive(ListView):
     model = MemberInfo
     template_name = 'WebApp/memberinfo_list_inactive.html'
@@ -601,12 +600,12 @@ def validate_password(request):
 def MemberInfoActivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
+        print(obj.username,'asdasdas')
         obj.Use_Flag = True
         obj.save()
         messages.success(request, 'Member is activated sucessfully')
     except:
-        messages.error(request,
-                       'Cannot perform the action. Please try again later')
+        messages.error(request, 'Cannot perform the action. Please try again later')
 
     if (request.POST['url']):
         return redirect(request.POST['url'])
@@ -614,9 +613,11 @@ def MemberInfoActivate(request, pk):
         return redirect('memberinfo_detail', pk=pk)
 
 
+
 def MemberInfoDeactivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
+        print(obj.username)
         obj.Use_Flag = False
         obj.save()
         messages.success(request, 'Member is deactivated sucessfully')

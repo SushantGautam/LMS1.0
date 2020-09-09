@@ -2,29 +2,32 @@
 {% load crispy_forms_tags %}
 
 <!-- Modal -->
-<div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog"
+    aria-labelledby="edit_checked_details_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Selected Members</h5>
+                <h5 class="modal-title text-primary font-weight-bold" id="edit_checked_details_modal_title">Edit
+                    Selected Members
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <i class="ti-close"></i>
                 </button>
             </div>
             <div class="error-div" style="display: none">
 
             </div>
-            <form method="post" id="editCheckedMembers" action="
-            {% if '/inactive' in request.path %}
-                {% url 'memberinfo_inactive_edit_checked' %}
-            {% else %}
-                {% url 'memberinfo_edit_checked' %}
-            {% endif %}
-            ">
-                {% csrf_token %}
-                <input type="hidden" name="member_ids[]" id="member_ids">
-                <div class="modal-body">
+
+            <div class="modal-body">
+                <form method="post" id="editCheckedMembers" action="
+                    {% if '/inactive' in request.path %}
+                        {% url 'memberinfo_inactive_edit_checked' %}
+                    {% else %}
+                        {% url 'memberinfo_edit_checked' %}
+                    {% endif %}
+                    ">
+                    {% csrf_token %}
+                    <input type="hidden" name="member_ids[]" id="member_ids">
                     <div class="form-group">
                         <div class="row">
                             <div class="col col-md-9">
@@ -100,14 +103,12 @@
                             </div>
                         </div>
                     </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary ml-3" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
