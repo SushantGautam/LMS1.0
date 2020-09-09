@@ -704,6 +704,8 @@
                  $("#id_description").html(" ");
                  $("#createEventModal #btn-save").text("Create");
 
+
+
                 },
 
 
@@ -936,6 +938,11 @@
                          $("#id_participant_type_1").prop("checked", true);
                          $("#id_description").html(" ");
                          $("#createEventModal #btn-save").text("Create");
+
+                          $(".close").click(function (){
+                            location.reload();
+
+                         })
 
             }
 
