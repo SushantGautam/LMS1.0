@@ -2,7 +2,7 @@
 <div class="error" id="alert-message">
 
     {% for message in messages %}
-    <div class="text-center errorMessage text-{{ message.tags|title|lower }} h5" id="message">
+    <div class="text-center errorMessage text-{{ message.tags|title|lower }} h6" id="message">
         <strong>
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
               ERROR

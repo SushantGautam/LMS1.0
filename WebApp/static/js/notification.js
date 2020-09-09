@@ -9,11 +9,8 @@ function getNotifications() {
         method: 'GET',
         success: function (data) {
             $('#notification_menu1').html('').html(data)
-        },
-        error: function (e) {
-            console.log(e.responseText)
         }
-    })
+    });
 }
 
 function getLiveNotification() {
@@ -24,7 +21,7 @@ function getLiveNotification() {
             if (!unread_notification || data.unread_count != unread_notification) {
                 unread_notification = data.unread_count;
                 // console.log('here', data.unread_count, unread_notification, data.unread_count != unread_notification)
-                $('#notification_count').text('').text(data.unread_count);
+                parseInt(data.unread_count) > 0 ? $('#notification_count').text('').text(data.unread_count) : $('#notification_count').text('');
                 getNotifications();
             }
         },
@@ -35,4 +32,4 @@ function getLiveNotification() {
 }
 
 getLiveNotification()
-setInterval(getLiveNotification, 1000000);
+setInterval(getLiveNotification, 600000); // 10*60*1000 (10 minutes)

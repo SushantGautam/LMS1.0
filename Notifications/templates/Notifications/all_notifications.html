@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+    <div class="notification_menu1">
+        <li class="row" style="list-style:none">
+            <div class="col-md-7">
+                <h2><b>Notifications</b>
+
+                </h2>
+            </div>
+            <div class="col-md-5 text-right">
+                {% if notifications %}
+                    <h6>{% include 'Notifications/mark_all_as_read.html' %}</h6>
+                {% endif %}
+            </div>
+        </li>
+
+        {% if notifications %}
+            <li style="list-style:none">
+                {% for notice in notifications %}
+                    {% include 'Notifications/notice.html' %}
+                {% endfor %}
+            </li>
+        {% else %}
+            <li style="list-style:none">
+                <div class="text-center">
+                    <strong>No Notifications</strong>
+                </div>
+            </li>
+
+        {% endif %}
+    </div>
+
+    {% include "Notifications/pagination.html" %}
+{% endblock content %}
+
+{% block customjss %}
+    <script>
+        $('.markread').on('click', function (e) {
+            e.preventDefault();
+            if ($(e.target).hasClass('notification-icon1') || $(e.target).hasClass('notification-icon-click') ||
+                $(e.target).hasClass('delete-notification') || $(e.target).parent().hasClass('delete-notification')) {
+                return false
+            }
+            let id = $(this).attr('data-id');
+            var markReadurl = '/inbox/notifications/mark-as-read/' + id;
+
+            $.ajax({
+                url: markReadurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        });
+
+        $('.markunread').on('click', function (e) {
+            e.preventDefault();
+            let id = $(this).attr('data-id');
+            var markunReadurl = '/inbox/notifications/mark-as-unread/' + id;
+
+            $.ajax({
+                url: markunReadurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        });
+
+        function deleteNotification(id) {
+            let confirmation = confirm('Are you sure you want to delete this notification?');
+            if (!confirmation) {
+                return false;
+            }
+            {#let id = $(this).attr('data-id');#}
+            var deleteurl = '/inbox/notifications/delete/' + id;
+
+            $.ajax({
+                url: deleteurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        }
+
+        $('#markreadAll').on('click', function (e) {
+            e.preventDefault()
+            $.ajax({
+                url: markAllReadurl,
+                method: 'GET',
+                success: function (data) {
+                    location.reload()
+                },
+                error: function (e) {
+                    console.log(e.responseText)
+                }
+            })
+        })
+    </script>
+{% endblock %}

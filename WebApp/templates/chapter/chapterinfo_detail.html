@@ -85,7 +85,7 @@
                     <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
                           id="deleteChapter{{ object.pk }}">
                         {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                        {#                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->#}
                         <input type="hidden" value="{{ object.pk }}" name="chapter_id">
                         <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                     </form>
@@ -119,20 +119,37 @@
 
                         </td>
                     </tr>
+
+                    <!-- Start/End Date from different session -->
                     <tr>
-                        <td>Start Date</td>
-                        <td>
-                            {% if object.Start_Date %}
-                                <span class="dateconFullMonth">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
-                            {% endif %}
-                    </tr>
                     <tr>
-                        <td>End Date</td>
-                        <td>
-                            {% if object.End_Date %}
-                                <span class="dateconFullMonth">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
-                            {% endif %}
+                        <th>Session</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th></th>
                     </tr>
+                    {% for sessions in object.Course_Code.innings_of_this_course %}
+                        <tr>
+                            <td>{{ sessions }}</td>
+                            {% for sessionmap in object.chapter_sessionmaps.all %}
+                                {% if  sessionmap.Session_Code == sessions %}
+                                    <td class="start-date dateconFullMonth">{{ sessionmap.Start_Date|date:"d M, Y h:i A" }}</td>
+                                    <td class="end-date dateconFullMonth">{{ sessionmap.End_Date|date:"d M, Y h:i A" }}</td>
+                                {% endif %}
+                            {% endfor %}
+                            {% if '/students' not in request.path %}
+                                <td>
+                                    <button type="button" class="btn btn-primary inningmap-btn" data-toggle="modal"
+                                            data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                            data-objectid="{{ object.id }}">
+                                        Change
+                                    </button>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tr>
+                    <!-- End Of start/end date -->
 
                     <tr>
                         <td>Register Agent</td>
@@ -651,7 +668,7 @@
                 let newurl = removeURLParameter(url, 'redirected');
                 newurl = removeURLParameter(newurl, 'idle');
                 window.history.replaceState(null, null, newurl); // removes query string i.e after '?'
-            }else if ((url.indexOf('?multitab=true') != -1) && (url.indexOf('&redirected=true') != -1)) {
+            } else if ((url.indexOf('?multitab=true') != -1) && (url.indexOf('&redirected=true') != -1)) {
                 $('#message-modal').modal('show');
                 $('#message-modal').find('.modal-body').html(`You are restricted to open multiple viewer tab please close previous one`);
                 // window.history.replaceState(null, null, window.location.pathname); // removes all query string i.e after '?'
@@ -685,8 +702,13 @@
                 return url;
             }
         }
+
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'chapterinninginfomap' %}')
+        })
     </script>
 {% endblock %}
 
+{% include 'inning/inningmapFormModal.html' %}
 {% include_static %}
 {% include_bootstrap %}

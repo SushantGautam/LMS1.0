@@ -182,6 +182,7 @@ class MemberInfoForm(forms.ModelForm):
         self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
                                                                                   Center_Code=self.request.user.Center_Code)
 
+
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
@@ -297,16 +298,18 @@ class CourseInfoForm(forms.ModelForm):
 
 class ChapterInfoForm(forms.ModelForm):
     mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
-    Start_Date = forms.CharField(
-        required=False,
-    )
-    End_Date = forms.CharField(
-        required=False,
-    )
+
+    # Start_Date = forms.CharField(
+    #     required=False,
+    # )
+    # End_Date = forms.CharField(
+    #     required=False,
+    # )
 
     class Meta:
         model = ChapterInfo
-        fields = '__all__'
+        fields = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'mustreadtime', 'Use_Flag', 'Register_Agent',
+                  'is_commentable', 'Course_Code']
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -473,16 +476,16 @@ class InningInfoForm(forms.ModelForm):
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
-    Assignment_Start = forms.CharField(
-        required=True,
-    )
-    Assignment_Deadline = forms.CharField(
-        required=True,
-    )
+    # Assignment_Start = forms.CharField(
+    #     required=True,
+    # )
+    # Assignment_Deadline = forms.CharField(
+    #     required=True,
+    # )
 
     class Meta:
         model = AssignmentInfo
-        fields = '__all__'
+        fields = ['Assignment_Topic', 'Use_Flag', 'Course_Code', 'Chapter_Code', 'Register_Agent', ]
 
 
 class QuestionInfoForm(forms.ModelForm):
