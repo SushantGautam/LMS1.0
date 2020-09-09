@@ -297,7 +297,9 @@
                                             <p class="short_answer" data-answer="{{ answer.Assignment_Answer|safe }}"
                                                style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
                                             {% now "Y-m-d H:i" as todays_date %}
-                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                            {#                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
+                                            {% isAssignmentActive object as isanswerable %}
+                                            {% if isanswerable %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
                                                         data-Question_Code="{{ questions.id }}"
