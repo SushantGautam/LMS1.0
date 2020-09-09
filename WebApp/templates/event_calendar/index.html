@@ -673,9 +673,38 @@
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
                 },
-               // dayClick: function () {
-               //     $('#createEventModal').modal();
-               // },
+                dayClick: function (date, jsEvent, view) {
+
+                    $('#createEventModal').modal();
+                    $(".modal-title").text("Create Event");
+                    $("#id_title").val(" ");
+                    $("#customRadioInline1").prop("checked", true);
+
+                  //  let start_date = iso_to_django(event.start._d);
+                    let start_date = date._d;
+
+
+                    console.log(start_date);
+                    let end_date = start_date;
+
+                    $("#event-start-date").daterangepicker({
+                            startDate: new Date(start_date),
+                            endDate: new Date(start_date),
+                            singleDatePicker: true,
+                        })
+
+                   $("#event-end-date").daterangepicker({
+                            startDate: new Date(end_date),
+                            endDate: new Date(end_date),
+                            singleDatePicker: true,
+                        })
+
+
+                 $("#id_participant_type_1").prop("checked", true);
+                 $("#id_description").html(" ");
+                 $("#createEventModal #btn-save").text("Create");
+
+                },
 
 
 
@@ -862,8 +891,17 @@
                         update_event(event, delta, revertFunc, jsEvent, ui, view);
                     } else {
                         console.log("event create", event.id);
-                    //    create_event(event, delta, revertFunc, jsEvent, ui, view);
-                       $('#createEventModal').modal();
+                        // create_event(event, delta, revertFunc, jsEvent, ui, view);
+                        drag_create(event);
+
+
+                    }
+                },
+
+            });
+
+            function drag_create(event){
+                $('#createEventModal').modal();
 
                        $(".modal-title").text("Create Event");
                        $("#id_title").val(" ");
@@ -899,11 +937,7 @@
                          $("#id_description").html(" ");
                          $("#createEventModal #btn-save").text("Create");
 
-
-                    }
-                },
-
-            });
+            }
 
             function update_event(event, delta, revertFunc, jsEvent, ui, view) {
                 //// obtain event data
