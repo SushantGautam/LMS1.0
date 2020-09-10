@@ -20,23 +20,22 @@
 
 {% block javascript %}
     <script src="{% static 'js/common.js' %}"></script>
-    <script src="{% static 'js/examples/datepicker.js' %}"></script>
     <script src="{% static 'worldcloud.js' %}"></script>
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
 
     <script>
-         let checkbox = $("input[class=custom-control-input]");
-         checkbox.addEventListener( 'change', function() {
-                    if(this.checked) {
+       //  let checkbox = $("input[class=custom-control-input]");
+       //  checkbox.addEventListener( 'change', function() {
+       //             if(this.checked) {
 
-                       $(this).prop('checked', false);
+       //                $(this).prop('checked', false);
 
-                    } else {
-                        $(this).prop('checked', true);
+       //             } else {
+        //                $(this).prop('checked', true);
 
-                    }
-            });
+        //            }
+        //    });
 
     </script>
 
@@ -82,7 +81,12 @@
 
     <script>
         $('#retakeSurveyBtn').on('click', function () {
-            $('div').last().addClass("modal-backdrop");
+          //  $('div').last().remove();
+          //  $('div').last().addClass("modal-backdrop");
+         // $('<div class="show fade modal-backdrop"></div>').appendTo(document.body);
+         //  $('document.body').append(<div class=" show modal-backdrop  fade"></div>);
+        //   $('.fade .show ').addClass("modal-backdrop");
+
             current_progress = -10000;
 
 
@@ -97,7 +101,7 @@
 
                 },
                 complete: function () {
-                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                 //   $(".modal-backdrop ").removeClass("modal-backdrop");
                     $(".se-pre-con-ajax").fadeOut("fast");
                 },
 
@@ -120,7 +124,7 @@
 
                 },
                 complete: function () {
-                    $(".modal-backdrop ").removeClass("modal-backdrop");
+                 //   $(".modal-backdrop ").removeClass("modal-backdrop");
                     $(".se-pre-con-ajax").fadeOut("fast");
                 },
 
@@ -145,7 +149,7 @@
 
                 },
                 complete: function () {
-                    $(".modal-backdrop ").removeClass("modal-backdrop");
+               //     $(".modal-backdrop ").removeClass("modal-backdrop");
                     $(".se-pre-con-ajax").fadeOut("fast");
                 },
 
