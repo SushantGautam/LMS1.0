@@ -30,6 +30,25 @@
 
 <script>
     const domain = 'meet.jit.si';
+    let toolbarButtons = [
+        'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+        'fodeviceselection',
+        'etherpad', 'settings', 'raisehand',
+        'videoquality', 'filmstrip', 'stats', 'shortcuts',
+        'tileview', 'videobackgroundblur', 'download',
+        //HIDDEN OPTIONS  NOT USED IGNORE
+        // 'e2ee', 'security',
+        // 'hangup',
+        // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording', 'chat',
+        // 'mute-everyone',
+    ];
+    let settingsSection = ['devices'];
+
+    {% if user.Is_CenterAdmin or user.Is_Teacher %}
+        toolbarButtons.push('mute-everyone','recording','sharedvideo');
+        settingsSection.push('moderator');
+    {% endif %}
+
     const options = {
         roomName: 'UBL Meet-{{ user.id }}' + window.location.hostname,  // TODO Change to ChapterNameID-CourseNameID  !Unicode Works fine for room name - -  long names cause problem in communication
         width: "100%",
@@ -41,53 +60,21 @@
             startWithVideoMuted: true,
             disableDeepLinking: true,
             etherpad_base: "https://pad.riseup.net/p/"
-
-
         },
 
         interfaceConfigOverwrite: {
             APP_NAME: 'UBL Meet',
             NATIVE_APP_NAME: 'UBL Meet',
             PROVIDER_NAME: 'UBL',
-
             SHOW_JITSI_WATERMARK: 0,
             SHOW_WATERMARK_FOR_GUESTS: false,
-
-
             userInfo: {
                 displayName: '{{ user }}',  // TODO replace by django user's name {{user}}
                 email: '{{ user.email }}', // TODO replace by django   {{user.email}}
 
             },
-
-
-            TOOLBAR_BUTTONS: [
-
-
-                'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                'fodeviceselection',
-                'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                'videoquality', 'filmstrip', 'stats', 'shortcuts',
-                'tileview', 'videobackgroundblur', 'download', 'chat',
-
-                //HIDDEN OPTIONS  NOT USED IGNORE
-                // 'e2ee', 'security',
-                // 'hangup',
-                // 'profile', 'livestreaming', 'invite', 'feedback', 'help', 'recording',
-
-
-                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
-                'mute-everyone',
-
-            ],
-
-            SETTINGS_SECTIONS: ['devices',
-
-                // TODO SHOW THIS IF TEACHER and ABOVE ROLES
-                'moderator',
-
-            ],
-
+            TOOLBAR_BUTTONS: toolbarButtons,
+            SETTINGS_SECTIONS: settingsSection,
             SHOW_CHROME_EXTENSION_BANNER: false,
             SHOW_PROMOTIONAL_CLOSE_PAGE: false,
             MOBILE_APP_PROMO: false,
