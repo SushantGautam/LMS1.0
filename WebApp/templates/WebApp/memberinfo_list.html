@@ -5,6 +5,51 @@
 <li class="breadcrumb-item active" aria-current="page">Members</li>
 {% endblock %}
 {% block content %}
+<div class="modal fade" id="import_csv_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-primary font-weight-bold" id="edit_checked_details_modal_title">CSV File
+                    Import
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="import_csv_body">
+                <form method="POST" id="form_import_csv" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
+                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv">
+                    <a target="_blank" class="text-center" href="{% static 'importcsv_sample1.csv' %}">
+                        <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                    </a>
+                    <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
+                            Info...</b></span>
+                    <ul class="info-text" style="display:none;background:azure;">
+                        <li>- Username must be unique for every member (required)</li>
+                        <li>- Gender value must be M or F (required)</li>
+                        <li>- Teacher column value should be 1 for teacher</li>
+                        <li>- Student column value should be 1 for student</li>
+                        <li>- If any problem occur in a row then no any member data will be created</li>
+                        <li>- Error message will show the number of row in which the problem occur</li>
+                        <li>- Default password will be 00000 for everyuser</li>
+                    </ul>
+                    <div class="import-message"></div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-success" id="submitcsv" type="submit">
+                            <span id="submitspinner"></span>Submit File
+                        </button>
+                        <button class="btn btn-primary closeImportCSV ml-3" data-dismiss="modal"
+                            aria-label="Close">Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-12">
         <h2 class="text-primary">List of Active Members</h2>
@@ -168,7 +213,6 @@
             dt.ajax.reload();
         };
         //For Export Buttons available inside jquery-datatable "server side processing" - End
-
         var table_main = $('#members_list_table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
@@ -187,13 +231,13 @@
                     title: 'Member List',
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
                     },
                     action: newexportaction,
 
                 },
                 {
-                    text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
+                    text: '<span class="exportcsv" data-toggle="modal" data-target="#import_csv_modal" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
                 },
                 {
                     extend: 'print',
@@ -211,7 +255,7 @@
                 {
                     "orderable": false,
                     "targets": [0, 3, 11, 12, 13, 14, 15]
-                }
+                },
             ]
         });
 
@@ -275,14 +319,12 @@
                 $('.import-message').html("Please upload a csv file with defined format.");
             }
         });
-
     });
 
 
     $('.closeImportCSV').click(function () {
         window.location.reload();
     })
-
 </script>
 
 {% endblock %}
