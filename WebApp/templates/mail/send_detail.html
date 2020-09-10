@@ -109,12 +109,20 @@
 
                         <h6 class="m-b-0">
                         <span class="text-primary"
-                              id="card_content_sender">From:{{ object.sender }} &lt  {{ object.sender.email}} &gt </span></h6>
+                              id="card_content_sender">From: {{ object.sender }}
+                                {%if object.sender.email%}
+                            &lt  {{ object.sender.email}} &gt
+                                  {%endif%}.
+                                </span></h6>
 
                         <span class="small text-muted" id="card_content_receiver">To:
                             {% for u in user_list %}
                             {% if u.pk in object.get_receiver_list  %}
-                            {{ u.username }}  &lt  {{ u.email}} &gt ,
+                            {{ u.username }}
+                            {%if u.email%}
+                            &lt  {{ u.email}} &gt
+                            {%endif%}.
+
                             {%endif%}
                             {%endfor%}
 

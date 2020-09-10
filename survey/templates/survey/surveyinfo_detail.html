@@ -20,6 +20,7 @@
 
 {% block javascript %}
     <script src="{% static 'js/common.js' %}"></script>
+    <script src="{% static 'js/examples/datepicker.js' %}"></script>
     <script src="{% static 'worldcloud.js' %}"></script>
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
@@ -42,6 +43,7 @@
     <script>
         var current_progress = 0;
         $(document).ready(function () {
+
 
 
             var table_main = $('.SATable').DataTable({
@@ -80,8 +82,10 @@
 
     <script>
         $('#retakeSurveyBtn').on('click', function () {
+            $('div').last().addClass("modal-backdrop");
             current_progress = -10000;
-            
+
+
             $.ajax({
                 type: "GET",
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},

@@ -677,7 +677,7 @@
 
                     $('#createEventModal').modal();
                     $(".modal-title").text("Create Event");
-                    $("#id_title").val(" ");
+                    $("#id_title").val("");
                     $("#customRadioInline1").prop("checked", true);
 
                   //  let start_date = iso_to_django(event.start._d);
@@ -906,7 +906,7 @@
                 $('#createEventModal').modal();
 
                        $(".modal-title").text("Create Event");
-                       $("#id_title").val(" ");
+                       $("#id_title").val("");
 
                        if (event.title === "Holiday"){
                             $("#customRadioInline3").prop("checked", true);
@@ -943,6 +943,7 @@
                             location.reload();
 
                          })
+
 
             }
 
@@ -1081,7 +1082,7 @@
         $("#calendar_event_form").submit(function (e) {
 
 
-
+            console.log("Clicked")
 
             //// Convert date and time inputs to UTC and required format for django:
 
@@ -1184,7 +1185,7 @@
             $("#event-end-date").val("");
             $("#event-start-time").val("");
             $("#event-end-time").val("");
-            $("#createEventModal #id_title").val("Program");
+            $("#createEventModal #id_title").val("");
             $("#createEventModal #id_description").val("");
             $("#createEventModal #btn-save").text("Create");
             $("#createEventModal").trigger("change");

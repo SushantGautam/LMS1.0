@@ -281,7 +281,9 @@
               {% for u in user_list%}
               {% if u.pk in email.get_receiver_list %}
              {{u.username}}
-             &lt{{u.email}}&gt.
+              {% if u.email  %}
+             &lt{{u.email}}&gt
+              {%endif%}.
               {%endif%}
               {%endfor%}
 
@@ -290,7 +292,9 @@
              {%else%}
               From:
              {{email.mail.sender}}
+              {%if email.mail.sender.email %}
              &lt{{email.mail.sender.email}}&gt
+              {%endif%}
              {%endif%}
 <!--             Lucas Kriebel (via Twitter) -->
          </div>
