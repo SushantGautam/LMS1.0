@@ -597,7 +597,7 @@
                         let toolbarButtons = [
                             'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
                             'fodeviceselection',
-                            'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                            'etherpad', 'settings', 'raisehand',
                             'videoquality', 'filmstrip', 'stats', 'shortcuts',
                             'tileview', 'videobackgroundblur', 'download',
                             //HIDDEN OPTIONS  NOT USED IGNORE
@@ -609,9 +609,9 @@
                         let settingsSection = ['devices'];
                         const domain = 'meet.jit.si';
 
-                        {% if ifteacher %}
+                        {% if not "students" in request.path %}                            
                             audioMute = false;
-                            toolbarButtons.push('mute-everyone');
+                            toolbarButtons.push('mute-everyone','recording','sharedvideo');
                             settingsSection.push('moderator');
                         {% endif %}
 
