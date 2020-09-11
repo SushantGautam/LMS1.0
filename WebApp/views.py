@@ -503,10 +503,11 @@ class MemberInfoListViewAjax(BaseDatatableView):
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(pk=self.request.user.id)
 
     def render_column(self, row, column):
         # We want to render user as a custom column
+        #print(row.id, self.request.user.id)
         if column == "checkbox":
             return '<input type="checkbox" class="memberinfoCheckbox" value="%s" name="memberinfo_id[]">' % (row.id)
         elif column == "counter":
@@ -517,9 +518,10 @@ class MemberInfoListViewAjax(BaseDatatableView):
             return escape('{0} {1}'.format(row.first_name, row.last_name))
         elif column == 'type':
             return row.get_user_type
-        elif column == 'action':
-            return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
-                    <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+        elif column == 'action':    
+            if row.id != self.request.user.id:
+                return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                        <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
         else:
             return super(MemberInfoListViewAjax, self).render_column(row, column)
 

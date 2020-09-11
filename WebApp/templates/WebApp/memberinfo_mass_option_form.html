@@ -4,7 +4,7 @@
 <!-- Modal -->
 <div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog"
     aria-labelledby="edit_checked_details_modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary font-weight-bold" id="edit_checked_details_modal_title">Edit
@@ -31,6 +31,14 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col col-md-9">
+                                <select class="select2" id="id_Member_Department" name="Member_Department">
+                                    {% for x, y in partial_member_form.fields.Member_Department.choices %}
+                                    <option value="{{ x }}"
+                                        {% if partial_member_form.initial.Member_Department == x %}selected{% endif %}>
+                                        {{ y }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
                                 {{ partial_member_form.Member_Department }}
                             </div>
                             <div class="col col-md-3">
@@ -42,6 +50,14 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col col-md-9">
+                                <select class="select2" id="id_Member_Position" name="Member_Position">
+                                    {% for x, y in partial_member_form.fields.Member_Position.choices %}
+                                    <option value="{{ x }}"
+                                        {% if partial_member_form.initial.Member_Position == x %}selected{% endif %}>
+                                        {{ y }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
                                 {{ partial_member_form.Member_Position }}
                             </div>
                             <div class="col col-md-3">
@@ -54,7 +70,15 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col col-md-9">
-                                {{ partial_member_form.Member_Gender }}
+                                <select class="select2" id="id_Member_Gender" name="Member_Gender">
+                                    {% for x, y in partial_member_form.fields.Member_Gender.choices %}
+                                    <option value="{{ x }}"
+                                        {% if partial_member_form.initial.Member_Gender == x %}selected{% endif %}>
+                                        {{ y }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <!-- {{ partial_member_form.Member_Gender }} -->
                             </div>
                             <div class="col col-md-3">
                                 <button class="btn btn-block" type="button" id="changemembergender-btn">Change</button>
@@ -70,7 +94,6 @@
                                 This is because if checkbox is enabled but not checked, then the html won't submit off value.
                                  -->
                                 <input id='id_Is_Teacher_hidden' type='hidden' value='0' name='Is_Teacher'>
-
                                 {{ partial_member_form.Is_Teacher }}
                             </div>
                             <div class="col col-md-3">
@@ -83,7 +106,6 @@
                         <div class="row">
                             <div class="col col-md-9">
                                 <input id='id_Is_Student_hidden' type='hidden' value='0' name='Is_Student'>
-
                                 {{ partial_member_form.Is_Student }}
                             </div>
                             <div class="col col-md-3">
@@ -114,10 +136,8 @@
 </div>
 
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'vendorsx/select2/dist/js/select2.min.js' %}"></script>
 
 <script>
-
     $(document).ready(function () {
         $(".editCheckedMembers").on('click', function () {
             let seleced_members = []
@@ -125,6 +145,16 @@
                 seleced_members.push($(this).val())
             })
             $('#member_ids').val(seleced_members)
+        });
+
+        $('#id_Member_Department').select2({
+            placeholder: 'Select Department'
+        });
+        $('#id_Member_Position').select2({
+            placeholder: 'Select Position'
+        });
+        $('#id_Member_Gender').select2({
+            placeholder: 'Select Gender'
         });
     });
 

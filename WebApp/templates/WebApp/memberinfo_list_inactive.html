@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Members</a></li>
@@ -125,6 +126,7 @@
 
 {% endblock %}
 {% block javascript%}
+
 <!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
