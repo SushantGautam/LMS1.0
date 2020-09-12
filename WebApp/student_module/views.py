@@ -81,7 +81,7 @@ def start(request):
         if batches:
             for batch in batches:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
                 sessions += session
         courses = set()
         activeassignments = []
@@ -274,7 +274,7 @@ class MyCoursesListView(ListView):
         if batches:
             for batch in batches:
                 # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
                 sessions += session
         courses = InningGroup.objects.none()
         if sessions:

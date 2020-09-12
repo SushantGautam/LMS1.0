@@ -5,7 +5,7 @@
 {% block stylesheets %}
     {{ form.media }}
     <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet"/>
-{#    <link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet"/>#}
+    {#    <link href="{% static 'build/css/custom.min.css' %}" rel="stylesheet"/>#}
     <!-- <link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard.css' %}" rel="stylesheet" /> -->
     <link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet"/>
     <link rel="stylesheet" href="{% static 'vendorsx/select2/dist/css/select2.min.css' %}">
@@ -157,13 +157,11 @@
                         <div class="col-md-6 col-sm-12 col-md-offset-3 text-center">
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                 <div id="div_id_Start_Date" class="form-group">
-                                    <label for="id_Start_Date" class="control-label">
-                                        Start Date*
-                                    </label>
+                                    {#                                    <label for="id_Start_Date" class="control-label">#}
+                                    {#                                        Start Date*#}
+                                    {#                                    </label>#}
                                     <div class="controls ">
-                                        <input value="{{ object.Start_Date|date:'Y-m-d' }}" type="date"
-                                               name="Start_Date" required=""
-                                               id="id_Start_Date" class="datetimeinput form-control" max="9999-12-31"/>
+                                        {{ form.Start_Date|as_crispy_field }}<br>
                                     </div>
                                 </div>
                                 <span id="step1aValidate" class="text-danger"></span>
@@ -171,15 +169,16 @@
 
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                 <div id="div_id_End_Date" class="form-group">
-                                    <label for="id_End_Date" class="control-label  requiredField">
-                                        End Date*
-                                    </label>
+                                    {#                                    <label for="id_End_Date" class="control-label  requiredField">#}
+                                    {#                                        End Date*#}
+                                    {#                                    </label>#}
                                     <div class="controls ">
-                                        <input value="{{ object.End_Date | date:'Y-m-d' }}" type="date" name="End_Date"
-                                               required=""
-                                               id="id_End_Date" class="datetimeinput form-control"
-                                               min="{{ datetime|date:'Y-m-d' }}"
-                                               max="9999-12-31"/>
+                                        {{ form.End_Date|as_crispy_field }}
+                                        {#                                        <input value="{{ object.End_Date }}" type="text" name="End_Date"#}
+                                        {#                                               required=""#}
+                                        {#                                               id="id_End_Date" class="datetimeinput form-control"#}
+                                        {#                                               min="{{ datetime|date:'Y-m-d' }}"#}
+                                        {#                                               max="9999-12-31"/>#}
                                     </div>
                                 </div>
                                 <span id="step1bValidate" class="text-danger"></span>
@@ -238,7 +237,7 @@
                                 {% endfor %}
                             </select>
                             {% endcomment %}
-                            
+
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <span id="step3Validate" class="text-danger"></span>
@@ -462,16 +461,27 @@
     </script>
 
     <script>
-        startdate = $('#id_Start_Date').val()
-        enddate = $('#id_End_Date').val()
-        if (startdate == "") {
-            $('#id_Start_Date').val(new Date().getFullYear() + '-' + new Date().getFullMonthName() + '-' + new Date().getTwoDigitDate())
+        if (document.getElementById('id_Start_Date').value != '') {
+            document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
+        } else {
+            document.getElementById('id_Start_Date').value = new Date().toLocaleString("en-US");
         }
-        if (enddate == "") {
-            d = new Date()
-            d = d.setMonth(d.getMonth() + 6);
-            $('#id_End_Date').val(new Date(d).getFullYear() + '-' + new Date(d).getFullMonthName() + '-' + new Date(d).getTwoDigitDate())
+        if (document.getElementById('id_End_Date').value != '') {
+            document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
+        } else {
+            document.getElementById('id_End_Date').value = new Date(new Date().setMonth(new Date().getMonth() + 3)).toLocaleString("en-US");
         }
+        $('#id_Start_Date').datetimepicker();
+        $('#id_End_Date').datetimepicker();
+
+        $('#FormID').on('submit', function (e) {
+            if ($('#id_Start_Date').val() != "") {
+                $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
+            }
+            if ($('#id_End_Date').val() != "") {
+                $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
+            }
+        })
     </script>
 
     {#    <script>#}

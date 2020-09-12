@@ -449,6 +449,9 @@ class InningInfoForm(forms.ModelForm):
     Course_Group = CoursesMultipleChoiceField(queryset=None, required=True,
                                               widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
+    Start_Date = forms.CharField()
+    End_Date = forms.CharField()
+
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
         js = ('/static/build/js/jsi18n.js',)

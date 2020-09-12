@@ -75,12 +75,15 @@
 
 
 
+
                                         {% if '/mysessions' not in request.path %}{{ object.get_absolute_url }}{% elif 'mysessions' in request.path %}{% url 'teachers_mysession_detail' object.pk %}{% endif %}">{{ object.Inning_Name }}</a>
                             </b></td>
                             <td style="vertical-align: middle;">{{ object.Groups }}</td>
                             <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
-                            <td style="vertical-align: middle;">{{ object.Start_Date|date:"M d, Y h:i A" }}</td>
-                            <td style="vertical-align: middle;">{{ object.End_Date|date:"M d, Y h:i A" }}</td>
+                            <td class="dateconFullMonth"
+                                style="vertical-align: middle;">{{ object.Start_Date|date:"M d, Y h:i A" }}</td>
+                            <td class="dateconFullMonth"
+                                style="vertical-align: middle;">{{ object.End_Date|date:"M d, Y h:i A" }}</td>
                             <td class="text-center"><a class="btn btn-sm btn-info"
                                                        href="   {% if '/mysessions' not in request.path %}
                                         {{ object.get_absolute_url }}
