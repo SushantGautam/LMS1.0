@@ -1147,13 +1147,13 @@ def MemberInfoEditViewChecked(request):
         if request.POST.get('Member_Gender'):
             memberinfo_list.update(Member_Gender=request.POST.get('Member_Gender'))
         if request.POST.get('Is_Teacher'):
-            Is_Teacher = True if request.POST.get('Is_Teacher') == "1" else False
+            Is_Teacher = True if request.POST.get('Is_Teacher') == "on" else False
             memberinfo_list.update(Is_Teacher=Is_Teacher)
         if request.POST.get('Is_Student'):
-            Is_Student = True if request.POST.get('Is_Student') == "1" else False
+            Is_Student = True if request.POST.get('Is_Student') == "on" else False
             memberinfo_list.update(Is_Student=Is_Student)
         if request.POST.get('Use_Flag'):
-            Use_Flag = True if request.POST.get('Use_Flag') == "1" else False
+            Use_Flag = True if request.POST.get('Use_Flag') == "on" else False
             memberinfo_list.update(Use_Flag=Use_Flag)
 
         if '/inactive' in request.path:
