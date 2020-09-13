@@ -13,7 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 def migrateChapters():
 	sessions = InningInfo.objects.all()
 	for session in sessions:
-		courses = session.Course_Group.all()
+		courses = set(session.Course_Group.all())
 		for course in courses:
 			chapters = ChapterInfo.objects.filter(Course_Code=course.Course_Code)
 			for chapter in chapters:
@@ -31,7 +31,7 @@ def migrateChapters():
 def migrateAssignments():
 	sessions = InningInfo.objects.all()
 	for session in sessions:
-		courses = session.Course_Group.all()
+		courses = set(session.Course_Group.all())
 		for course in courses:
 			assignments = AssignmentInfo.objects.filter(Course_Code=course.Course_Code)
 			for assignment in assignments:
