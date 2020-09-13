@@ -1366,7 +1366,9 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
-        context['datetime'] = datetime.now()
+        context['datetime'] = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Course_Group__in=course_groups)
         return context
 
 

@@ -305,6 +305,11 @@ class CourseInfo(models.Model):
     def innings_of_this_course(self):
         innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
         return innings
+    
+    def innings_active(self):
+        innings = InningInfo.objects.filter(Use_Flag=True, Start_Date__lte=datetime.now(),
+                        End_Date__gte=datetime.now(), Course_Group__in=self.inninggroups.all())
+        return innings
 
     def get_teachers_of_this_course(self):
         teachers_of_this_course_id = InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
@@ -811,6 +816,14 @@ class InningInfo(models.Model):
 
     def get_teacher_update_url(self):
         return reverse('teachers_inninginfo_update', args=(self.pk,))
+
+    @property
+    def is_active(self):
+        datetime_now = timezone.now().replace(microsecond=0)
+        if self.Use_Flag == True and self.Start_Date <= datetime_now and self.End_Date >= datetime_now:
+            return True
+        else:
+            return False
 
     def __str__(self):
         return self.Inning_Name.Session_Name
