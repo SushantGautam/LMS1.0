@@ -411,6 +411,10 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Groups__in=student_groups, Use_Flag=True,
+                        Start_Date__lte=datetime_now, End_Date__gte=datetime_now).filter(Course_Group__in=course_groups)
 
         for q in context['post_quizes']:
             q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
@@ -439,6 +443,11 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
         context['Chapter_No'] = get_object_or_404(
             ChapterInfo, pk=self.kwargs.get('chapter'))
         context['Answers'] = []
+        datetime_now = timezone.now().replace(microsecond=0)
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Groups__in=student_groups, Use_Flag=True,
+                        Start_Date__lte=datetime_now, End_Date__gte=datetime_now).filter(Course_Group__in=course_groups)
         AnsweredQuestion = set()
         Question = set()
 
