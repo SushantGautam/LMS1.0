@@ -3387,19 +3387,19 @@ def gitpull(request):
 
 
 def ServiceWorker(request):
-    with open('WebApp/templates/WebApp/PWA/pwabuilder-sw.js', 'r') as f:
+    with open('WebApp/mail/WebApp/PWA/pwabuilder-sw.js', 'r') as f:
         data = f.read()
     return HttpResponse(data, content_type='text/javascript')
 
 
 def OfflineApp(request):
-    with open('WebApp/templates/WebApp/PWA/offline.html', 'r') as f:
+    with open('WebApp/mail/WebApp/PWA/offline.html', 'r') as f:
         data = f.read()
     return HttpResponse(data, )
 
 
 def manifestwebmanifest(request):
-    with open('WebApp/templates/WebApp/PWA/manifest.webmanifest', 'r') as f:
+    with open('WebApp/mail/WebApp/PWA/manifest.webmanifest', 'r') as f:
         data = f.read()
     return HttpResponse(data, )
 
