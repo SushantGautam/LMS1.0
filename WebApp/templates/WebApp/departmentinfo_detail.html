@@ -32,11 +32,11 @@
             </tr>
             <tr>
                 <td>Register DateTime</td>
-                <td>{{ object.Register_DateTime }}</td>
+                <td class="dateconFullMonth">{{ object.Register_DateTime|date:"d M, Y h:i A" }}</td>
             </tr>
             <tr>
                 <td>Updated DateTime</td>
-                <td>{{ object.Updated_DateTime }}</td>
+                <td class="dateconFullMonth">{{ object.Updated_DateTime|date:"d M, Y h:i A" }}</td>
             </tr>
 
         </table>

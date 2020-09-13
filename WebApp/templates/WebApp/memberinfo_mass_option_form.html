@@ -195,10 +195,10 @@
         $('#editCheckedMembers :checkbox').on('change', function () {
             if (this.checked == true) {
                 $(this).val("1");
-                $(this).parent().find('input[type=hidden]').val("1");
+                $(this).parent().find('input[type=hidden]').val("on");
             } else {
                 $(this).val("0");
-                $(this).parent().find('input[type=hidden]').val("0");
+                $(this).parent().find('input[type=hidden]').val("off");
             }
         });
     });

@@ -1,57 +1,54 @@
+# This code is used to transfer chapter and assigment previous startdatetime and enddatetime to new mapping
+# Delete all sessionmapping ahead if there is any
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "LMS.settings")
 
 import django
-
 django.setup()
 
-from WebApp.models import ChapterInfo, AssignmentInfo, SessionMapInfo
+from WebApp.models import ChapterInfo, AssignmentInfo, InningInfo, SessionMapInfo
 from django.contrib.contenttypes.models import ContentType
 
+def migrateChapters():
+	sessions = InningInfo.objects.all()
+	for session in sessions:
+		courses = session.Course_Group.all()
+		for course in courses:
+			chapters = ChapterInfo.objects.filter(Course_Code=course.Course_Code)
+			for chapter in chapters:
+				sessionmap = SessionMapInfo()
+				sessionmap.Start_Date = chapter.Start_Date
+				sessionmap.End_Date = chapter.End_Date
+				sessionmap.content_type = ContentType.objects.get_for_model(chapter)
+				sessionmap.object_id = chapter.id
+				sessionmap.Session_Code = session
+				sessionmap.save()
+				print(session, chapter, '\n')
+	print('----------------------------------------------------')
+	print(' ALL CHAPTERS DONE ')
 
-class MigrateData:
-    def migrateChapters(self):
-        # Get all chapter objects
-        chapters = ChapterInfo.objects.all()
-        for chapter in chapters:
-            # Check if the chapter belongs to any innings
-            # If Yes, Create Inning Map
-            if chapter.Course_Code.innings_of_this_course().exists():
-                for session in chapter.Course_Code.innings_of_this_course():
-                    sessionmap = SessionMapInfo.objects.create(
-                        Start_Date=chapter.Start_Date,
-                        End_Date=chapter.End_Date,
-                        target_content_type=ContentType.objects.get_for_model(chapter.__class__),
-                        target_object_id=chapter.id,
-                        Session_Code=session
-                    )
-                    sessionmap.save()
-        print("Success Mapping Chapter to InningMap")
-
-    def migrateAssignments(self):
-        # Get all assignments objects
-        assignments = AssignmentInfo.objects.all()
-        for assignment in assignments:
-            # Check if the assignment belongs to any innings
-            # If Yes, Create Inning Map
-            if assignment.Course_Code.innings_of_this_course().exists():
-                for session in assignment.Course_Code.innings_of_this_course():
-                    sessionmap = SessionMapInfo.objects.create(
-                        Start_Date=assignment.Assignment_Start,
-                        End_Date=assignment.Assignment_Deadline,
-                        target_content_type=ContentType.objects.get_for_model(assignment.__class__),
-                        target_object_id=assignment.id,
-                        Session_Code=session
-                    )
-                    sessionmap.save()
-        print("Success Mapping Assignment to InningMap")
-
+def migrateAssignments():
+	sessions = InningInfo.objects.all()
+	for session in sessions:
+		courses = session.Course_Group.all()
+		for course in courses:
+			assignments = AssignmentInfo.objects.filter(Course_Code=course.Course_Code)
+			for assignment in assignments:
+				sessionmap = SessionMapInfo()
+				sessionmap.Start_Date = assignment.Assignment_Start
+				sessionmap.End_Date = assignment.Assignment_Deadline
+				sessionmap.content_type = ContentType.objects.get_for_model(assignment)
+				sessionmap.object_id = assignment.id
+				sessionmap.Session_Code = session
+				sessionmap.save()
+				print(session, assignment, '\n')
+	print('----------------------------------------------------')
+	print(' ALL ASSIGNMENTS DONE ')
 
 def main():
-    MigrateData().migrateChapters()
-    MigrateData().migrateAssignments()
-
+    migrateChapters()
+    migrateAssignments()
 
 if __name__ == '__main__':
     main()

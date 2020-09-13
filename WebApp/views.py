@@ -563,7 +563,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
                'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+    order_columns = ['', 'id', 'username', 'Member_ID', 'first_name', 'first_name', 'last_name', 'email',
+                     'Member_Department',
                      'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
@@ -580,6 +581,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
         elif column == 'full_name':
             # escape HTML for security reasons
             return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'Member_BirthDate' and row.Member_BirthDate:
+            return row.Member_BirthDate.strftime('%b %d, %Y')
         elif column == 'type':
             return row.get_user_type
         elif column == 'action':
@@ -1147,13 +1150,13 @@ def MemberInfoEditViewChecked(request):
         if request.POST.get('Member_Gender'):
             memberinfo_list.update(Member_Gender=request.POST.get('Member_Gender'))
         if request.POST.get('Is_Teacher'):
-            Is_Teacher = True if request.POST.get('Is_Teacher') == "1" else False
+            Is_Teacher = True if request.POST.get('Is_Teacher') == "on" else False
             memberinfo_list.update(Is_Teacher=Is_Teacher)
         if request.POST.get('Is_Student'):
-            Is_Student = True if request.POST.get('Is_Student') == "1" else False
+            Is_Student = True if request.POST.get('Is_Student') == "on" else False
             memberinfo_list.update(Is_Student=Is_Student)
         if request.POST.get('Use_Flag'):
-            Use_Flag = True if request.POST.get('Use_Flag') == "1" else False
+            Use_Flag = True if request.POST.get('Use_Flag') == "on" else False
             memberinfo_list.update(Use_Flag=Use_Flag)
 
         if '/inactive' in request.path:
