@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
-<p><a class="btn btn-default" href="{% url 'profile_list' %}">Profile Listing</a></p>
-<table class="table">
-</table>
-<a class="btn btn-primary" href="{{object.get_update_url}}">Edit Profile</a>
-
-{% endblock %}

@@ -14,8 +14,12 @@ urlpatterns += (
     # urls for CourseInfo
     path('courseinfo/', views.CourseInfoListView.as_view(),
          name='teacher_courseinfo_list'),
-    path('courseinfo/mycourses', views.MyCourseListView.as_view(),
+    path('courseinfo/mycourses/', views.MyCourseListView.as_view(),
          name='teacher_mycourses_list'),
+    path('courseinfo/mycourses/active/', views.MyCourseListView.as_view(),
+         name='teacher_mycourses_list_active'),
+    path('courseinfo/mycourses/inactive/', views.MyCourseListView.as_view(),
+         name='teacher_mycourses_list_inactive'),
     path('courseinfo/create/', views.CourseInfoCreateView.as_view(),
          name='teacher_courseinfo_create'),
     path('courseinfo/detail/<int:pk>/', views.CourseInfoDetailView.as_view(),
@@ -52,6 +56,9 @@ urlpatterns += (
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:pk>/',
          views.AssignmentInfoDetailView.as_view(),
          name='teacher_assignmentinfo_detail'),
+    path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/<int:pk>/inning/<int:inningpk>/',
+         views.AssignmentInfoDetailView.as_view(),
+         name='teacher_assignmentinfo_detail_with_inning'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/update/<int:pk>/',
          views.AssignmentInfoUpdateView.as_view(), name='teacher_assignmentinfo_update'),
     path('myassignments/', views.MyAssignmentsListView.as_view(),
@@ -214,14 +221,20 @@ urlpatterns += (
          name='teacher_saquestion_delete'),
 
     path('quiz/quizfw/', views.QuizCreateWizard.as_view(), name='teacher_quizfw'),
-    path('quiz/marking/', views.QuizMarkingList.as_view(),
-         name='teacher_quiz_marking'),
-    path('quiz/marking/<int:pk>/', views.QuizMarkingDetail.as_view(),
-         name='teacher_quiz_marking_detail'),
     path('activate_quiz/<int:pk>/', quizViews.ActivateQuiz.as_view(),
          name='teacher_activate_quiz'),
     path('deactivate_quiz/<int:pk>/', quizViews.DeactivateQuiz.as_view(),
          name='teacher_deactivate_quiz'),
+
+    #Quiz Marking
+    path('quiz/marking/', views.QuizMarkingList.as_view(),
+          name='teacher_quiz_marking'),
+    path('quiz/marking/<int:quiz_id>', views.QuizMarking.as_view(),
+          name='teacher_individual_quiz_marking'),
+    path('quiz/marking/detail/<int:pk>/', views.QuizMarkingDetail.as_view(),
+         name='teacher_quiz_marking_detail'),
+    # URL for quiz marking download    
+    path('quiz/marking/exportcsv/<int:quiz_pk>', views.QuizMarkingCSV, name='quiz_marking_csv'),
 )
 
 urlpatterns += (

@@ -1,9 +1,12 @@
 # from django.core.checks import messages
 import json
 import os
+import re
 import shutil
 from datetime import datetime, timedelta
+from io import BytesIO
 
+import pandas as pd
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
@@ -14,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -43,7 +47,7 @@ from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, \
     QuizBasicInfoForm
-from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question
+from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question, Answer
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
 from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, SubmitSurvey
@@ -174,7 +178,12 @@ class MyCourseListView(ListView):
     model = CourseInfo
     template_name = 'teacher_module/mycourses.html'
 
-    # paginate_by = 8
+    paginate_by = 8
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('paginate_by'):
+            self.paginate_by = self.request.GET.get('paginate_by')
+        return super(MyCourseListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -195,7 +204,7 @@ class MyCourseListView(ListView):
         # ).qs
         # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
         courses = self.object_list
-        paginator = Paginator(courses, 8)
+        paginator = Paginator(courses, self.paginate_by)
         page = self.request.GET.get('page')
         try:
             response = paginator.page(page)
@@ -209,6 +218,10 @@ class MyCourseListView(ListView):
 
     def get_queryset(self):
         qsearch = self.request.user.get_teacher_courses()['courses']
+        if '/inactive/' in self.request.path:
+            qsearch = [x for x in qsearch if x.Use_Flag is False]
+        if '/active/' in self.request.path:
+            qsearch = [x for x in qsearch if x.Use_Flag is True]
         courses = []
         query = self.request.GET.get('teacher_mycoursequery')
         if query:
@@ -393,6 +406,19 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
     model = AssignmentInfo
     template_name = 'teacher_module/assignmentinfo_detail.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if '/teachers' in self.request.path:
+            assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+                                                    Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct().count()
+            if inning_info == 0:
+                messages.add_message(self.request, messages.ERROR, 'Access Denied. Please Contact Admin.')
+                return redirect('teacher_home')
+            else:
+                return super(AssignmentInfoDetailView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
@@ -400,6 +426,43 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         context['datetime'] = datetime.now()
+
+        # ===================== Assignment Answers =============================================
+
+        session_list = []
+        inningpk = self.kwargs.get('inningpk') if self.kwargs.get('inningpk') else None
+
+        assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
+        if '/teachers' in self.request.path:
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+                                                    Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct()
+        session_list.append(inning_info)
+
+        if inning_info.count() > 0:
+            if inningpk:
+                innings = get_object_or_404(inning_info, pk=inningpk)
+            else:
+                innings = None
+
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
+                                                          )
+        context['questions'] = questions
+        if innings:
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=innings.Groups.Students.all())
+            context['students_list'] = innings.Groups.Students.all()
+        else:
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
+            context['students_list'] = assignmentinfoObj.Course_Code.get_students_of_this_course()
+
+        context['Assignment'] = assignmentinfoObj
+        context['session_list'] = session_list
+        context['inning'] = innings
+        context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
+
+        # ==================== End of Assignment Answers ========================================
 
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
@@ -432,6 +495,19 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
     model = AssignAnswerInfo
     template_name = 'teacher_module/assignment_answers.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if '/teachers' in self.request.path:
+            assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+                                                    Use_Flag=True,
+                                                    End_Date__gt=datetime.now()).distinct().count()
+            if inning_info == 0:
+                messages.add_message(self.request, messages.ERROR, 'Access Denied. Please Contact Admin.')
+                return redirect('teacher_home')
+            else:
+                return super(AssignmentAnswers, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         session_list = []
@@ -450,18 +526,23 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
                 innings = get_object_or_404(inning_info, pk=inningpk)
             else:
                 innings = None
+
         questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
                                                           )
         context['questions'] = questions
         if innings:
             context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
                                                                  Student_Code__in=innings.Groups.Students.all())
+            context['students_list'] = innings.Groups.Students.all()
         else:
             context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
+            context['students_list'] = assignmentinfoObj.Course_Code.get_students_of_this_course()
 
         context['Assignment'] = assignmentinfoObj
         context['session_list'] = session_list
         context['inning'] = innings
+        context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
+
         # context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
@@ -529,8 +610,8 @@ class MyAssignmentsListView(ListView):
         context['Assignment'] = []
         context['expiredAssignment'] = []
         context['activeAssignment'] = []
-        for groups in context['Group']:
-            course.append(groups.Course_Code.id)
+        for c in self.request.user.get_teacher_courses()['courses']:
+            course.append(c.id)
         Assignment = []
         expiredAssignment = []
         activeAssignment = []
@@ -549,15 +630,17 @@ class MyAssignmentsListView(ListView):
 
 
 def submitStudentscore(request, Answer_id, score):
-    if request.method == "GET":
+    if request.method == "POST":
 
         answerInfo = AssignAnswerInfo.objects.get(pk=Answer_id)
-        if score > answerInfo.Question_Code.Question_Score:
+        score = request.POST.get('stu_score')
+        if float(score) > answerInfo.Question_Code.Question_Score:
             return HttpResponse("failure", status=500)
         answerInfo.Assignment_Score = score
+        if request.POST.get('assignment_feedback'):
+            answerInfo.Assignment_Feedback = request.POST.get('assignment_feedback')
         answerInfo.save()
         return HttpResponse("success")
-
     else:
         return HttpResponse("You are not allowed to do this")
 
@@ -809,13 +892,40 @@ class QuizUserProgressView(TemplateView):
         return context
 
 
-class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
+class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
+    model = Quiz
+    template_name = 'teacher_quiz/marking_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarkingList, self).get_context_data(**kwargs)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        context['quiz_list'] = context['quiz_list'].filter(
+            cent_code=self.request.user.Center_Code,
+            course_code__in=innings_Course_Code
+        )
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            if not sittings:
+                context['quiz_list'] = context['quiz_list'].exclude(id=q.id)
+
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            q.count = sittings.count()
+            q.complete_count = sittings.filter(complete=True).count()
+            q.student_count = sittings.annotate(Count('user', distinct=True)).count()
+            q.student_complete_count = sittings.filter(complete=True).annotate(Count('user', distinct=True)).count()
+
+        return context
+
+
+class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_list.html'
 
     def get_queryset(self):
-        queryset = super(QuizMarkingList, self).get_queryset() \
-            .filter(complete=True)
+        queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
+        quiz_id = int(self.kwargs['quiz_id'])
+        queryset = queryset.filter(quiz__id=quiz_id)
 
         user_filter = self.request.GET.get('user_filter')
         if user_filter:
@@ -826,6 +936,12 @@ class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixi
         queryset = queryset.filter(quiz__in=my_quiz)
 
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarking, self).get_context_data(**kwargs)
+        quiz_id = int(self.kwargs['quiz_id'])
+        context['quiz'] = Quiz.objects.get(id=quiz_id)
+        return context
 
 
 class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
@@ -2300,3 +2416,161 @@ def Meet(request, ):
         meetcode *= ord(i)
     print(meetcode)
     return render(request, 'teacher_module/meet.html', {"meetcode": meetcode})
+
+
+def QuizMarkingCSV(request, quiz_pk):
+    quiz = Quiz.objects.get(pk=int(quiz_pk))
+    quiz_sittings = Sitting.objects.filter(quiz=quiz, complete=True)
+    total_score = quiz.get_max_score
+
+    mcquestions = quiz.mcquestion.all()
+    tfquestions = quiz.tfquestion.all()
+    saquestions = quiz.saquestion.all()
+    extra_row_1 = {'S.N.': 'Full Score', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
+    extra_row_2 = {'S.N.': 'Correct Answer', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
+
+    # Deining column names
+    column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
+    answer_name = "O/X"
+    mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
+    color_column = []
+    for i, mcquestion in enumerate(mcquestions):
+        question_name = "MCQ" + str(i + 1)
+        column_names.append(question_name)
+        column_names.append(answer_name + " M" + str(i + 1))
+        color_column.append(answer_name + " M" + str(i + 1))
+        mcq_full_score += mcquestion.score
+        extra_row_1[question_name] = mcquestion.score
+        extra_row_2[question_name] = mcquestion.get_correct_answer()
+    for i, tfquestion in enumerate(tfquestions):
+        question_name = "TFQ" + str(i + 1)
+        column_names.append(question_name)
+        column_names.append(answer_name + " T" + str(i + 1))
+        color_column.append(answer_name + " T" + str(i + 1))
+        tfq_full_score += tfquestion.score
+        extra_row_1[question_name] = tfquestion.score
+        extra_row_2[question_name] = tfquestion.correct
+    for i, saquestion in enumerate(saquestions):
+        question_name = "SAQ" + str(i + 1)
+        column_names.append(question_name)
+        column_names.append(answer_name + " S" + str(i + 1))
+        saq_full_score += saquestion.score
+        extra_row_1[question_name] = saquestion.score
+    column_names.extend(["MCQ Score", "TFQ Score", "SAQ Score", "Total Score", "Percentage"])
+
+    df = pd.DataFrame(columns=column_names)
+
+    extra_row_1["MCQ Score"] = mcq_full_score
+    extra_row_1["TFQ Score"] = tfq_full_score
+    extra_row_1["SAQ Score"] = saq_full_score
+    extra_row_1["Total Score"] = total_score
+    df = df.append(extra_row_1, ignore_index=True)
+    df = df.append(extra_row_2, ignore_index=True)
+    counter = 0
+
+    for quiz_sitting in quiz_sittings:
+        start_date = ''
+        end_date = ''
+        counter += 1
+        if quiz_sitting.start:
+            start_date = quiz_sitting.start.replace(tzinfo=None)
+        if quiz_sitting.end:
+            end_date = quiz_sitting.end.replace(tzinfo=None)
+        new_row = {'S.N.':counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
+                'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
+
+        user_answers = json.loads(quiz_sitting.user_answers)
+        totalmcq_score = 0.0
+        totaltfq_score = 0.0
+        totalsaq_score = 0.0
+
+        for i, mcquestion in enumerate(mcquestions):
+            question_name = "MCQ" + str(i + 1)
+            question_name_value = user_answers.get(str(mcquestion.id))
+            if question_name_value:
+                ans_value = Answer.objects.get(id=int(question_name_value)).content
+            else:
+                ans_value = ''
+            new_row[question_name] = ans_value
+            if mcquestion.check_if_correct(question_name_value):
+                new_row[answer_name + " M" + str(i + 1)] = "✔"
+                totalmcq_score += mcquestion.score
+            else:
+                new_row[answer_name + " M" + str(i + 1)] = "❌"
+        for i, tfquestion in enumerate(tfquestions):
+            question_name = "TFQ" + str(i + 1)
+            question_name_value = user_answers.get(str(tfquestion.id))
+            new_row[question_name] = question_name_value
+            if tfquestion.check_if_correct(question_name_value):
+                new_row[answer_name + " T" + str(i + 1)] = "✔"
+                totaltfq_score += tfquestion.score
+            else:
+                new_row[answer_name + " T" + str(i + 1)] = "❌"
+        for i, saquestion in enumerate(saquestions):
+            question_name = "SAQ" + str(i + 1)
+            question_name_value = user_answers.get(str(saquestion.id))
+            new_row[question_name] = question_name_value
+
+            user_ans = str(quiz_sitting.user_answers)
+            saq_id = '"' + str(saquestion.id) + '":'
+            end_index = user_ans.find(saq_id)
+            score_index = user_ans.count('": "', 0, end_index)
+            score_list = str(quiz_sitting.score_list).split(',')
+            new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
+            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
+                totalsaq_score += float(score_list[score_index])
+
+        new_row['MCQ Score'] = totalmcq_score
+        new_row['TFQ Score'] = totaltfq_score
+        new_row['SAQ Score'] = totalsaq_score
+        # append row to the dataframe
+        df = df.append(new_row, ignore_index=True)
+    
+    df = df.set_index('S.N.', drop=True)
+    
+    def color_negative_red(val):
+        color = 'white'
+        if val == '✔':
+            color = '#00b0f0'
+        if val == '❌':
+            color = 'red'
+        return 'background-color: %s' % color
+
+    df = df.style.applymap(color_negative_red, subset=color_column)
+    # print(df)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        # df.index += 1
+        df.index.name = 'S.N.'
+        sheet_name = str(quiz.title)
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
+        if len(sheet_name) > 28:
+            sheet_name = sheet_name[:27] + ' ..'
+        # df.to_excel(writer, sheet_name=sheet_name)
+
+        df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False)
+
+        # Get the xlsxwriter workbook and worksheet objects.
+        workbook  = writer.book
+        worksheet = writer.sheets[sheet_name]
+
+        # Add a header format.
+        header_format = workbook.add_format({
+            'bold': True,
+            'text_wrap': True,
+            'valign': 'center',
+            'fg_color': 'yellow',
+            'border': 1})
+
+        # Write the column headers with the defined format.
+        for col_num, value in enumerate(df.columns.values):
+            worksheet.write(0, col_num + 1, value, header_format)
+
+        # Close the Pandas Excel writer and output the Excel file.
+        writer.save()
+        response = HttpResponse(b.getvalue(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'QuizMarking_' + sheet_name + '.xlsx"'
+        return response

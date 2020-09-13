@@ -1,8 +1,0 @@
-{% for i in studentfilter %}
-
-    <tr role="row">
-        <td>{{ forloop.counter }}</td>
-        <td>{{ i }}</td>
-        <td><b><a href="{% url 'AchievementPage_Student' student_id=i.pk %}"> Progress</a></b></td>
-    </tr>
-{% endfor %}
