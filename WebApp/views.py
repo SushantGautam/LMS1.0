@@ -581,6 +581,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
         elif column == 'full_name':
             # escape HTML for security reasons
             return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'Member_BirthDate' and row.Member_BirthDate:
+            return row.Member_BirthDate.strftime('%b %d, %Y')
         elif column == 'type':
             return row.get_user_type
         elif column == 'action':
