@@ -132,13 +132,12 @@
                         <tr>
                             <td>
                                 {{ sessions }}
-                                {% if '/students' not in request.path %}
+                                {% if '/students' not in request.path and '/teachers' not in request.path %}
                                     {% if sessions.is_active %}
                                         <span class="badge badge-success">Active</span>
                                     {% else %}
                                         <span class="badge badge-danger">Inactive</span>
                                     {% endif %}
-                            
                                 {% endif %}
                             </td>
                             {% for sessionmap in object.chapter_sessionmaps.all %}
