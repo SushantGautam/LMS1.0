@@ -133,6 +133,10 @@
                 <li class="p-3 border-top">
                     <a href="{{ courses.get_absolute_url }}">{{ courses.Course_Name }}</a>
                 </li>
+                {% empty %}
+                <li class="p-3 border-top">
+                    No other Courses Available
+                </li>
                 {% endfor %}
             </ul>
         </div>

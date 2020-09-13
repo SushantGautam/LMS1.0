@@ -493,25 +493,24 @@ class MemberInfoListViewAjax(BaseDatatableView):
     model = MemberInfo
     counter = 0
     template_name = "WebApp/memberinfo_list.html"
-    columns = [
-        'counter', 'username', 'Member_ID', 'full_name', 'first_name',
-        'last_name', 'email', 'Member_Phone', 'Member_Gender', 'Is_Student',
-        'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
-        'Member_BirthDate', 'type', 'action'
-    ]
-    order_columns = [
-        '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email',
-        'Member_Phone', 'Member_Gender', 'Is_Student', 'Is_Teacher', '', '',
-        '', '', ''
-    ]
+    columns = ['checkbox', 'counter', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email',
+               'Member_Department',
+               'Member_Phone',
+               'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
+               'Member_BirthDate', 'type', 'action']
+    order_columns = ['', '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+                     'Member_Phone',
+                     'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
-        return MemberInfo.objects.filter(
-            Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(pk=self.request.user.id)
 
     def render_column(self, row, column):
         # We want to render user as a custom column
-        if column == "counter":
+        #print(row.id, self.request.user.id)
+        if column == "checkbox":
+            return '<input type="checkbox" class="memberinfoCheckbox" value="%s" name="memberinfo_id[]">' % (row.id)
+        elif column == "counter":
             self.counter += 1
             return self.counter
         elif column == 'full_name':
@@ -519,13 +518,12 @@ class MemberInfoListViewAjax(BaseDatatableView):
             return escape('{0} {1}'.format(row.first_name, row.last_name))
         elif column == 'type':
             return row.get_user_type
-        elif column == 'action':
-            return '<a class="btn btn-info btn-floating" href="%s"><i class="fa fa-pencil"></i></a>  \
-                    <a class="btn btn-danger btn-floating text-white confirm-delete ml-2" id="%s"><i class="fa fa-trash"></i></a>' % (
-                row.get_update_url(), row.id)
+        elif column == 'action':    
+            if row.id != self.request.user.id:
+                return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                        <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
         else:
-            return super(MemberInfoListViewAjax,
-                         self).render_column(row, column)
+            return super(MemberInfoListViewAjax, self).render_column(row, column)
 
     def filter_queryset(self, qs):
         # use parameters passed in GET request to filter queryset
@@ -535,17 +533,14 @@ class MemberInfoListViewAjax(BaseDatatableView):
         onlystudents = self.request.GET.get('onlystudents', None)
         onlyteachers = self.request.GET.get('onlyteachers', None)
         if search:
-            qs = qs.filter(username__istartswith=search) | qs.filter(
-                first_name__istartswith=search) | qs.filter(
-                last_name__istartswith=search) | qs.filter(
-                email__istartswith=search) | qs.filter(
+            qs = qs.filter(username__istartswith=search) | qs.filter(first_name__istartswith=search) | qs.filter(
+                last_name__istartswith=search) | qs.filter(email__istartswith=search) | qs.filter(
                 Member_Phone__istartswith=search)
         if onlystudents:
             qs = qs.filter(Is_Student=True)
         if onlyteachers:
             qs = qs.filter(Is_Teacher=True)
-        return qs.filter(Center_Code=self.request.user.Center_Code,
-                         Use_Flag=True)
+        return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
 class MemberInfoListViewInactive(ListView):
@@ -553,8 +548,13 @@ class MemberInfoListViewInactive(ListView):
     template_name = 'WebApp/memberinfo_list_inactive.html'
 
     def get_queryset(self):
-        return MemberInfo.objects.filter(
-            Center_Code=self.request.user.Center_Code, Use_Flag=False)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['partial_member_form'] = MemberInfoForm()
+        # context['partial_member_form'] = MemberInfoForm(request=self.request)
+        return context
 
 
 class MemberInfoCreateView(CreateView):
@@ -602,12 +602,12 @@ def validate_password(request):
 def MemberInfoActivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
+        print(obj.username,'asdasdas')
         obj.Use_Flag = True
         obj.save()
         messages.success(request, 'Member is activated sucessfully')
     except:
-        messages.error(request,
-                       'Cannot perform the action. Please try again later')
+        messages.error(request, 'Cannot perform the action. Please try again later')
 
     if (request.POST['url']):
         return redirect(request.POST['url'])
@@ -615,9 +615,11 @@ def MemberInfoActivate(request, pk):
         return redirect('memberinfo_detail', pk=pk)
 
 
+
 def MemberInfoDeactivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
+        print(obj.username)
         obj.Use_Flag = False
         obj.save()
         messages.success(request, 'Member is deactivated sucessfully')
@@ -1026,7 +1028,15 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
 class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
     form_class = MemberUpdateForm
-    template_name = "WebApp/memberinfo_form.html"
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
 
 
 class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
@@ -1040,11 +1050,56 @@ class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):
             messages.success(request, "The user is deleted Successfully")
             return redirect(redirect_link)
         except:
-            messages.error(
-                request,
-                "You can't delete this user instead you can turn off the status value which will disable the user."
-            )
+            messages.error(request,
+                           "You can't delete this user instead you can turn off the status value which will disable the user.")
             return redirect(redirect_link)
+
+
+def MemberInfoDeleteViewChecked(request):
+    if request.method == 'POST':
+        try:
+            # return self.delete(request, *args, **kwargs)
+            Obj = MemberInfo.objects.filter(pk__in=request.POST.getlist('memberinfo_id[]'))
+            Obj.delete()
+            if '/inactive' in request.path:
+                return redirect('memberinfo_list_inactive')
+            else:
+                return redirect('memberinfo_list')
+
+        except:
+            messages.error(request,
+                           "Cannot delete Member")
+            return JsonResponse({}, status=500)
+
+
+def MemberInfoEditViewChecked(request):
+    if request.method == 'POST':
+        member_list = []
+
+        memberinfo_list = MemberInfo.objects.filter(pk__in=request.POST.get('member_ids[]').split(','))
+        if request.POST.get('Member_Department') and request.POST.get('Member_Department') != '':
+            Member_Department = DepartmentInfo.objects.get(pk=request.POST.get('Member_Department'))
+
+        if request.POST.get('Member_Department'):
+            memberinfo_list.update(Member_Department=Member_Department)
+        if request.POST.get('Member_Position'):
+            memberinfo_list.update(Member_Position=request.POST.get('Member_Position'))
+        if request.POST.get('Member_Gender'):
+            memberinfo_list.update(Member_Gender=request.POST.get('Member_Gender'))
+        if request.POST.get('Is_Teacher'):
+            Is_Teacher = True if request.POST.get('Is_Teacher') == "1" else False
+            memberinfo_list.update(Is_Teacher=Is_Teacher)
+        if request.POST.get('Is_Student'):
+            Is_Student = True if request.POST.get('Is_Student') == "1" else False
+            memberinfo_list.update(Is_Student=Is_Student)
+        if request.POST.get('Use_Flag'):
+            Use_Flag = True if request.POST.get('Use_Flag') == "1" else False
+            memberinfo_list.update(Use_Flag=Use_Flag)
+
+        if '/inactive' in request.path:
+            return redirect('memberinfo_list_inactive')
+        else:
+            return redirect('memberinfo_list')
 
 
 class CourseInfoGridView(ListView):

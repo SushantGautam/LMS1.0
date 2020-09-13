@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item active" aria-current="page">Members</li>
+<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Members</a></li>
+<li class="breadcrumb-item active" aria-current="page">Inactive Members</li>
 {% endblock %}
 {% block content %}
 <div class="row">
@@ -26,8 +28,105 @@
         </div>
     </div>
 </div>
+
+<form method="post" action="{% url 'memberinfo_inactive_delete_checked' %}">
+    {% csrf_token %}
+    <div class="text-right">
+        <nav id="navbar_parent" class="navbar-dark">
+            <div class="btn-createnew">
+                <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
+                    data-target="#edit_checked_details_modal">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-danger deleteCheckedMembers" type="submit"
+                    onclick="return confirm('Are you sure you want to delete ?')">
+                    <i class="fa fa-trash"></i>
+                </button>
+
+            </div>
+        </nav>
+    </div>
+
+    <div class="membertable table-responsive" id="member_dataTable">
+        <table class="table table-striped no-wrap" cellspacing="0" width="100%" id="members_list_table">
+            <thead class="thead-light">
+                <tr class="tableTitleRow">
+                    <th>
+                        <input type="checkbox" class="memberinfoCheckAll">
+                    </th>
+                    <th class="text-center">S. No.</th>
+                    <th>Username</th>
+                    <th>Member ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Student</th>
+                    <th>Teacher</th>
+                    <th>Type</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            {% for object in object_list %}
+            {% if object.id != request.user.id %}
+            <tr>
+                <td><input type="checkbox" class="memberinfoCheckbox" value="{{ object.id }}" name="memberinfo_id[]">
+                </td>
+                <td class="text-center" style="vertical-align: middle;">{{ forloop.counter }}</td>
+                <td style="vertical-align: middle;"><b><a
+                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+                <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
+                <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+                <td>{{ object.email }}</td>
+                <td>{{ object.Member_Department }}</td>
+                <td>{{ object.Member_Phone }}</td>
+                <td style="vertical-align: middle;">
+                    {{ object.get_Member_Gender_display }}
+                </td>
+                <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
+                <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
+                <td>
+                    {% if object.Is_Teacher == True and object.Is_Student == True %}
+                    Teacher, Student
+                    {% elif object.Is_Teacher == True %}
+                    Teacher
+                    {% elif object.Is_Student == True %}
+                    Student
+                    {% else %}
+                    Not Assigned
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-success confirm-activate" id="{{ object.pk }}">
+                        Activate
+                    </button>
+                    <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
+                        id="activateForm-{{ object.pk }}">
+                        {% csrf_token %}
+                        <input type="hidden" value='memberinfo_list_inactive' name='url'>
+                    </form>
+                    <button class="btn btn-sm btn-danger confirm-delete" id="{{ object.pk }}">Delete
+                    </button>
+                    <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
+                        id="delete_form-{{ object.pk }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="redirect" value="memberinfo_list_inactive">
+                    </form>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</form>
+
+{% include 'WebApp/memberinfo_mass_option_form.html' %}
+
+
 {% endblock %}
 {% block javascript%}
+
 <!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
@@ -40,33 +139,29 @@
 <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
 
 <script type="text/javascript">
-    $("#all_button").css("color", "white");
-    $("#student_button").css("color", "black");
-    $("#teacher_button").css("color", "black");
-
-    $(".button-info").click(function () {
-        $("ul.info-text").toggle();
-    });
-
-    $(document).on('click', '.confirm-delete', function () {
-        ans = confirm('Are you sure you want to delete this Member? (You can deactivate the member instead of deleting)');
+    $(document).on('click', '.confirm-activate', function (event) {
+        var id = event.target.id;
+        ans = confirm('Are you sure you want to activate this Member?');
         if (ans == true) {
-            $.ajax({
-                url: '{% url "memberinfo_delete" pk="000123" %}'.replace('000123', this.id),
-                method: 'post',
-                data: {
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                success: function () {
-                    location.reload();
-                }
-            })
-            $(`#delete_form${this.id}`).submit();
+            $(`#activateForm-${id}`).submit();
         } else {
             return false;
         }
     });
 
+    $(document).on('click', '.confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Member?');
+        if (ans == true) {
+            $(`#delete_form-${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
+
+    $("#all_button").css("color", "white");
+    $("#student_button").css("color", "black");
+    $("#teacher_button").css("color", "black");
 
     setTimeout(function () {
         $('#message').fadeOut('slow');
@@ -74,99 +169,29 @@
 
     $(document).ready(function () {
 
-        // ServerSide export all data from "https://stackoverflow.com/a/57335685"
-
-        /* For Export Buttons available inside jquery-datatable "server side processing" - Start
-        - due to "server side processing" jquery datatble doesn't support all data to be exported
-        - below function makes the datatable to export all records when "server side processing" is on */
-
-        function newexportaction(e, dt, button, config) {
-            var self = this;
-            var oldStart = dt.settings()[0]._iDisplayStart;
-            dt.one('preXhr', function (e, s, data) {
-                // Just this once, load all data from the server...
-                data.start = 0;
-                data.length = -1; // if value is >100 :: only 100 data will be displayed
-                dt.one('preDraw', function (e, settings) {
-                    // Call the original action function
-                    if (button[0].className.indexOf('buttons-copy') >= 0) {
-                        $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
-                    } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                        $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-                            $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-                    } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                        $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-                            $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-                            $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-                    } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                        $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-                            $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-                            $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
-                    } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                        $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
-                    }
-                    dt.one('preXhr', function (e, s, data) {
-                        // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-                        // Set the property to what it was before exporting.
-                        settings._iDisplayStart = oldStart;
-                        data.start = oldStart;
-                    });
-                    // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                    setTimeout(dt.ajax.reload, 0);
-                    // Prevent rendering of the full data to the DOM
-                    return false;
-                });
-            });
-            // Requery the server with the new one-time export settings
-            dt.ajax.reload();
-        };
-        //For Export Buttons available inside jquery-datatable "server side processing" - End
-
         var table_main = $('.table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
             responsive: true,
-            processing: true,
-            serverSide: true,
-            ajax: "{% url 'memberinfo_listajax' %}",
-            language: {
-                "infoFiltered": "",
-            },
-            order: [],
-            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
             buttons: [
                 {
                     extend: 'csv',
-                    title: 'Member List',
-                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
-                    exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-                    },
-                    action: newexportaction,
-
-                },
-                {
-                    text: '<span class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
+                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
                 },
                 {
                     extend: 'print',
-                    title: 'Member List',
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
-                    fieldSeparator: '\t',
-                    action: newexportaction,
+                    fieldSeparator: '\t'
                 }],
             "columnDefs": [
                 {
-                    "targets": [4, 5, 9, 10, 11, 12, 13],
+                    "targets": [7, 8],
                     "visible": false,
-                    "searchable": true,
-                },
-                {
-                    "orderable": false,
-                    "targets": [0, 3, 11, 12, 13, 14, 15]
+                    "searchable": true
                 }
+
             ]
+
         });
 
 
@@ -174,69 +199,31 @@
             $("#student_button").css("color", "white");
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
-            table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
+            table_main.columns().search('').draw();
+            table_main.column(7).search("True").draw();
+
+
         });
         $("#teacher_button").bind("click", function () {
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "white");
             $("#all_button").css("color", "black");
-            table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlyteachers=true").load();
+
+            table_main.columns().search('').draw();
+            table_main.column(8).search("True").draw();
+
         });
 
         $("#all_button").bind("click", function () {
             $("#all_button").css("color", "white");
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "black");
-            table_main.ajax.url("{% url 'memberinfo_listajax' %}").load();
-        });
-
-
-        $('#form_import_csv').submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData($('form').get(0));
-            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
-            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
-            formData.append("csrfmiddlewaretoken", csrf);
-            if ($('#id_import_csv').val()) {
-                $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
-                $('#submitcsv').attr('disabled', true);
-                $('.closeImportCSV').attr('disabled', true);
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'csv_import_ajax' %}",  // URL to your view that serves new info
-                    data: formData,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        $('.import-message').addClass(response.class);
-                        $('.import-message').removeClass(response.rmclass);
-                        $('.import-message').html(response.message);
-                    },
-                    error: function () {
-                        $('.import-message').addClass('text-danger');
-                        $('.import-message').removeClass('text-sucess');
-                        $('.import-message').html("Error while processing data please try again and verify the format.");
-                    },
-                    complete: function () {
-                        $('#submitspinner').html(``);
-                        $('#submitcsv').attr('disabled', false);
-                        $('.closeImportCSV').attr('disabled', false);
-                    }
-                });
-            } else {
-                $('.import-message').addClass('text-danger');
-                $('.import-message').html("Please upload a csv file with defined format.");
-            }
+            table_main.columns().search('').draw();
         });
 
 
     });
 
-
-    $('.closeImportCSV').click(function () {
-        window.location.reload();
-    })
 
 </script>
 
