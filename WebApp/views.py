@@ -563,7 +563,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
                'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+    order_columns = ['', 'id', 'username', 'Member_ID', 'first_name', 'first_name', 'last_name', 'email',
+                     'Member_Department',
                      'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
