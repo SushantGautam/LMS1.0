@@ -1,12 +1,31 @@
 from datetime import timedelta, datetime
 
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import post_save, post_delete
+from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.utils import timezone
 
 from Notifications.models import Notification
 from Notifications.signals import notify
-from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup, AssignmentInfo
+from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup, AssignmentInfo, AssignAnswerInfo
+
+
+# Multiple Submission of Assignment Prevention
+def MultipleAssignmentSubmission(sender, instance, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if instance.pk is None:
+        if AssignAnswerInfo.objects.filter(Student_Code=request.user, Question_Code=instance.Question_Code).exists():
+            raise ValidationError('Answer already exists.')
+
+
+pre_save.connect(MultipleAssignmentSubmission, sender=AssignAnswerInfo)
 
 
 class NotificationAction:
