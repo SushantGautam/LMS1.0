@@ -78,8 +78,8 @@ def start(request):
     batches = GroupMapping.objects.filter(Students=request.user)
     sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
                                 Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
-    course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group', flat=True))
-    courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code', flat=True),
+    course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+    courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
                                 Use_Flag=True)
     
     activeassignments = student_all_assignements(request.user).filter(Assignment_Deadline__gte=datetime_now)[:7]
@@ -234,31 +234,36 @@ class MyCoursesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
-                                              Center_Code=self.request.user.Center_Code)
-        sessions = []
         datetime_now = timezone.now().replace(microsecond=0)
-        if batches:
-            for batch in batches:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
-                sessions += session
-        courses = InningGroup.objects.none()
-        if sessions:
-            for session in sessions:
-                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
-                courses |= course
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                    Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                    Use_Flag=True)
 
-        courses = courses.distinct()
+        # sessions = []
+        # datetime_now = timezone.now().replace(microsecond=0)
+        # if batches:
+        #     for batch in batches:
+        #         # Filtering out only active sessions
+        #         session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
+        #         sessions += session
+        # courses = InningGroup.objects.none()
+        # if sessions:
+        #     for session in sessions:
+        #         course = session.Course_Group.filter(Course_Code__Use_Flag=True)
+        #         courses |= course
+
+        # courses = courses.distinct()
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
-        filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
+        filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
         if self.request.GET.get('paginate_by'):
             paginate_by = self.request.GET.get('paginate_by')
         else:
-            paginate_by = 8
+            paginate_by = 1
         paginator = Paginator(filtered_qs, paginate_by)
-        page = self.request.GET.get('page')
+        page = self.request.GET.get('page', 1)
 
         try:
             response = paginator.page(page)
