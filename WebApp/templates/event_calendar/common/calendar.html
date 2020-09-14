@@ -1,0 +1,379 @@
+
+
+
+{% block content %}
+    <div class="page-header">
+        <div class="page-title">
+            <div>
+                <button class="btn btn-primary create_event_button" data-toggle="modal"
+                        data-target="#createEventModal">
+                    <i class="ti-plus mr-2"></i> Create Event
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row app-block mb-4">
+        <div class="col-md-3 app-sidebar">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title mb-2">Events</h6>
+                    <p class="text-muted">Drag and drop your event</p>
+                    <div class="list-group mb-3" id="external-events">
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-success" data-icon="car"></i> Holiday
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-danger" data-icon="users"></i> Meeting
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-info" data-icon="building"></i> Program
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 app-content">
+            <div class="app-content-overlay"></div>
+            <div class="card app-content-body">
+                <div class="card-body">
+                    <a href="#" class="app-sidebar-menu-button btn btn-outline-light mb-3">
+                        <i data-feather="menu"></i>
+                    </a>
+                    <div id="calendar-demo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- begin::Create Event Modal -->
+    <div class="modal fade" id="createEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="calendar_event_form" method="post"
+                          {% if "teacher" in request.get_full_path %}
+                         action="{% url 'teacher_event_calendar_create' %}" autocomplete="off">
+                            {% else %}
+                          action="{% url 'event_calendar_create' %}" autocomplete="off">
+                            {% endif %}
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Title</label>
+                            <div class="col-sm-9">
+                                <input id="id_title" type="text" name="title" value="Program" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Event type</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="event-type">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="customRadioInline1" name="event_type"
+                                               class="custom-control-input" value="PR" checked>
+                                        <label class="custom-control-label" for="customRadioInline1">Program</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="customRadioInline2" name="event_type"
+                                               class="custom-control-input" value="ME">
+                                        <label class="custom-control-label" for="customRadioInline2">Meeting</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="customRadioInline3" name="event_type"
+                                               class="custom-control-input" value="HO">
+                                        <label class="custom-control-label" for="customRadioInline3">Holiday</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">All Day Event</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="all-day">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="is_all_day" class="custom-control-input"
+                                               id="id_is_all_day" checked>
+                                        <label class="custom-control-label" for="id_is_all_day"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row row-sm">
+                            <label class="col-sm-3 col-form-label">Start</label>
+                            <div class="col-sm-5">
+                                <input id="event-start-date" type="text"
+                                       class="form-control create-event-datepicker"
+                                       placeholder="Date">
+                            </div>
+                            <div class="col-sm-4 datetime_dynamic">
+                                <input id="event-start-time" type="text" class="form-control create-event-demo"
+                                       placeholder="Time">
+                            </div>
+                            <input type="hidden" name="date_start" id="id_date_start">
+                        </div>
+                        <div class="form-group row row-sm">
+                            <label class="col-sm-3 col-form-label">End</label>
+                            <div class="col-sm-5">
+                                <input id="event-end-date" type="text" class="form-control create-event-datepicker"
+                                       placeholder="Date">
+                            </div>
+                            <div class="col-sm-4 datetime_dynamic">
+                                <input id="event-end-time" type="text" class="form-control create-event-demo"
+                                       placeholder="Time">
+                            </div>
+                            <input type="hidden" name="date_end" id="id_date_end">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Participants Type</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" >
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_participant_type_1" name="participation_type" class="custom-control-input" value="AL" >
+
+                                        <label class="custom-control-label" for="id_participant_type_1">All Users</label>
+
+
+                                    </div>
+
+
+
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_participant_type_2" name="participation_type"  class="custom-control-input" value="AS" >
+
+                                        <label class="custom-control-label" for="id_participant_type_2">All Students</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_participant_type_3" name="participation_type" class="custom-control-input" value="AT">
+
+                                        <label class="custom-control-label" for="id_participant_type_3">All Teachers</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_participant_type_4" name="participation_type"  class="custom-control-input" value="CH">
+
+                                        <label class="custom-control-label" for="id_participant_type_4">Choose</label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row participant_dynamic">
+                            <label class="col-sm-3 col-form-label">Filter By</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="filter-type">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_filter_type_1" name="filter_type"
+                                               class="custom-control-input" value="A" checked>
+                                        <label class="custom-control-label"
+                                               for="id_filter_type_1">Any</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_filter_type_2" name="filter_type"
+                                               class="custom-control-input" value="S">
+                                        <label class="custom-control-label"
+                                               for="id_filter_type_2">Students</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="id_filter_type_3" name="filter_type"
+                                               class="custom-control-input" value="T">
+                                        <label class="custom-control-label"
+                                               for="id_filter_type_3">Teachers</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row participant_dynamic">
+                            <label class="col-sm-3 col-form-label">Participants</label>
+                            <div class="col-sm-9">
+                                <select name="participants" class="form-control select2-example"
+                                        id="id_participants" multiple>
+                                    {% for u in user_list %}
+                                        <option
+                                                {% if u.Is_Student %}data-is_student="true"{% endif %}
+                                                {% if u.Is_Teacher %}data-is_teacher="true"{% endif %}
+                                                value="{{ u.pk }}">{{ u.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea id="id_description" name="description" class="form-control" rows="6">
+
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3"></label>
+                            <div class="col-sm-9">
+                                <button type="submit" id="btn-save" class="btn btn-primary">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end::Create Event Modal -->
+
+<!-- begin::Event Info Modal -->
+<div class="modal fade" id="viewEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="justify-content:flex-end;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-header d-inline" >
+                <h5 class=" modal-title d-inline  ml-3">
+
+                    <span class="event-title ">Modal Title</span>
+                </h5>
+
+
+
+                <form method="POST" class="delete_event d-inline " action=""
+                      onsubmit="return confirm('Are you sure you want to delete?');">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger btn-sm d-inline pull-right ml-2 mr-5" data-toggle="tooltip"
+                   title="Delete">
+                        <i class="fa fa-trash ml-1"  aria-hidden="true" ></i> &nbsp;
+                    </button>
+                </form>
+
+                <button class="btn btn-sm btn-primary text-white pull-right "  data-toggle="tooltip"
+                   title="Update" name="update"
+                        id="update_event_btn"
+                ><i class="fa fa-edit ml-1"  aria-hidden="true"></i> &nbsp;
+                </button>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+            <div class="modal-body" style="text-align:center">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8" style="float:left;text-align:left;">
+                            <h6> Event Type:</h6>
+                            <div>
+                                <span class="btn btn-sm   event-type"> </span>
+                                <span class="btn btn-sm  type_event"> </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+
+                        <div class="col-md-6" style="text-align:left;">
+                            <h6 class="strt_at"> Start At: (MM/DD/YYYY)</h6>
+                            <div class="start_at"></div>
+                            <br>
+                        </div>
+
+                        <div class="col-md-6" style="text-align:left;">
+                            <h6 class="en_at"> End At: (MM/DD/YYYY)</h6>
+                            <div class="end_at"></div>
+                        </div>
+
+
+                    </div>
+                    <br>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="participant" style="text-align:left;"> Participants:&nbsp;&nbsp;</h6>
+                        </div>
+                        <div class="col-md-6 part_custom" style="text-align:left;">
+                            <a class='btn btn-success btn-sm detail_btn' data-toggle="modal"
+                        data-target="#custom_Participant_Modal">Details</a>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-12" style="text-align:left;">
+                            <h6> Description:&nbsp;&nbsp;</h6>
+                            <div class="desc"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <br>
+
+
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!-- end::Event Info Modal -->
+
+
+
+
+  <!-- begin::Custom Participant Modal -->
+    <div class="modal fade" id="custom_Participant_Modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Participants</h5>
+                    <button type="button" class="close close_prt" data-dismiss="modal" aria-label="Close">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                  <div class="list-group list-group-flush part_list">
+<!--                      <a href="#" class="list-group-item d-flex align-items-center">-->
+<!--                            <div class="pr-3">-->
+<!--                                <div class="avatar">-->
+<!--                                  {#  <img src="{% static 'media/image/photo1.jpg' %}"   #}  -->
+<!--                                         class="rounded-circle"-->
+<!--                                         alt="image">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                                <h6 class="mb-1 participant_name">Francisco Ubsdale</h6>-->
+
+<!--                            </div>-->
+
+<!--                        </a>-->
+
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end::Custom Participant Modal -->
+
+
+
+{% endblock %}
+
+
+
+
