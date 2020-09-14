@@ -73,10 +73,10 @@
 
                 <div class="gridContentsList">
                     <div class="card-header">
-                        <a href="{{ object.Course_Code.student_get_absolute_url }}">
+                        <a href="{{ object.student_get_absolute_url }}">
                             <img id="courseListImage" class="card-img-top" src="
-                                                    {% if object.Course_Code.Course_Cover_File %}
-                                                        /media/{{ object.Course_Code.Course_Cover_File }}
+                                                    {% if object.Course_Cover_File %}
+                                                        /media/{{ object.Course_Cover_File }}
                                                     {% else %}
                                                         {% static 'images/course.jpg' %}
                                                     {% endif %}" alt="Card image cap" width="100%" height="180px"
@@ -86,7 +86,7 @@
                     <div class="card-body" id="cardInfo">
                         <h2 class="card-title">
                             <strong><a
-                                    href="{{ object.Course_Code.student_get_absolute_url }}">{{ object.Course_Code }}</a></strong>
+                                    href="{{ object.student_get_absolute_url }}">{{ object }}</a></strong>
 
                         </h2>
                         <hr>
@@ -100,7 +100,7 @@
                                         overflow: hidden;
                                         white-space: normal;
                                         text-overflow: ellipsis;">
-                                <a onclick="RetrieveChatper('{{ object.Course_Code.student_get_absolute_url }}',{{ object.Course_Code.pk }})">
+                                <a onclick="RetrieveChatper('{{ object.student_get_absolute_url }}',{{ object.pk }})">
                                     <button type="button" style="text-align:center;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                             ">CONTINUE <i class="fa fa-arrow-right"></i>
                                     </button>

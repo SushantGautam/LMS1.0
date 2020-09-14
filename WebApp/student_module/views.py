@@ -74,28 +74,14 @@ def student_all_assignements(user):
 
 def start(request):
     global courses, activeassignments, sessions, batches
-    if request.user.Is_Student:
-        datetime_now = timezone.now().replace(microsecond=0)
-        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
-        sessions = []
-        if batches:
-            for batch in batches:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
-                sessions += session
-        courses = set()
-        activeassignments = []
-        if sessions:
-            for session in sessions:
-                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
-                courses.update(course)
-            # for course in courses:
-            #     activeassignments += AssignmentInfo.objects.filter(
-            #         Assignment_Deadline__gte=datetime_now, Assignment_Start__lte=datetime_now,
-            #         Course_Code__id=course.Course_Code.id,
-            #         Chapter_Code__Use_Flag=True).filter(
-            #         Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
-            #         Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None))[:7]
+    datetime_now = timezone.now().replace(microsecond=0)
+    batches = GroupMapping.objects.filter(Students=request.user)
+    sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+    course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+    courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                Use_Flag=True)
+    
     activeassignments = student_all_assignements(request.user).filter(Assignment_Deadline__gte=datetime_now)[:7]
     sittings = Sitting.objects.filter(user=request.user)
 
@@ -104,8 +90,7 @@ def start(request):
     thread_keywords = get_top_thread_keywords(request, 10)
 
     ## Incomplete chapters calculation
-    chapters = ChapterInfo.objects.filter(Course_Code__id__in=[course.Course_Code.id for course in courses],
-                                          Use_Flag=True).filter(
+    chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
         Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
         Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
@@ -125,23 +110,6 @@ def start(request):
 
     # Only taking 5 chapters
     incomplete_chapters = chapters_list[:5]
-
-    # chapter_progress = []
-    # counter = 0
-
-    # sorted_chapters = sorted(chapters, key=lambda chapter: getChapterScore(request.user, chapter)['totalProgressScore'],
-    #                          reverse=True)
-
-    # for chapter in sorted_chapters:
-    #     if counter < 5:
-    #         if chapter.getChapterContent() != "":
-    #             student_progress = getCourseProgress(chapter.Course_Code, [request.user, ], [chapter, ]),
-    #             # if student_progress[0][0]['chapter']['progresspercent'] != '100' and student_progress[0][0]['chapter'][
-    #             #     'attendance'] == False:
-    #             chapter_progress.append(student_progress)
-    #             counter += 1
-    #     else:
-    #         break
 
     # NOtice popup based on active notice and notice view turned off
     if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
@@ -266,31 +234,22 @@ class MyCoursesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
-                                              Center_Code=self.request.user.Center_Code)
-        sessions = []
         datetime_now = timezone.now().replace(microsecond=0)
-        if batches:
-            for batch in batches:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
-                sessions += session
-        courses = InningGroup.objects.none()
-        if sessions:
-            for session in sessions:
-                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
-                courses |= course
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                    Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                    Use_Flag=True)
 
-        courses = courses.distinct()
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
-        filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
+        filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
         if self.request.GET.get('paginate_by'):
             paginate_by = self.request.GET.get('paginate_by')
         else:
             paginate_by = 8
         paginator = Paginator(filtered_qs, paginate_by)
-        page = self.request.GET.get('page')
+        page = self.request.GET.get('page', 1)
 
         try:
             response = paginator.page(page)
