@@ -1,4 +1,6 @@
 {% load static %}
+{% load model_template_relation %}
+
 <link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
 
 <div class="outerdiv">
@@ -51,20 +53,79 @@
             {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h5><b>
-                    <table class="table table-striped table-bordered">
+                    <table class="table">
                         <tr>
                             <td>Assignment Topic</td>
                             <td>{{ object.Assignment_Topic }}</td>
                         </tr>
+                        <!-- Start/End Date from different session -->
                         <tr>
-                            <td>Assignment Start Date</td>
-                            {#                            Use Datecon class in td if conversion of date to local time is required#}
-                            <td class="dateconFullMonth">{{ object.Assignment_Start|date:'d M, Y h:i A' }} </td>
+                            <td style="border: 0;"></td>
                         </tr>
+    
+                        <!-- Start/End Date from different session -->
+                        {% if assigned_session %}
+                            <tr>
+                                <th>Session</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                {% if '/students' not in request.path %}
+                                    <th>Assignment Status</th>
+                                    <th>Action</th>
+                                {% endif %}
+                            </tr>
+                        {% endif %}
+                       
+                        {% for sessions in assigned_session %}
+                            <tr>
+                                <td>
+                                    {{ sessions }}
+                                    {% if '/students' not in request.path and '/teachers' not in request.path %}
+                                        {% if sessions.is_active %}
+                                            <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+
+                                {% getSessionMap object 'assignmentinfo' sessions as sessionmap %}
+                                {#                                {% for sessionmap in object.assignment_sessionmaps.all %}#}
+                                {#                                    {% if  sessionmap.Session_Code == sessions %}#}
+                                <td class="start-date dateconFullMonth">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
+                                <td class="end-date dateconFullMonth">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                                {% if '/students' not in request.path %}
+                                    <td>
+                                        {% now "Y-m-d H:i" as todays_datewithtime %}
+                                        {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                            <span class="badge badge-info">Upcoming</span>
+                                        {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                                            <span class="badge badge-danger">Expired</span>
+                                        {% else %}
+                                            <span class="badge badge-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                                {#                                    {% endif %}#}
+                                {#                                {% endfor %}#}
+                                {% if '/students' not in request.path %}
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary inningmap-btn"
+                                                data-toggle="modal"
+                                                data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                                data-objectid="{{ object.id }}">
+                                            Change
+                                        </button>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        
                         <tr>
-                            <td>Assignment Deadline</td>
-                            <td class="dateconFullMonth">{{ object.Assignment_Deadline|date:'d M, Y h:i A' }}</td>
+                            <td style="border: 0;"></td>
                         </tr>
+
+                        <!-- End Of start/end date -->
                         <tr>
                             <td>Course Code</td>
                             <td>{{ object.Course_Code }}</td>
@@ -77,25 +138,19 @@
                             <td>Register Agent</td>
                             <td>{{ object.Register_Agent }}</td>
                         </tr>
-                        <tr>
-                            <td>Status</td>
-                            <td>
-                                {% if object.Use_Flag is True %}
-                                    <span class="badge badge-success">Published</span>
-                                {% elif object.Use_Flag is False %}
-                                    <span class="badge badge-danger">Not Published</span>
-                                {% endif %}
 
-                                {% now "Y-m-d H:i" as todays_datewithtime %}
-                                {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
-                                    <span class="badge badge-info">Upcoming</span>
-                                {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
-                                    <span class="badge badge-danger">Expired</span>
-                                {% else %}
-                                    <span class="badge badge-success">Active</span>
-                                {% endif %}
-                            </td>
-                        </tr>
+                        {% if '/students' not in request.path %}
+                            <tr>
+                                <td>Status</td>
+                                <td>
+                                    {% if object.Use_Flag is True %}
+                                        <span class="badge badge-success">Published</span>
+                                    {% elif object.Use_Flag is False %}
+                                        <span class="badge badge-danger">Not Published</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
                     </table>
                 </b>
                 </h5>
@@ -271,9 +326,12 @@
                                 {% for answer in Answers %}
                                     {% if questions.id == answer.Question_Code.id %}
                                         {% if answer.Assignment_Answer != '' %}
-                                            <p style="margin: 0;color:#000000;">{{ answer.Assignment_Answer }}</p>
+                                            <p class="short_answer" data-answer="{{ answer.Assignment_Answer|safe }}"
+                                               style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
                                             {% now "Y-m-d H:i" as todays_date %}
-                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                            {#                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
+                                            {% isAssignmentActive object as isanswerable %}
+                                            {% if isanswerable %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
                                                         data-Question_Code="{{ questions.id }}"
@@ -288,6 +346,36 @@
                                                         aria-hidden="true"></i>
                                                 </button>
                                             {% endif %}
+                                            <div class="assignment_update_form" style="display: none;">
+                                                <form class="form_{{ questions.id }}">
+                                                    <div class="form-group">
+                                                        {{ form.Assignment_Answer }}
+                                                        <input type="hidden" value="{{ request.user.id }}"
+                                                               name="Student_Code"
+                                                               id="id_Student_Code{{ questions.id }}">
+                                                        <input type="hidden" value="{{ questions.id }}"
+                                                               name="Question_Code"
+                                                               id="id_Question_Code{{ questions.id }}">
+                                                    </div>
+                                                    <div class="form-group text-center">
+                                                        <button class="btn btn-sm btn-primary cancelBtn" type="button"
+                                                                id="cancelButton{{ questions.pk }}">
+                                                            Cancel
+                                                        </button>
+                                                        <button class="btn btn-sm btn-primary resetBtn" type="reset">
+                                                            Reset
+                                                        </button>
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer={{ answer.pk }}">
+                                                            Submit
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         {% else %}
                                             <p style="margin: 0;color:#000000;">File has been Submitted</p>
 
@@ -309,12 +397,13 @@
                                         {#                                              class="form-horizontal form-label-left submitAnswer"#}
                                         {#                                              novalidate="" data-id="{{ questions.id }}">#}
                                         {#                                            {% csrf_token %}#}
-                                        <form>
+                                        <form class="form_{{ questions.id }}">
                                             {% if questions.Answer_Type == 'S' %}
                                                 <div class="form-group">
-                                    <textarea class="form-control rounded-0" rows="5" cols="100"
-                                              name="Assignment_Answer" id="id_Assignment_Answer{{ questions.id }}"
-                                              placeholder="Enter your Answer" required></textarea>
+                                                    {{ form.Assignment_Answer }}
+                                                    <!-- <textarea type="hidden" name="Assignment_Answer"
+                                                     id="id_Assignment_Answer{{ questions.id }}" 
+                                                     required></textarea> -->
                                                     <input type="hidden" value="{{ request.user.id }}"
                                                            name="Student_Code"
                                                            id="id_Student_Code{{ questions.id }}">
@@ -325,7 +414,9 @@
 
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
-                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                                    {#                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
+                                                    {% isAssignmentActive object as isanswerable %}
+                                                    {% if isanswerable %}
                                                         <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
@@ -364,7 +455,9 @@
                                                 </div>
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
-                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
+                                                    {#                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
+                                                    {% isAssignmentActive object as isanswerable %}
+                                                    {% if isanswerable %}
                                                         <button class="btn btn-sm btn-primary" type="reset"
                                                                 id="cancelButton{{ questions.pk }}">
                                                             Cancel
@@ -525,14 +618,12 @@
     {#    </script>#}
 
     <script>
-        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
-        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
-        $('#id_Assignment_Deadline_edit').datetimepicker();
-        $('#id_Assignment_Start_edit').datetimepicker();
+
+        {% comment %}
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
-                url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
                 data: {
                     "csrfmiddlewaretoken": '{{ csrf_token }}',
                     "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
@@ -557,6 +648,7 @@
 
             });
         });
+        {% endcomment %}
         $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
             const result = document.querySelector('.result');
             var date = new Date();
@@ -572,6 +664,40 @@
             ;
         });
     </script>
+
+    <script>
+        $('#editAssignment-btn').on('click', function () {
+            $('#editAssignment_modal_body').empty();
+
+
+            $.ajax({
+                type: "GET",
+                url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
+                success: function (response) {
+                    let url = '/assignmentinfo/edit/{{ object.pk }}/ajax/';
+                    $('#editAssignment_modal_body').append(response);
+                    $('#ajaxassignmentinfoform').attr('action', url);
+                    $('#editAssignment_modal_body').append(`
+                        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
+                               value="{{ object.Chapter_Code.id }}" class="select form-control">
+                    `)
+
+                    Switchery(document.querySelector('.js-switch'));
+                },
+                error: function () {
+                    console.log('Error in generating assignment edit form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+    </script>
+
     <script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
@@ -662,11 +788,10 @@
             } else {
                 var answer_file = 0;
             }
+            var answer_text = $(`.form_${$(this).attr('data-id')}`).find(`#id_Assignment_Answer`).val();
 
-            if ($(`#id_Assignment_Answer${$(this).attr('data-id')}`).val()) {
-                var answer_text = $(`#id_Assignment_Answer${$(this).attr('data-id')}`).val();
-            } else {
-                var answer_text = '';
+            if (!answer_text) {
+                answer_text = '';
             }
 
             if (answer_file == 0 && answer_text == '') {
@@ -735,51 +860,36 @@
             });
 
             $('.editanswer').click(function () {
-                $(this).parent().children().css('display', 'none')
-                $(this).parent().append(`
-                <div class="editdiv">
-                <form>
-                    <textarea class="form-control rounded-0" rows="5" cols="100"
-                              name="Assignment_Answer"
-                              placeholder="Enter your Answer"
-                              id="id_Assignment_Answer${$(this).attr('data-Question_Code')}" required>${$(this).parent().find('p').text()}</textarea>
-                    <input type="hidden" value="${$(this).attr('data-Student_Code')}" name="Student_Code"
-                    id=id_Student_Code${$(this).attr('data-Question_Code')}>
-                    <input type="hidden" value="${$(this).attr('data-Question_Code')}" name="Question_Code"
-                    id=id_Question_Code${$(this).attr('data-Question_Code')}>
-                    <div class="form-group text-center">
+                var assignementForm = $(this).parent().find(`.assignment_update_form`);
+                var iframe = $(this).parent().find(`iframe`);
+                var innerDoc = iframe.contents();
+                var shortAns = $(this).parent().find(`.short_answer`).attr('data-answer');
 
-                             <button class="btn btn-sm btn-primary cancelBtn" type="button" id="cancelButton{{ questions.pk }}">
-                                Cancel
-                            </button>
-                            <button class="btn btn-sm btn-primary resetBtn" type="reset">Reset</button>
+                $(this).parent().children().css('display', 'none');
+                assignementForm.show();
 
-                            <button type="button" class="btn btn-sm btn-success submitAnswer"
-                                    id="answer${$(this).attr('data-Question_Code')}"
-                                    data-id="${$(this).attr('data-Question_Code')}"
-                                    data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer=${this.value}">Submit
-                            </button>
-                    </div>
-                    </form>
-                </div>
-                `)
-            })
+                innerDoc.find(`.note-editable`).html(shortAns);
+                $(this).parent().find(`#id_Assignment_Answer`).html(shortAns);
+            });
 
             $('.qacontainer').on('click', '.cancelBtn', function () {
-                $(this).closest('.editdiv').parent().children().css('display', 'block')
-                $(this).closest('.editdiv').remove()
+                $(this).closest('.assignment_update_form').parent().children().css('display', 'block');
+                $(this).closest('.assignment_update_form').hide();
             })
             //$('.qacontainer').on('click', '.resetBtn', function () {
             //  $(this).closest('.editdiv').find('textarea').val('')
             //})
-        })
+        });
 
 
         // $('input[type=datetime-local]').each(function () {
         //    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)
         // })
 
-
-
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
+        })
     </script>
 {% endblock %}
+
+{% include 'inning/inningmapFormModal.html' %}

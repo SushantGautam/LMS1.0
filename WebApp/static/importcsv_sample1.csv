@@ -1,0 +1,2 @@
+(*)Username,Member ID,First Name,Last Name,Email,Phone,(*)Gender(m/f),(*)Student(0/1),(*)Teacher(0/1),Temporary Address,Permanent Address,Birthdate,Department
+ram_thapa12,RAM2343,ram,thapa,ram@gmail.com,97768483223,m,1,0,htd,ktm,10/24/2010,-

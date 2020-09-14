@@ -549,7 +549,7 @@
                                 <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0px !important;">
                                     <h4>
                                         <span class="running-time" style="font-weight:600;  font-style: italic;">
-                                            Period: <b>{{ o.Start_Date|date:'M d, Y' }} - {{ o.End_Date|date:'M d, Y' }}</b>
+{#                                            Period: <b>{{ o.Start_Date|date:'M d, Y' }} - {{ o.End_Date|date:'M d, Y' }}</b>#}
                                         </span>
                                     </h4>
                                 </div>
@@ -726,7 +726,12 @@
                 url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
                 success: function (response) {
                     $('#create_chapter_modal_body').append(response);
-                    Switchery(document.querySelector('.js-switch'));
+                    var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+                    elems.forEach(function (html) {
+                        var switchery = new Switchery(html);
+                    });
+                    // Switchery(document.querySelector('.js-switch'));
                 },
                 error: function () {
                     console.log('Error in generating chapter create form')

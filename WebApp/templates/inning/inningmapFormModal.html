@@ -1,0 +1,100 @@
+{% load crispy_forms_tags %}
+<style>
+    .modal-body {
+        overflow: inherit;
+    }
+</style>
+<!-- Modal -->
+<div class="modal fade" id="inningmap_form_modal" tabindex="-1" role="dialog" aria-labelledby="inningMap_label"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inningMap_label"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="#" id="inningmapForm">
+                {% csrf_token %}
+                <div class="modal-body" id="inningmapform">
+                    <div class="alert alert-danger form-errors" style="display: none">
+                    </div>
+                    <div id="div_Start_Date" class="form-group">
+                        <label for="id_Start_Date" class="control-label ">
+                            Start Date
+                        </label>
+                        <div class="controls ">
+                            <input type="text" name="Start_Date" class="form-control"
+                                   id="id_Start_Date" value=""
+                                   max="9999-12-31">
+                        </div>
+                    </div>
+                    <div id="div_End_Date" class="form-group">
+                        <label for="id_End_Date" class="control-label ">
+                            End Date
+                        </label>
+                        <div class="controls ">
+                            <input type="text" name="End_Date" class="form-control"
+                                   id="id_End_Date" value=""
+                                   max="9999-12-31">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="sessionid" id="sessionid" value="">
+                    <input type="hidden" name="objectid" id="objectid" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        {#document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")#}
+        {#document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")#}
+        $('#id_End_Date').datetimepicker();
+        $('#id_Start_Date').datetimepicker();
+    })
+
+    function inningMapDataLoad($element, sessionid, objectid, formaction) {
+        if ($element.closest('tr').find('.start-date').text() != "") {
+            document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")
+        }
+        if ($element.closest('tr').find('.end-date').text() != "") {
+            document.getElementById('id_End_Date').value = new Date($element.closest('tr').find('.end-date').text()).toLocaleString("en-US")
+        }
+        $('#id_End_Date').datetimepicker();
+        $('#id_Start_Date').datetimepicker();
+        $('#sessionid').val(sessionid)
+        $('#objectid').val(objectid)
+        $('#inningmapForm').attr('action', formaction)
+    }
+
+    $('#inningmapForm').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'post',
+            data: {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                "sessionid": $('#sessionid').val(),
+                "objectid": $('#objectid').val(),
+                "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
+                "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
+            },
+            url: $(this).attr('action'),  // URL to your view that serves new info
+            success: function (data) {
+                console.log(data)
+                location.reload();
+            },
+            error: function (err) {
+                console.log(err.responseJSON)
+                $('.form-errors').empty().append(err.responseJSON.message).css('display', 'block')
+            }
+        });
+    })
+</script>

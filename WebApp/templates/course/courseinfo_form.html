@@ -47,9 +47,7 @@
             <div class="controls ">
                 <input type="text" name="Course_Name" value="{{ object.Course_Name }}"
                        class="textinput textInput form-control" maxlength="70" id="id_Course_Name" required="true"
-                        {% if '/teachers' in request.path %}
-                       readonly
-                        {% endif %}
+                        {% if '/teachers' in request.path %}readonly{% endif %}
                 >
             </div>
         </div>
@@ -61,7 +59,9 @@
             </label>
             <div class="controls ">
                 <input type="text" name="Course_Provider" value="{{ form.Course_Provider.value }}"
-                    class="textinput textInput form-control" maxlength="250" id="id_Course_Provider" required="true">
+                    class="textinput textInput form-control" maxlength="250" id="id_Course_Provider" required="true"
+                    {% if '/teachers' in request.path %}readonly{% endif %}
+                    >
             </div>
         </div>
     </div>
@@ -95,11 +95,14 @@
 
     {% if 'edit' in request.path %}
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-        <label>
-            Status
-        </label><br>
-        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
-            &nbsp; {% else %} checked {% endif %}><br> <br>
+        
+        {% if not '/teachers' in request.path %}
+            <label>
+                Status
+            </label><br>
+            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
+                &nbsp; {% else %} checked {% endif %}><br> <br>
+        {% endif %}
     </div>
     {% else %}
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">

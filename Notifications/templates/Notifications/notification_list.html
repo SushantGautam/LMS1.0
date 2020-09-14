@@ -1,0 +1,39 @@
+
+
+
+
+
+<li class="row">
+    <div class="col-md-7">
+        <h2> Notifications </h2>
+    </div>
+    <div class="col-md-5">
+        {% if notifications %}
+            <h6>{% include 'Notifications/mark_all_as_read.html' %}</h6>
+        {% endif %}
+    </div>
+</li>
+
+{% if notifications %}
+    <li>
+        {% for notice in notifications %}
+            {% include 'Notifications/notice.html' %}
+        {% endfor %}
+    </li>
+
+    <li>
+        <div class="text-center">
+            <a href="{% url 'Notifications:see_all' %}">
+                <strong>See All Notifications</strong>
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </div>
+    </li>
+{% else %}
+    <li>
+        <div class="text-center">
+            <strong>No Notifications</strong>
+        </div>
+    </li>
+
+{% endif %}

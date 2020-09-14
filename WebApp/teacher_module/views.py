@@ -359,7 +359,12 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
-        context['datetime'] = datetime.now()
+        context['datetime'] = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
+                                            pk=self.kwargs.get('pk')).Course_Code,
+                                            Teacher_Code=self.request.user.pk)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                            Start_Date__lte=datetime_now, End_Date__gte=datetime_now, Course_Group__in=course_groups)
 
         return context
 
@@ -461,6 +466,11 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
         context['session_list'] = session_list
         context['inning'] = innings
         context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
+            pk=self.kwargs.get('chapter')).Course_Code,
+                                                   Teacher_Code=self.request.user.pk)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                            Start_Date__lte=datetime_now, End_Date__gte=datetime_now, Course_Group__in=course_groups)
 
         # ==================== End of Assignment Answers ========================================
 
@@ -2433,10 +2443,12 @@ def QuizMarkingCSV(request, quiz_pk):
     column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
     answer_name = "O/X"
     mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
+    color_column = []
     for i, mcquestion in enumerate(mcquestions):
         question_name = "MCQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " M" + str(i + 1))
+        color_column.append(answer_name + " M" + str(i + 1))
         mcq_full_score += mcquestion.score
         extra_row_1[question_name] = mcquestion.score
         extra_row_2[question_name] = mcquestion.get_correct_answer()
@@ -2444,6 +2456,7 @@ def QuizMarkingCSV(request, quiz_pk):
         question_name = "TFQ" + str(i + 1)
         column_names.append(question_name)
         column_names.append(answer_name + " T" + str(i + 1))
+        color_column.append(answer_name + " T" + str(i + 1))
         tfq_full_score += tfquestion.score
         extra_row_1[question_name] = tfquestion.score
         extra_row_2[question_name] = tfquestion.correct
@@ -2484,7 +2497,10 @@ def QuizMarkingCSV(request, quiz_pk):
         for i, mcquestion in enumerate(mcquestions):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
-            ans_value = Answer.objects.get(id=int(question_name_value)).content
+            if question_name_value:
+                ans_value = Answer.objects.get(id=int(question_name_value)).content
+            else:
+                ans_value = ''
             new_row[question_name] = ans_value
             if mcquestion.check_if_correct(question_name_value):
                 new_row[answer_name + " M" + str(i + 1)] = "✔"
@@ -2521,16 +2537,48 @@ def QuizMarkingCSV(request, quiz_pk):
         df = df.append(new_row, ignore_index=True)
     
     df = df.set_index('S.N.', drop=True)
+    
+    def color_negative_red(val):
+        color = 'white'
+        if val == '✔':
+            color = '#00b0f0'
+        if val == '❌':
+            color = 'red'
+        return 'background-color: %s' % color
+
+    df = df.style.applymap(color_negative_red, subset=color_column)
+    # print(df)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
     with BytesIO() as b:
         # Use the StringIO object as the filehandle.
         writer = pd.ExcelWriter(b, engine='xlsxwriter')
         # df.index += 1
-        # df.index.name = 'S.N.'
+        df.index.name = 'S.N.'
         sheet_name = str(quiz.title)
         sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
         if len(sheet_name) > 28:
             sheet_name = sheet_name[:27] + ' ..'
-        df.to_excel(writer, sheet_name=sheet_name)
+        # df.to_excel(writer, sheet_name=sheet_name)
+
+        df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False)
+
+        # Get the xlsxwriter workbook and worksheet objects.
+        workbook  = writer.book
+        worksheet = writer.sheets[sheet_name]
+
+        # Add a header format.
+        header_format = workbook.add_format({
+            'bold': True,
+            'text_wrap': True,
+            'valign': 'center',
+            'fg_color': 'yellow',
+            'border': 1})
+
+        # Write the column headers with the defined format.
+        for col_num, value in enumerate(df.columns.values):
+            worksheet.write(0, col_num + 1, value, header_format)
+
+        # Close the Pandas Excel writer and output the Excel file.
         writer.save()
         response = HttpResponse(b.getvalue(),
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
