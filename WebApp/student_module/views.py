@@ -77,11 +77,11 @@ def start(request):
     datetime_now = timezone.now().replace(microsecond=0)
     batches = GroupMapping.objects.filter(Students=request.user)
     sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+                                         Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
     course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
     courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                Use_Flag=True)
-    
+                                        Use_Flag=True)
+
     activeassignments = student_all_assignements(request.user).filter(Assignment_Deadline__gte=datetime_now)[:7]
     sittings = Sitting.objects.filter(user=request.user)
 
@@ -237,10 +237,10 @@ class MyCoursesListView(ListView):
         datetime_now = timezone.now().replace(microsecond=0)
         batches = GroupMapping.objects.filter(Students=self.request.user)
         sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                    Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
         course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
         courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                    Use_Flag=True)
+                                            Use_Flag=True)
 
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
         filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
@@ -327,8 +327,10 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         #     .order_by('Chapter_No')
 
         context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
-            Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow())) \
-            .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow())) \
+            Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+                chapter_sessionmaps__Start_Date=None)) \
+            .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+            chapter_sessionmaps__End_Date=None)) \
             .order_by('Chapter_No').distinct()
 
         print(context['chapters'])
@@ -371,9 +373,12 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
         student_groups = GroupMapping.objects.filter(Students=self.request.user)
-        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Groups__in=student_groups, Use_Flag=True,
-                        Start_Date__lte=datetime_now, End_Date__gte=datetime_now).filter(Course_Group__in=course_groups)
+                                                                Start_Date__lte=datetime_now,
+                                                                End_Date__gte=datetime_now).filter(
+            Course_Group__in=course_groups)
 
         for q in context['post_quizes']:
             q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
