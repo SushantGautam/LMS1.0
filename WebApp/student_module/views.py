@@ -242,26 +242,12 @@ class MyCoursesListView(ListView):
         courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
                                     Use_Flag=True)
 
-        # sessions = []
-        # datetime_now = timezone.now().replace(microsecond=0)
-        # if batches:
-        #     for batch in batches:
-        #         # Filtering out only active sessions
-        #         session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now, Use_Flag=True)
-        #         sessions += session
-        # courses = InningGroup.objects.none()
-        # if sessions:
-        #     for session in sessions:
-        #         course = session.Course_Group.filter(Course_Code__Use_Flag=True)
-        #         courses |= course
-
-        # courses = courses.distinct()
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
         filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
         if self.request.GET.get('paginate_by'):
             paginate_by = self.request.GET.get('paginate_by')
         else:
-            paginate_by = 1
+            paginate_by = 8
         paginator = Paginator(filtered_qs, paginate_by)
         page = self.request.GET.get('page', 1)
 
