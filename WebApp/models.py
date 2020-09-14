@@ -303,7 +303,7 @@ class CourseInfo(models.Model):
         return reverse('courseinfo_update', args=(self.pk,))
 
     def innings_of_this_course(self):
-        innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
+        innings = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=self.inninggroups.all())
         return innings
     
     def innings_active(self):
