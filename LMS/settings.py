@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'event_calendar',
     'decorator_include',
     'django_summernote',
+
 ]
 
 MIDDLEWARE = [
