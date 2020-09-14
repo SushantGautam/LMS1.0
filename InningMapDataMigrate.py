@@ -13,9 +13,12 @@ from django.contrib.contenttypes.models import ContentType
 def migrateChapters():
 	sessions = InningInfo.objects.all()
 	for session in sessions:
-		courses = set(session.Course_Group.all())
+		courses = set()
+		coursemaps = list(session.Course_Group.all())
+		for coursemap in coursemaps:
+			courses.add(coursemap.Course_Code)
 		for course in courses:
-			chapters = ChapterInfo.objects.filter(Course_Code=course.Course_Code)
+			chapters = ChapterInfo.objects.filter(Course_Code=course)
 			for chapter in chapters:
 				sessionmap = SessionMapInfo()
 				sessionmap.Start_Date = chapter.Start_Date
@@ -31,9 +34,12 @@ def migrateChapters():
 def migrateAssignments():
 	sessions = InningInfo.objects.all()
 	for session in sessions:
-		courses = set(session.Course_Group.all())
+		courses = set()
+		coursemaps = list(session.Course_Group.all())
+		for coursemap in coursemaps:
+			courses.add(coursemap.Course_Code)
 		for course in courses:
-			assignments = AssignmentInfo.objects.filter(Course_Code=course.Course_Code)
+			assignments = AssignmentInfo.objects.filter(Course_Code=course)
 			for assignment in assignments:
 				sessionmap = SessionMapInfo()
 				sessionmap.Start_Date = assignment.Assignment_Start
