@@ -467,8 +467,8 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
         context['inning'] = innings
         context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
         course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
-                                            pk=self.kwargs.get('pk')).Course_Code,
-                                            Teacher_Code=self.request.user.pk)
+            pk=self.kwargs.get('chapter')).Course_Code,
+                                                   Teacher_Code=self.request.user.pk)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now, Course_Group__in=course_groups)
 
