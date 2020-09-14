@@ -98,7 +98,11 @@ class MailListView(ListView):
         context['email_type'] = self.request.GET.get('email_type', "inbox")
 
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'mail_list'
+        user_type = self.request.user.get_user_type
+        if user_type == "Center Admin":
+            context['label_url_name'] = 'mail_list'
+        if user_type == "Teacher":
+            context['label_url_name'] = 'teacher_mail_list'
 
         context['inbox_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=False,
                                                              mail_spam=False, mail_viewed=False).count()
@@ -192,7 +196,11 @@ class MailSendDraftListView(ListView):
         context['email_type'] = self.request.GET.get('email_type', "send")
 
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'mail_send_list'
+        user_type = self.request.user.get_user_type
+        if user_type == "Center Admin":
+            context['label_url_name'] = 'mail_send_list'
+        if user_type == "Teacher":
+            context['label_url_name'] = 'teacher_mail_send_list'
 
         context['inbox_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=False,
                                                              mail_spam=False, mail_viewed=False).count()
@@ -287,7 +295,11 @@ class StarView(ListView):
 
         context['email_type'] = self.request.GET.get('email_type', "starred")
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'star_list'
+        user_type = self.request.user.get_user_type
+        if user_type == "Center Admin":
+            context['label_url_name'] = 'star_list'
+        if user_type == "Teacher":
+            context['label_url_name'] = 'teacher_star_list'
 
         context['label_list'] = Mail.LABEL_CHOICES
         context['user_list'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code).exclude \
@@ -390,7 +402,11 @@ class TrashView(ListView):
         context['email_type'] = self.request.GET.get('email_type', "trash")
 
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'trash_list'
+        user_type = self.request.user.get_user_type
+        if user_type == "Center Admin":
+            context['label_url_name'] = 'trash_list'
+        if user_type == "Teacher":
+            context['label_url_name'] = 'teacher_trash_list'
 
         context['label_list'] = Mail.LABEL_CHOICES
         context['user_list'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code).exclude \
@@ -473,7 +489,8 @@ class DraftUpdateView(UpdateView):
     model = Mail
     # template_name = "mail/detail_draft.html"
     form_class = DraftUpdateForm
-    success_url = reverse_lazy('mail_send_list')
+
+    # success_url = reverse_lazy('mail_send_list')
 
     def form_invalid(self, form):
         to_return = super().form_invalid(form)
@@ -673,6 +690,7 @@ def mail_unread(request, pk):
         return redirect(reverse('mail_list') + '?email_type=' + email_type)
     if user_type == "Teacher":
         return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+
 
 def mail_spam(request, pk):
     print("spam request")
