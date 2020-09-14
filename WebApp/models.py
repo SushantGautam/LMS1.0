@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
@@ -303,7 +303,12 @@ class CourseInfo(models.Model):
         return reverse('courseinfo_update', args=(self.pk,))
 
     def innings_of_this_course(self):
-        innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
+        innings = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=self.inninggroups.all())
+        return innings
+    
+    def innings_active(self):
+        innings = InningInfo.objects.filter(Use_Flag=True, Start_Date__lte=datetime.now(),
+                        End_Date__gte=datetime.now(), Course_Group__in=self.inninggroups.all())
         return innings
 
     def get_teachers_of_this_course(self):
@@ -338,6 +343,8 @@ class ChapterInfo(models.Model):
     Start_Date = DateTimeField(null=True, blank=True)
     End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
+
+    chapter_sessionmaps = GenericRelation('SessionMapInfo')
 
     from comment.models import Comment
 
@@ -446,6 +453,7 @@ class AssignmentInfo(models.Model):
         'MemberInfo',
         related_name="assignmentinfos", on_delete=models.CASCADE
     )
+    assignment_sessionmaps = GenericRelation('SessionMapInfo')
 
     def __str__(self):
         return self.Assignment_Topic
@@ -809,6 +817,14 @@ class InningInfo(models.Model):
     def get_teacher_update_url(self):
         return reverse('teachers_inninginfo_update', args=(self.pk,))
 
+    @property
+    def is_active(self):
+        datetime_now = timezone.now().replace(microsecond=0)
+        if self.Use_Flag == True and self.Start_Date <= datetime_now and self.End_Date >= datetime_now:
+            return True
+        else:
+            return False
+
     def __str__(self):
         return self.Inning_Name.Session_Name
 
@@ -911,3 +927,34 @@ class NoticeView(models.Model):
     dont_show = BooleanField(default=False)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+
+
+# For Semester
+
+class SessionMapInfo(models.Model):
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
+    # Chapter_Code = ForeignKey(
+    #     'ChapterInfo',
+    #     related_name="chapterSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
+    # )
+    # Assignment_Code = ForeignKey(
+    #     'AssignmentInfo',
+    #     related_name="assignmentSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
+    # )
+    content_type = models.ForeignKey(
+        ContentType,
+        related_name='sessionmap_target',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
+    target = GenericForeignKey('content_type', 'object_id')
+    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.DO_NOTHING)
+
+    def clean(self):
+        super().clean()
+        if (self.Start_Date and self.End_Date):
+            if (self.Start_Date > self.End_Date):
+                raise ValidationError("End date must be greater than start date")

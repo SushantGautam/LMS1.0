@@ -20,13 +20,13 @@
 
 <div class="notific-div alert alert-block alert-{{ notice.level }} {% if notice.unread %}markread{% endif %}"
      data-id="{{ notice.id }}"
-     style="background-color: {% if not notice.unread %}#6b6666{% endif %}">
+     {% if not notice.unread %}style="background-color: #d9d9d9;color:black;"{% endif %}>
     <a class="close pull-right" href="#">
         <i class="icon-clo  se"></i>
     </a>
     <div class="row">
         <div class="col-md-9">
-            <h4 style="color: white;">
+            <h4 {% if notice.unread %}style="color: white;"{% endif %}>
                 <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
                 {% if notice.action_object %}
                     {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}

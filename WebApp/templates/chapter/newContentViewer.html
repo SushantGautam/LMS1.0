@@ -597,7 +597,7 @@
                         let toolbarButtons = [
                             'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
                             'fodeviceselection',
-                            'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                            'etherpad', 'settings', 'raisehand',
                             'videoquality', 'filmstrip', 'stats', 'shortcuts',
                             'tileview', 'videobackgroundblur', 'download',
                             //HIDDEN OPTIONS  NOT USED IGNORE
@@ -609,9 +609,9 @@
                         let settingsSection = ['devices'];
                         const domain = 'meet.jit.si';
 
-                        {% if ifteacher %}
+                        {% if not "students" in request.path %}                            
                             audioMute = false;
-                            toolbarButtons.push('mute-everyone');
+                            toolbarButtons.push('mute-everyone','recording','sharedvideo');
                             settingsSection.push('moderator');
                         {% endif %}
 
@@ -1960,7 +1960,7 @@
                         'type': type,
                     },
                     success: function (data) {
-                        console.log(data)
+                        {#console.log(data)#}
                     },
                 })
             }
@@ -2223,7 +2223,7 @@
         var idleTime = 0;
         var redirectInterval;
         var idleTimeCheckIntervalTime = 5000;
-        var idleTimeRedirectTime = (15 * 60 * 1000);
+        var idleTimeRedirectTime = (15 * 60 * 1000); // Time after the alert modal is shown.
         window.onmousemove = function () {
             idleTime = 0;
         }
@@ -2240,7 +2240,7 @@
 
         function displayAlertMessage() {
             $('#message-modal').modal('show');
-            var counter = 15;
+            var counter = 50;   // After the alert modal is displayed, then after 50 seconds, it will redirect.
             redirectInterval = setInterval(function () {
                 if (counter == 0) {
                     window.location.href = '/students/courseinfo/{{ chapter.Course_Code.id }}/chapterinfo/{{ chapter.id }}/?idle=true&redirected=true';

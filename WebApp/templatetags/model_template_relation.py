@@ -2,6 +2,7 @@
 
 from django import template
 from django.db.models import Sum
+from django.utils import timezone
 
 from WebApp.models import MemberInfo, AssignAnswerInfo
 
@@ -94,3 +95,15 @@ def getAssignmentAnswer(assignmentObj, userObj, questionObj):
 @register.filter
 def subtract(value, arg):
     return value - arg
+
+
+@register.simple_tag
+def isAssignmentActive(assignmentObj):
+    inningmaps = assignmentObj.assignment_sessionmaps.all()
+    isanswerable = False
+    now = timezone.now()
+    for inningmap in inningmaps:
+        if inningmap.Start_Date <= now and inningmap.End_Date >= now:
+            isanswerable = True
+            break
+    return isanswerable

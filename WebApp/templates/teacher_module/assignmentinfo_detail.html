@@ -350,7 +350,7 @@
                                 {% endif %}
                             </td>
 
-                            <td>{{ answer.Assignment_Answer }}</td>
+                            <td>{{ answer.Assignment_Answer|safe }}</td>
                             <td>{% if answer %}
                                 Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
                             {% elif not answer %}
@@ -751,7 +751,7 @@
             $(this).addClass('clickedShowAnswer')
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
-                    $('#answercontent').text(`{{answer.Assignment_Answer}}`)
+                    $('#answercontent').html(`{{answer.Assignment_Answer|safe}}`)
 
                     if ('{{ answer.Assignment_File }}') {
                         $('#answercontent').append(`
@@ -764,19 +764,19 @@
                     $('#StudentScore').html(`
                         <form id="StudentScoreForm">
                         <div>
-                            <p>FeedBack</p>
+                            <p><b>FeedBack</b></p>
                             <p>
-                                <textarea name="assignment_feedback" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                                <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
                             </p>
                         </div>
                         <div>
-                        Score
-                        <input type="number" id="studentScoresubmit" value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
-                        max="{{ answer.Question_Code.Question_Score }}" >
+                        <b>Score</b>
+                        <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
+                        value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                        max="{{ answer.Question_Code.Question_Score }}" >Full Score: <b>{{ answer.Question_Code.Question_Score }} </b><br><br> 
                             <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
                         </div>
                         </form>
-                        <br> Full Score: <b>{{ answer.Question_Code.Question_Score }} </b>
                          <input type="hidden" id="answerpk" value="{{ answer.pk }}">
 
                     `);

@@ -85,7 +85,7 @@
                     <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
                           id="deleteChapter{{ object.pk }}">
                         {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                        {#                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->#}
                         <input type="hidden" value="{{ object.pk }}" name="chapter_id">
                         <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                     </form>
@@ -99,39 +99,79 @@
                         <td>{{ object.Summary }}</td>
                     </tr>
 
-                    <tr>
-                        <td>Status</td>
-                        <td>
-                            {% if object.Use_Flag is True %}
-                                <span class="badge badge-success">Published</span>
-                            {% elif object.Use_Flag is False %}
-                                <span class="badge badge-danger">Not Published</span>
-                            {% endif %}
+                    {% if '/students' not in request.path %}
+                        <tr>
+                            <td>Status</td>
+                            <td>
+                                {% if object.Use_Flag is True %}
+                                    <span class="badge badge-success">Published</span>
+                                {% elif object.Use_Flag is False %}
+                                    <span class="badge badge-danger">Not Published</span>
+                                {% endif %}
 
-                            {% now "Y-m-d H:i" as todays_datewithtime %}
-                            {% if object.Start_Date and todays_datewithtime < object.Start_Date|date:"Y-m-d H:i" %}
-                                <span class="badge badge-info">Upcoming</span>
-                            {% elif object.End_Date and todays_datewithtime > object.End_Date|date:"Y-m-d H:i" %}
-                                <span class="badge badge-danger">Expired</span>
-                            {% else %}
-                                <span class="badge badge-success">Active</span>
-                            {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td style="border: 0;"></td>
+                    </tr>
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Start Date</td>
-                        <td>
-                            {% if object.Start_Date %}
-                                <span class="dateconFullMonth">{{ object.Start_Date|date:"d M, Y h:i A" }}</span></td>
+                    <!-- Start/End Date from different session -->
+                    {% if assigned_session %}
+                        <tr>
+                            <th>Session</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            {% if '/students' not in request.path %}
+                                <th>Chapter Status</th>
+                                <th>Action</th>
                             {% endif %}
-                    </tr>
-                    <tr>
-                        <td>End Date</td>
-                        <td>
-                            {% if object.End_Date %}
-                                <span class="dateconFullMonth">{{ object.End_Date|date:"d M, Y h:i A" }}</span></td>
+                        </tr>
+                    {% endif %}
+                    {% for sessions in assigned_session %}
+                        <tr>
+                            <td>
+                                {{ sessions }}
+                                {% if '/students' not in request.path and '/teachers' not in request.path %}
+                                    {% if sessions.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            {% for sessionmap in object.chapter_sessionmaps.all %}
+                                {% if sessionmap.Session_Code == sessions %}
+                                    <td class="start-date dateconFullMonth">{{ sessionmap.Start_Date|date:"d M, Y h:i A" }}</td>
+                                    <td class="end-date dateconFullMonth">{{ sessionmap.End_Date|date:"d M, Y h:i A" }}</td>
+                                    {% if '/students' not in request.path %}
+                                        <td>                           
+                                            {% now "Y-m-d H:i" as todays_datewithtime %}
+                                            {% if sessionmap.Start_Date and todays_datewithtime < sessionmap.Start_Date|date:"Y-m-d H:i" %}
+                                                <span class="badge badge-info">Upcoming</span>
+                                            {% elif sessionmap.End_Date and todays_datewithtime > sessionmap.End_Date|date:"Y-m-d H:i" %}
+                                                <span class="badge badge-danger">Expired</span>
+                                            {% else %}
+                                                <span class="badge badge-success">Active</span>
+                                            {% endif %} 
+                                        </td> 
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if '/students' not in request.path %}
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary inningmap-btn" data-toggle="modal"
+                                            data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                            data-objectid="{{ object.id }}">
+                                        Change
+                                    </button>
+                                </td>
                             {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <!-- End Of start/end date -->
+                    <tr>
+                        <td style="border: 0;"></td>
                     </tr>
 
                     <tr>
@@ -651,7 +691,7 @@
                 let newurl = removeURLParameter(url, 'redirected');
                 newurl = removeURLParameter(newurl, 'idle');
                 window.history.replaceState(null, null, newurl); // removes query string i.e after '?'
-            }else if ((url.indexOf('?multitab=true') != -1) && (url.indexOf('&redirected=true') != -1)) {
+            } else if ((url.indexOf('?multitab=true') != -1) && (url.indexOf('&redirected=true') != -1)) {
                 $('#message-modal').modal('show');
                 $('#message-modal').find('.modal-body').html(`You are restricted to open multiple viewer tab please close previous one`);
                 // window.history.replaceState(null, null, window.location.pathname); // removes all query string i.e after '?'
@@ -685,8 +725,13 @@
                 return url;
             }
         }
+
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'chapterinninginfomap' %}')
+        })
     </script>
 {% endblock %}
 
+{% include 'inning/inningmapFormModal.html' %}
 {% include_static %}
 {% include_bootstrap %}

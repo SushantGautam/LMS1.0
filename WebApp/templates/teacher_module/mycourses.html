@@ -8,7 +8,13 @@
 {% endblock %}
 {% block content %}
     <div class="courseInfoListClass">
-        <h2 class="tableHeader">List of My Courses</h2>
+        <h2 class="tableHeader">
+            {% if '/active' in request.path %}
+                List of My Courses
+            {% else %}
+                List of Inactive Courses
+            {% endif %}
+        </h2>
 
 
         <hr class="header_hr">
@@ -177,7 +183,8 @@
                         </div>
                     </div>
                 </div>
-
+            {% empty %}
+                <div><h4 style="text-align: center;">No courses found</h4></div>
             {% endfor %}
            <div class=" col-md-12 col-sm-12 col-xs-12 text-center">
 

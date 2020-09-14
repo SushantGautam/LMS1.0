@@ -20,10 +20,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
@@ -58,7 +59,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     InningManagerForm, DepartmentInfoForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice, NoticeView, DepartmentInfo
+    InningManager, Notice, NoticeView, DepartmentInfo, SessionMapInfo
 
 
 # from pathlib import Path
@@ -111,14 +112,34 @@ def ProfileView(request):
         return redirect('login')
     return render(request, 'WebApp/profile.html')
 
+class CustomAuthForm(AuthenticationForm):
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username is not None and password:
+            if authenticate(self.request, username=username, password=password) is None:
+                messages.error(self.request, _(
+                        "Please enter a correct username and password. Note that both "
+                        "fields may be case-sensitive."
+                    ))
+                return JsonResponse({'msg': 'Inavild Login'})
+                
+        return super().clean()
+    
 
 class login(LoginView):
     redirect_authenticated_user = True
     template_name = 'registration/login.html'
+    authentication_form = CustomAuthForm
 
     def form_valid(self, form):
         forcelogin = bool(self.request.POST['forcelogin'])
         if not forcelogin:
+            if not form.get_user():
+                return JsonResponse({'error': _(
+                      "Please enter a correct username and password. Note that both fields may be case-sensitive."
+                    )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
                     return JsonResponse({'msg': 'Account already login in another place'})
@@ -542,7 +563,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
                'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+    order_columns = ['', 'id', 'username', 'Member_ID', 'first_name', 'first_name', 'last_name', 'email',
+                     'Member_Department',
                      'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
@@ -559,6 +581,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
         elif column == 'full_name':
             # escape HTML for security reasons
             return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'Member_BirthDate' and row.Member_BirthDate:
+            return row.Member_BirthDate.strftime('%b %d, %Y')
         elif column == 'type':
             return row.get_user_type
         elif column == 'action':
@@ -1126,13 +1150,13 @@ def MemberInfoEditViewChecked(request):
         if request.POST.get('Member_Gender'):
             memberinfo_list.update(Member_Gender=request.POST.get('Member_Gender'))
         if request.POST.get('Is_Teacher'):
-            Is_Teacher = True if request.POST.get('Is_Teacher') == "1" else False
+            Is_Teacher = True if request.POST.get('Is_Teacher') == "on" else False
             memberinfo_list.update(Is_Teacher=Is_Teacher)
         if request.POST.get('Is_Student'):
-            Is_Student = True if request.POST.get('Is_Student') == "1" else False
+            Is_Student = True if request.POST.get('Is_Student') == "on" else False
             memberinfo_list.update(Is_Student=Is_Student)
         if request.POST.get('Use_Flag'):
-            Use_Flag = True if request.POST.get('Use_Flag') == "1" else False
+            Use_Flag = True if request.POST.get('Use_Flag') == "on" else False
             memberinfo_list.update(Use_Flag=Use_Flag)
 
         if '/inactive' in request.path:
@@ -1267,10 +1291,10 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
+        # if form.cleaned_data['Start_Date'] == "":
+        #     form.instance.Start_Date = None
+        # if form.cleaned_data['End_Date'] == "":
+        #     form.instance.End_Date = None
         form.save()
         return JsonResponse(
             data={'Message': 'Success'}
@@ -1342,7 +1366,9 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
-        context['datetime'] = datetime.now()
+        context['datetime'] = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
         return context
 
 
@@ -1402,10 +1428,10 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
+        # if form.cleaned_data['Start_Date'] == "":
+        #     form.instance.Start_Date = None
+        # if form.cleaned_data['End_Date'] == "":
+        #     form.instance.End_Date = None
 
         # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
         # form.save()
@@ -2013,7 +2039,9 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
         context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
-        context['datetime'] = datetime.now()
+        context['datetime'] = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
         return context
 
 
@@ -4048,3 +4076,59 @@ def CourseProgressDownload(request, coursepk, sessionpk):
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
         response['Content-Disposition'] = 'attachment; filename="' + 'StudentProgress_' + sheet_name + '.xlsx"'
         return response
+
+
+from django.contrib.admin.options import get_content_type_for_model
+from django.apps import apps
+
+
+def InningInfoMappingView(request, model_name):
+    inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
+    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+
+    if (request.POST['Start_Date'] and request.POST['End_Date']):
+        if (request.POST['Start_Date'] > request.POST['End_Date']):
+            return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
+    if SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
+                                     content_type=get_content_type_for_model(Obj), object_id=Obj.pk):
+        sessionmap = SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
+                                                   content_type=get_content_type_for_model(Obj), object_id=Obj.pk)
+        sessionmap.update(
+            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
+            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            content_type=ContentType.objects.get_for_model(Obj.__class__),
+            object_id=Obj.id,
+            Session_Code=inninginfoObj
+        )
+    else:
+        sessionmap = SessionMapInfo.objects.create(
+            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
+            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            content_type=ContentType.objects.get_for_model(Obj.__class__),
+            object_id=Obj.id,
+            Session_Code=inninginfoObj
+        )
+        sessionmap.save()
+    return JsonResponse({'message': 'Success '}, status=200)
+
+
+def ChapterInningInfoMappingView(request):
+    if request.method == "POST":
+        requestStatus = InningInfoMappingView(request, 'ChapterInfo')
+        if requestStatus.status_code == 200:
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            message = json.loads(requestStatus.content)
+            return JsonResponse(message, status=requestStatus.status_code)
+    return HttpResponse('GET Request Not Allowed', status=405)
+
+
+def AssignmentInningInfoMappingView(request):
+    if request.method == "POST":
+        requestStatus = InningInfoMappingView(request, 'AssignmentInfo')
+        if requestStatus.status_code == 200:
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            message = json.loads(requestStatus.content)
+            return JsonResponse(message, status=requestStatus.status_code)
+    return HttpResponse('GET Request Not Allowed', status=405)
