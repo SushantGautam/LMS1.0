@@ -6,6 +6,7 @@ from quiz import views as quizViews
 from survey import views as survey_views
 from .. import views as admin_views
 from mail import views as mail_views
+from event_calendar import views as cal_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -366,4 +367,22 @@ urlpatterns += (
     path('mail_viewed/<int:pk>', mail_views.mail_viewed, name='teacher_mail_viewed'),
     path('mail_unread/<int:pk>', mail_views.mail_unread, name='teacher_mail_unread'),
 
+)
+
+# Teacher's Calendar
+urlpatterns += (
+    path('create', cal_views.EventCreateView.as_view(template_name='teacher_module/calendar/index.html',
+                                                     success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_create'),
+    path('update/<int:pk>', cal_views.EventUpdateView.as_view(template_name='teacher_module/calendar/index.html',
+                                                              success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_update'),
+    path('updated/<int:pk>', cal_views.EventUpdatedView.as_view(template_name='teacher_module/calendar/index.html',
+                                                                success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_updated'),
+    path('delete/<int:pk>', cal_views.EventDeleteView.as_view(template_name='teacher_module/calendar/index.html',
+                                                              success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_delete'),
+    path('calendar', cal_views.EventListView.as_view(template_name='teacher_module/calendar/index.html'),
+         name='teacher_event_calendar'),
 )

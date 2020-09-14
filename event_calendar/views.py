@@ -12,9 +12,9 @@ from event_calendar.models import CalendarEvent
 
 class EventCreateView(CreateView):
     model = CalendarEvent
-    template_name = 'event_calendar/index.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventForm
-    success_url = reverse_lazy('event_calendar')
+    # success_url = reverse_lazy('event_calendar')
 
     def form_invalid(self, form):
         print(form.errors)
@@ -37,9 +37,9 @@ class EventCreateView(CreateView):
 
 class EventUpdateView(UpdateView):
     model = CalendarEvent
-    template_name = 'event_calendar/index.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventUpdateForm
-    success_url = reverse_lazy('event_calendar')
+    # success_url = reverse_lazy('event_calendar')
 
     def form_invalid(self, form):
         print(form.errors)
@@ -64,15 +64,15 @@ class EventListView(ListView):
 class EventDeleteView(DeleteView):
     model = CalendarEvent
     form_class = CalendarEventUpdateForm
-    template_name = 'event_calendar/index.html'
-    success_url = reverse_lazy('event_calendar')
+    # template_name = 'event_calendar/index.html'
+    # success_url = reverse_lazy('event_calendar')
 
 
 class EventUpdatedView(UpdateView):
     model = CalendarEvent
-    template_name = 'event_calendar/index.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventForm
-    success_url = reverse_lazy('event_calendar')
+    # success_url = reverse_lazy('event_calendar')
 
     def form_invalid(self, form):
         print(form.errors)

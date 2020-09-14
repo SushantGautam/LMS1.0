@@ -130,7 +130,7 @@
         <ul id="achievement">
             <li class="navigation-divider">Miscellaneous</li>
             <li>
-                <a href="{% url 'teacher_mail_list' %}">
+                <a href="{% url 'teacher_mail_list' %}?email_type=inbox">
                     <span class="nav-link-icon">
                         <i data-feather="mail"></i>
                     </span>
@@ -138,7 +138,7 @@
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="{% url 'teacher_event_calendar' %}">
                     <span class="nav-link-icon">
                         <i data-feather="calendar"></i>
                     </span>
