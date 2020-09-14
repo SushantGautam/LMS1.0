@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import path, reverse_lazy
 
 from WebApp.student_module import views
 from WebApp.views import ContentsView, NewContentsView
 from quiz import views as quizViews
 from survey import views as surveyViews
+from mail import views as mail_views
+from event_calendar import views as cal_views
 
 #
 # urlpatterns = (
@@ -165,4 +167,72 @@ urlpatterns += (
          views.PageUpdateAjax, name='pageupdateajax'),
     path('studentChapterLogUpdateAjax/<int:chapter>/',
          views.StudentChapterLogUpdateAjax, name='studentChapterLogUpdateAjax'),
+)
+
+# Student's Email
+
+urlpatterns += (
+    path('mail_list', mail_views.MailListView.as_view(template_name='student_module/mail/index.html'),
+         name='student_mail_list'),
+    path('mail_outbox', mail_views.MailSendDraftListView.as_view(template_name='student_module/mail/index.html'),
+         name='student_mail_send_list'),
+    path('mail_starred', mail_views.StarView.as_view(template_name='student_module/mail/star.html'),
+         name='student_star_list'),
+    path('mail_trashed', mail_views.TrashView.as_view(template_name='student_module/mail/trash.html'),
+         name='student_trash_list'),
+
+    path('mail_detail/<int:pk>', mail_views.MailDetailView.as_view(template_name='student_module/mail/detail.html'),
+         name='student_mail_detail'),
+    path('send_detail/<int:pk>',
+         mail_views.SendDetailView.as_view(template_name='student_module/mail/send_detail.html'),
+         name='student_send_detail'),
+    path('draft_create', mail_views.DraftCreateView.as_view(template_name='student_module/mail/base.html',
+                                                            success_url=reverse_lazy('student_mail_send_list')),
+         name='student_draft_create'),
+    path('mail_draft_detail/<int:pk>', mail_views.DraftToSendView.as_view(template_name='student_module/mail'
+                                                                                        '/detail_draft.html',
+                                                                          success_url=reverse_lazy(
+                                                                              'student_mail_send_list')),
+         name='student_mail_draft_detail'),
+    path('mail_draft_save/<int:pk>', mail_views.DraftUpdateView.as_view(template_name='student_module/mail'
+                                                                                      '/detail_draft.html',
+                                                                        success_url=reverse_lazy(
+                                                                            'student_mail_send_list')),
+         name='student_update_draft'),
+    path('mail_delete/<int:pk>', mail_views.MailDeleteView, name='student_mail_delete'),
+    path('mail_receiver_delete/<int:pk>',
+         mail_views.MailReceiverDeleteView.as_view(success_url=reverse_lazy('student_trash_list')),
+         name='student_mail_receiver_delete'),
+    path('mail_create', mail_views.MailMultipleCreate.as_view(),
+         name='student_mail_create'),
+    path('reply_create', mail_views.ReplyCreateView.as_view(template_name="student_module/mail/index.html",
+                                                            success_url=reverse_lazy('student_mail_list')),
+         name='student_reply_create'),
+    path('mail_spam/<int:pk>', mail_views.mail_spam, name='student_mail_spam'),
+    path('mail_starred/<int:pk>', mail_views.mail_starred, name='student_mail_starred'),
+    path('sender_starred/<int:pk>', mail_views.sender_starred, name='student_sender_starred'),
+    path('mail_deleted/<int:pk>', mail_views.mail_deleted, name='student_mail_deleted'),
+    path('sender_delete/<int:pk>', mail_views.sender_delete, name='student_sender_delete'),
+    path('mail_send/<int:pk>', mail_views.mail_send, name='student_mail_send'),
+    path('mail_viewed/<int:pk>', mail_views.mail_viewed, name='student_mail_viewed'),
+    path('mail_unread/<int:pk>', mail_views.mail_unread, name='student_mail_unread'),
+
+)
+
+# Student's Calendar
+urlpatterns += (
+    path('create', cal_views.EventCreateView.as_view(template_name='student_module/calendar/index.html',
+                                                     success_url=reverse_lazy('student_event_calendar')),
+         name='student_event_calendar_create'),
+    path('update/<int:pk>', cal_views.EventUpdateView.as_view(template_name='student_module/calendar/index.html',
+                                                              success_url=reverse_lazy('student_event_calendar')),
+         name='student_event_calendar_update'),
+    path('updated/<int:pk>', cal_views.EventUpdatedView.as_view(template_name='student_module/calendar/index.html',
+                                                                success_url=reverse_lazy('student_event_calendar')),
+         name='student_event_calendar_updated'),
+    path('delete/<int:pk>', cal_views.EventDeleteView.as_view(template_name='student_module/calendar/index.html',
+                                                              success_url=reverse_lazy('student_event_calendar')),
+         name='student_event_calendar_delete'),
+    path('calendar', cal_views.EventListView.as_view(template_name='student_module/calendar/index.html'),
+         name='student_event_calendar'),
 )

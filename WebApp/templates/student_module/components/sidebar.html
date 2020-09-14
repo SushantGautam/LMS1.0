@@ -1,0 +1,174 @@
+{% load static %}
+
+<!-- sidebar menu -->
+{% if user.is_authenticated %}
+<div class="navigation-menu-wrapper">
+    <!-- Menu tab -->
+    <div class="navigation-menu-tab">
+        <ul>
+            <li>
+                <a href="#" data-menu-target="#dashboard">
+                    <span class="menu-tab-icon">
+                        <i data-feather="home"></i>
+                    </span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#courses">
+                    <span class="menu-tab-icon">
+                        <i data-feather="book"></i>
+                    </span>
+                    <span>Courses</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#quiz">
+                    <span class="menu-tab-icon">
+                        <i data-feather="help-circle"></i>
+                    </span>
+                    <span>Quiz</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#forum">
+                    <span class="menu-tab-icon">
+                        <i data-feather="message-square"></i>
+                    </span>
+                    <span>Forum</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#survey">
+                    <span class="menu-tab-icon">
+                        <i data-feather="clipboard"></i>
+                    </span>
+                    <span>Survey</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" data-menu-target="#achievement">
+                    <span class="menu-tab-icon">
+                        <i data-feather="archive"></i>
+                    </span>
+                    <span>Miscellaneous</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- ./ Menu tab -->
+
+    <!-- Menu body -->
+    <div class="navigation-menu-body">
+        <ul id="dashboard">
+            <li class="navigation-divider">Dashboard</li>
+            <li>
+                <a href="{% url 'student_home' %}">
+                    <span class="nav-link-icon" data-feather="airplay"></span>
+                    <span>Home Page</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="courses">
+            <li class="navigation-divider">Courses</li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon">
+                        <i data-feather="book"></i>
+                    </span>
+                    <span>Course List</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="quiz">
+            <li class="navigation-divider">Quiz</li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon" data-feather="help-circle"></span>
+                    <span>Quiz List</span>
+                </a>
+            </li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon" data-feather="book-open"></span>
+                    <span>Quiz Exam</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul id="forum">
+            <li class="navigation-divider">Forum</li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon">
+                        <i data-feather="home"></i>
+                    </span>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon">
+                        <i data-feather="info"></i>
+                    </span>
+                    <span>Profile</span>
+                </a>
+            </li>
+        </ul>
+        <ul id="survey">
+            <li class="navigation-divider">Survey</li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon">
+                        <i data-feather="layers"></i>
+                    </span>
+                    <span>Survey List</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul id="achievement">
+            <li class="navigation-divider">Miscellaneous</li>
+            <li>
+                <a href="{% url 'student_mail_list' %}?email_type=inbox">
+                    <span class="nav-link-icon">
+                        <i data-feather="mail"></i>
+                    </span>
+                    <span>Mail</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'student_event_calendar' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="calendar"></i>
+                    </span>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="">
+                    <span class="nav-link-icon">
+                        <i data-feather="file-text"></i>
+                    </span>
+                    <span>Student Report</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- ./ Menu body -->
+</div>
+{% endif %}
+
+<script>
+    //$(function () {
+    //    var current = location.pathname;
+    //    $('#nav li a').each(function () {
+    //        var $this = $(this);
+            // if the current path is like this link, make it active
+    //        if ($this.attr('href').indexOf(current) !== -1) {
+    //            $this.addClass('active');
+    //        }
+    //    })
+    //})
+</script>
+<!-- /sidebar menu -->

@@ -59,6 +59,8 @@
                     <form id="calendar_event_form" method="post"
                           {% if "teacher" in request.get_full_path %}
                          action="{% url 'teacher_event_calendar_create' %}" autocomplete="off">
+                          {% elif "student" in request.get_full_path %}
+                         action="{% url 'student_event_calendar_create' %}" autocomplete="off">
                             {% else %}
                           action="{% url 'event_calendar_create' %}" autocomplete="off">
                             {% endif %}

@@ -101,6 +101,8 @@ class MailListView(ListView):
         user_type = self.request.user.get_user_type
         if "teacher" in self.request.path:
             context['label_url_name'] = 'teacher_mail_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_mail_list'
         else:
             context['label_url_name'] = 'mail_list'
 
@@ -199,6 +201,8 @@ class MailSendDraftListView(ListView):
         user_type = self.request.user.get_user_type
         if "teacher" in self.request.path:
             context['label_url_name'] = 'teacher_mail_send_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_mail_send_list'
         else:
             context['label_url_name'] = 'mail_send_list'
 
@@ -298,6 +302,8 @@ class StarView(ListView):
         user_type = self.request.user.get_user_type
         if "teacher" in self.request.path:
             context['label_url_name'] = 'teacher_star_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_star_list'
         else:
             context['label_url_name'] = 'star_list'
 
@@ -406,6 +412,8 @@ class TrashView(ListView):
 
         if "teacher" in self.request.path:
             context['label_url_name'] = 'teacher_trash_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_trash_list'
         else:
             context['label_url_name'] = 'trash_list'
 
@@ -564,6 +572,8 @@ class MailMultipleCreate(View):
         # user_type = self.request.user.get_user_type
         if "teacher" in request.path:
             return redirect(reverse('teacher_mail_send_list') + '?email_type=send')
+        elif "student" in request.path:
+            return redirect(reverse('student_mail_send_list') + '?email_type=send')
         else:
             return redirect(reverse('mail_send_list') + '?email_type=send')
 
@@ -599,6 +609,8 @@ def MailDeleteView(request, pk):
     # user_type = request.user.get_user_type
     if "teacher" in request.path:
         return redirect(reverse('teacher_trash_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_trash_list') + '?email_type=' + email_type)
     else:
         return redirect(reverse('trash_list') + '?email_type=' + email_type)
 
@@ -628,6 +640,11 @@ def mail_starred(request, pk):
             return redirect(reverse('teacher_star_list') + '?email_type=' + email_type)
         else:
             return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        if email_type == "starred":
+            return redirect(reverse('student_star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
         if email_type == "starred":
             return redirect(reverse('star_list') + '?email_type=' + email_type)
@@ -649,6 +666,11 @@ def mail_deleted(request, pk):
             return redirect(reverse('teacher_trash_list') + '?email_type=' + email_type)
         else:
             return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        if email_type == "trash":
+            return redirect(reverse('student_trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
         if email_type == "trash":
             return redirect(reverse('trash_list') + '?email_type=' + email_type)
@@ -664,6 +686,8 @@ def mail_send(request, pk):
     # user_type = request.user.get_user_type
     if "teacher" in request.path:
         return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
         return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
@@ -677,6 +701,8 @@ def mail_viewed(request, pk):
 
     if "teacher" in request.path:
         return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
         return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
@@ -689,6 +715,8 @@ def mail_unread(request, pk):
     # user_type = request.user.get_user_type
     if "teacher" in request.path:
         return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
         return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
@@ -707,6 +735,8 @@ def mail_spam(request, pk):
 
     if "teacher" in request.path:
         return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
         return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
@@ -731,6 +761,11 @@ def sender_starred(request, pk):
             return redirect(reverse('teacher_star_list') + '?email_type=' + email_type)
         else:
             return redirect(reverse('teacher_mail_send_list') + '?email_type=' + email_type)
+    elif "student" in current_url:
+        if email_type == "starred":
+            return redirect(reverse('student_star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_send_list') + '?email_type=' + email_type)
     else:
         if email_type == "starred":
             return redirect(reverse('star_list') + '?email_type=' + email_type)
@@ -754,6 +789,11 @@ def sender_delete(request, pk):
             return redirect(reverse('teacher_trash_list') + '?email_type=' + email_type)
         else:
             return redirect(reverse('teacher_mail_send_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        if email_type == "trash":
+            return redirect(reverse('student_trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_send_list') + '?email_type=' + email_type)
     else:
         if email_type == "trash":
             return redirect(reverse('trash_list') + '?email_type=' + email_type)
