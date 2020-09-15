@@ -5,10 +5,13 @@
     <div class="page-header">
         <div class="page-title">
             <div>
+                {% if 'students' in request.get_full_path %}
+                {%else%}
                 <button class="btn btn-primary create_event_button" data-toggle="modal"
                         data-target="#createEventModal">
                     <i class="ti-plus mr-2"></i> Create Event
                 </button>
+                {%endif%}
             </div>
         </div>
     </div>
@@ -17,7 +20,10 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title mb-2">Events</h6>
+                     {% if 'students' in request.get_full_path %}
+                     {%else%}
                     <p class="text-muted">Drag and drop your event</p>
+                    {%endif%}
                     <div class="list-group mb-3" id="external-events">
                         <div class="list-group-item px-0 fc-event">
                             <i class="fa fa-circle text-success" data-icon="car"></i> Holiday
@@ -238,25 +244,27 @@
                     <span class="event-title ">Modal Title</span>
                 </h5>
 
+                 {% if 'students' in request.get_full_path %}
 
-
-                <form method="POST" class="delete_event d-inline " action=""
+                {%else%}
+                <form method="POST" class="delete_event  d-inline "  action=""
                       onsubmit="return confirm('Are you sure you want to delete?');">
                     {% csrf_token %}
 
-                    <button type="submit" class="btn btn-danger btn-sm d-inline pull-right ml-2 mr-5" data-toggle="tooltip"
+                    <button type="submit" class="btn btn-danger btn-sm  pull-right ml-2 mr-5 del_hide" data-toggle="tooltip"
                    title="Delete">
                         <i class="fa fa-trash ml-1"  aria-hidden="true" ></i> &nbsp;
                     </button>
                 </form>
 
-                <button class="btn btn-sm btn-primary text-white pull-right "  data-toggle="tooltip"
+                <button class="btn btn-sm btn-primary text-white pull-right del_hide"  data-toggle="tooltip"
                    title="Update" name="update"
                         id="update_event_btn"
                 ><i class="fa fa-edit ml-1"  aria-hidden="true"></i> &nbsp;
                 </button>
 
 
+            {%endif%}
 
 
 

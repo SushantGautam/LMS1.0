@@ -3387,7 +3387,7 @@ def gitpull(request):
 
 
 def ServiceWorker(request):
-    with open('WebApp/mail/WebApp/PWA/pwabuilder-sw.js', 'r') as f:
+    with open('WebApp/templates/WebApp/PWA/pwabuilder-sw.js', 'r') as f:
         data = f.read()
     return HttpResponse(data, content_type='text/javascript')
 

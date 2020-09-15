@@ -208,6 +208,12 @@
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
+                        r_a: '{{event.register_agent.pk}}',
+                        {% if not event.register_agent.pk == request.user.pk %}
+                        editable: false,
+                        durationEditable: false,
+                        startEditable: false,
+                        {% endif %}
                         start: '{{ event.date_start.isoformat}}',
                        // end: '{{ event.date_end.isoformat }}',
                         end: '{{ event.get_end_date.isoformat }}',
@@ -486,6 +492,14 @@
 
                     let event_id = event.id.replace("event_id_", "");
                     modal.find('.delete_event').attr('action', '{% url "teacher_event_calendar_delete" 12345 %}'.replace("12345", event_id));
+
+
+                    if ( event.r_a == '{{ request.user.pk }}')
+                    {
+                        $(".del_hide").show();
+                    }else{
+                        $(".del_hide").hide();
+                    }
 
 
                   //// update button upon pressing display Form Detail Modal

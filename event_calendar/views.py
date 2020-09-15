@@ -12,7 +12,7 @@ from event_calendar.models import CalendarEvent
 
 class EventCreateView(CreateView):
     model = CalendarEvent
-    # template_name = 'event_calendar/2.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventForm
     # success_url = reverse_lazy('event_calendar')
 
@@ -37,7 +37,7 @@ class EventCreateView(CreateView):
 
 class EventUpdateView(UpdateView):
     model = CalendarEvent
-    # template_name = 'event_calendar/2.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventUpdateForm
     # success_url = reverse_lazy('event_calendar')
 
@@ -49,12 +49,13 @@ class EventUpdateView(UpdateView):
 
 class EventListView(ListView):
     model = CalendarEvent
-    template_name = "event_calendar/2.html"
+    # template_name = "event_calendar/index.html"
 
     def get_context_data(self):
         context = super().get_context_data()
         users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
         context['user_list'] = users
+        context['r_a'] = CalendarEvent.register_agent
 
         # context['teacher_list'] = users.filter(Is_Teacher=True)
         # context['student_list'] = users.filter(Is_Student=True)
@@ -64,13 +65,13 @@ class EventListView(ListView):
 class EventDeleteView(DeleteView):
     model = CalendarEvent
     form_class = CalendarEventUpdateForm
-    # template_name = 'event_calendar/2.html'
+    # template_name = 'event_calendar/index.html'
     # success_url = reverse_lazy('event_calendar')
 
 
 class EventUpdatedView(UpdateView):
     model = CalendarEvent
-    # template_name = 'event_calendar/2.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventForm
     # success_url = reverse_lazy('event_calendar')
 

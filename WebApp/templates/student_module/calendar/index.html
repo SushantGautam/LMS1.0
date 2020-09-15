@@ -1,4 +1,4 @@
-{% extends "teacher_module/base.html" %}
+{% extends "student_module/base.html" %}
 {% load static %}
 {% block stylesheet %}
   <!-- Fullcalendar -->
@@ -287,8 +287,8 @@
                 },
                 timezone:"local",
                 nextDayThreshold: '00:00',
-                editable: true,
-                droppable: true,
+                editable: false,
+                droppable: false,
                 drop: function () {
                     // is the "remove after drop" checkbox checked?
                     if ($('#drop-remove').is(':checked')) {
@@ -296,9 +296,9 @@
                         $(this).remove();
                     }
                 },
-                eventStartEditable: true,
-                eventResizableFromStart: true,
-                eventDurationEditable: true,
+                eventStartEditable: false,
+                eventResizableFromStart: false,
+                eventDurationEditable: false,
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: events,
