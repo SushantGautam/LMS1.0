@@ -393,13 +393,13 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
+        # if form.cleaned_data['Start_Date'] == "":
+        #     form.instance.Start_Date = None
+        # if form.cleaned_data['End_Date'] == "":
+        #     form.instance.End_Date = None
 
         # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
-        form.save()
+        # form.save()
         return super().form_valid(form)
 
     def get_success_url(self, **kwargs):
