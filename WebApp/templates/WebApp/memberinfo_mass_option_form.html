@@ -125,6 +125,33 @@
             })
             $('#member_ids').val(seleced_members)
         });
+
+        $(".deleteCheckedMembers").on('click', function (e) {
+            e.preventDefault()
+            let seleced_members = []
+            $.each($('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll'), function (index) {
+                seleced_members.push($(this).val())
+            });
+            $.ajax({
+                type: "POST",
+                url: "{% url 'memberinfo_inactive_delete_checked' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'memberinfo_ids': seleced_members,
+                }, // serializes the form's elements.
+                success: function (data) {
+                    location.reload(); // show response from the php script.
+                },
+                error: function (e) {
+                    $('.error-div').empty()
+                    $('.error-div').css('display', 'block')
+                    $('.error-div').append(`
+                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
+                    `)
+                }
+            });
+
+        });
     });
 
     $('.memberinfoCheckAll').on('click', function () {
@@ -194,10 +221,10 @@
     $(function () {
         $('#editCheckedMembers :checkbox').on('change', function () {
             if (this.checked == true) {
-                $(this).val("1");
+                $(this).val("on");
                 $(this).parent().find('input[type=hidden]').val("on");
             } else {
-                $(this).val("0");
+                $(this).val("off");
                 $(this).parent().find('input[type=hidden]').val("off");
             }
         });
