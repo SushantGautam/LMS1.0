@@ -41,6 +41,15 @@ class SeeAllNotificationsList(NotificationViewList):
         qset = self.request.user.notifications.all()
         return qset
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data()
+        context['base_html'] = 'base.html'
+        if '/students' in self.request.path:
+            context['base_html'] = 'student_module/base.html'
+        elif '/teacher' in self.request.path:
+            context['base_html'] = 'teacher_module/base.html'
+        return context
+
 class UnreadNotificationsList(NotificationViewList):
     def get_queryset(self):
         return self.request.user.notifications.unread()
