@@ -307,40 +307,40 @@
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
                 },
-                dayClick: function (date, jsEvent, view) {
+              //  dayClick: function (date, jsEvent, view) {
 
-                    $('#createEventModal').modal();
-                    $(".modal-title").text("Create Event");
-                    $("#id_title").val("");
-                    $("#customRadioInline1").prop("checked", true);
-
-                  //  let start_date = iso_to_django(event.start._d);
-                    let start_date = date._d;
+              //      $('#createEventModal').modal();
+              //      $(".modal-title").text("Create Event");
+              //      $("#id_title").val("");
+              //      $("#customRadioInline1").prop("checked", true);
 
 
-                    console.log(start_date);
-                    let end_date = start_date;
-
-                    $("#event-start-date").daterangepicker({
-                            startDate: new Date(start_date),
-                            endDate: new Date(start_date),
-                            singleDatePicker: true,
-                        })
-
-                   $("#event-end-date").daterangepicker({
-                            startDate: new Date(end_date),
-                            endDate: new Date(end_date),
-                            singleDatePicker: true,
-                        })
+              //      let start_date = date._d;
 
 
-                 $("#id_participant_type_1").prop("checked", true);
-                 $("#id_description").html(" ");
-                 $("#createEventModal #btn-save").text("Create");
+              //      console.log(start_date);
+              //      let end_date = start_date;
+
+               //     $("#event-start-date").daterangepicker({
+               //             startDate: new Date(start_date),
+               //             endDate: new Date(start_date),
+               //             singleDatePicker: true,
+               //         })
+
+               //    $("#event-end-date").daterangepicker({
+               //             startDate: new Date(end_date),
+               //             endDate: new Date(end_date),
+               //             singleDatePicker: true,
+               //         })
+
+
+               //  $("#id_participant_type_1").prop("checked", true);
+               //  $("#id_description").html(" ");
+               //  $("#createEventModal #btn-save").text("Create");
 
 
 
-                },
+               // },
 
 
 
