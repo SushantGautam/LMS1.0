@@ -22,8 +22,18 @@
     </li>
 
     <li>
-        <div class="text-center">
-            <a href="{% url 'Notifications:see_all' %}">
+        <div class="text-center" id="seeallnotifications">
+            <script>
+                if (window.location.href.includes('/students/')) {
+                    $('#seeallnotificationslink').attr("href", "{% url 'students_notification_all' %}")
+                } else if (window.location.href.includes('/teachers/')) {
+                    $('#seeallnotificationslink').attr("href", "{% url 'teachers_notification_all' %}")
+                } else {
+                    $('#seeallnotificationslink').attr("href", "{% url 'Notifications:see_all' %}")
+                }
+
+            </script>
+            <a href="{% url 'Notifications:see_all' %}" id="seeallnotificationslink">
                 <strong>See All Notifications</strong>
                 <i class="fa fa-angle-right"></i>
             </a>

@@ -171,3 +171,9 @@ urlpatterns += (
     path('assignmentdetails/<int:assignmentpk>/',
          views.getStudentAssignmentDetail, name='student_assignment_detail'),
 )
+
+from Notifications.views import SeeAllNotificationsList
+
+urlpatterns += (
+    path('inbox/notifications/all/', SeeAllNotificationsList.as_view(), name='students_notification_all'),
+)

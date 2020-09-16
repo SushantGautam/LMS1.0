@@ -316,3 +316,9 @@ urlpatterns += (
     path('meet/',
          views.Meet, name='teacher-meet'),
 )
+
+from Notifications.views import SeeAllNotificationsList
+
+urlpatterns += (
+    path('inbox/notifications/all/', SeeAllNotificationsList.as_view(), name='teachers_notification_all'),
+)
