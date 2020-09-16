@@ -93,58 +93,58 @@
 
         </nav>
         <hr class="header_hr">
-        <form method="post" action="{% url 'memberinfo_delete_checked' %}" style="display: inline">
-            {% csrf_token %}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <nav id="navbar_parent" class="navbar-dark">
 
-                    <div class="btn-createnew">
-                        <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
-                        <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
-                                data-target="#edit_checked_details_modal">
-                            <i class="fa fa-edit"></i>
-                        </button>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <nav id="navbar_parent" class="navbar-dark">
 
+                <div class="btn-createnew">
+                    <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
+                    <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
+                            data-target="#edit_checked_details_modal">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <form method="post" action="{% url 'memberinfo_delete_checked' %}" style="display: inline">
+                        {% csrf_token %}
                         <button class="btn btn-danger deleteCheckedMembers" type="submit"
                                 onclick="return confirm('Are you sure you want to delete ?')">
                             <i class="fa fa-trash"></i>
                         </button>
+                    </form>
+                </div>
+            </nav>
+        </div>
 
-                    </div>
-                </nav>
-            </div>
 
-
-            <div class="groupmappingtable col-md-12 col-sm-12 col-xs-12 table-responsive">
-                <span class="checkboxCheckedLength"></span>
-                <table class="table table-striped dt-responsive table-bordered bg-white nowrap" id="member_dataTable">
-                    <thead class="thead-light bg-primary">
-                    <tr class="tableTitleRow">
-                        <td>
-                            <input type="checkbox" class="memberinfoCheckAll">
-                        </td>
-                        <td class="text-center">S. No.</td>
-                        <td>Username</td>
-                        <td>Member ID</td>
-                        <td>Full Name</td>
-                        <td>First Name</td>
-                        <td>Last Name</td>
-                        <td>Email</td>
-                        <td>Department</td>
-                        <td>Phone</td>
-                        <td>Gender</td>
-                        <td>Student</td>
-                        <td>Teacher</td>
-                        <td>Temporary Address</td>
-                        <td>Permanent Address</td>
-                        <td>Birthdate</td>
-                        <td>Type</td>
-                        <td class="text-center">Action</td>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+        <div class="groupmappingtable col-md-12 col-sm-12 col-xs-12 table-responsive">
+            <span class="checkboxCheckedLength"></span>
+            <table class="table table-striped dt-responsive table-bordered bg-white nowrap" id="member_dataTable">
+                <thead class="thead-light bg-primary">
+                <tr class="tableTitleRow">
+                    <td>
+                        <input type="checkbox" class="memberinfoCheckAll">
+                    </td>
+                    <td class="text-center">S. No.</td>
+                    <td>Username</td>
+                    <td>Member ID</td>
+                    <td>Full Name</td>
+                    <td>First Name</td>
+                    <td>Last Name</td>
+                    <td>Email</td>
+                    <td>Department</td>
+                    <td>Phone</td>
+                    <td>Gender</td>
+                    <td>Student</td>
+                    <td>Teacher</td>
+                    <td>Temporary Address</td>
+                    <td>Permanent Address</td>
+                    <td>Birthdate</td>
+                    <td>Type</td>
+                    <td class="text-center">Action</td>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         </form>
     </div>
 
