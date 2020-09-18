@@ -473,11 +473,13 @@
                 {% for o in assignments %}
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                         <div class="col-md-8 col-sm-8 col-xs-8">
-                            {% isAssignmentActive o as isanswerable %}
+{#                            {% isAssignmentActive o as isanswerable %}#}
                             <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
                                 {% if o.Use_Flag == False %}
                                     <span class="badge badge-danger"><b>Inactive</b></span>
-                                {% elif not isanswerable %}
+                                {% endif %}
+
+                                {% if 'students' in request.path and not o.active %}
                                     <span class="badge badge-danger">Expired</span>
                                 {% endif %}
                             </h5>
