@@ -407,11 +407,14 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         assignments = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
         active_assignments = []
         for assignment in assignments:
-            if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                object_id=assignment.id,
                                                Start_Date__lte=datetime_now,
-                                               Session_Code__in=context['assigned_session']).exists():
+                                               Session_Code__in=context['assigned_session'])
+            if session_map.exists():
                 active_assignments.append(assignment)
+            if session_map.filter(End_Date__gte=datetime_now).exists():
+                assignment.active = True
         context['assignments'] = active_assignments
         # context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'),
         #                                                        Use_Flag=True).filter(
