@@ -7,6 +7,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -32,7 +33,7 @@ from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAut
 from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm, AssignAnswerInfoForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
-    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView
+    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView, SessionMapInfo
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
@@ -320,20 +321,51 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['chapters'] = ChapterInfo.objects.filter(
-        #     Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
-        #     .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-        #     .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
-        #     .order_by('Chapter_No')
 
-        context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
-            Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-                chapter_sessionmaps__Start_Date=None)) \
-            .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-            chapter_sessionmaps__End_Date=None)) \
-            .order_by('Chapter_No').distinct()
+        datetime_now = timezone.now().replace(microsecond=0)
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('pk'))
 
-        print(context['chapters'])
+        assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                    Start_Date__lte=datetime_now,
+                                                    End_Date__gte=datetime_now,
+                                                    Groups__in=student_groups,
+                                                    Course_Group__in=course_groups)
+
+        chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
+        active_chapters = []
+        for chapter in chapters:
+            if not SessionMapInfo.objects.filter(content_type= ContentType.objects.get_for_model(chapter),
+                                             object_id= chapter.id,
+                                             Session_Code__in = assigned_session).exists():
+                active_chapters.append(chapter)
+            elif SessionMapInfo.objects.filter(content_type= ContentType.objects.get_for_model(chapter),
+                                               object_id= chapter.id,
+                                               Start_Date__lte=datetime_now,
+                                               End_Date__gte=datetime_now,
+                                               Session_Code__in = assigned_session).exists():
+                active_chapters.append(chapter)
+        context['chapters'] = active_chapters
+
+        # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True,
+        #                                                  ).filter(
+        #     Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #         chapter_sessionmaps__Start_Date=None)) \
+        #     .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #     chapter_sessionmaps__End_Date=None)).filter(chapter_sessionmaps__Session_Code__Use_Flag=True,
+        #                                                 chapter_sessionmaps__Session_Code__Start_Date__lte=datetime_now,
+        #                                                 chapter_sessionmaps__Session_Code__End_Date__gte=datetime_now,
+        #                                                 chapter_sessionmaps__Session_Code__Groups__in=student_groups) \
+        #     .order_by('Chapter_No').distinct()
+
+        # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
+        #     Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #         chapter_sessionmaps__Start_Date=None)) \
+        #     .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #     chapter_sessionmaps__End_Date=None)) \
+        #     .order_by('Chapter_No').distinct()
+
+        # print(context['chapters'])
         surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]
@@ -342,7 +374,7 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         context['quizcount'] = Quiz.objects.filter(
             course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
-            chapter_code__in=context['chapters'].values_list('pk'),
+            chapter_code__in=context['chapters'],
             exam_paper=False,
             draft=False)
         context['topic'] = Topic.objects.filter(
