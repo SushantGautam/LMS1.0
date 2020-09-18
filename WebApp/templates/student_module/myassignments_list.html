@@ -80,122 +80,121 @@
         {% endif %}
     </div>
     <div class="tabcontent" id="activeAssignments">
+        {% if activeAssignment %}
 
-            {% for a in Assignment %}
-                {% if a.active %}
-                    {% ifchanged a.Course_Code %}
-                        <h3 align="center">Course -
-                            <a href="{{ a.Course_Code.student_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
-                        </h3>
-                    {% endifchanged %}
-                    <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
+            {% for a in activeAssignment %}
+                {% ifchanged a.Course_Code %}
+                    <h3 align="center">Course -
+                        <a href="{{ a.Course_Code.student_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
+                    </h3>
+                {% endifchanged %}
+                <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-                        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
-                            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
-                            <h5>
-                                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
-                            </h5>
-                            <h5>Chapter - {{ a.Chapter_Code }}</h5>
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-4 text-right" style=" margin-top: 20px;">
-                            {% getAssignmentsScore a user as Assignment_Score %}
-                            {% if  Assignment_Score.questions|length > 0 %}
-                                {% if Assignment_Score.answers|length > 0 %}
-                                    {% if Assignment_Score.total_score_obtained %}
-                                        {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
-                                    {% else %}
-                                        <span class="text-danger" style="font-weight: bold"> Not Graded </span>
-                                    {% endif %}
-                                    <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
-                                            data-toggle="modal"
-                                            data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
-                                            data-modal-title="{{ a.Chapter_Code }} - {{ a.Assignment_Topic }}"
-                                            style="margin-right: 10px; padding:3px 4px">
-                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
-                                    </button>
-                                {% else %}
-                                    <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
-                                            disabled
-                                            style="margin-right: 10px; padding:3px 4px">
-                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
-                                    </button>
-                                {% endif %}
-                            {% endif %}
-                            <a href="{{ a.student_get_absolute_url }}">
-                                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                       margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </a>
-                        </div>
-
-                        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                            <hr style="margin-top: 1px; margin-bottom: 10px;">
-                            <p>Submission Deadline - <span
-                                    class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span></p>
-                        </div>
+                    <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+                        <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+                        <h5>
+                            <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+                        </h5>
+                        <h5>Chapter - {{ a.Chapter_Code }}</h5>
                     </div>
-                {% endif %}
+                    <div class="col-md-4 col-sm-4 col-xs-4 text-right" style=" margin-top: 20px;">
+                        {% getAssignmentsScore a user as Assignment_Score %}
+                        {% if  Assignment_Score.questions|length > 0 %}
+                            {% if Assignment_Score.answers|length > 0 %}
+                                {% if Assignment_Score.total_score_obtained %}
+                                    {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% else %}
+                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                {% endif %}
+                                <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
+                                        data-toggle="modal"
+                                        data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
+                                        data-modal-title="{{ a.Chapter_Code }} - {{ a.Assignment_Topic }}"
+                                        style="margin-right: 10px; padding:3px 4px">
+                                    <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
+                                        disabled
+                                        style="margin-right: 10px; padding:3px 4px">
+                                    <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{{ a.student_get_absolute_url }}">
+                            <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                   margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+                        <hr style="margin-top: 1px; margin-bottom: 10px;">
+                        <p>Submission Deadline - <span
+                                class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span></p>
+                    </div>
+                </div>
             {% endfor %}
+        {% endif %}
     </div>
     <div class="tabcontent" id="expiredAssignments" style="display: none;">
+        {% if expiredAssignment %}
 
+            {% for a in expiredAssignment %}
+                {% ifchanged a.Course_Code %}
+                    <h3 align="center">Course -
+                        <a href="{{ a.Course_Code.student_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
+                    </h3>
+                {% endifchanged %}
+                <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
-            {% for a in Assignment %}
-                {% if not Assignment.active %}
-                    {% ifchanged a.Course_Code %}
-                        <h3 align="center">Course -
-                            <a href="{{ a.Course_Code.student_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
-                        </h3>
-                    {% endifchanged %}
-                    <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
-
-                        <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
-                            <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
-                            <h5>
-                                <b style="color: #000000">{{ a.Assignment_Topic }}</b>
-                            </h5>
-                            <h5>Chapter - {{ a.Chapter_Code }}</h5>
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-4 text-right" style=" margin-top: 20px;">
-                            {% getAssignmentsScore a user as Assignment_Score %}
-                            {% if  Assignment_Score.questions|length > 0 %}
-                                {% if Assignment_Score.answers|length > 0 %}
-                                    {% if Assignment_Score.total_score_obtained %}
-                                        {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
-                                    {% else %}
-                                        <span class="text-danger" style="font-weight: bold"> Not Graded </span>
-                                    {% endif %}
-                                    <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
-                                            data-toggle="modal"
-                                            data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
-                                            data-modal-title="{{ a.Chapter_Code }} - {{ a.Assignment_Topic }}"
-                                            style="margin-right: 10px; padding:3px 4px">
-                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
-                                    </button>
-                                {% else %}
-                                    <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
-                                            disabled
-                                            style="margin-right: 10px; padding:3px 4px">
-                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
-                                    </button>
-                                {% endif %}
-                            {% endif %}
-                            <a href="{{ a.student_get_absolute_url }}">
-                                <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                        margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
-                                </button>
-                            </a>
-                        </div>
-
-                        <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
-                            <hr style="margin-top: 1px; margin-bottom: 10px;">
-                            <p>Submission Deadline -
-                                <span class="text-danger dateconFullMonth">{{ a.Assignment_Deadline|date:"d M, Y h:i A" }}</span>
-                            </p>
-                        </div>
+                    <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+                        <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
+                        <h5>
+                            <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+                        </h5>
+                        <h5>Chapter - {{ a.Chapter_Code }}</h5>
                     </div>
-                {% endif %}
+                    <div class="col-md-4 col-sm-4 col-xs-4 text-right" style=" margin-top: 20px;">
+                        {% getAssignmentsScore a user as Assignment_Score %}
+                        {% if  Assignment_Score.questions|length > 0 %}
+                            {% if Assignment_Score.answers|length > 0 %}
+                                {% if Assignment_Score.total_score_obtained %}
+                                    {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
+                                {% else %}
+                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                {% endif %}
+                                <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
+                                        data-toggle="modal"
+                                        data-target="#AssignmentResultModal" data-assignment_pk="{{ a.pk }}"
+                                        data-modal-title="{{ a.Chapter_Code }} - {{ a.Assignment_Topic }}"
+                                        style="margin-right: 10px; padding:3px 4px">
+                                    <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
+                                        disabled
+                                        style="margin-right: 10px; padding:3px 4px">
+                                    <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{{ a.student_get_absolute_url }}">
+                            <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                                    margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
+                        <hr style="margin-top: 1px; margin-bottom: 10px;">
+                        <p>Submission Deadline -
+                            <span class="text-danger dateconFullMonth">{{ a.Assignment_Deadline|date:"d M, Y h:i A" }}</span>
+                        </p>
+                    </div>
+                </div>
             {% endfor %}
+        {% endif %}
     </div>
 
 
