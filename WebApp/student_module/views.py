@@ -452,12 +452,19 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
         student_groups = GroupMapping.objects.filter(Students=self.request.user)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Groups__in=student_groups, Use_Flag=True,
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
-                                                                End_Date__gte=datetime_now).filter(
-            Course_Group__in=course_groups)
+                                                                End_Date__gte=datetime_now,
+                                                                Groups__in=student_groups,
+                                                                Course_Group__in=course_groups)
         AnsweredQuestion = set()
         Question = set()
+        if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(AssignmentInfo),
+                                         object_id=self.kwargs.get('pk'),
+                                         Start_Date__lte=datetime_now,
+                                         End_Date__gte=datetime_now,
+                                         Session_Code__in=context['assigned_session']).exists():
+            context['object'].active = True
 
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(
