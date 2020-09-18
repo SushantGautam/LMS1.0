@@ -45,45 +45,68 @@ User = get_user_model()
 
 from quiz.views import QuizUserProgressView, Sitting, Progress
 
-
-def student_all_assignements(user):
+def student_active_chapters(courses, sessions):
     datetime_now = timezone.now().replace(microsecond=0)
-    student_groups = GroupMapping.objects.filter(Students=user)
-    course_group = InningInfo.objects.filter(
-        Groups__in=student_groups,
-        Use_Flag=True,
-        Start_Date__lte=datetime_now,
-        End_Date__gte=datetime_now).values_list('Course_Group', flat=True)
+    chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
+    active_chapters = []
+    inactive_chapters_pk = []
+    for chapter in chapters:
+        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                             object_id=chapter.id,
+                                             Session_Code__in=sessions).exists():
+            active_chapters.append(chapter)
+        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                           object_id=chapter.id,
+                                           Start_Date__lte=datetime_now,
+                                           End_Date__gte=datetime_now,
+                                           Session_Code__in=sessions).exists():
+            active_chapters.append(chapter)
+        else:
+            inactive_chapters_pk.append(chapter.id)
 
-    active_courses = InningGroup.objects.filter(
-        pk__in=course_group,
-        Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
+    chapters = chapters.exclude(pk__in=inactive_chapters_pk)
+    return chapters
 
-    active_chapters = ChapterInfo.objects.filter(
-        Course_Code__in=active_courses,
-        Use_Flag=True).filter(
-        Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-        Q(End_Date__gte=datetime_now) | Q(End_Date=None))
+def student_all_assignments(chapters, sessions): # It includes expired assignments also
+    datetime_now = timezone.now().replace(microsecond=0)
+    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
+    inactive_assignments_pk = []
+    for assignment in assignments:
+        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                            object_id=assignment.id,
+                                            Start_Date__lte=datetime_now,
+                                            Session_Code__in=sessions).exists():
+            inactive_assignments_pk.append(assignment.id)
 
-    assignments = AssignmentInfo.objects.filter(
-        Chapter_Code__in=active_chapters,
-        Use_Flag=True,
-        Assignment_Start__lte=datetime_now)
+    return assignments.exclude(pk__in=inactive_assignments_pk)
 
-    return assignments
+def filter_active_assignments(chapters, sessions): # It only includes active assignments
+    datetime_now = timezone.now().replace(microsecond=0)
+    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
+    inactive_assignments_pk = []
+    for assignment in assignments:
+        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                             object_id=assignment.id,
+                                             Start_Date__lte=datetime_now,
+                                             End_Date__gte=datetime_now,
+                                             Session_Code__in=sessions).exists():
+            inactive_assignments_pk.append(assignment.id)
 
+    return assignments.exclude(pk__in=inactive_assignments_pk)
 
 def start(request):
     global courses, activeassignments, sessions, batches
     datetime_now = timezone.now().replace(microsecond=0)
+
     batches = GroupMapping.objects.filter(Students=request.user)
     sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
                                          Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
     course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
     courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
                                         Use_Flag=True)
+    chapters = student_active_chapters(courses, sessions)
 
-    activeassignments = student_all_assignements(request.user).filter(Assignment_Deadline__gte=datetime_now)[:7]
+    activeassignments = filter_active_assignments(chapters, sessions)[:5]
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -91,9 +114,9 @@ def start(request):
     thread_keywords = get_top_thread_keywords(request, 10)
 
     ## Incomplete chapters calculation
-    chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
-        Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
-        Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
+    # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
+    #     Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+    #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
     # Filtering out chapters which have no content and progress is 100%
     chapters_list = []
@@ -284,12 +307,18 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
 
         datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True)
+        chapters = student_active_chapters(courses, sessions)
+
         context['currentDate'] = datetime_now
-        context['Assignment'] = student_all_assignements(self.request.user)
-        context['activeAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__gte=datetime_now)
-        context['expiredAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__lte=datetime_now)
+        context['Assignment'] = student_all_assignments(chapters, sessions)
+        context['activeAssignment'] = filter_active_assignments(chapters, sessions)
+        context['expiredAssignment'] = context['Assignment'].difference(context['activeAssignment'])
 
         return context
 
