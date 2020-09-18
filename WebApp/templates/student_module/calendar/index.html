@@ -41,6 +41,9 @@
     <script>
         $(document).ready(function () {
 
+        $('#external-events .fc-event').css("cursor","default");
+
+
 
         // Detail For Update Modal
 
@@ -251,6 +254,9 @@
                         {% elif event.event_type == "HO" %}
                             icon: "car",
                             className: 'btn btn-success',
+                        {% elif event.event_type == "EX" %}
+                            icon: "newspaper-o",
+                            className: 'btn btn-primary',
                         {% else %}
                             // default values
                             icon: "diamond",
@@ -261,22 +267,22 @@
                 {% endfor %}
             ];
 
-            $('#external-events .fc-event').each(function () {
+        //    $('#external-events .fc-event').each(function () {
                 // store data so the calendar knows to render an event upon drop
-                $(this).data('event', {
-                    title: $.trim($(this).text()), // use the element's text as the event title
-                    stick: true, // maintain when user navigates (see docs on the renderEvent method),
-                    color: $(this).find('i').css("color"),
-                    icon: $(this).find('i').data('icon')
-                });
+        //        $(this).data('event', {
+        //            title: $.trim($(this).text()), // use the element's text as the event title
+        //            stick: true, // maintain when user navigates (see docs on the renderEvent method),
+        //            color: $(this).find('i').css("color"),
+        //            icon: $(this).find('i').data('icon')
+        //        });
 
                 // make the event draggable using jQuery UI
-                $(this).draggable({
-                    zIndex: 999,
-                    revert: true,      // will cause the event to go back to its
-                    revertDuration: 0  //  original position after the drag
-                });
-            });
+        //        $(this).draggable({
+        //            zIndex: 999,
+        //            revert: true,      // will cause the event to go back to its
+        //            revertDuration: 0  //  original position after the drag
+        //        });
+        //    });
 
 
             $('#calendar-demo').fullCalendar({
@@ -368,10 +374,17 @@
                             modal.find('.event-type').addClass("btn btn-danger");
 
                             }
+                           if (event.type == "Examination")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
+                            modal.find('.event-type').addClass("btn btn-primary");
+
+                            }
 
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
+                    modal.find('.event-title').html("");
                     modal.find('.event-title').html(event.title);
 
                       let start = event.start;

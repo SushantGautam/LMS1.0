@@ -41,6 +41,16 @@
     <script>
         $(document).ready(function () {
 
+       // $(".fc.fc-event").css("border", "dotted");
+       // $(".fc.fc-event").css("border-radius", "5px");
+       // $(".fc .fc-event").css({"border":  5+"px " +" dotted "+ "rgb("+ 255 +","+ 229 +","+ 204 +")"});
+       // $(".btn .btn-info .btn-danger .btn-primary .btn-success").css("border-color", " ");
+
+
+      //   var style1 = "5px dotted rgb(231,212,164)";
+      //   $('.fc.fc-event').css({
+      //      'border': style1
+      //  });
 
         // Detail For Update Modal
 
@@ -58,7 +68,11 @@
                    }else if (event.type === "Meeting")
                     {
                         modal.find("#customRadioInline2").prop( "checked", true );
-                   }else{
+                   }else if (event.type === "Examination")
+                    {
+                        modal.find("#customRadioInline4").prop( "checked", true );
+                   }
+                   else{
                          modal.find("#customRadioInline1").prop( "checked", true );
                     }
 
@@ -208,6 +222,7 @@
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
+                        r_a: '{{event.register_agent.pk}}',
                         start: '{{ event.date_start.isoformat}}',
                        // end: '{{ event.date_end.isoformat }}',
                         end: '{{ event.get_end_date.isoformat }}',
@@ -251,6 +266,9 @@
                         {% elif event.event_type == "HO" %}
                             icon: "car",
                             className: 'btn btn-success',
+                        {% elif event.event_type == "EX" %}
+                            icon: "newspaper-o",
+                            className: 'btn btn-primary',
                         {% else %}
                             // default values
                             icon: "diamond",
@@ -306,6 +324,10 @@
                     if (event.icon) {
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
+                     if(event.r_a == '{{request.user.pk}}'){
+                         element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
+                         element[0].style.setProperty('border', '2px solid #eb1c9f', 'important');
+                    }
                 },
                 dayClick: function (date, jsEvent, view) {
 
@@ -351,27 +373,34 @@
 
                         if (event.type == "Program")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-success');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-primary');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
                           if (event.type == "Holiday")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-primary');
                             modal.find('.event-type').addClass('btn btn-success');
 
                             }
                           if (event.type == "Meeting")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info");
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-primary");
                             modal.find('.event-type').addClass("btn btn-danger");
+
+                            }
+                          if (event.type == "Examination")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
+                            modal.find('.event-type').addClass("btn btn-primary");
 
                             }
 
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
+                    modal.find('.event-title').html("");
                     modal.find('.event-title').html(event.title);
 
                       let start = event.start;
@@ -551,6 +580,9 @@
                          }
                          if (event.title === "Meeting"){
                             $("#customRadioInline2").prop("checked", true);
+                         }
+                         if (event.title === "Examination"){
+                            $("#customRadioInline4").prop("checked", true);
                          }
 
                        let start_date = iso_to_django(event.start._d);

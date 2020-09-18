@@ -174,6 +174,12 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
+    def get_student_inning(self):
+        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
+                                            End_Date__gt=datetime.now()).values_list('pk', flat=True)
+
+        return list(innings)
+
     def get_teacher_courses(self):
         courses = []
         session_list = []
@@ -328,8 +334,6 @@ class CourseInfo(models.Model):
 
     def __str__(self):
         return self.Course_Name
-
-
 
 
 class ChapterInfo(models.Model):

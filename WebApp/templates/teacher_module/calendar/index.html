@@ -55,6 +55,9 @@
                    if (event.type === "Holiday")
                    {
                         modal.find("#customRadioInline3").prop("checked", true);
+                   }else if (event.type === "Examination")
+                    {
+                        modal.find("#customRadioInline4").prop( "checked", true );
                    }else if (event.type === "Meeting")
                     {
                         modal.find("#customRadioInline2").prop( "checked", true );
@@ -257,6 +260,9 @@
                         {% elif event.event_type == "HO" %}
                             icon: "car",
                             className: 'btn btn-success',
+                        {% elif event.event_type == "EX" %}
+                            icon: "newspaper-o",
+                            className: 'btn btn-primary',
                         {% else %}
                             // default values
                             icon: "diamond",
@@ -310,8 +316,15 @@
                 events: events,
                 eventRender: function (event, element) {
                     if (event.icon) {
+
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
+                    if(event.r_a == '{{request.user.pk}}'){
+                         element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
+                         element[0].style.setProperty('border', '2px solid #eb1c9f', 'important');
+                    }
+
+
                 },
                 dayClick: function (date, jsEvent, view) {
 
@@ -340,7 +353,10 @@
                         })
 
 
-                 $("#id_participant_type_1").prop("checked", true);
+                 $("#id_is_all_day").prop("checked", true);
+                 $("#id_participant_type_2").prop("checked", true);
+                 $(".participant_dynamic").hide();
+                 $(".datetime_dynamic").hide();
                  $("#id_description").html(" ");
                  $("#createEventModal #btn-save").text("Create");
 
@@ -374,10 +390,18 @@
                             modal.find('.event-type').addClass("btn btn-danger");
 
                             }
+                          if (event.type == "Examination")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
+                            modal.find('.event-type').addClass("btn btn-primary");
+
+                            }
 
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
+
+                    modal.find('.event-title').html("");
                     modal.find('.event-title').html(event.title);
 
                       let start = event.start;
@@ -566,6 +590,9 @@
                          if (event.title === "Meeting"){
                             $("#customRadioInline2").prop("checked", true);
                          }
+                         if (event.title === "Examination"){
+                            $("#customRadioInline4").prop("checked", true);
+                         }
 
                        let start_date = iso_to_django(event.start._d);
                        let end_date = start_date;
@@ -582,8 +609,11 @@
                                     singleDatePicker: true,
                                 })
 
+                         $("#id_is_all_day").prop("checked", true);
+                         $("#id_participant_type_2").prop("checked", true);
+                         $(".participant_dynamic").hide();
+                         $(".datetime_dynamic").hide();
 
-                         $("#id_participant_type_1").prop("checked", true);
                          $("#id_description").html(" ");
                          $("#createEventModal #btn-save").text("Create");
 
@@ -710,18 +740,28 @@
              multiple: true,
             templateResult: function (state) {
                 // how dropdown list is displayed
-                let filter_type = $("input[name='filter_type']:checked").val();
+                let filter_type = $("input[name='session_filter_type']:checked").val();
                 let is_student = $(state.element).attr('data-is_student');
                 let is_teacher = $(state.element).attr('data-is_teacher');
-                if (filter_type === "A") {        // all user
-                    return state.text;
+                let inning_list = $(state.element).attr('data-student_session');
+                if (is_student === "true" ){
+                     inning_list =  JSON.parse(inning_list);
+                     if (inning_list.includes(Number(filter_type))){
+                        return state.text;
+                     }
                 }
-                if (filter_type === "S" && is_student === "true") {        // Students only
-                    return state.text;
-                }
-                if (filter_type === "T" && is_teacher === "true") {        // Teachers only
-                    return state.text;
-                }
+
+                console.log(inning_list);
+
+              //  if (filter_type === "A") {        // all user
+              //      return state.text;
+              //  }
+              //  if (filter_type === "S" && is_student === "true") {        // Students only
+              //      return state.text;
+              //  }
+              //  if (filter_type === "T" && is_teacher === "true") {        // Teachers only
+              //      return state.text;
+              //  }
                 return null;
             },
         });
@@ -833,6 +873,8 @@
             $("#event-end-date").val("");
             $("#event-start-time").val("");
             $("#event-end-time").val("");
+            $("#id_participant_type_2").prop("checked", true);
+            $(".participant_dynamic").hide();
             $("#createEventModal #id_title").val("");
             $("#createEventModal #id_description").val("");
             $("#createEventModal #btn-save").text("Create");
