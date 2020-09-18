@@ -69,8 +69,8 @@
                                 <th>Session</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>Assignment Status</th>
                                 {% if '/students' not in request.path %}
-                                    <th>Assignment Status</th>
                                     <th>Action</th>
                                 {% endif %}
                             </tr>
@@ -94,18 +94,16 @@
                                 {#                                    {% if  sessionmap.Session_Code == sessions %}#}
                                 <td class="start-date dateconFullMonth">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
                                 <td class="end-date dateconFullMonth">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
-                                {% if '/students' not in request.path %}
-                                    <td>
-                                        {% now "Y-m-d H:i" as todays_datewithtime %}
-                                        {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
-                                            <span class="badge badge-info">Upcoming</span>
-                                        {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
-                                            <span class="badge badge-danger">Expired</span>
-                                        {% else %}
-                                            <span class="badge badge-success">Active</span>
-                                        {% endif %}
-                                    </td>
-                                {% endif %}
+                                <td>
+                                    {% now "Y-m-d H:i" as todays_datewithtime %}
+                                    {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                        <span class="badge badge-info">Upcoming</span>
+                                    {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                                        <span class="badge badge-danger">Expired</span>
+                                    {% else %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% endif %}
+                                </td>
                                 {#                                    {% endif %}#}
                                 {#                                {% endfor %}#}
                                 {% if '/students' not in request.path %}
@@ -329,9 +327,9 @@
                                             <p class="short_answer" data-answer="{{ answer.Assignment_Answer|safe }}"
                                                style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
                                             {% now "Y-m-d H:i" as todays_date %}
-                                            {#                                            {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
-                                            {% isAssignmentActive object as isanswerable %}
-                                            {% if isanswerable %}
+                                            {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                            {# {% isAssignmentActive object as isanswerable %} #}
+                                            {% if object.active %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
                                                         data-Question_Code="{{ questions.id }}"
@@ -382,10 +380,12 @@
                                             <a href="{{ answer.Assignment_File.url }}" target="_blank"><b
                                                     style="color:#017a9b">Click
                                                 to view Submitted file</b></a>
-                                            <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
-                                                    style="float: right" title="Delete Answer"><i class="fa fa-trash"
-                                                                                                  aria-hidden="true"></i>
-                                            </button>
+                                            {% if object.active %}
+                                                <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
+                                                        style="float: right" title="Delete Answer"><i class="fa fa-trash"
+                                                                                                      aria-hidden="true"></i>
+                                                </button>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}
@@ -414,9 +414,9 @@
 
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
-                                                    {#                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
-                                                    {% isAssignmentActive object as isanswerable %}
-                                                    {% if isanswerable %}
+                                                    {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                                    {# {% isAssignmentActive object as isanswerable %}#}
+                                                    {% if object.active %}
                                                         <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
@@ -455,9 +455,9 @@
                                                 </div>
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
-                                                    {#                                                    {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}#}
-                                                    {% isAssignmentActive object as isanswerable %}
-                                                    {% if isanswerable %}
+                                                    {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                                    {#  {% isAssignmentActive object as isanswerable %} #}
+                                                    {% if object.active %}
                                                         <button class="btn btn-sm btn-primary" type="reset"
                                                                 id="cancelButton{{ questions.pk }}">
                                                             Cancel
