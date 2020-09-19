@@ -70,29 +70,43 @@ def student_active_chapters(courses, sessions):
 def student_all_assignments(chapters, sessions): # It includes expired assignments also
     datetime_now = timezone.now().replace(microsecond=0)
     assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
-    inactive_assignments_pk = []
     for assignment in assignments:
         if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                             object_id=assignment.id,
                                             Start_Date__lte=datetime_now,
                                             Session_Code__in=sessions).exists():
-            inactive_assignments_pk.append(assignment.id)
+            assignments = assignments.exclude(pk=assignment.pk)
+    for assignment in assignments:
+        assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                             object_id=assignment.id,
+                                             Session_Code__in=sessions).latest('End_Date').End_Date
+        if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                            object_id=assignment.id,
+                                            Start_Date__lte=datetime_now,
+                                            End_Date__gte=datetime_now,
+                                            Session_Code__in=sessions).exists():
+            assignment.active = True
+        else:
+            assignment.active = False
 
-    return assignments.exclude(pk__in=inactive_assignments_pk)
+    return assignments
 
 def filter_active_assignments(chapters, sessions): # It only includes active assignments
     datetime_now = timezone.now().replace(microsecond=0)
     assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
-    inactive_assignments_pk = []
     for assignment in assignments:
         if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                              object_id=assignment.id,
                                              Start_Date__lte=datetime_now,
                                              End_Date__gte=datetime_now,
                                              Session_Code__in=sessions).exists():
-            inactive_assignments_pk.append(assignment.id)
+            assignments = assignments.exclude(pk=assignment.pk)
+    for assignment in assignments:
+            assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                             object_id=assignment.id,
+                                             Session_Code__in=sessions).latest('End_Date').End_Date
 
-    return assignments.exclude(pk__in=inactive_assignments_pk)
+    return assignments
 
 def start(request):
     global courses, activeassignments, sessions, batches
