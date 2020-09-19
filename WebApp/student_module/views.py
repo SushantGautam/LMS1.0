@@ -91,20 +91,52 @@ def start(request):
     thread_keywords = get_top_thread_keywords(request, 10)
 
     ## Incomplete chapters calculation
-    chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
-        Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
-        Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
-
-    # Filtering out chapters which have no content and progress is 100%
+    chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
+    active_chapters = []
     chapters_list = []
     for chapter in chapters:
-        if chapter.has_content():
-            response = getChapterScore(request.user, chapter)
-            chapter.progress_score = round(float(response['totalProgressScore']), 3)
-            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
-            chapter.quiz = response['chapterProgress'][0]['quiz']
-            if chapter.progress_score < float(100):
-                chapters_list.append(chapter)
+        # Check if session map exists, if yes then check if date is None or start is greater than now and end is less than now.
+        # Filtering out chapters which have no content and progress is 100%
+        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                             object_id=chapter.id,
+                                             Session_Code__in=sessions).exists():
+            if chapter.has_content():
+                response = getChapterScore(request.user, chapter)
+                chapter.progress_score = round(float(response['totalProgressScore']), 3)
+                chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
+                chapter.quiz = response['chapterProgress'][0]['quiz']
+                if chapter.progress_score < float(100):
+                    chapters_list.append(chapter)
+
+        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                           object_id=chapter.id,
+                                           Start_Date__lte=datetime_now,
+                                           End_Date__gte=datetime_now,
+                                           Session_Code__in=sessions).exists():
+            if chapter.has_content():
+                response = getChapterScore(request.user, chapter)
+                chapter.progress_score = round(float(response['totalProgressScore']), 3)
+                chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
+                chapter.quiz = response['chapterProgress'][0]['quiz']
+                if chapter.progress_score < float(100):
+                    chapters_list.append(chapter)
+
+        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                           object_id=chapter.id,
+                                           Start_Date=None,
+                                           End_Date=None,
+                                           Session_Code__in=sessions).exists():
+            if chapter.has_content():
+                response = getChapterScore(request.user, chapter)
+                chapter.progress_score = round(float(response['totalProgressScore']), 3)
+                chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
+                chapter.quiz = response['chapterProgress'][0]['quiz']
+                if chapter.progress_score < float(100):
+                    chapters_list.append(chapter)
+
+    # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
+    #     Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+    #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
     # Sorting chapters based on progress score
     chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
@@ -327,23 +359,29 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('pk'))
 
         assigned_session = InningInfo.objects.filter(Use_Flag=True,
-                                                    Start_Date__lte=datetime_now,
-                                                    End_Date__gte=datetime_now,
-                                                    Groups__in=student_groups,
-                                                    Course_Group__in=course_groups)
+                                                     Start_Date__lte=datetime_now,
+                                                     End_Date__gte=datetime_now,
+                                                     Groups__in=student_groups,
+                                                     Course_Group__in=course_groups)
 
         chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
         active_chapters = []
         for chapter in chapters:
-            if not SessionMapInfo.objects.filter(content_type= ContentType.objects.get_for_model(chapter),
-                                             object_id= chapter.id,
-                                             Session_Code__in = assigned_session).exists():
+            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                 object_id=chapter.id,
+                                                 Session_Code__in=assigned_session).exists():
                 active_chapters.append(chapter)
-            elif SessionMapInfo.objects.filter(content_type= ContentType.objects.get_for_model(chapter),
-                                               object_id= chapter.id,
+            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                               object_id=chapter.id,
                                                Start_Date__lte=datetime_now,
                                                End_Date__gte=datetime_now,
-                                               Session_Code__in = assigned_session).exists():
+                                               Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                               object_id=chapter.id,
+                                               Start_Date=None,
+                                               End_Date=None,
+                                               Session_Code__in=assigned_session).exists():
                 active_chapters.append(chapter)
         context['chapters'] = active_chapters
 
@@ -397,7 +435,8 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
 
         datetime_now = timezone.now().replace(microsecond=0)
         student_groups = GroupMapping.objects.filter(Students=self.request.user)
-        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
@@ -408,9 +447,9 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         active_assignments = []
         for assignment in assignments:
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                               object_id=assignment.id,
-                                               Start_Date__lte=datetime_now,
-                                               Session_Code__in=context['assigned_session'])
+                                                        object_id=assignment.id,
+                                                        Start_Date__lte=datetime_now,
+                                                        Session_Code__in=context['assigned_session'])
             if session_map.exists():
                 active_assignments.append(assignment)
             if session_map.filter(End_Date__gte=datetime_now).exists():
