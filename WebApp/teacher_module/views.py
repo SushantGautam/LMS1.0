@@ -361,10 +361,12 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
-                                            pk=self.kwargs.get('pk')).Course_Code,
-                                            Teacher_Code=self.request.user.pk)
+            pk=self.kwargs.get('pk')).Course_Code,
+                                                   Teacher_Code=self.request.user.pk)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
-                            Start_Date__lte=datetime_now, End_Date__gte=datetime_now, Course_Group__in=course_groups)
+                                                                Start_Date__lte=datetime_now,
+                                                                End_Date__gte=datetime_now,
+                                                                Course_Group__in=course_groups)
 
         return context
 
@@ -469,8 +471,17 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
         course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
             pk=self.kwargs.get('chapter')).Course_Code,
                                                    Teacher_Code=self.request.user.pk)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
-                            Start_Date__lte=datetime_now, End_Date__gte=datetime_now, Course_Group__in=course_groups)
+
+        if inningpk:
+            context['assigned_session'] = InningInfo.objects.filter(pk=inningpk, Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    Course_Group__in=course_groups)
+        else:
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    Course_Group__in=course_groups)
 
         # ==================== End of Assignment Answers ========================================
 
@@ -2436,8 +2447,10 @@ def QuizMarkingCSV(request, quiz_pk):
     mcquestions = quiz.mcquestion.all()
     tfquestions = quiz.tfquestion.all()
     saquestions = quiz.saquestion.all()
-    extra_row_1 = {'S.N.': 'Full Score', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
-    extra_row_2 = {'S.N.': 'Correct Answer', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '', 'Percentage':''}
+    extra_row_1 = {'S.N.': 'Full Score', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '',
+                   'Percentage': ''}
+    extra_row_2 = {'S.N.': 'Correct Answer', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '',
+                   'Percentage': ''}
 
     # Deining column names
     column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
@@ -2486,8 +2499,9 @@ def QuizMarkingCSV(request, quiz_pk):
             start_date = quiz_sitting.start.replace(tzinfo=None)
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
-        new_row = {'S.N.':counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date, 'End Datetime': end_date,
-                'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
+        new_row = {'S.N.': counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date,
+                   'End Datetime': end_date,
+                   'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
@@ -2535,9 +2549,9 @@ def QuizMarkingCSV(request, quiz_pk):
         new_row['SAQ Score'] = totalsaq_score
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
-    
+
     df = df.set_index('S.N.', drop=True)
-    
+
     def color_negative_red(val):
         color = 'white'
         if val == '✔':
@@ -2563,7 +2577,7 @@ def QuizMarkingCSV(request, quiz_pk):
         df.to_excel(writer, sheet_name=sheet_name, startrow=1, header=False)
 
         # Get the xlsxwriter workbook and worksheet objects.
-        workbook  = writer.book
+        workbook = writer.book
         worksheet = writer.sheets[sheet_name]
 
         # Add a header format.

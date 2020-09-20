@@ -45,53 +45,56 @@ User = get_user_model()
 
 from quiz.views import QuizUserProgressView, Sitting, Progress
 
+
 def student_active_chapters(courses, sessions):
     datetime_now = timezone.now().replace(microsecond=0)
     chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
     active_chapters = []
-    inactive_chapters_pk = []
+
     for chapter in chapters:
-        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+        session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
                                              object_id=chapter.id,
-                                             Session_Code__in=sessions).exists():
+                                             Session_Code__in=sessions)
+        if not session_map.exists():
             active_chapters.append(chapter)
-        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                           object_id=chapter.id,
-                                           Start_Date__lte=datetime_now,
-                                           End_Date__gte=datetime_now,
-                                           Session_Code__in=sessions).exists():
+        elif session_map.filter(Start_Date__lte=datetime_now,
+                                End_Date__gte=datetime_now).exists():
+            active_chapters.append(chapter)
+        elif session_map.filter(Start_Date=None,
+                                End_Date=None).exists():
             active_chapters.append(chapter)
         else:
-            inactive_chapters_pk.append(chapter.id)
+            chapters = chapters.exclude(pk=chapter.pk)
 
-    chapters = chapters.exclude(pk__in=inactive_chapters_pk)
     return chapters
 
-def student_all_assignments(chapters, sessions): # It includes expired assignments also
+
+def student_all_assignments(chapters, sessions):  # It includes expired assignments also
     datetime_now = timezone.now().replace(microsecond=0)
     assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
     for assignment in assignments:
         if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                            object_id=assignment.id,
-                                            Start_Date__lte=datetime_now,
-                                            Session_Code__in=sessions).exists():
+                                             object_id=assignment.id,
+                                             Start_Date__lte=datetime_now,
+                                             Session_Code__in=sessions).exists():
             assignments = assignments.exclude(pk=assignment.pk)
     for assignment in assignments:
         assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                             object_id=assignment.id,
-                                             Session_Code__in=sessions).latest('End_Date').End_Date
+                                                            object_id=assignment.id,
+                                                            Session_Code__in=sessions).latest('End_Date').End_Date
         if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                            object_id=assignment.id,
-                                            Start_Date__lte=datetime_now,
-                                            End_Date__gte=datetime_now,
-                                            Session_Code__in=sessions).exists():
+                                         object_id=assignment.id,
+                                         Start_Date__lte=datetime_now,
+                                         End_Date__gte=datetime_now,
+                                         Session_Code__in=sessions).exists():
             assignment.active = True
         else:
             assignment.active = False
 
     return assignments
 
-def filter_active_assignments(chapters, sessions): # It only includes active assignments
+
+def filter_active_assignments(chapters, sessions):  # It only includes active assignments
     datetime_now = timezone.now().replace(microsecond=0)
     assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
     for assignment in assignments:
@@ -102,9 +105,9 @@ def filter_active_assignments(chapters, sessions): # It only includes active ass
                                              Session_Code__in=sessions).exists():
             assignments = assignments.exclude(pk=assignment.pk)
     for assignment in assignments:
-            assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                             object_id=assignment.id,
-                                             Session_Code__in=sessions).latest('End_Date').End_Date
+        assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                            object_id=assignment.id,
+                                                            Session_Code__in=sessions).latest('End_Date').End_Date
 
     return assignments
 
@@ -134,7 +137,7 @@ def start(request):
 
     # Filtering out chapters which have no content and progress is 100%
     chapters_list = []
-    for chapter in chapters:
+    for chapter in chapters[:5]:
         if chapter.has_content():
             response = getChapterScore(request.user, chapter)
             chapter.progress_score = round(float(response['totalProgressScore']), 3)
@@ -142,6 +145,10 @@ def start(request):
             chapter.quiz = response['chapterProgress'][0]['quiz']
             if chapter.progress_score < float(100):
                 chapters_list.append(chapter)
+
+    # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
+    #     Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+    #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
     # Sorting chapters based on progress score
     chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
@@ -370,12 +377,31 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('pk'))
 
         assigned_session = InningInfo.objects.filter(Use_Flag=True,
-                                                    Start_Date__lte=datetime_now,
-                                                    End_Date__gte=datetime_now,
-                                                    Groups__in=student_groups,
-                                                    Course_Group__in=course_groups)
+                                                     Start_Date__lte=datetime_now,
+                                                     End_Date__gte=datetime_now,
+                                                     Groups__in=student_groups,
+                                                     Course_Group__in=course_groups)
 
-        context['chapters'] = student_active_chapters(CourseInfo.objects.filter(pk=self.kwargs.get('pk')), assigned_session)
+        chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
+        active_chapters = []
+        for chapter in chapters:
+            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                 object_id=chapter.id,
+                                                 Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                               object_id=chapter.id,
+                                               Start_Date__lte=datetime_now,
+                                               End_Date__gte=datetime_now,
+                                               Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                               object_id=chapter.id,
+                                               Start_Date=None,
+                                               End_Date=None,
+                                               Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+        context['chapters'] = active_chapters
 
         # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True,
         #                                                  ).filter(
@@ -427,7 +453,8 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
 
         datetime_now = timezone.now().replace(microsecond=0)
         student_groups = GroupMapping.objects.filter(Students=self.request.user)
-        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
@@ -438,9 +465,9 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         active_assignments = []
         for assignment in assignments:
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                               object_id=assignment.id,
-                                               Start_Date__lte=datetime_now,
-                                               Session_Code__in=context['assigned_session'])
+                                                        object_id=assignment.id,
+                                                        Start_Date__lte=datetime_now,
+                                                        Session_Code__in=context['assigned_session'])
             if session_map.exists():
                 active_assignments.append(assignment)
             if session_map.filter(End_Date__gte=datetime_now).exists():
