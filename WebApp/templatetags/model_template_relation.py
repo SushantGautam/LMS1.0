@@ -116,4 +116,4 @@ def getSessionMap(object, model_name, sessions=None):
             Session_Code=sessions) if sessions else object.assignment_sessionmaps.all
     elif model_name == 'chapterinfo':
         return object.chapter_sessionmaps.filter(
-            Session_Code__in=sessions) if sessions else object.chapter_sessionmaps.all
+            Session_Code=sessions) if sessions else object.chapter_sessionmaps.all

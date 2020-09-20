@@ -397,24 +397,25 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        {% for sessionmap in object.chapter_sessionmaps.all %}
-                            {% if sessionmap.Session_Code == sessions %}
-                                <td class="start-date dateconFullMonth date-width">{{ sessionmap.Start_Date|date:"d M, Y h:i A" }}</td>
-                                <td class="end-date dateconFullMonth date-width">{{ sessionmap.End_Date|date:"d M, Y h:i A" }}</td>
-                                {% if '/students' not in request.path %}
-                                    <td>                           
-                                        {% now "Y-m-d H:i" as todays_datewithtime %}
-                                        {% if sessionmap.Start_Date and todays_datewithtime < sessionmap.Start_Date|date:"Y-m-d H:i" %}
-                                            <span class="badge badge-info">Upcoming</span>
-                                        {% elif sessionmap.End_Date and todays_datewithtime > sessionmap.End_Date|date:"Y-m-d H:i" %}
-                                            <span class="badge badge-danger">Expired</span>
-                                        {% else %}
-                                            <span class="badge badge-success">Active</span>
-                                        {% endif %} 
-                                    </td> 
+                        {% getSessionMap object 'chapterinfo' sessions as sessionmap %}
+                        {#                        {% for sessionmap in object.chapter_sessionmaps.all %}#}
+                        {#                            {% if sessionmap.Session_Code == sessions %}#}
+                        <td class="start-date dateconFullMonth date-width">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
+                        <td class="end-date dateconFullMonth date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                        {% if '/students' not in request.path %}
+                            <td>
+                                {% now "Y-m-d H:i" as todays_datewithtime %}
+                                {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-info">Upcoming</span>
+                                {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge badge-success">Active</span>
                                 {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                            </td>
+                        {% endif %}
+                        {#                            {% endif %}#}
+                        {#                        {% endfor %}#}
                         {% if '/students' not in request.path %}
                             <td>
                                 <button type="button" class="btn btn-sm btn-primary inningmap-btn" data-toggle="modal"
