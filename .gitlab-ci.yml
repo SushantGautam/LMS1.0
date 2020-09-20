@@ -23,7 +23,7 @@ test:
   image: "python:3.6"
   script:
   - "echo \"Running unit tests…\""
-  - "python manage.py makemigrations --noinput"
+  - "python manage.py makemigrations WebApp forum quiz survey comment Notification"
   - "python manage.py migrate --noinput"
   - "coverage run --source='.' manage.py test"
   - "coverage report --omit='*/venv*'"
