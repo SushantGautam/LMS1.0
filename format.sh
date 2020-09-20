@@ -5,7 +5,7 @@ rm -r survey/migrations
 
 fuser -k -n tcp 9002
 rm db.sqlite3
-python manage.py makemigrations WebApp forum quiz survey comment Notification
+python manage.py makemigrations WebApp forum quiz survey comment Notifications
 python manage.py migrate
 python manage.py loaddata WebApp/intial-fixtures-data/initial-fixtures-WebApp.json
 python manage.py loaddata WebApp/intial-fixtures-data/initial-fixtures-survey.json

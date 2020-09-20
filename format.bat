@@ -15,7 +15,7 @@ rmdir /s /q survey\migrations
 del db.sqlite3
 
 pip install -r requirements.txt
-python manage.py makemigrations WebApp forum quiz survey comment Notification
+python manage.py makemigrations WebApp forum quiz survey comment Notifications
 python manage.py migrate
 python manage.py loaddata WebApp\intial-fixtures-data\initial-fixtures-WebApp.json
 python manage.py loaddata WebApp\intial-fixtures-data\initial-fixtures-survey.json
