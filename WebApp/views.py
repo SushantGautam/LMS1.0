@@ -2929,7 +2929,7 @@ class ContentsView(TemplateView):
 
 class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
-
+    chapters = []
     def get(self, request, *args, **kwargs):
         datetime_now = timezone.now()
 
@@ -2947,17 +2947,51 @@ class NewContentsView(TemplateView):
             return redirect('login')
         try:
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
+            student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    if chapterObj.Start_Date:
-                        if chapterObj.Start_Date >= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    # if chapterObj.Start_Date:
+                    #     if chapterObj.Start_Date >= datetime_now:
+                    #         messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                    #         raise ObjectDoesNotExist
+                    #
+                    # if chapterObj.End_Date:
+                    #     if chapterObj.End_Date <= datetime_now:
+                    #         messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                    #         raise ObjectDoesNotExist
 
-                    if chapterObj.End_Date:
-                        if chapterObj.End_Date <= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                                 Start_Date__lte=datetime_now,
+                                                                 End_Date__gte=datetime_now,
+                                                                 Groups__in=student_groups,
+                                                                 Course_Group__in=course_groups)
+
+                    chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('chapter'), Use_Flag=True)
+                    active_chapters = []
+                    for chapter in chapters:
+                        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                             object_id=chapter.id,
+                                                             Session_Code__in=assigned_session).exists():
+                            active_chapters.append(chapter)
+                        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                           object_id=chapter.id,
+                                                           Start_Date__lte=datetime_now,
+                                                           End_Date__gte=datetime_now,
+                                                           Session_Code__in=assigned_session).exists():
+                            active_chapters.append(chapter)
+                        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                           object_id=chapter.id,
+                                                           Start_Date=None,
+                                                           End_Date=None,
+                                                           Session_Code__in=assigned_session).exists():
+                            active_chapters.append(chapter)
+                    self.chapters = active_chapters
+
+                    if chapterObj not in active_chapters:
+                        messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                        raise ObjectDoesNotExist
+
             else:
                 if '/students' in request.path:
                     messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
@@ -2977,9 +3011,7 @@ class NewContentsView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         if '/students' in self.request.path:
-            context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
-                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
+            context['chapterList'] = self.chapters
         else:
             context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
