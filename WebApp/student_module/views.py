@@ -384,21 +384,13 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
         active_chapters = []
         for chapter in chapters:
-            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                 object_id=chapter.id,
-                                                 Session_Code__in=assigned_session).exists():
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                object_id=chapter.id,
+                                                Session_Code__in=assigned_session)
+            if not session_map.exists():
                 active_chapters.append(chapter)
-            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                               object_id=chapter.id,
-                                               Start_Date__lte=datetime_now,
-                                               End_Date__gte=datetime_now,
-                                               Session_Code__in=assigned_session).exists():
-                active_chapters.append(chapter)
-            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                               object_id=chapter.id,
-                                               Start_Date=None,
-                                               End_Date=None,
-                                               Session_Code__in=assigned_session).exists():
+            elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                                    Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter)
         context['chapters'] = active_chapters
 
