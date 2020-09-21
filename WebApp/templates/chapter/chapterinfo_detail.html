@@ -388,7 +388,11 @@
                 {% for sessions in assigned_session %}
                     <tr>
                         <td class="custom-table-width">
+<<<<<<< HEAD
                             {{ sessions}}
+=======
+                            {{ sessions }}
+>>>>>>> a1d0bf3b82210d57d616546667baac96a1d55f9e
                             {% if '/students' not in request.path and '/teachers' not in request.path %}
                                 {% if sessions.is_active %}
                                     <span class=" text-success"> <b style="text-transform: uppercase; font-size:14px">[Active]</b>  </span>
@@ -397,24 +401,25 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        {% for sessionmap in object.chapter_sessionmaps.all %}
-                            {% if sessionmap.Session_Code == sessions %}
-                                <td class="start-date dateconFullMonth date-width">{{ sessionmap.Start_Date|date:"d M, Y h:i A" }}</td>
-                                <td class="end-date dateconFullMonth date-width">{{ sessionmap.End_Date|date:"d M, Y h:i A" }}</td>
-                                {% if '/students' not in request.path %}
-                                    <td>                           
-                                        {% now "Y-m-d H:i" as todays_datewithtime %}
-                                        {% if sessionmap.Start_Date and todays_datewithtime < sessionmap.Start_Date|date:"Y-m-d H:i" %}
-                                            <span class="badge badge-info">Upcoming</span>
-                                        {% elif sessionmap.End_Date and todays_datewithtime > sessionmap.End_Date|date:"Y-m-d H:i" %}
-                                            <span class="badge badge-danger">Expired</span>
-                                        {% else %}
-                                            <span class="badge badge-success">Active</span>
-                                        {% endif %} 
-                                    </td> 
+                        {% getSessionMap object 'chapterinfo' sessions as sessionmap %}
+                        {#                        {% for sessionmap in object.chapter_sessionmaps.all %}#}
+                        {#                            {% if sessionmap.Session_Code == sessions %}#}
+                        <td class="start-date dateconFullMonth date-width">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
+                        <td class="end-date dateconFullMonth date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                        {% if '/students' not in request.path %}
+                            <td>
+                                {% now "Y-m-d H:i" as todays_datewithtime %}
+                                {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-info">Upcoming</span>
+                                {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge badge-success">Active</span>
                                 {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                            </td>
+                        {% endif %}
+                        {#                            {% endif %}#}
+                        {#                        {% endfor %}#}
                         {% if '/students' not in request.path %}
                             <td>
                                 <button type="button" class="btn btn-sm btn-primary inningmap-btn" data-toggle="modal"
@@ -473,11 +478,13 @@
                 {% for o in assignments %}
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                         <div class="col-md-8 col-sm-8 col-xs-8">
-                            {% isAssignmentActive o as isanswerable %}
+{#                            {% isAssignmentActive o as isanswerable %}#}
                             <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
                                 {% if o.Use_Flag == False %}
                                     <span class="badge badge-danger"><b>Inactive</b></span>
-                                {% elif not isanswerable %}
+                                {% endif %}
+
+                                {% if 'students' in request.path and not o.active %}
                                     <span class="badge badge-danger">Expired</span>
                                 {% endif %}
                             </h5>

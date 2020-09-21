@@ -7,6 +7,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -32,7 +33,7 @@ from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAut
 from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm, AssignAnswerInfoForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
-    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView
+    AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView, SessionMapInfo
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic, Post, Notification
 from quiz.models import Quiz
@@ -45,44 +46,81 @@ User = get_user_model()
 from quiz.views import QuizUserProgressView, Sitting, Progress
 
 
-def student_all_assignements(user):
+def student_active_chapters(courses, sessions):
     datetime_now = timezone.now().replace(microsecond=0)
-    student_groups = GroupMapping.objects.filter(Students=user)
-    course_group = InningInfo.objects.filter(
-        Groups__in=student_groups,
-        Use_Flag=True,
-        Start_Date__lte=datetime_now,
-        End_Date__gte=datetime_now).values_list('Course_Group', flat=True)
+    chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
+    active_chapters = []
 
-    active_courses = InningGroup.objects.filter(
-        pk__in=course_group,
-        Course_Code__Use_Flag=True).values_list('Course_Code', flat=True)
+    for chapter in chapters:
+        session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                             object_id=chapter.id,
+                                             Session_Code__in=sessions)
+        if not session_map.exists():
+            active_chapters.append(chapter)
+        elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                                Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
+            active_chapters.append(chapter)
+        else:
+            chapters = chapters.exclude(pk=chapter.pk)
 
-    active_chapters = ChapterInfo.objects.filter(
-        Course_Code__in=active_courses,
-        Use_Flag=True).filter(
-        Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-        Q(End_Date__gte=datetime_now) | Q(End_Date=None))
+    return chapters
 
-    assignments = AssignmentInfo.objects.filter(
-        Chapter_Code__in=active_chapters,
-        Use_Flag=True,
-        Assignment_Start__lte=datetime_now)
+
+def student_all_assignments(chapters, sessions):  # It includes expired assignments also
+    datetime_now = timezone.now().replace(microsecond=0)
+    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
+    for assignment in assignments:
+        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                             object_id=assignment.id,
+                                             Start_Date__lte=datetime_now,
+                                             Session_Code__in=sessions).exists():
+            assignments = assignments.exclude(pk=assignment.pk)
+    for assignment in assignments:
+        assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                            object_id=assignment.id,
+                                                            Session_Code__in=sessions).latest('End_Date').End_Date
+        if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                         object_id=assignment.id,
+                                         Start_Date__lte=datetime_now,
+                                         End_Date__gte=datetime_now,
+                                         Session_Code__in=sessions).exists():
+            assignment.active = True
+        else:
+            assignment.active = False
 
     return assignments
 
 
+def filter_active_assignments(chapters, sessions):  # It only includes active assignments
+    datetime_now = timezone.now().replace(microsecond=0)
+    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
+    for assignment in assignments:
+        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                             object_id=assignment.id,
+                                             Start_Date__lte=datetime_now,
+                                             End_Date__gte=datetime_now,
+                                             Session_Code__in=sessions).exists():
+            assignments = assignments.exclude(pk=assignment.pk)
+    for assignment in assignments:
+        assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                            object_id=assignment.id,
+                                                            Session_Code__in=sessions).latest('End_Date').End_Date
+
+    return assignments
+
 def start(request):
     global courses, activeassignments, sessions, batches
     datetime_now = timezone.now().replace(microsecond=0)
+
     batches = GroupMapping.objects.filter(Students=request.user)
     sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
                                          Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
     course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
     courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
                                         Use_Flag=True)
+    chapters = student_active_chapters(courses, sessions)
 
-    activeassignments = student_all_assignements(request.user).filter(Assignment_Deadline__gte=datetime_now)[:7]
+    activeassignments = filter_active_assignments(chapters, sessions)[:5]
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -90,13 +128,13 @@ def start(request):
     thread_keywords = get_top_thread_keywords(request, 10)
 
     ## Incomplete chapters calculation
-    chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
-        Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
-        Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
+    # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
+    #     Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+    #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
     # Filtering out chapters which have no content and progress is 100%
     chapters_list = []
-    for chapter in chapters:
+    for chapter in chapters[:5]:
         if chapter.has_content():
             response = getChapterScore(request.user, chapter)
             chapter.progress_score = round(float(response['totalProgressScore']), 3)
@@ -105,6 +143,10 @@ def start(request):
             if chapter.progress_score < float(100):
                 chapters_list.append(chapter)
 
+    # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
+    #     Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
+    #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
+
     # Sorting chapters based on progress score
     chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
 
@@ -112,8 +154,10 @@ def start(request):
     incomplete_chapters = chapters_list[:5]
 
     # NOtice popup based on active notice and notice view turned off
-    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
-        notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+    notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
+                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+    if notices.exists():
+        notice = notices[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
             notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
             if notice_view_flag:
@@ -283,12 +327,18 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
 
         datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True)
+        chapters = student_active_chapters(courses, sessions)
+
         context['currentDate'] = datetime_now
-        context['Assignment'] = student_all_assignements(self.request.user)
-        context['activeAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__gte=datetime_now)
-        context['expiredAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__lte=datetime_now)
+        context['Assignment'] = student_all_assignments(chapters, sessions)
+        context['activeAssignment'] = filter_active_assignments(chapters, sessions)
+        context['expiredAssignment'] = context['Assignment'].difference(context['activeAssignment'])
 
         return context
 
@@ -320,20 +370,57 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['chapters'] = ChapterInfo.objects.filter(
-        #     Course_Code=self.kwargs.get('pk'), Use_Flag=True) \
-        #     .filter(Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-        #     .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)) \
-        #     .order_by('Chapter_No')
 
-        context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
-            Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-                chapter_sessionmaps__Start_Date=None)) \
-            .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-            chapter_sessionmaps__End_Date=None)) \
-            .order_by('Chapter_No').distinct()
+        datetime_now = timezone.now().replace(microsecond=0)
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('pk'))
 
-        print(context['chapters'])
+        assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                     Start_Date__lte=datetime_now,
+                                                     End_Date__gte=datetime_now,
+                                                     Groups__in=student_groups,
+                                                     Course_Group__in=course_groups)
+
+        chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
+        active_chapters = []
+        for chapter in chapters:
+            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                 object_id=chapter.id,
+                                                 Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                               object_id=chapter.id,
+                                               Start_Date__lte=datetime_now,
+                                               End_Date__gte=datetime_now,
+                                               Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                               object_id=chapter.id,
+                                               Start_Date=None,
+                                               End_Date=None,
+                                               Session_Code__in=assigned_session).exists():
+                active_chapters.append(chapter)
+        context['chapters'] = active_chapters
+
+        # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True,
+        #                                                  ).filter(
+        #     Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #         chapter_sessionmaps__Start_Date=None)) \
+        #     .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #     chapter_sessionmaps__End_Date=None)).filter(chapter_sessionmaps__Session_Code__Use_Flag=True,
+        #                                                 chapter_sessionmaps__Session_Code__Start_Date__lte=datetime_now,
+        #                                                 chapter_sessionmaps__Session_Code__End_Date__gte=datetime_now,
+        #                                                 chapter_sessionmaps__Session_Code__Groups__in=student_groups) \
+        #     .order_by('Chapter_No').distinct()
+
+        # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
+        #     Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #         chapter_sessionmaps__Start_Date=None)) \
+        #     .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
+        #     chapter_sessionmaps__End_Date=None)) \
+        #     .order_by('Chapter_No').distinct()
+
+        # print(context['chapters'])
         surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]
@@ -342,7 +429,7 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         context['quizcount'] = Quiz.objects.filter(
             course_code=self.kwargs.get('pk'), draft=False, exam_paper=True, chapter_code=None)
         context['numberOfQuizExclExams'] = Quiz.objects.filter(
-            chapter_code__in=context['chapters'].values_list('pk'),
+            chapter_code__in=context['chapters'],
             exam_paper=False,
             draft=False)
         context['topic'] = Topic.objects.filter(
@@ -362,23 +449,36 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         datetime_now = timezone.now().replace(microsecond=0)
-        # context['assignments'] = AssignmentInfo.objects.filter(
-        #     Chapter_Code=self.kwargs.get('pk'), Assignment_Start__lte=datetime_now, Use_Flag=True)
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'),
-                                                               Use_Flag=True).filter(
-            Q(assignment_sessionmaps__Start_Date__lte=datetime.utcnow())).distinct()
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Start_Date__lte=datetime_now,
+                                                                End_Date__gte=datetime_now,
+                                                                Groups__in=student_groups,
+                                                                Course_Group__in=course_groups)
+
+        assignments = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
+        active_assignments = []
+        for assignment in assignments:
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                        object_id=assignment.id,
+                                                        Start_Date__lte=datetime_now,
+                                                        Session_Code__in=context['assigned_session'])
+            if session_map.exists():
+                active_assignments.append(assignment)
+            if session_map.filter(End_Date__gte=datetime_now).exists():
+                assignment.active = True
+        context['assignments'] = active_assignments
+        # context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'),
+        #                                                        Use_Flag=True).filter(
+        #     Q(assignment_sessionmaps__Start_Date__lte=datetime.utcnow())).distinct()
         context['post_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
-        student_groups = GroupMapping.objects.filter(Students=self.request.user)
-        course_groups = InningGroup.objects.filter(
-            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Groups__in=student_groups, Use_Flag=True,
-                                                                Start_Date__lte=datetime_now,
-                                                                End_Date__gte=datetime_now).filter(
-            Course_Group__in=course_groups)
 
         for q in context['post_quizes']:
             q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
@@ -411,12 +511,19 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
         student_groups = GroupMapping.objects.filter(Students=self.request.user)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Groups__in=student_groups, Use_Flag=True,
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
-                                                                End_Date__gte=datetime_now).filter(
-            Course_Group__in=course_groups)
+                                                                End_Date__gte=datetime_now,
+                                                                Groups__in=student_groups,
+                                                                Course_Group__in=course_groups)
         AnsweredQuestion = set()
         Question = set()
+        if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(AssignmentInfo),
+                                         object_id=self.kwargs.get('pk'),
+                                         Start_Date__lte=datetime_now,
+                                         End_Date__gte=datetime_now,
+                                         Session_Code__in=context['assigned_session']).exists():
+            context['object'].active = True
 
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(
