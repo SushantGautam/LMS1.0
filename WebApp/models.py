@@ -183,7 +183,7 @@ class MemberInfo(AbstractUser):
     def get_student(self):
         val_ls = MemberInfo.objects.filter(groupmapping__in=GroupMapping.objects.filter(
             inninginfos__pk__in=InningInfo.objects.filter(
-                Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.request.user.pk)))).distinct().values_list('pk', flat=True)
+                Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.pk)))).distinct().values_list('pk', flat=True)
         return list(val_ls)
 
     def get_teacher_courses(self):
