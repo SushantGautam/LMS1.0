@@ -112,6 +112,7 @@ def ProfileView(request):
         return redirect('login')
     return render(request, 'WebApp/profile.html')
 
+
 class CustomAuthForm(AuthenticationForm):
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -120,13 +121,13 @@ class CustomAuthForm(AuthenticationForm):
         if username is not None and password:
             if authenticate(self.request, username=username, password=password) is None:
                 messages.error(self.request, _(
-                        "Please enter a correct username and password. Note that both "
-                        "fields may be case-sensitive."
-                    ))
+                    "Please enter a correct username and password. Note that both "
+                    "fields may be case-sensitive."
+                ))
                 return JsonResponse({'msg': 'Inavild Login'})
-                
+
         return super().clean()
-    
+
 
 class login(LoginView):
     redirect_authenticated_user = True
@@ -138,8 +139,8 @@ class login(LoginView):
         if not forcelogin:
             if not form.get_user():
                 return JsonResponse({'error': _(
-                      "Please enter a correct username and password. Note that both fields may be case-sensitive."
-                    )})
+                    "Please enter a correct username and password. Note that both fields may be case-sensitive."
+                )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
                     return JsonResponse({'msg': 'Account already login in another place'})
@@ -225,6 +226,7 @@ def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
+    datetime_now = timezone.now().replace(microsecond=0)
 
     if request.user.is_authenticated:
         if not request.user.Use_Flag:
@@ -251,19 +253,20 @@ def start(request):
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                 Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                Q(End_Date__gte=datetime.now()))[:5]
+                                                Q(End_Date__gte=datetime_now))[:5]
             surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                     Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                    Q(End_Date__gte=datetime.now())).count
+                                                    Q(End_Date__gte=datetime_now)).count
             sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                 End_Date__gte=datetime.now())[:5]
+                                                 End_Date__gte=datetime_now)[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                     End_Date__gte=datetime.now()).count
+                                                     End_Date__gte=datetime_now).count
 
-            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                     status=True).exists():
-                notice = \
-                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now,
+                                            status=True).filter(
+                Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+            if notices.exists():
+                notice = notices[0]
                 if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                     notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[
                         0].dont_show
@@ -1367,7 +1370,8 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
         return context
 
@@ -2928,8 +2932,10 @@ class ContentsView(TemplateView):
 
 class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
+    chapters = []
 
     def get(self, request, *args, **kwargs):
+        from WebApp.student_module.views import student_active_chapters
         datetime_now = timezone.now()
 
         if CourseAuth(request, self.kwargs.get('course')) == 1:
@@ -2946,17 +2952,29 @@ class NewContentsView(TemplateView):
             return redirect('login')
         try:
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
+
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    if chapterObj.Start_Date:
-                        if chapterObj.Start_Date >= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    student_groups = GroupMapping.objects.filter(Students=self.request.user)
+                    course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
+                    assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                                 Start_Date__lte=datetime_now,
+                                                                 End_Date__gte=datetime_now,
+                                                                 Groups__in=student_groups,
+                                                                 Course_Group__in=course_groups)
 
-                    if chapterObj.End_Date:
-                        if chapterObj.End_Date <= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    # chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('course'), Use_Flag=True)
+                    # active_chapters = []
+                    # for chapter in chapters:
+                    active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=self.kwargs.get('course')),
+                                                              assigned_session)
+
+                    self.chapters = active_chapters
+
+                    if chapterObj not in active_chapters:
+                        messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                        raise ObjectDoesNotExist
+
             else:
                 if '/students' in request.path:
                     messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
@@ -2976,9 +2994,7 @@ class NewContentsView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         if '/students' in self.request.path:
-            context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
-                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
+            context['chapterList'] = self.chapters
         else:
             context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
