@@ -916,6 +916,10 @@ class Notice(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="noticeviews", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
 
     def __str__(self):
         return self.title

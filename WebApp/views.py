@@ -225,6 +225,7 @@ def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
+    datetime_now = timezone.now().replace(microsecond=0)
 
     if request.user.is_authenticated:
         if not request.user.Use_Flag:
@@ -251,19 +252,19 @@ def start(request):
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                 Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                Q(End_Date__gte=datetime.now()))[:5]
+                                                Q(End_Date__gte=datetime_now))[:5]
             surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                     Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                    Q(End_Date__gte=datetime.now())).count
+                                                    Q(End_Date__gte=datetime_now)).count
             sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                 End_Date__gte=datetime.now())[:5]
+                                                 End_Date__gte=datetime_now)[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                     End_Date__gte=datetime.now()).count
+                                                     End_Date__gte=datetime_now).count
 
-            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                     status=True).exists():
-                notice = \
-                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
+                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+            if notices.exists():
+                notice = notices[0]
                 if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                     notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[
                         0].dont_show
