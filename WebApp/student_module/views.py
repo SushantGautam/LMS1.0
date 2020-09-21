@@ -57,11 +57,8 @@ def student_active_chapters(courses, sessions):
                                              Session_Code__in=sessions)
         if not session_map.exists():
             active_chapters.append(chapter)
-        elif session_map.filter(Start_Date__lte=datetime_now,
-                                End_Date__gte=datetime_now).exists():
-            active_chapters.append(chapter)
-        elif session_map.filter(Start_Date=None,
-                                End_Date=None).exists():
+        elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                                Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
             active_chapters.append(chapter)
         else:
             chapters = chapters.exclude(pk=chapter.pk)
