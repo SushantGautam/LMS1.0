@@ -112,6 +112,7 @@ def ProfileView(request):
         return redirect('login')
     return render(request, 'WebApp/profile.html')
 
+
 class CustomAuthForm(AuthenticationForm):
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -120,13 +121,13 @@ class CustomAuthForm(AuthenticationForm):
         if username is not None and password:
             if authenticate(self.request, username=username, password=password) is None:
                 messages.error(self.request, _(
-                        "Please enter a correct username and password. Note that both "
-                        "fields may be case-sensitive."
-                    ))
+                    "Please enter a correct username and password. Note that both "
+                    "fields may be case-sensitive."
+                ))
                 return JsonResponse({'msg': 'Inavild Login'})
-                
+
         return super().clean()
-    
+
 
 class login(LoginView):
     redirect_authenticated_user = True
@@ -138,8 +139,8 @@ class login(LoginView):
         if not forcelogin:
             if not form.get_user():
                 return JsonResponse({'error': _(
-                      "Please enter a correct username and password. Note that both fields may be case-sensitive."
-                    )})
+                    "Please enter a correct username and password. Note that both fields may be case-sensitive."
+                )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
                     return JsonResponse({'msg': 'Account already login in another place'})
@@ -261,8 +262,9 @@ def start(request):
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
                                                      End_Date__gte=datetime_now).count
 
-            notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
-                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+            notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now,
+                                            status=True).filter(
+                Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
             if notices.exists():
                 notice = notices[0]
                 if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -1368,7 +1370,8 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
         return context
 
@@ -2930,7 +2933,9 @@ class ContentsView(TemplateView):
 class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
     chapters = []
+
     def get(self, request, *args, **kwargs):
+        from WebApp.student_module.views import student_active_chapters
         datetime_now = timezone.now()
 
         if CourseAuth(request, self.kwargs.get('course')) == 1:
@@ -2947,45 +2952,23 @@ class NewContentsView(TemplateView):
             return redirect('login')
         try:
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
-            student_groups = GroupMapping.objects.filter(Students=self.request.user)
-            course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
+
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    # if chapterObj.Start_Date:
-                    #     if chapterObj.Start_Date >= datetime_now:
-                    #         messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                    #         raise ObjectDoesNotExist
-                    #
-                    # if chapterObj.End_Date:
-                    #     if chapterObj.End_Date <= datetime_now:
-                    #         messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                    #         raise ObjectDoesNotExist
-
+                    student_groups = GroupMapping.objects.filter(Students=self.request.user)
+                    course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
                     assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                                  Start_Date__lte=datetime_now,
                                                                  End_Date__gte=datetime_now,
                                                                  Groups__in=student_groups,
                                                                  Course_Group__in=course_groups)
 
-                    chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('chapter'), Use_Flag=True)
-                    active_chapters = []
-                    for chapter in chapters:
-                        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                             object_id=chapter.id,
-                                                             Session_Code__in=assigned_session).exists():
-                            active_chapters.append(chapter)
-                        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                           object_id=chapter.id,
-                                                           Start_Date__lte=datetime_now,
-                                                           End_Date__gte=datetime_now,
-                                                           Session_Code__in=assigned_session).exists():
-                            active_chapters.append(chapter)
-                        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                           object_id=chapter.id,
-                                                           Start_Date=None,
-                                                           End_Date=None,
-                                                           Session_Code__in=assigned_session).exists():
-                            active_chapters.append(chapter)
+                    # chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('course'), Use_Flag=True)
+                    # active_chapters = []
+                    # for chapter in chapters:
+                    active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=self.kwargs.get('course')),
+                                                              assigned_session)
+
                     self.chapters = active_chapters
 
                     if chapterObj not in active_chapters:
