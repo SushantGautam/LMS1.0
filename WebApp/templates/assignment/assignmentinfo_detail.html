@@ -1,5 +1,26 @@
 {% load static %}
 {% load model_template_relation %}
+<style>
+    .d-none {
+        display: none !important;
+    }
+    .custom-table-width{
+        max-width: 40%;
+        
+    }
+    .date-width{
+        max-width:25%
+    }
+    @media (min-width:768px ) and (max-width: 991px) {
+        .custom-table-width{
+            max-width: 38%;
+        }
+        .date-width{
+            max-width:30%
+        }
+        
+    }
+</style>
 
 <link href="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
 
@@ -52,7 +73,7 @@
                 </div>
             {% endif %}
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <h5><b>
+                <h5>
                     <table class="table">
                         <tr>
                             <td>Assignment Topic</td>
@@ -64,7 +85,7 @@
                         </tr>
     
                         <!-- Start/End Date from different session -->
-                        {% if assigned_session %}
+                        <!-- {% if assigned_session %}
                             <tr>
                                 <th>Session</th>
                                 <th>Start Date</th>
@@ -123,7 +144,7 @@
                         
                         <tr>
                             <td style="border: 0;"></td>
-                        </tr>
+                        </tr> -->
 
                         <!-- End Of start/end date -->
                         <tr>
@@ -152,7 +173,67 @@
                             </tr>
                         {% endif %}
                     </table>
-                </b>
+                    <table class="table">
+                        {% if assigned_session %}
+                        <tr>
+                            <th class="custom-table-width">Session</th>
+                            <th class="date-width">Start Date</th>
+                            <th class="date-width">End Date</th>
+                            {% if '/students' not in request.path %}
+                                <th>Assignment Status</th>
+                                <th>Action</th>
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                   
+                    {% for sessions in assigned_session %}
+                        <tr>
+                            <td class="custom-table-width">
+                                {{ sessions }}
+                                {% if '/students' not in request.path and '/teachers' not in request.path %}
+                                    {% if sessions.is_active %}
+                                    <span class=" text-success"> <b style="text-transform: uppercase; font-size:14px">[Active]</b>  </span>
+                                    {% else %}
+                                    <span class=" text-danger"><b style="text-transform: uppercase; font-size:14px">[Inactive]</b></span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+
+                            {% getSessionMap object 'assignmentinfo' sessions as sessionmap %}
+                            {#                                {% for sessionmap in object.assignment_sessionmaps.all %}#}
+                            {#                                    {% if  sessionmap.Session_Code == sessions %}#}
+                            <td class="start-date dateconFullMonth date-width">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
+                            <td class="end-date dateconFullMonth date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                            {% if '/students' not in request.path %}
+                                <td>
+                                    {% now "Y-m-d H:i" as todays_datewithtime %}
+                                    {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                        <span class="badge badge-info">Upcoming</span>
+                                    {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                                        <span class="badge badge-danger">Expired</span>
+                                    {% else %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                            {#                                    {% endif %}#}
+                            {#                                {% endfor %}#}
+                            {% if '/students' not in request.path %}
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary inningmap-btn"
+                                            data-toggle="modal"
+                                            data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                            data-objectid="{{ object.id }}">
+                                        Change
+                                    </button>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+
+                    </table>
+                
+                    
                 </h5>
             </div>
             <br>

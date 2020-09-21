@@ -388,7 +388,7 @@
                 {% for sessions in assigned_session %}
                     <tr>
                         <td class="custom-table-width">
-                            {{ sessions|truncatechars:20 }}
+                            {{ sessions}}
                             {% if '/students' not in request.path and '/teachers' not in request.path %}
                                 {% if sessions.is_active %}
                                     <span class=" text-success"> <b style="text-transform: uppercase; font-size:14px">[Active]</b>  </span>
