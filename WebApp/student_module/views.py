@@ -157,8 +157,10 @@ def start(request):
     incomplete_chapters = chapters_list[:5]
 
     # NOtice popup based on active notice and notice view turned off
-    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
-        notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+    notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
+                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+    if notices.exists():
+        notice = notices[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
             notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
             if notice_view_flag:
