@@ -177,7 +177,7 @@
 
                             $(".participant_dynamic").show();
 
-                           console.log(event.event_part_list.length);
+                         //  console.log(event.event_part_list.length);
                            id = [];
                            for (i=0; i<event.event_part_list.length; i++){
 
@@ -325,8 +325,8 @@
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
                      if(event.r_a == '{{request.user.pk}}'){
-                         element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
-                         element[0].style.setProperty('border', '2px solid #eb1c9f', 'important');
+                       //  element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
+                         element[0].style.setProperty('border', '2px solid black', 'important');
                     }
                 },
                 dayClick: function (date, jsEvent, view) {
@@ -356,7 +356,11 @@
                         })
 
 
+
                  $("#id_participant_type_1").prop("checked", true);
+                 $("#id_is_all_day").prop("checked", true);
+                 $(".participant_dynamic").hide();
+                 $(".datetime_dynamic").hide();
                  $("#id_description").html(" ");
                  $("#createEventModal #btn-save").text("Create");
 
@@ -602,6 +606,10 @@
 
 
                          $("#id_participant_type_1").prop("checked", true);
+                         $("#id_is_all_day").prop("checked", true);
+                         $(".participant_dynamic").hide();
+                         $(".datetime_dynamic").hide();
+
                          $("#id_description").html(" ");
                          $("#createEventModal #btn-save").text("Create");
 
@@ -774,7 +782,7 @@
 
 
 
-
+             $("span.text-danger").remove();
              if (title.length < 1){
                  $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
@@ -792,6 +800,18 @@
                 is_valid = false;
 
              }
+             if( sd > ed ){
+                 $("#event-start-date").after('<span class="text-danger">Start Date Cannot be Greater then End Date.</span>');
+                is_valid = false;
+             }
+
+                 if (sd === ed){
+                        if( st > et ){
+                             $("#event-start-time").after('<span class="text-danger">Start Time Cannot be Greater then End Time.</span>');
+                            is_valid = false;
+                        }
+                 }
+
              if(!is_ad){
                 if(st === ""){
                     $("#event-start-time").after('<span class=" text-danger">This field is required</span>');

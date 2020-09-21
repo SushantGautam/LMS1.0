@@ -320,8 +320,8 @@
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
                     if(event.r_a == '{{request.user.pk}}'){
-                         element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
-                         element[0].style.setProperty('border', '2px solid #eb1c9f', 'important');
+                        // element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
+                         element[0].style.setProperty('border', '2px solid black', 'important');
                     }
 
 
@@ -744,14 +744,16 @@
                 let is_student = $(state.element).attr('data-is_student');
                 let is_teacher = $(state.element).attr('data-is_teacher');
                 let inning_list = $(state.element).attr('data-student_session');
+                  //  console.log(inning_list);
                 if (is_student === "true" ){
                      inning_list =  JSON.parse(inning_list);
+                    // console.log(inning_list);
                      if (inning_list.includes(Number(filter_type))){
                         return state.text;
                      }
                 }
 
-                console.log(inning_list);
+               // console.log(inning_list);
 
               //  if (filter_type === "A") {        // all user
               //      return state.text;
@@ -795,25 +797,33 @@
              let p_l = $(".select2-selection__rendered > li").length;
 
 
-
+             $("span.text-danger").remove();
 
              if (title.length < 1){
-                 $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
-                is_valid = false;
 
+                 $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
+                 is_valid = false;
              }
               if (sd === ""){
                  $("#event-start-date").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
-
              }
               if (ed === ""){
                  $("#event-end-date").after('<span class="text-danger">This field is required</span>');
-
-
-                is_valid = false;
-
+                 is_valid = false;
              }
+
+             if( sd > ed ){
+                 $("#event-start-date").after('<span class="text-danger">Start Date Cannot be Greater then End Date.</span>');
+                is_valid = false;
+             }
+
+                 if( st > et ){
+                     $("#event-start-time").after('<span class="text-danger">Start Time Cannot be Greater then End Time.</span>');
+                    is_valid = false;
+                 }
+
+
              if(!is_ad){
                 if(st === ""){
                     $("#event-start-time").after('<span class=" text-danger">This field is required</span>');
@@ -911,8 +921,40 @@
         $('#viewEventModal').addClass("show");
     })
 
+$(".all_select").click(function(){
+
+    let user_list_js = [];
+    let i_l = [];
+    filter_val = $("input[name='session_filter_type']:checked").val();
 
 
+        {% for user in user_list %}
+        {% if user.Is_Student %}
+         i_l =  JSON.parse("{{ user.get_student_inning }}");
+
+            if (i_l.includes(Number(filter_val)))
+                {
+                     user_list_js.push("{{user.pk}}");
+                }
+        {%endif%}
+        {% endfor %}
+        $(".select2-example").val(user_list_js);
+        $('.select2-example').trigger('change');
+        console.log("ul", user_list_js);
+       // console.log("IN_lS", i_l);
+       //  console.log("filtr_val",filter_val);
+
+        })
+
+
+ $(".all_st").change(function () {
+            if ($(this).is(':checked')) {
+                // $("#id_participants").show();
+               // $(".select2-example").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
+                 $(".select2-example").trigger("change");
+
+            }
+        })
 
 
 </script>
