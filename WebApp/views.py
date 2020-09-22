@@ -4101,6 +4101,9 @@ def InningInfoMappingView(request, model_name):
             object_id=Obj.id,
             Session_Code=inninginfoObj
         )
+        # Update function will not save the object, therefore, signals will not be called, so save function is used.
+        for session in sessionmap:
+            session.save()
     else:
         sessionmap = SessionMapInfo.objects.create(
             Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,

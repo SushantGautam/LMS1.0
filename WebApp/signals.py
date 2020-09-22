@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from Notifications.models import Notification
 from Notifications.signals import notify
-from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup, AssignmentInfo, AssignAnswerInfo
+from WebApp.models import CourseInfo, MemberInfo, InningInfo, InningGroup, AssignAnswerInfo, SessionMapInfo
 
 
 # Multiple Submission of Assignment Prevention
@@ -112,7 +112,6 @@ def CourseInfoDelete_handler(sender, instance, **kwargs):
 
 post_delete.connect(CourseInfoDelete_handler, sender=CourseInfo)
 
-
 # post_delete.connect(
 #     receiver=partial(CourseInfoDelete_handler,
 #                      verb="deleted",
@@ -121,7 +120,7 @@ post_delete.connect(CourseInfoDelete_handler, sender=CourseInfo)
 #     weak=False,
 # )
 
-
+""""
 def ChapterInfoCreate_handler(sender, instance, created, **kwargs):
     import inspect
     for frame_record in inspect.stack():
@@ -296,8 +295,9 @@ def ChapterInfoDelete_handler(sender, instance, **kwargs):
 
 
 post_delete.connect(ChapterInfoDelete_handler, sender=ChapterInfo)
+"""
 
-
+"""
 def AssignmentInfoCreate_handler(sender, instance, created, **kwargs):
     import inspect
     for frame_record in inspect.stack():
@@ -475,3 +475,114 @@ def AssignmentInfoDelete_handler(sender, instance, **kwargs):
 
 
 post_delete.connect(AssignmentInfoDelete_handler, sender=AssignmentInfo)
+"""
+
+
+def InningMapCreate_handler(sender, instance, created, **kwargs):
+    import inspect
+    import dateutil
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    start_date = instance.Start_Date
+    end_date = instance.End_Date
+    if isinstance(start_date, str) and start_date != '':
+        start_date = dateutil.parser.parse(start_date)
+    if isinstance(end_date, str) and start_date != '':
+        end_date = dateutil.parser.parse(end_date)
+
+    if start_date:
+        student_description = '{} will start from {} today ({})'.format(instance.target,
+                                                                        datetime.strftime(start_date,
+                                                                                          "%H:%M"),
+                                                                        datetime.strftime(start_date,
+                                                                                          "%d-%m-%Y"))
+    else:
+        student_description = '{} will start from {} today ({})'.format(instance.target,
+                                                                        datetime.strftime(datetime.utcnow(),
+                                                                                          "%H:%M"),
+                                                                        datetime.strftime(datetime.utcnow(),
+                                                                                          "%d-%m-%Y"))
+    if created:
+        verb = "created"
+        description = '{} created chapter {} in course {}'.format(request.user, instance.target,
+                                                                  instance.target.Course_Code.Course_Name)
+    else:
+        verb = "updated"
+        description = '{} updated chapter {} in course {}'.format(request.user, instance.target,
+                                                                  instance.target.Course_Code.Course_Name)
+
+    '''
+        Check if the chapter/assignment belonging to course is associated with any innings.
+        If yes, add Session to notification table (target_audience).
+        When the Notification start date is less than current time, send notification to all students in that session
+        and delete the current object holding session information.
+    '''
+
+    if not created:
+        # Update Notifications that have not been sent to receipents if instance is update
+        NotificationAction(instance.target, instance.target.__class__, instance.target.id, start_date,
+                           end_date).update()
+
+        '''
+            When Editing the chapter, if the start date is changed, and start date is set to future date, then create a 
+            future notification with target audience.
+        '''
+        if start_date:
+            if start_date >= timezone.now():
+                if not Notification.objects.filter(is_sent=False, start_notification_date__gt=timezone.now(),
+                                                   action_object_content_type=ContentType.objects.get_for_model(
+                                                       instance.target.__class__),
+                                                   action_object_object_id=instance.target.id).exists():
+                    notify.send(
+                        start_notification_date=(
+                                start_date - timedelta(hours=1,
+                                                       minutes=0)) if start_date else timezone.now(),
+                        end_notification_date=(
+                                end_date - timedelta(hours=1, minutes=0)) if end_date else None,
+                        sender=request.user,
+                        target_audience=InningInfo.objects.filter(
+                            Course_Group__in=InningGroup.objects.filter(
+                                Course_Code__pk=instance.target.Course_Code.pk)),
+                        verb=verb,
+                        description=student_description,
+                        action_object=instance.target,
+                    )
+
+    # --------------------------------------------------------------------------------
+    else:
+        if start_date and start_date >= timezone.now():
+            if InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(
+                        Course_Code__pk=instance.target.Course_Code.pk)).exists():
+                notify.send(
+                    start_notification_date=(
+                            start_date - timedelta(hours=1,
+                                                   minutes=0)) if start_date else timezone.now(),
+                    end_notification_date=(
+                            end_date - timedelta(hours=1, minutes=0)) if end_date else None,
+                    sender=request.user,
+                    target_audience=InningInfo.objects.filter(
+                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.target.Course_Code.pk)),
+                    verb=verb,
+                    description=student_description,
+                    action_object=instance.target,
+                )
+        else:
+            notify.send(
+                start_notification_date=timezone.now(),
+                end_notification_date=None,
+                sender=request.user,
+                target_audience=InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.target.Course_Code.pk)),
+                verb=verb,
+                description=student_description,
+                action_object=instance.target,
+            )
+
+
+post_save.connect(InningMapCreate_handler, sender=SessionMapInfo)
