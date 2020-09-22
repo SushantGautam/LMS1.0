@@ -82,17 +82,16 @@ def start(request):
 
         x = request.user.get_teacher_courses()
         mycourse = x['courses']
-        sessions_list = x['session']
-        x = [x for x in sessions_list]
-        for y in x:
-            for z in y:
-                if z not in sessions:
-                    sessions.append(z)
-        activeassignments = []
-        for course in mycourse:
-            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
-                                                               Assignment_Deadline__gte=datetime_now,
-                                                               Chapter_Code__Use_Flag=True)
+        sessions = x['session']
+        # x = [x for x in sessions_list]
+        # for y in x:
+        #     for z in y:
+        #         if z not in sessions:
+        #             sessions.append(z)
+        
+        # here assignment of only active chapters can be filtered later
+        activeassignments = AssignmentInfo.objects.filter(Course_Code__in=mycourse, Use_Flag=True,
+                                                               Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
         notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
                                         Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
         if notices.exists():
