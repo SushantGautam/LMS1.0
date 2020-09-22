@@ -3,7 +3,7 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="
-    {% if object.Course_Code.Use_Flag %}
+    {% if object.Use_Flag %}
         {% url 'courseinfo_grid_active' %}
     {% else %}
         {% url 'courseinfo_grid_inactive' %}
@@ -23,7 +23,6 @@
                 </button>
             </div>
             <div class="modal-body" id="create_chapter_modal_body">
-
             </div>
         </div>
     </div>
@@ -88,6 +87,17 @@
                     {% endif %}
                     {% endfor %}
                 </p>
+                <p>Course Provider : {{ object.Course_Provider }}
+                </p>
+                <p>Status : &nbsp;
+                    {% if object.Use_Flag == True %}
+                    <span class="badge bg-success-bright text-success">Active</span>
+                    </span>
+                    {% elif object.Use_Flag == False %}
+                    <span class="badge bg-danger-bright text-danger">Inactive</span>
+                    {% endif %}
+
+                </p>
                 <p><i class="fa fa-clock-o fa-fw"></i> 4 hrs &nbsp;
                     <i class="fa fa-calendar fa-fw"></i> 21/10/14
                 </p>
@@ -96,6 +106,8 @@
                 <ul class="row">
                     {% for eachTeacher in object.get_teachers_of_this_course %}
                     <li>
+                        <img class="img-circle" src="{{ eachTeacher.Avatar }}" alt="Profile_picture" width="20"
+                            height="22">
                         {{ eachTeacher.getFullName }}
                     </li>
                     {% endfor %}
@@ -104,7 +116,7 @@
                 &nbsp; No Teachers Assigned Yet
                 {% endif %}
                 </p>
-                <p>Max. students: 50</p>
+                <!-- <p>Max. students: 50</p> -->
                 <p>Attending: 30</p>
             </div>
             <ul class="text-center">
