@@ -661,6 +661,17 @@ def submitStudentscore(request, Answer_id, score):
         if request.POST.get('assignment_feedback'):
             answerInfo.Assignment_Feedback = request.POST.get('assignment_feedback')
         answerInfo.save()
+
+        from WebApp.signals import CreateNotifications
+        description = '{} score has been given to Question "{}" of assignment "{}".'.format(
+            answerInfo.Assignment_Score,
+            answerInfo.Question_Code.Question_Title,
+            answerInfo.Question_Code.Assignment_Code.Assignment_Topic,
+        )
+        CreateNotifications(request.user, 'marked', student_description=description,
+                            target=answerInfo.Question_Code.Assignment_Code,
+                            recipient=answerInfo.Student_Code).scoreAssignNotification()
+
         return HttpResponse("success")
     else:
         return HttpResponse("You are not allowed to do this")

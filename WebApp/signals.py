@@ -586,3 +586,23 @@ def InningMapCreate_handler(sender, instance, created, **kwargs):
 
 
 post_save.connect(InningMapCreate_handler, sender=SessionMapInfo)
+
+class CreateNotifications:
+    def __init__(self, user, verb, student_description='', target=None, target_audience=None, recipient=None):
+        self.user, self.verb, self.student_description, self.target = user, verb, student_description, target
+
+        self.target_audience = target_audience if target_audience else None
+        self.recipient = recipient if recipient else None
+
+    def scoreAssignNotification(self):
+        notify.send(
+            start_notification_date=timezone.now(),
+            end_notification_date=None,
+            sender=self.user,
+            target_audience=self.target_audience,
+            recipient=self.recipient,
+            verb=self.verb,
+            description=self.student_description,
+            action_object=self.target,
+            is_sent=True
+        )
