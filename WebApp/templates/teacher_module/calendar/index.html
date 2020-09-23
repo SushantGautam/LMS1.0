@@ -208,6 +208,7 @@
 
             var events = [
                 {% for event in object_list %}
+                    {% if event.register_agent.pk == request.user.pk or request.user in event.get_participants %}
                     {
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
@@ -271,6 +272,7 @@
                         {% endif %}
 
                     },
+                    {%endif%}
                 {% endfor %}
             ];
 
@@ -314,7 +316,16 @@
                 eventDurationEditable: true,
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
-                events: events,
+
+
+
+
+
+
+
+               events:events,
+
+
                 eventRender: function (event, element) {
                     if (event.icon) {
 
@@ -328,6 +339,9 @@
 
                 },
                 dayClick: function (date, jsEvent, view) {
+
+
+
 
                     $('#createEventModal').modal();
                     $(".modal-title").text("Create Event");
@@ -503,6 +517,8 @@
 
                    // modal.find('.participant_name').text(event.event_part);
                     modal.find('.part_custom').show();
+                   $(".cus_prt").css({"height": "300px","width": "fit-content",  "overflow-y": "scroll"})
+
 
 
 
@@ -878,6 +894,7 @@
                  $(".participant_dynamic").hide();
                  $(".select2-example").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
                  $(".select2-example").trigger("change");
+                 console.log($(".select2-example").val());
 
 
             } else {

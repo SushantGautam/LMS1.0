@@ -4166,6 +4166,7 @@ class DepartmentInfoListView(ListView):
         return DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code)
 
 
+
 # class DepartmentInfoForm(object):
 #     pass
 

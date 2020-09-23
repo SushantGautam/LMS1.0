@@ -246,19 +246,19 @@
 
                 </div>
 
-                 <div class="dropdown ml-3 ">
-                        <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"
-                           data-toggle="dropdown" title="Recipients ">
-                        <i class="fa fa-ellipsis-h"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right  ">
+<!--                 <div class="dropdown ml-3 ">-->
+<!--                        <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"-->
+<!--                           data-toggle="dropdown" title="Recipients ">-->
+<!--                        <i class="fa fa-ellipsis-h"></i>-->
+<!--                        </a>-->
+<!--                        <div class="dropdown-menu dropdown-menu-right  ">-->
 <!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
 <!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
-                                <a class="dropdown-item all_recipient " href="#">All </a>
-                                <a class="dropdown-item all_stu_recipient" href="#">All Students</a>
-                               <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>
-                        </div>
-                 </div>
+<!--                                <a class="dropdown-item all_recipient " href="#">All </a>-->
+<!--                                <a class="dropdown-item all_stu_recipient" href="#">All Students</a>-->
+<!--                               <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>-->
+<!--                        </div>-->
+<!--                 </div>-->
 
 
 
@@ -267,7 +267,7 @@
               <div>
 
                   <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Teacher</a>
-                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Student</a>
+                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Custom</a>
 
 
 
@@ -290,8 +290,7 @@
                                         <option
                                                 {% if u.Is_Teacher %}
                                                 class="teacher_list"
-                                                {% elif u.Is_Student %}
-                                                class = "student_list"
+
                                                 {% else %}
                                                 class = "user_list"
                                                 {% endif%}
@@ -564,13 +563,7 @@
 
     function formatState(state) {
         let sel_option = $("input[name='user_select_option']").val();
-        if (sel_option === "single_student" || sel_option === "all_student" ) {
-            if (state.text.includes("__student__")) {
-                return state.text.replace("__student__", "").replace("__teacher__", "");
-            } else {
-                return null;
-            }
-        }
+
         if (sel_option === "single_teacher" || sel_option === "all_teacher") {
             if (state.text.includes("__teacher__")) {
                 return state.text.replace("__student__", "").replace("__teacher__", "");
@@ -579,19 +572,9 @@
             }
         }
 
-
-
-        if (sel_option === "all_recipients") {
-
-                return state.text.replace("__student__", "").replace("__teacher__", "");
-
-        }
-
-
-
-
-
         return state.text.replace("__student__", "").replace("__teacher__", "");
+
+
     };
 
     function formatStateSel(state) {

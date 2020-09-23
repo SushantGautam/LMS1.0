@@ -68,25 +68,21 @@ class EventListView(ListView):
         context['user_list'] = users
         context['r_a'] = CalendarEvent.register_agent
 
-        context['session'] = InningInfo.objects.filter(Use_Flag=True, Start_Date__lte=datetime_now,
+        context['session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                       # Start_Date__lte=datetime_now,
 
-                                                       End_Date__gte=datetime_now,
+                                                       # End_Date__gte=datetime_now,
                                                        Course_Group__Teacher_Code=self.request.user.pk).distinct()
-        # context['u_l'] = InningInfo.objects.get(pk=inning_id).Groups.all()
-
-
-        # context['aa'] = MemberInfo.objects.filter(groupmapping__in=GroupMapping.objects.filter(
-        #     inninginfos__pk__in=InningInfo.objects.filter(
-        #         Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.request.user.pk)))).distinct()
-        # print(context['aa'])
-        # context['u_l'] = session_obj.inninginfos.Groups.Students.all().distinct()
-        # print("u_l", context['u_l'])
 
         # print("session", context['session'])
 
         # context['teacher_list'] = users.filter(Is_Teacher=True)
         # context['student_list'] = users.filter(Is_Student=True)
         return context
+
+    def get_queryset(self):
+        queryset = super(EventListView, self).get_queryset()
+        return queryset.filter(register_agent__Center_Code=self.request.user.Center_Code)
 
 
 class EventDeleteView(DeleteView):

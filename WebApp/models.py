@@ -186,6 +186,9 @@ class MemberInfo(AbstractUser):
                 Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.pk)))).distinct().values_list('pk', flat=True)
         return list(val_ls)
 
+    def get_student_obj(self):
+        return MemberInfo.objects.filter(pk__in=self.get_student())
+
     def get_teacher_courses(self):
         courses = []
         session_list = []
@@ -766,6 +769,8 @@ class InningGroup(models.Model):
 
     def get_update_url(self):
         return reverse('inninggroup_update', args=(self.pk,))
+
+
 
 
 class InningInfo(models.Model):
