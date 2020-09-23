@@ -2501,8 +2501,7 @@ def QuizMarkingCSV(request, quiz_pk):
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
         new_row = {'S.N.': counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date,
-                   'End Datetime': end_date,
-                   'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
+                   'End Datetime': end_date}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
@@ -2548,6 +2547,11 @@ def QuizMarkingCSV(request, quiz_pk):
         new_row['MCQ Score'] = totalmcq_score
         new_row['TFQ Score'] = totaltfq_score
         new_row['SAQ Score'] = totalsaq_score
+        new_row['Total Score'] = totalmcq_score + totaltfq_score + totalsaq_score
+        if new_row['Total Score']: 
+            new_row['Percentage'] = (new_row['Total Score'] / total_score) * 100
+        else:
+            new_row['Percentage'] = 0
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
 
