@@ -662,15 +662,20 @@ def submitStudentscore(request, Answer_id, score):
             answerInfo.Assignment_Feedback = request.POST.get('assignment_feedback')
         answerInfo.save()
 
-        from WebApp.signals import CreateNotifications
-        description = '{} score has been given to Question "{}" of assignment "{}".'.format(
+        from Notifications.signals import notify
+        student_description = '{} score has been given to Question "{}" of assignment "{}".'.format(
             answerInfo.Assignment_Score,
             answerInfo.Question_Code.Question_Title,
             answerInfo.Question_Code.Assignment_Code.Assignment_Topic,
         )
-        CreateNotifications(request.user, 'marked', student_description=description,
-                            target=answerInfo.Question_Code.Assignment_Code,
-                            recipient=answerInfo.Student_Code).scoreAssignNotification()
+        notify.send(
+            sender=request.user,
+            recipient=answerInfo.Student_Code,
+            verb='marked',
+            description=student_description,
+            action_object=answerInfo.Question_Code.Assignment_Code,
+            is_sent=True
+        )
 
         return HttpResponse("success")
     else:
