@@ -7,7 +7,8 @@ from django.utils import timezone
 
 from Notifications.models import Notification
 from Notifications.signals import notify
-from WebApp.models import CourseInfo, MemberInfo, InningInfo, InningGroup, AssignAnswerInfo, SessionMapInfo
+from WebApp.models import CourseInfo, MemberInfo, InningInfo, InningGroup, AssignAnswerInfo, SessionMapInfo, \
+    AssignmentQuestionInfo
 
 
 # Multiple Submission of Assignment Prevention
@@ -587,3 +588,70 @@ def InningMapCreate_handler(sender, instance, created, **kwargs):
 
 post_save.connect(InningMapCreate_handler, sender=SessionMapInfo)
 
+
+def AssignmentQuestionInfoCreate_handler(sender, instance, created, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if created:
+        verb = "created"
+        student_description = 'Question has been added to assignment "{}".'.format(
+            instance.Assignment_Code.Assignment_Topic)
+    else:
+        verb = "updated"
+        student_description = 'Question has been updated in assignment "{}".'.format(
+            instance.Assignment_Code.Assignment_Topic)
+
+    '''
+        New Notification will be created in both cases.
+    '''
+
+    for sessionmap in instance.Assignment_Code.assignment_sessionmaps.filter(Start_Date__lte=timezone.now(),
+                                                                             End_Date__gte=timezone.now()):
+        if sessionmap.Session_Code.is_active:
+            notify.send(
+                sender=request.user,
+                target_audience=sessionmap.Session_Code,
+                verb=verb,
+                description=student_description,
+                action_object=instance,
+            )
+
+
+post_save.connect(AssignmentQuestionInfoCreate_handler, sender=AssignmentQuestionInfo)
+
+
+def AssignmentQuestionInfoDelete_handler(sender, instance, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    verb = 'deleted'
+
+    '''
+        Delete Notification will be created.
+    '''
+
+    for sessionmap in instance.Assignment_Code.assignment_sessionmaps.filter(Start_Date__lte=timezone.now(),
+                                                                             End_Date__gte=timezone.now()):
+        if sessionmap.Session_Code.is_active:
+            notify.send(
+                sender=request.user,
+                target_audience=sessionmap.Session_Code,
+                verb=verb,
+                description='Question has been deleted from assignment "{}".'.format(
+                    instance.Assignment_Code.Assignment_Topic),
+                action_object=instance,
+            )
+
+
+post_delete.connect(AssignmentQuestionInfoDelete_handler, sender=AssignmentQuestionInfo)
