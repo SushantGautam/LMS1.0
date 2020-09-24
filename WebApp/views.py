@@ -3847,7 +3847,7 @@ def getChatMessageHistory(request, chapterID):
                         if contents['message_link_type'] == 'quiz':
                             if Quiz.objects.filter(pk=int(contents['message'])).exists():
                                 userSittings = Quiz.objects.get(
-                                    pk=int(contents['message'])).sitting_set.all.filter(
+                                    pk=int(contents['message'])).sitting_set.all().filter(
                                     user__id=request.user.id)
                                 if userSittings.exists():
                                     isExist = True
