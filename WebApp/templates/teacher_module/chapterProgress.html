@@ -233,6 +233,7 @@
                         <tr>
                             <th>{% trans " No." %}</th>
                             <th>{% trans "Study Progress" %}</th>
+                            <th>{% trans "Username" %}</th>
                             <th>{% trans "Fullname" %}</th>
                             <th>{% trans "Chapter " %}</th>
                             <th>{% trans "Running Time" %}</th>
@@ -256,7 +257,9 @@
                                     <span style="visibility: hidden">{{ a.chapter.progresspercent }}%</span>
                                 </td>
                                 <td class="student-data-column"
-                                    data-student_username="{{ a.student.username }}">  {{ a.student }} </td>
+                                    data-student_username="{{ a.student.username }}">  {{ a.student.username }} </td>
+                                <td class="student-data-column"
+                                    data-student_fullname="{{ a.student.get_full_name }}">  {{ a.student.get_full_name }} </td>
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
                                 <td>
