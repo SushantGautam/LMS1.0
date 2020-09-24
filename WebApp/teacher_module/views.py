@@ -2535,10 +2535,11 @@ def QuizMarkingCSV(request, quiz_pk):
             question_name_value = user_answers.get(str(saquestion.id))
             new_row[question_name] = question_name_value
 
-            user_ans = str(quiz_sitting.user_answers)
-            saq_id = '"' + str(saquestion.id) + '":'
-            end_index = user_ans.find(saq_id)
-            score_index = user_ans.count('": "', 0, end_index)
+            # user_ans = str(quiz_sitting.user_answers)
+            # saq_id = '"' + str(saquestion.id) + '":'
+            # end_index = user_ans.find(saq_id)
+            # score_index = user_ans.count('": "', 0, end_index)
+            score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(i.id)
             score_list = str(quiz_sitting.score_list).split(',')
             new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
             if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':

@@ -837,13 +837,10 @@ class Sitting(models.Model):
             if j.check_if_correct(tfq_user_ans):
                 totaltfq_score += j.score
         for k in self.quiz.saquestion.all():
-            user_ans = str(self.user_answers)
-            saq_id = '"' + str(k.id) + '":'
-            end_index = user_ans.find(saq_id)
-            score_index = user_ans.count('": "', 0, end_index)
+            i = [int(n) for n in self.question_order.split(',') if n].index(k.id)
             score_list = str(self.score_list).split(',')
-            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
-                totalsaq_score += float(score_list[score_index])
+            if str(score_list[i]) and str(score_list[i]) != 'not_graded':
+                totalsaq_score += float(score_list[i])
 
         return totalmcq_score + totaltfq_score + totalsaq_score
 
