@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "student_module/base.html" %}
 {% load static %}
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'vendors/quill/quill.snow.css' %}" type="text/css">
@@ -27,7 +27,7 @@
            {% endif%}
           <div class="app-sidebar-menu">
              <div class="list-group list-group-flush">
-                <a href="{% url 'mail_list' %}?email_type=inbox"
+                <a href="{% url 'student_mail_list' %}?email_type=inbox"
                    class="list-group-item
                    {#{% if 'inbox' in request.get_full_path %}#}
                    {% if 'inbox' == email_type %}
@@ -41,7 +41,7 @@
                 </span>
                 </a>
 
-                <a href="{% url 'mail_send_list' %}?email_type=send"
+                <a href="{% url 'student_mail_send_list' %}?email_type=send"
                    class="list-group-item
                     {% if 'email_type=send' in request.get_full_path %}
                     bg-primary
@@ -49,7 +49,7 @@
                 <i class="ti-check list-group-icon mr-2 text-success"></i>Send
                 </a>
 
-                <a href="{% url 'mail_send_list' %}?email_type=draft"
+                <a href="{% url 'student_mail_send_list' %}?email_type=draft"
                    class="list-group-item
                     {% if 'email_type=draft' in request.get_full_path %}
                     bg-primary
@@ -60,7 +60,7 @@
 
 
 
-                 <a href="{% url 'star_list' %}?email_type=starred"
+                 <a href="{% url 'student_star_list' %}?email_type=starred"
 
                    class="list-group-item d-flex align-items-center
                      {% if 'email_type=starred' in request.get_full_path %}bg-primary
@@ -72,7 +72,7 @@
                 </a>
 
 
-                <a href="{% url 'mail_list' %}?email_type=spam"
+                <a href="{% url 'student_mail_list' %}?email_type=spam"
                    class="list-group-item
                 {% if 'spam' in request.get_full_path %}
                 bg-primary
@@ -82,7 +82,7 @@
 
 
 
-                <a href="{% url 'trash_list' %}?email_type=trash"
+                <a href="{% url 'student_trash_list' %}?email_type=trash"
                    class="list-group-item d-flex align-items-center
                 {% if 'trash' in request.get_full_path %}
                             bg-primary
@@ -246,19 +246,19 @@
 
                 </div>
 
-                 <div class="dropdown ml-3 ">
-                        <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"
-                           data-toggle="dropdown" title="Recipients ">
-                        <i class="fa fa-ellipsis-h"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right  ">
+<!--                 <div class="dropdown ml-3 ">-->
+<!--                        <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"-->
+<!--                           data-toggle="dropdown" title="Recipients ">-->
+<!--                        <i class="fa fa-ellipsis-h"></i>-->
+<!--                        </a>-->
+<!--                        <div class="dropdown-menu dropdown-menu-right  ">-->
 <!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
 <!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
-                                <a class="dropdown-item all_recipient " href="#">All </a>
-                                <a class="dropdown-item all_stu_recipient" href="#">All Students</a>
-                               <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>
-                        </div>
-                 </div>
+<!--                                <a class="dropdown-item all_recipient " href="#">All </a>-->
+<!--                                <a class="dropdown-item all_stu_recipient" href="#">All Students</a>-->
+<!--                               <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>-->
+<!--                        </div>-->
+<!--                 </div>-->
 
 
 
@@ -267,7 +267,7 @@
               <div>
 
                   <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Teacher</a>
-                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Student</a>
+                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Custom</a>
 
 
 
@@ -290,8 +290,7 @@
                                         <option
                                                 {% if u.Is_Teacher %}
                                                 class="teacher_list"
-                                                {% elif u.Is_Student %}
-                                                class = "student_list"
+
                                                 {% else %}
                                                 class = "user_list"
                                                 {% endif%}
@@ -528,33 +527,33 @@
 // Re-load Back on clicking Back Button //
       $(".email_back_button").click(function(){
         //{%if 'send_detail' in request.get_full_path %}
-        // get_url = "{%url 'mail_send_list'  %}?email_type=send";
+        // get_url = "{%url 'student_mail_send_list'  %}?email_type=send";
         //{%else%}
-        //get_url = "{%url 'mail_list'  %}?email_type=inbox";
+        //get_url = "{%url 'student_mail_list'  %}?email_type=inbox";
         //{% endif %}
 
         {% if email_type == 'send' %}
-            get_url = "{% url 'mail_send_list'  %}?email_type=send";
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=send";
         {% elif email_type == 'starred' %}
-            get_url = "{% url 'star_list'  %}?email_type=starred";
+            get_url = "{% url 'student_star_list'  %}?email_type=starred";
         {% elif email_type == 'draft' %}
-            get_url = "{% url 'mail_send_list'  %}?email_type=draft";
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=draft";
         {% elif email_type == 'starred_outbox' %}
-            get_url = "{% url 'mail_send_list'  %}?email_type=starred_outbox";
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=starred_outbox";
         {% elif email_type == 'inbox' %}
-            get_url = "{% url 'mail_list'  %}?email_type=inbox";
+            get_url = "{% url 'student_mail_list'  %}?email_type=inbox";
         {% elif email_type == 'received_starred' %}
-            get_url = "{% url 'mail_list'  %}?email_type=received_starred";
+            get_url = "{% url 'student_mail_list'  %}?email_type=received_starred";
         {% elif email_type == 'received_trash' %}
-            get_url = "{% url 'mail_list'  %}?email_type=received_trash";
+            get_url = "{% url 'student_mail_list'  %}?email_type=received_trash";
         {% elif email_type == 'spam' %}
-            get_url = "{% url 'mail_list'  %}?email_type=spam";
+            get_url = "{% url 'student_mail_list'  %}?email_type=spam";
         {% elif email_type == 'outbox_delete' %}
-            get_url = "{% url 'mail_send_list'  %}?email_type=outbox_delete";
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=outbox_delete";
         {% elif email_type == 'trash' %}
-            get_url = "{% url 'trash_list'  %}?email_type=trash";
+            get_url = "{% url 'student_trash_list'  %}?email_type=trash";
         {% else %}
-            get_url = "{% url 'mail_list' %}";
+            get_url = "{% url 'student_mail_list' %}";
         {% endif %}
 
          window.location.href = get_url;
@@ -564,13 +563,7 @@
 
     function formatState(state) {
         let sel_option = $("input[name='user_select_option']").val();
-        if (sel_option === "single_student" || sel_option === "all_student" ) {
-            if (state.text.includes("__student__")) {
-                return state.text.replace("__student__", "").replace("__teacher__", "");
-            } else {
-                return null;
-            }
-        }
+
         if (sel_option === "single_teacher" || sel_option === "all_teacher") {
             if (state.text.includes("__teacher__")) {
                 return state.text.replace("__student__", "").replace("__teacher__", "");
@@ -579,19 +572,9 @@
             }
         }
 
-
-
-        if (sel_option === "all_recipients") {
-
-                return state.text.replace("__student__", "").replace("__teacher__", "");
-
-        }
-
-
-
-
-
         return state.text.replace("__student__", "").replace("__teacher__", "");
+
+
     };
 
     function formatStateSel(state) {
@@ -628,14 +611,14 @@
         let this_el = $(this);
         //console.log(email_id)
          {% if email_type == 'draft' %}
-            get_url = "{%url 'mail_draft_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
+            get_url = "{%url 'student_mail_draft_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
             window.location.href = get_url;
             // email_type == 'starred_outbox' or email_type == 'outbox_delete'
           {% elif email_type == 'send'%}
-            get_url = "{%url 'send_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
+            get_url = "{%url 'student_send_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
             window.location.href = get_url;
          {% elif email_type == 'inbox' or email_type == 'spam' %}
-             get_url = "{%url 'mail_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
+             get_url = "{%url 'student_mail_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
              window.location.href = get_url;
          {%else%}
           window.location.href = $(this).attr('data-email_detail_url');
@@ -655,7 +638,7 @@ $(".card_display_email").click(function(){
         let get_url = "";
         let email_id = $(this).attr('list_email_id');
         let this_el = $(this);
-        get_url = "{%url 'mail_viewed' pk=1234 %}".replace('1234', email_id);
+        get_url = "{%url 'student_mail_viewed' pk=1234 %}".replace('1234', email_id);
 
         $.ajax({
               url: get_url,
@@ -688,7 +671,7 @@ $(".card_display_email").click(function(){
 
 // Creating Draft from Compose Save Button
     $("#draft_email_create").click(function(){
-        let url_send = "{% url 'draft_create' %}";
+        let url_send = "{% url 'student_draft_create' %}";
         $("#email_submit_form").attr('action',url_send);
         $("#email_submit_form").submit();
     });
@@ -697,7 +680,7 @@ $(".card_display_email").click(function(){
 // Saving Draft from Draft Detail
     $("#draft_email_save").click(function(){
         {% if object%}
-        let url_send = "{% url 'update_draft' object.pk %}?email_type={{ email_type }}";
+        let url_send = "{% url 'student_update_draft' object.pk %}?email_type={{ email_type }}";
         $("#draft_submit_form").attr('action',url_send);
         $("#draft_submit_form").submit();
         {% endif %}
@@ -738,16 +721,16 @@ $(".card_display_email").click(function(){
             let get_url = "";
             let type = "GET";
             if (status === "spam"){
-                get_url = "{% url 'mail_spam' pk=1234 %}".replace('1234', email_id);
+                get_url = "{% url 'student_mail_spam' pk=1234 %}".replace('1234', email_id);
             }
 
       //      if (status === "star"){
       //          {%if '?email_type=received_starred' in  request.get_full_path%}
-     //           get_url = "{% url 'mail_starred' pk=1234 %}".replace('1234', email_id);
+     //           get_url = "{% url 'student_mail_starred' pk=1234 %}".replace('1234', email_id);
      //           {%endif%}
 
     //            {%if '?email_type=starred_outbox' in  request.get_full_path%}
-    //            get_url = "{% url 'sender_starred' pk=1234 %}".replace('1234', email_id);
+    //            get_url = "{% url 'student_sender_starred' pk=1234 %}".replace('1234', email_id);
     //            {%endif%}
     //        }
 
@@ -757,13 +740,13 @@ $(".card_display_email").click(function(){
             if (email_model === "rec"){
 
                  if (status === "star"){
-                         get_url = "{% url 'mail_starred' pk=1234 %}?email_type=starred".replace('1234', email_id);
+                         get_url = "{% url 'student_mail_starred' pk=1234 %}?email_type=starred".replace('1234', email_id);
                     }
                  if (status === "recover"){
-                     get_url = "{% url 'mail_deleted' pk=1234 %}?email_type=inbox".replace('1234', email_id);
+                     get_url = "{% url 'student_mail_deleted' pk=1234 %}?email_type=inbox".replace('1234', email_id);
                     }
                  if (status === "empty_trash"){
-                     get_url = "{% url 'mail_receiver_delete' pk=1234 %}?email_type=trash".replace('1234', email_id);
+                     get_url = "{% url 'student_mail_receiver_delete' pk=1234 %}?email_type=trash".replace('1234', email_id);
                      type = "POST";
 
                     }
@@ -771,13 +754,13 @@ $(".card_display_email").click(function(){
 
              if (email_model === "mail"){
                     if (status === "star"){
-                            get_url = "{% url 'sender_starred' pk=1234 %}?email_type=starred".replace('1234', email_id);
+                            get_url = "{% url 'student_sender_starred' pk=1234 %}?email_type=starred".replace('1234', email_id);
                          }
                     if (status === "recover"){
-                             get_url = "{% url 'sender_delete' pk=1234 %}?email_type=inbox".replace('1234', email_id);
+                             get_url = "{% url 'student_sender_delete' pk=1234 %}?email_type=inbox".replace('1234', email_id);
                          }
                     if (status === "empty_trash"){
-                             get_url = "{% url 'mail_delete' pk=1234 %}?email_type=trash".replace('1234', email_id);
+                             get_url = "{% url 'student_mail_delete' pk=1234 %}?email_type=trash".replace('1234', email_id);
                          }
 
              }
@@ -791,33 +774,33 @@ $(".card_display_email").click(function(){
 
             if (status === "outbox_delete"){
 
-                        get_url = "{% url 'sender_delete' pk=1234 %}".replace('1234', email_id);
+                        get_url = "{% url 'student_sender_delete' pk=1234 %}".replace('1234', email_id);
 
 
             }
 
             if (status === "inbox_delete"){
 
-                        get_url = "{% url 'mail_deleted' pk=1234 %}".replace('1234', email_id);
+                        get_url = "{% url 'student_mail_deleted' pk=1234 %}".replace('1234', email_id);
             }
 
 
             if (status === "unread"){
-                get_url = "{% url 'mail_unread' pk=1234 %}".replace('1234', email_id);
+                get_url = "{% url 'student_mail_unread' pk=1234 %}".replace('1234', email_id);
             }
 
             if (status === "read"){
-                get_url = "{% url 'mail_viewed' pk=1234 %}".replace('1234', email_id);
+                get_url = "{% url 'student_mail_viewed' pk=1234 %}".replace('1234', email_id);
             }
 
              if (status === "inbox_remove"){
-                get_url = "{% url 'mail_receiver_delete' pk=1234 %}?email_type=received_trash".replace('1234', email_id);
+                get_url = "{% url 'student_mail_receiver_delete' pk=1234 %}?email_type=received_trash".replace('1234', email_id);
                 type = "POST";
 
             }
 
             if (status === "outbox_remove"){
-                get_url = "{% url 'mail_delete' pk=1234 %}?email_type=outbox_delete".replace('1234', email_id);
+                get_url = "{% url 'student_mail_delete' pk=1234 %}?email_type=outbox_delete".replace('1234', email_id);
             }
 
 
@@ -857,7 +840,7 @@ $(".card_display_email").click(function(){
      //   $("#email_list_li" + $(this).attr('data-email_id')).click();
 
     let email_id = $(".card_display_email").attr('list_email_id');
-    get_url = "{% url 'mail_detail' pk=1234 %}?email_type=inbox&reply_page".replace('1234', email_id);
+    get_url = "{% url 'student_mail_detail' pk=1234 %}?email_type=inbox&reply_page".replace('1234', email_id);
     window.location.href = get_url;
     });
 

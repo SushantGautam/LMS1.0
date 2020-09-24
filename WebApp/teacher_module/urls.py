@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import path, reverse_lazy
 
 from WebApp.teacher_module import views
 from quiz import views as quizViews
 from survey import views as survey_views
 from .. import views as admin_views
+from mail import views as mail_views
+from event_calendar import views as cal_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -226,11 +228,11 @@ urlpatterns += (
     path('deactivate_quiz/<int:pk>/', quizViews.DeactivateQuiz.as_view(),
          name='teacher_deactivate_quiz'),
 
-    #Quiz Marking
+    # Quiz Marking
     path('quiz/marking/', views.QuizMarkingList.as_view(),
-          name='teacher_quiz_marking'),
+         name='teacher_quiz_marking'),
     path('quiz/marking/<int:quiz_id>', views.QuizMarking.as_view(),
-          name='teacher_individual_quiz_marking'),
+         name='teacher_individual_quiz_marking'),
     path('quiz/marking/detail/<int:pk>/', views.QuizMarkingDetail.as_view(),
          name='teacher_quiz_marking_detail'),
     # URL for quiz marking download    
@@ -315,4 +317,72 @@ urlpatterns += (
 urlpatterns += (
     path('meet/',
          views.Meet, name='teacher-meet'),
+)
+
+# Teacher's Email
+
+urlpatterns += (
+    path('mail_list', mail_views.MailListView.as_view(template_name='teacher_module/mail/index.html'),
+         name='teacher_mail_list'),
+    path('mail_outbox', mail_views.MailSendDraftListView.as_view(template_name='teacher_module/mail/index.html'),
+         name='teacher_mail_send_list'),
+    path('mail_starred', mail_views.StarView.as_view(template_name='teacher_module/mail/star.html'),
+         name='teacher_star_list'),
+    path('mail_trashed', mail_views.TrashView.as_view(template_name='teacher_module/mail/trash.html'),
+         name='teacher_trash_list'),
+
+    path('mail_detail/<int:pk>', mail_views.MailDetailView.as_view(template_name='teacher_module/mail/detail.html'),
+         name='teacher_mail_detail'),
+    path('send_detail/<int:pk>',
+         mail_views.SendDetailView.as_view(template_name='teacher_module/mail/send_detail.html'),
+         name='teacher_send_detail'),
+    path('draft_create', mail_views.DraftCreateView.as_view(template_name='teacher_module/mail/base.html',
+                                                            success_url=reverse_lazy('teacher_mail_send_list')),
+         name='teacher_draft_create'),
+    path('mail_draft_detail/<int:pk>', mail_views.DraftToSendView.as_view(template_name='teacher_module/mail'
+                                                                                        '/detail_draft.html',
+                                                                          success_url=reverse_lazy(
+                                                                              'teacher_mail_send_list')),
+         name='teacher_mail_draft_detail'),
+    path('mail_draft_save/<int:pk>', mail_views.DraftUpdateView.as_view(template_name='teacher_module/mail'
+                                                                                      '/detail_draft.html',
+                                                                        success_url=reverse_lazy(
+                                                                            'teacher_mail_send_list')),
+         name='teacher_update_draft'),
+    path('mail_delete/<int:pk>', mail_views.MailDeleteView, name='teacher_mail_delete'),
+    path('mail_receiver_delete/<int:pk>',
+         mail_views.MailReceiverDeleteView.as_view(success_url=reverse_lazy('teacher_trash_list')),
+         name='teacher_mail_receiver_delete'),
+    path('mail_create', mail_views.MailMultipleCreate.as_view(),
+         name='teacher_mail_create'),
+    path('reply_create', mail_views.ReplyCreateView.as_view(template_name="teacher_module/mail/index.html",
+                                                            success_url=reverse_lazy('teacher_mail_list')),
+         name='teacher_reply_create'),
+    path('mail_spam/<int:pk>', mail_views.mail_spam, name='teacher_mail_spam'),
+    path('mail_starred/<int:pk>', mail_views.mail_starred, name='teacher_mail_starred'),
+    path('sender_starred/<int:pk>', mail_views.sender_starred, name='teacher_sender_starred'),
+    path('mail_deleted/<int:pk>', mail_views.mail_deleted, name='teacher_mail_deleted'),
+    path('sender_delete/<int:pk>', mail_views.sender_delete, name='teacher_sender_delete'),
+    path('mail_send/<int:pk>', mail_views.mail_send, name='teacher_mail_send'),
+    path('mail_viewed/<int:pk>', mail_views.mail_viewed, name='teacher_mail_viewed'),
+    path('mail_unread/<int:pk>', mail_views.mail_unread, name='teacher_mail_unread'),
+
+)
+
+# Teacher's Calendar
+urlpatterns += (
+    path('create', cal_views.EventCreateView.as_view(template_name='teacher_module/calendar/index.html',
+                                                     success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_create'),
+    path('update/<int:pk>', cal_views.EventUpdateView.as_view(template_name='teacher_module/calendar/index.html',
+                                                              success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_update'),
+    path('updated/<int:pk>', cal_views.EventUpdatedView.as_view(template_name='teacher_module/calendar/index.html',
+                                                                success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_updated'),
+    path('delete/<int:pk>', cal_views.EventDeleteView.as_view(template_name='teacher_module/calendar/index.html',
+                                                              success_url=reverse_lazy('teacher_event_calendar')),
+         name='teacher_event_calendar_delete'),
+    path('calendar', cal_views.EventListView.as_view(template_name='teacher_module/calendar/index.html'),
+         name='teacher_event_calendar'),
 )

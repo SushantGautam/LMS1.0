@@ -174,6 +174,21 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
+    def get_student_inning(self):
+        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
+                                            End_Date__gt=datetime.now()).values_list('pk', flat=True)
+
+        return list(innings)
+
+    def get_student(self):
+        val_ls = MemberInfo.objects.filter(groupmapping__in=GroupMapping.objects.filter(
+            inninginfos__pk__in=InningInfo.objects.filter(
+                Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.pk)))).distinct().values_list('pk', flat=True)
+        return list(val_ls)
+
+    def get_student_obj(self):
+        return MemberInfo.objects.filter(pk__in=self.get_student())
+
     def get_teacher_courses(self):
         courses = []
         session_list = []
@@ -328,8 +343,6 @@ class CourseInfo(models.Model):
 
     def __str__(self):
         return self.Course_Name
-
-
 
 
 class ChapterInfo(models.Model):
@@ -756,6 +769,8 @@ class InningGroup(models.Model):
 
     def get_update_url(self):
         return reverse('inninggroup_update', args=(self.pk,))
+
+
 
 
 class InningInfo(models.Model):

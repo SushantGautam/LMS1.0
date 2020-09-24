@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'event_calendar',
     'decorator_include',
     'django_summernote',
+
 ]
 
 MIDDLEWARE = [
@@ -73,7 +74,7 @@ ROOT_URLCONF = 'LMS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['WebApp/templates'],
+        'DIRS': ['WebApp/mail'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

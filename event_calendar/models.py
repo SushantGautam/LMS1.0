@@ -7,7 +7,8 @@ from WebApp.models import MemberInfo
 
 EVENT_TYPE_CHOICES = (('PR', _('Program')),
                       ('ME', _('Meeting')),
-                      ('HO', _('Holiday')))
+                      ('HO', _('Holiday')),
+                      ('EX', _('Examination')))
 PART_TYPE_CHOICES = (('AL', _('All User')),
                      ('AT', _('All Teacher')),
                      ('AS', _('All Student')),

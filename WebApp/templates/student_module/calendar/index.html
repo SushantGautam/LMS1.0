@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "student_module/base.html" %}
 {% load static %}
 {% block stylesheet %}
   <!-- Fullcalendar -->
@@ -41,16 +41,9 @@
     <script>
         $(document).ready(function () {
 
-       // $(".fc.fc-event").css("border", "dotted");
-       // $(".fc.fc-event").css("border-radius", "5px");
-       // $(".fc .fc-event").css({"border":  5+"px " +" dotted "+ "rgb("+ 255 +","+ 229 +","+ 204 +")"});
-       // $(".btn .btn-info .btn-danger .btn-primary .btn-success").css("border-color", " ");
+        $('#external-events .fc-event').css("cursor","default");
 
 
-      //   var style1 = "5px dotted rgb(231,212,164)";
-      //   $('.fc.fc-event').css({
-      //      'border': style1
-      //  });
 
         // Detail For Update Modal
 
@@ -68,11 +61,7 @@
                    }else if (event.type === "Meeting")
                     {
                         modal.find("#customRadioInline2").prop( "checked", true );
-                   }else if (event.type === "Examination")
-                    {
-                        modal.find("#customRadioInline4").prop( "checked", true );
-                   }
-                   else{
+                   }else{
                          modal.find("#customRadioInline1").prop( "checked", true );
                     }
 
@@ -177,7 +166,7 @@
 
                             $(".participant_dynamic").show();
 
-                         //  console.log(event.event_part_list.length);
+                           console.log(event.event_part_list.length);
                            id = [];
                            for (i=0; i<event.event_part_list.length; i++){
 
@@ -202,7 +191,7 @@
 
                  //   })
 
-                    modal.find("#calendar_event_form").attr('action', "{% url 'event_calendar_updated' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")));
+                    modal.find("#calendar_event_form").attr('action', "{% url 'student_event_calendar_updated' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")));
 
 
                     modal.modal();
@@ -222,7 +211,6 @@
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
-                        r_a: '{{event.register_agent.pk}}',
                         start: '{{ event.date_start.isoformat}}',
                        // end: '{{ event.date_end.isoformat }}',
                         end: '{{ event.get_end_date.isoformat }}',
@@ -279,22 +267,22 @@
                 {% endfor %}
             ];
 
-            $('#external-events .fc-event').each(function () {
+        //    $('#external-events .fc-event').each(function () {
                 // store data so the calendar knows to render an event upon drop
-                $(this).data('event', {
-                    title: $.trim($(this).text()), // use the element's text as the event title
-                    stick: true, // maintain when user navigates (see docs on the renderEvent method),
-                    color: $(this).find('i').css("color"),
-                    icon: $(this).find('i').data('icon')
-                });
+        //        $(this).data('event', {
+        //            title: $.trim($(this).text()), // use the element's text as the event title
+        //            stick: true, // maintain when user navigates (see docs on the renderEvent method),
+        //            color: $(this).find('i').css("color"),
+        //            icon: $(this).find('i').data('icon')
+        //        });
 
                 // make the event draggable using jQuery UI
-                $(this).draggable({
-                    zIndex: 999,
-                    revert: true,      // will cause the event to go back to its
-                    revertDuration: 0  //  original position after the drag
-                });
-            });
+        //        $(this).draggable({
+        //            zIndex: 999,
+        //            revert: true,      // will cause the event to go back to its
+        //            revertDuration: 0  //  original position after the drag
+        //        });
+        //    });
 
 
             $('#calendar-demo').fullCalendar({
@@ -305,8 +293,8 @@
                 },
                 timezone:"local",
                 nextDayThreshold: '00:00',
-                editable: true,
-                droppable: true,
+                editable: false,
+                droppable: false,
                 drop: function () {
                     // is the "remove after drop" checkbox checked?
                     if ($('#drop-remove').is(':checked')) {
@@ -314,9 +302,9 @@
                         $(this).remove();
                     }
                 },
-                eventStartEditable: true,
-                eventResizableFromStart: true,
-                eventDurationEditable: true,
+                eventStartEditable: false,
+                eventResizableFromStart: false,
+                eventDurationEditable: false,
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: events,
@@ -324,49 +312,41 @@
                     if (event.icon) {
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
-                     if(event.r_a == '{{request.user.pk}}'){
-                       //  element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
-                         element[0].style.setProperty('border', '2px solid black', 'important');
-                    }
                 },
-                dayClick: function (date, jsEvent, view) {
+              //  dayClick: function (date, jsEvent, view) {
 
-                    $('#createEventModal').modal();
-                    $(".modal-title").text("Create Event");
-                    $("#id_title").val("");
-                    $("#customRadioInline1").prop("checked", true);
-
-                  //  let start_date = iso_to_django(event.start._d);
-                    let start_date = date._d;
+              //      $('#createEventModal').modal();
+              //      $(".modal-title").text("Create Event");
+              //      $("#id_title").val("");
+              //      $("#customRadioInline1").prop("checked", true);
 
 
-                    console.log(start_date);
-                    let end_date = start_date;
-
-                    $("#event-start-date").daterangepicker({
-                            startDate: new Date(start_date),
-                            endDate: new Date(start_date),
-                            singleDatePicker: true,
-                        })
-
-                   $("#event-end-date").daterangepicker({
-                            startDate: new Date(end_date),
-                            endDate: new Date(end_date),
-                            singleDatePicker: true,
-                        })
+              //      let start_date = date._d;
 
 
+              //      console.log(start_date);
+              //      let end_date = start_date;
 
-                 $("#id_participant_type_1").prop("checked", true);
-                 $("#id_is_all_day").prop("checked", true);
-                 $(".participant_dynamic").hide();
-                 $(".datetime_dynamic").hide();
-                 $("#id_description").html(" ");
-                 $("#createEventModal #btn-save").text("Create");
+               //     $("#event-start-date").daterangepicker({
+               //             startDate: new Date(start_date),
+               //             endDate: new Date(start_date),
+               //             singleDatePicker: true,
+               //         })
+
+               //    $("#event-end-date").daterangepicker({
+               //             startDate: new Date(end_date),
+               //             endDate: new Date(end_date),
+               //             singleDatePicker: true,
+               //         })
+
+
+               //  $("#id_participant_type_1").prop("checked", true);
+               //  $("#id_description").html(" ");
+               //  $("#createEventModal #btn-save").text("Create");
 
 
 
-                },
+               // },
 
 
 
@@ -377,24 +357,24 @@
 
                         if (event.type == "Program")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-primary');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
                           if (event.type == "Holiday")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-primary');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info');
                             modal.find('.event-type').addClass('btn btn-success');
 
                             }
                           if (event.type == "Meeting")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-primary");
+                            modal.find('.event-type').removeClass("btn btn-success btn-info");
                             modal.find('.event-type').addClass("btn btn-danger");
 
                             }
-                          if (event.type == "Examination")
+                           if (event.type == "Examination")
                             {
                             modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
                             modal.find('.event-type').addClass("btn btn-primary");
@@ -518,7 +498,7 @@
 
 
                     let event_id = event.id.replace("event_id_", "");
-                    modal.find('.delete_event').attr('action', '{% url "event_calendar_delete" 12345 %}'.replace("12345", event_id));
+                    modal.find('.delete_event').attr('action', '{% url "student_event_calendar_delete" 12345 %}'.replace("12345", event_id));
 
 
                   //// update button upon pressing display Form Detail Modal
@@ -585,9 +565,6 @@
                          if (event.title === "Meeting"){
                             $("#customRadioInline2").prop("checked", true);
                          }
-                         if (event.title === "Examination"){
-                            $("#customRadioInline4").prop("checked", true);
-                         }
 
                        let start_date = iso_to_django(event.start._d);
                        let end_date = start_date;
@@ -606,10 +583,6 @@
 
 
                          $("#id_participant_type_1").prop("checked", true);
-                         $("#id_is_all_day").prop("checked", true);
-                         $(".participant_dynamic").hide();
-                         $(".datetime_dynamic").hide();
-
                          $("#id_description").html(" ");
                          $("#createEventModal #btn-save").text("Create");
 
@@ -637,7 +610,7 @@
                 }
                 //// make ajax request to change the related object in the database
                 $.ajax({
-                    url: "{% url 'event_calendar_update' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")), // URL to your view that serves new info
+                    url: "{% url 'student_event_calendar_update' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")), // URL to your view that serves new info
                     type: 'POST', // GET or POST
                     data: post_data,
                     success: function (response) {
@@ -689,7 +662,7 @@
                 console.log(post_data);
                 //// make ajax request to change the related object in the database
                 $.ajax({
-                    url: "{% url 'event_calendar_create' %}?return=json", // URL to your view that serves new info
+                    url: "{% url 'student_event_calendar_create' %}?return=json", // URL to your view that serves new info
                     type: 'POST', // GET or POST
                     data: post_data,
                     success: function (response) {
@@ -782,7 +755,7 @@
 
 
 
-             $("span.text-danger").remove();
+
              if (title.length < 1){
                  $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
@@ -800,18 +773,6 @@
                 is_valid = false;
 
              }
-             if( sd > ed ){
-                 $("#event-start-date").after('<span class="text-danger">Start Date Cannot be Greater then End Date.</span>');
-                is_valid = false;
-             }
-
-                 if (sd === ed){
-                        if( st > et ){
-                             $("#event-start-time").after('<span class="text-danger">Start Time Cannot be Greater then End Time.</span>');
-                            is_valid = false;
-                        }
-                 }
-
              if(!is_ad){
                 if(st === ""){
                     $("#event-start-time").after('<span class=" text-danger">This field is required</span>');
@@ -912,7 +873,5 @@
 
 
 </script>
-
-
 {% endblock %}
 

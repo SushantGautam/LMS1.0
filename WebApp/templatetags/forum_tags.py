@@ -73,7 +73,7 @@ def change_thread_ordering(request, ordering):
     return change_url(request, None, {"order": ordering})
 
 
-@register.inclusion_tag('forum/includes/pagination.html', takes_context=True)
+@register.inclusion_tag('forum/common/pagination.html', takes_context=True)
 def get_pagination(context, first_last_amount=2, before_after_amount=4):
     page_obj = context['page_obj']
     paginator = context['paginator']

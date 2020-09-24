@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
 {% block stylesheet %}
   <!-- Fullcalendar -->
@@ -41,16 +41,7 @@
     <script>
         $(document).ready(function () {
 
-       // $(".fc.fc-event").css("border", "dotted");
-       // $(".fc.fc-event").css("border-radius", "5px");
-       // $(".fc .fc-event").css({"border":  5+"px " +" dotted "+ "rgb("+ 255 +","+ 229 +","+ 204 +")"});
-       // $(".btn .btn-info .btn-danger .btn-primary .btn-success").css("border-color", " ");
 
-
-      //   var style1 = "5px dotted rgb(231,212,164)";
-      //   $('.fc.fc-event').css({
-      //      'border': style1
-      //  });
 
         // Detail For Update Modal
 
@@ -65,14 +56,13 @@
                    if (event.type === "Holiday")
                    {
                         modal.find("#customRadioInline3").prop("checked", true);
-                   }else if (event.type === "Meeting")
-                    {
-                        modal.find("#customRadioInline2").prop( "checked", true );
                    }else if (event.type === "Examination")
                     {
                         modal.find("#customRadioInline4").prop( "checked", true );
-                   }
-                   else{
+                   }else if (event.type === "Meeting")
+                    {
+                        modal.find("#customRadioInline2").prop( "checked", true );
+                   }else{
                          modal.find("#customRadioInline1").prop( "checked", true );
                     }
 
@@ -177,7 +167,7 @@
 
                             $(".participant_dynamic").show();
 
-                         //  console.log(event.event_part_list.length);
+                           console.log(event.event_part_list.length);
                            id = [];
                            for (i=0; i<event.event_part_list.length; i++){
 
@@ -202,7 +192,7 @@
 
                  //   })
 
-                    modal.find("#calendar_event_form").attr('action', "{% url 'event_calendar_updated' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")));
+                    modal.find("#calendar_event_form").attr('action', "{% url 'teacher_event_calendar_updated' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")));
 
 
                     modal.modal();
@@ -218,11 +208,17 @@
 
             var events = [
                 {% for event in object_list %}
+                    {% if event.register_agent.pk == request.user.pk or request.user in event.get_participants %}
                     {
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
                         r_a: '{{event.register_agent.pk}}',
+                        {% if not event.register_agent.pk == request.user.pk %}
+                        editable: false,
+                        durationEditable: false,
+                        startEditable: false,
+                        {% endif %}
                         start: '{{ event.date_start.isoformat}}',
                        // end: '{{ event.date_end.isoformat }}',
                         end: '{{ event.get_end_date.isoformat }}',
@@ -276,6 +272,7 @@
                         {% endif %}
 
                     },
+                    {%endif%}
                 {% endfor %}
             ];
 
@@ -319,17 +316,32 @@
                 eventDurationEditable: true,
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
-                events: events,
+
+
+
+
+
+
+
+               events:events,
+
+
                 eventRender: function (event, element) {
                     if (event.icon) {
+
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
-                     if(event.r_a == '{{request.user.pk}}'){
-                       //  element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
+                    if(event.r_a == '{{request.user.pk}}'){
+                        // element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
                          element[0].style.setProperty('border', '2px solid black', 'important');
                     }
+
+
                 },
                 dayClick: function (date, jsEvent, view) {
+
+
+
 
                     $('#createEventModal').modal();
                     $(".modal-title").text("Create Event");
@@ -356,9 +368,8 @@
                         })
 
 
-
-                 $("#id_participant_type_1").prop("checked", true);
                  $("#id_is_all_day").prop("checked", true);
+                 $("#id_participant_type_2").prop("checked", true);
                  $(".participant_dynamic").hide();
                  $(".datetime_dynamic").hide();
                  $("#id_description").html(" ");
@@ -377,20 +388,20 @@
 
                         if (event.type == "Program")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-primary');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
                           if (event.type == "Holiday")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-primary');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info');
                             modal.find('.event-type').addClass('btn btn-success');
 
                             }
                           if (event.type == "Meeting")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-primary");
+                            modal.find('.event-type').removeClass("btn btn-success btn-info");
                             modal.find('.event-type').addClass("btn btn-danger");
 
                             }
@@ -404,6 +415,7 @@
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
+
                     modal.find('.event-title').html("");
                     modal.find('.event-title').html(event.title);
 
@@ -482,7 +494,7 @@
                     }
 
 
-                    if (event.part == 'Choose User')
+                    if (event.part == 'Choose User' || event.part == 'All Student')
                     {
                         console.log(event.event_part_list);
                          modal.find('.participant').html("Participants:&nbsp;"+event.event_part_list.length);
@@ -505,6 +517,8 @@
 
                    // modal.find('.participant_name').text(event.event_part);
                     modal.find('.part_custom').show();
+                   $(".cus_prt").css({"height": "300px","width": "fit-content",  "overflow-y": "scroll"})
+
 
 
 
@@ -518,7 +532,15 @@
 
 
                     let event_id = event.id.replace("event_id_", "");
-                    modal.find('.delete_event').attr('action', '{% url "event_calendar_delete" 12345 %}'.replace("12345", event_id));
+                    modal.find('.delete_event').attr('action', '{% url "teacher_event_calendar_delete" 12345 %}'.replace("12345", event_id));
+
+
+                    if ( event.r_a == '{{ request.user.pk }}')
+                    {
+                        $(".del_hide").show();
+                    }else{
+                        $(".del_hide").hide();
+                    }
 
 
                   //// update button upon pressing display Form Detail Modal
@@ -604,9 +626,8 @@
                                     singleDatePicker: true,
                                 })
 
-
-                         $("#id_participant_type_1").prop("checked", true);
                          $("#id_is_all_day").prop("checked", true);
+                         $("#id_participant_type_2").prop("checked", true);
                          $(".participant_dynamic").hide();
                          $(".datetime_dynamic").hide();
 
@@ -637,7 +658,7 @@
                 }
                 //// make ajax request to change the related object in the database
                 $.ajax({
-                    url: "{% url 'event_calendar_update' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")), // URL to your view that serves new info
+                    url: "{% url 'teacher_event_calendar_update' pk=12345 %}".replace("12345", event.id.replace("event_id_", "")), // URL to your view that serves new info
                     type: 'POST', // GET or POST
                     data: post_data,
                     success: function (response) {
@@ -689,7 +710,7 @@
                 console.log(post_data);
                 //// make ajax request to change the related object in the database
                 $.ajax({
-                    url: "{% url 'event_calendar_create' %}?return=json", // URL to your view that serves new info
+                    url: "{% url 'teacher_event_calendar_create' %}?return=json", // URL to your view that serves new info
                     type: 'POST', // GET or POST
                     data: post_data,
                     success: function (response) {
@@ -730,24 +751,51 @@
     </script>
 
     <script>
+
+
+     //   $(".all_st").change(function () {
+     //       console.log("change_fxn_called");
+     //       if ($(this).is(':checked')) {
+
+     //           console.log("is_checked");
+     //            $(".select2-example").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
+     //            $(".select2-example").trigger("change");
+
+     //       }
+     //   })
+
+
+
         $(".select2-example").select2({
             placeholder: 'Select',
            width: "element",
              multiple: true,
             templateResult: function (state) {
                 // how dropdown list is displayed
-                let filter_type = $("input[name='filter_type']:checked").val();
+                let filter_type = $("input[name='session_filter_type']:checked").val();
                 let is_student = $(state.element).attr('data-is_student');
                 let is_teacher = $(state.element).attr('data-is_teacher');
-                if (filter_type === "A") {        // all user
-                    return state.text;
+                let inning_list = $(state.element).attr('data-student_session');
+                  //  console.log(inning_list);
+                if (is_student === "true" ){
+                     inning_list =  JSON.parse(inning_list);
+                    // console.log(inning_list);
+                     if (inning_list.includes(Number(filter_type))){
+                        return state.text;
+                     }
                 }
-                if (filter_type === "S" && is_student === "true") {        // Students only
-                    return state.text;
-                }
-                if (filter_type === "T" && is_teacher === "true") {        // Teachers only
-                    return state.text;
-                }
+
+               // console.log(inning_list);
+
+              //  if (filter_type === "A") {        // all user
+              //      return state.text;
+              //  }
+              //  if (filter_type === "S" && is_student === "true") {        // Students only
+              //      return state.text;
+              //  }
+              //  if (filter_type === "T" && is_teacher === "true") {        // Teachers only
+              //      return state.text;
+              //  }
                 return null;
             },
         });
@@ -781,36 +829,32 @@
              let p_l = $(".select2-selection__rendered > li").length;
 
 
-
              $("span.text-danger").remove();
-             if (title.length < 1){
-                 $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
-                is_valid = false;
 
+             if (title.length < 1){
+
+                 $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
+                 is_valid = false;
              }
               if (sd === ""){
                  $("#event-start-date").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
-
              }
               if (ed === ""){
                  $("#event-end-date").after('<span class="text-danger">This field is required</span>');
-
-
-                is_valid = false;
-
+                 is_valid = false;
              }
+
              if( sd > ed ){
                  $("#event-start-date").after('<span class="text-danger">Start Date Cannot be Greater then End Date.</span>');
                 is_valid = false;
              }
 
-                 if (sd === ed){
-                        if( st > et ){
-                             $("#event-start-time").after('<span class="text-danger">Start Time Cannot be Greater then End Time.</span>');
-                            is_valid = false;
-                        }
+                 if( st > et ){
+                     $("#event-start-time").after('<span class="text-danger">Start Time Cannot be Greater then End Time.</span>');
+                    is_valid = false;
                  }
+
 
              if(!is_ad){
                 if(st === ""){
@@ -841,9 +885,18 @@
 
         $("input[name='participation_type']").change(function () {
             let ch_val = $("input[name='participation_type']:checked").val();
-            //console.log("part_type changed: ", ch_val, ch_val === "CH");
+            console.log("part_type changed: ", ch_val, ch_val === "CH");
             if (ch_val === "CH") {
                 $(".participant_dynamic").show();
+                $(".select2-example").val("");
+                $(".select2-example").trigger("change");
+            }  else if (ch_val === "AS") {
+                 $(".participant_dynamic").hide();
+                 $(".select2-example").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
+                 $(".select2-example").trigger("change");
+                 console.log($(".select2-example").val());
+
+
             } else {
                 $(".participant_dynamic").hide();
                 $(".select2-example").val("");
@@ -871,6 +924,18 @@
             $("#event-end-date").val("");
             $("#event-start-time").val("");
             $("#event-end-time").val("");
+            $("#id_participant_type_2").prop("checked", true);
+            let ch_val = $("input[name='participation_type']:checked").val();
+            if (ch_val === "AS") {
+                 $(".participant_dynamic").hide();
+                 $(".select2-example").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
+                 $(".select2-example").trigger("change");
+
+
+            }
+
+
+            $(".participant_dynamic").hide();
             $("#createEventModal #id_title").val("");
             $("#createEventModal #id_description").val("");
             $("#createEventModal #btn-save").text("Create");
@@ -878,8 +943,8 @@
 
 
 
-            $("#id_participant_type_1").click();
-            $("#id_filter_type_1").click();
+           // $("#id_participant_type_2").click();
+           // $("#id_filter_type_1").click();
         })
 
         $("#id_is_all_day").change(function () {
@@ -907,12 +972,34 @@
         $('#viewEventModal').addClass("show");
     })
 
+$(".all_select").click(function(){
+
+    let user_list_js = [];
+    let i_l = [];
+    filter_val = $("input[name='session_filter_type']:checked").val();
+
+
+        {% for user in user_list %}
+        {% if user.Is_Student %}
+         i_l =  JSON.parse("{{ user.get_student_inning }}");
+
+            if (i_l.includes(Number(filter_val)))
+                {
+                     user_list_js.push("{{user.pk}}");
+                }
+        {%endif%}
+        {% endfor %}
+        $(".select2-example").val(user_list_js);
+        $('.select2-example').trigger('change');
+        console.log("ul", user_list_js);
+       // console.log("IN_lS", i_l);
+       //  console.log("filtr_val",filter_val);
+
+        })
 
 
 
 
 </script>
-
-
 {% endblock %}
 

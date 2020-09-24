@@ -1,7 +1,7 @@
 from WebApp.models import MemberInfo
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy, resolve
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 
@@ -14,7 +14,8 @@ from mail.models import MailReceiver
 class MailListView(ListView):
     model = MailReceiver
     paginate_by = 10
-    template_name = 'mail/index.html'
+
+    # template_name = 'mail/index.html'
 
     def get_queryset(self):
         queryset = MailReceiver.objects.order_by('-received_date')
@@ -97,7 +98,13 @@ class MailListView(ListView):
         context['email_type'] = self.request.GET.get('email_type', "inbox")
 
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'mail_list'
+        user_type = self.request.user.get_user_type
+        if "teacher" in self.request.path:
+            context['label_url_name'] = 'teacher_mail_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_mail_list'
+        else:
+            context['label_url_name'] = 'mail_list'
 
         context['inbox_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=False,
                                                              mail_spam=False, mail_viewed=False).count()
@@ -124,7 +131,8 @@ class MailListView(ListView):
 class MailSendDraftListView(ListView):
     model = Mail
     paginate_by = 10
-    template_name = "mail/index.html"
+
+    # template_name = "mail/index.html"
 
     def get_queryset(self):
         email_type = self.request.GET.get('email_type', "send")
@@ -190,7 +198,13 @@ class MailSendDraftListView(ListView):
         context['email_type'] = self.request.GET.get('email_type', "send")
 
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'mail_send_list'
+        user_type = self.request.user.get_user_type
+        if "teacher" in self.request.path:
+            context['label_url_name'] = 'teacher_mail_send_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_mail_send_list'
+        else:
+            context['label_url_name'] = 'mail_send_list'
 
         context['inbox_count'] = MailReceiver.objects.filter(receiver=self.request.user, mail_deleted=False,
                                                              mail_spam=False, mail_viewed=False).count()
@@ -204,7 +218,8 @@ class MailSendDraftListView(ListView):
 class StarView(ListView):
     model = Mail
     paginate_by = 10
-    template_name = "mail/star.html"
+
+    # template_name = "mail/star.html"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -284,7 +299,13 @@ class StarView(ListView):
 
         context['email_type'] = self.request.GET.get('email_type', "starred")
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'star_list'
+        user_type = self.request.user.get_user_type
+        if "teacher" in self.request.path:
+            context['label_url_name'] = 'teacher_star_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_star_list'
+        else:
+            context['label_url_name'] = 'star_list'
 
         context['label_list'] = Mail.LABEL_CHOICES
         context['user_list'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code).exclude \
@@ -304,7 +325,8 @@ class StarView(ListView):
 class TrashView(ListView):
     model = Mail
     paginate_by = 10
-    template_name = "mail/trash.html"
+
+    # template_name = "mail/trash.html"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -386,7 +408,14 @@ class TrashView(ListView):
         context['email_type'] = self.request.GET.get('email_type', "trash")
 
         context['label_type'] = self.request.GET.get('label_type', "")
-        context['label_url_name'] = 'trash_list'
+        user_type = self.request.user.get_user_type
+
+        if "teacher" in self.request.path:
+            context['label_url_name'] = 'teacher_trash_list'
+        elif "student" in self.request.path:
+            context['label_url_name'] = 'student_trash_list'
+        else:
+            context['label_url_name'] = 'trash_list'
 
         context['label_list'] = Mail.LABEL_CHOICES
         context['user_list'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code).exclude \
@@ -405,9 +434,10 @@ class TrashView(ListView):
 
 class DraftCreateView(CreateView):
     model = Mail
-    template_name = "mail/base.html"
+    # template_name = "mail/base.html"
     form_class = MailForm
-    success_url = reverse_lazy('mail_send_list')
+
+    # success_url = reverse_lazy('mail_send_list')
 
     def form_invalid(self, form):
         r = super().form_invalid(form)
@@ -424,9 +454,10 @@ class DraftCreateView(CreateView):
 
 class DraftToSendView(UpdateView):
     model = Mail
-    template_name = "mail/detail_draft.html"
+    # template_name = "mail/detail_draft.html"
     form_class = DraftUpdateForm
-    success_url = reverse_lazy('mail_send_list')
+
+    # success_url = reverse_lazy('mail_send_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -465,16 +496,16 @@ class DraftToSendView(UpdateView):
 
 class DraftUpdateView(UpdateView):
     model = Mail
-    template_name = "mail/detail_draft.html"
+    # template_name = "mail/detail_draft.html"
     form_class = DraftUpdateForm
-    success_url = reverse_lazy('mail_send_list')
+
+    # success_url = reverse_lazy('mail_send_list')
 
     def form_invalid(self, form):
         to_return = super().form_invalid(form)
         return to_return
 
     def form_valid(self, form):
-
         self.success_url = self.success_url + "?email_type=draft"
         r = super().form_valid(form)
         # print(self.request.POST)
@@ -487,7 +518,8 @@ class DraftUpdateView(UpdateView):
 
 class MailDetailView(DetailView):
     model = MailReceiver
-    template_name = "mail/detail.html"
+
+    # template_name = "mail/detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -499,7 +531,8 @@ class MailDetailView(DetailView):
 
 class SendDetailView(DetailView):
     model = Mail
-    template_name = "mail/send_detail.html"
+
+    # template_name = "mail/send_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -520,8 +553,8 @@ class MailMultipleCreate(View):
         if len(receiver_list):
             r_list = receiver_list.split(',')
 
-        print(receiver_list)
-        print(r_list)
+        # print(receiver_list)
+        # print(r_list)
 
         for r in r_list:
             # required if receiver null = True, blank = True
@@ -536,15 +569,21 @@ class MailMultipleCreate(View):
             mail_obj.mail = m_obj
             mail_obj.save()
 
-        # email_type = self.request.GET.get("email_type", "inbox")
-        return redirect(reverse('mail_send_list') + '?email_type=send')
+        # user_type = self.request.user.get_user_type
+        if "teacher" in request.path:
+            return redirect(reverse('teacher_mail_send_list') + '?email_type=send')
+        elif "student" in request.path:
+            return redirect(reverse('student_mail_send_list') + '?email_type=send')
+        else:
+            return redirect(reverse('mail_send_list') + '?email_type=send')
 
 
 class ReplyCreateView(CreateView):
     model = Mail
-    template_name = "mail/index.html"
+    # template_name = "mail/index.html"
     form_class = ReplyForm
-    success_url = reverse_lazy('mail_list')
+
+    # success_url = reverse_lazy('mail_list')
 
     def form_invalid(self, form):
         r = super().form_invalid(form)
@@ -567,12 +606,19 @@ def MailDeleteView(request, pk):
     if mail.can_delete():
         mail.delete()
     email_type = request.GET.get('email_type', "")
-    return redirect(reverse('trash_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+    if "teacher" in request.path:
+        return redirect(reverse('teacher_trash_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_trash_list') + '?email_type=' + email_type)
+    else:
+        return redirect(reverse('trash_list') + '?email_type=' + email_type)
 
 
 class MailReceiverDeleteView(DeleteView):
     model = MailReceiver
-    success_url = reverse_lazy('trash_list')
+
+    # success_url = reverse_lazy('trash_list')
 
     def get_success_url(self):
         surl = super().get_success_url()
@@ -588,10 +634,22 @@ def mail_starred(request, pk):
         mail.mail_starred = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    if email_type == "starred":
-        return redirect(reverse('star_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+    if "teacher" in request.path:
+        if email_type == "starred":
+            return redirect(reverse('teacher_star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        if email_type == "starred":
+            return redirect(reverse('student_star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
-        return redirect(reverse('mail_list') + '?email_type=' + email_type)
+        if email_type == "starred":
+            return redirect(reverse('star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def mail_deleted(request, pk):
@@ -602,10 +660,22 @@ def mail_deleted(request, pk):
         mail.mail_deleted = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    if email_type == "trash":
-        return redirect(reverse('trash_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+    if "teacher" in request.path:
+        if email_type == "trash":
+            return redirect(reverse('teacher_trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        if email_type == "trash":
+            return redirect(reverse('student_trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
     else:
-        return redirect(reverse('mail_list') + '?email_type=' + email_type)
+        if email_type == "trash":
+            return redirect(reverse('trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def mail_send(request, pk):
@@ -613,7 +683,13 @@ def mail_send(request, pk):
     mail.mail_send = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    return redirect(reverse('mail_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+    if "teacher" in request.path:
+        return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
+    else:
+        return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def mail_viewed(request, pk):
@@ -621,7 +697,14 @@ def mail_viewed(request, pk):
     mail.mail_viewed = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    return redirect(reverse('mail_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+
+    if "teacher" in request.path:
+        return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
+    else:
+        return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def mail_unread(request, pk):
@@ -629,7 +712,13 @@ def mail_unread(request, pk):
     mail.mail_viewed = False
     mail.save()
     email_type = request.GET.get('email_type', "")
-    return redirect(reverse('mail_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+    if "teacher" in request.path:
+        return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
+    else:
+        return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def mail_spam(request, pk):
@@ -642,7 +731,14 @@ def mail_spam(request, pk):
         mail.mail_spam = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    return redirect(reverse('mail_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+
+    if "teacher" in request.path:
+        return redirect(reverse('teacher_mail_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        return redirect(reverse('student_mail_list') + '?email_type=' + email_type)
+    else:
+        return redirect(reverse('mail_list') + '?email_type=' + email_type)
 
 
 def sender_starred(request, pk):
@@ -653,10 +749,28 @@ def sender_starred(request, pk):
         mail.sender_starred = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    if email_type == "starred":
-        return redirect(reverse('star_list') + '?email_type=' + email_type)
+    user_type = request.user.get_user_type
+    # current_url = resolve(request.path_info).url_name
+    # current_url = request.resolver_match.url_name
+    current_url = request.path
+    # print(current_url)
+    # print(user_type)
+
+    if "teacher" in current_url:
+        if email_type == "starred":
+            return redirect(reverse('teacher_star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('teacher_mail_send_list') + '?email_type=' + email_type)
+    elif "student" in current_url:
+        if email_type == "starred":
+            return redirect(reverse('student_star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_send_list') + '?email_type=' + email_type)
     else:
-        return redirect(reverse('mail_send_list') + '?email_type=' + email_type)
+        if email_type == "starred":
+            return redirect(reverse('star_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('mail_send_list') + '?email_type=' + email_type)
 
 
 def sender_delete(request, pk):
@@ -667,7 +781,21 @@ def sender_delete(request, pk):
         mail.sender_delete = True
     mail.save()
     email_type = request.GET.get('email_type', "")
-    if email_type == "trash":
-        return redirect(reverse('trash_list') + '?email_type=' + email_type)
+    # user_type = request.user.get_user_type
+    # current_url = resolve(request.path_info).url_name
+    # print(current_url)
+    if "teacher" in request.path:
+        if email_type == "trash":
+            return redirect(reverse('teacher_trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('teacher_mail_send_list') + '?email_type=' + email_type)
+    elif "student" in request.path:
+        if email_type == "trash":
+            return redirect(reverse('student_trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('student_mail_send_list') + '?email_type=' + email_type)
     else:
-        return redirect(reverse('mail_send_list') + '?email_type=' + email_type)
+        if email_type == "trash":
+            return redirect(reverse('trash_list') + '?email_type=' + email_type)
+        else:
+            return redirect(reverse('mail_send_list') + '?email_type=' + email_type)

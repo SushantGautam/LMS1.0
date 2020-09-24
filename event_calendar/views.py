@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -5,16 +7,21 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 
-from WebApp.models import MemberInfo
+from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
+
+datetime_now = datetime.now()
+
+
 
 
 class EventCreateView(CreateView):
     model = CalendarEvent
-    template_name = 'event_calendar/index.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventForm
-    success_url = reverse_lazy('event_calendar')
+
+    # success_url = reverse_lazy('event_calendar')
 
     def form_invalid(self, form):
         print(form.errors)
@@ -35,11 +42,14 @@ class EventCreateView(CreateView):
             return super().form_valid(form)
 
 
+
+
 class EventUpdateView(UpdateView):
     model = CalendarEvent
-    template_name = 'event_calendar/index.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventUpdateForm
-    success_url = reverse_lazy('event_calendar')
+
+    # success_url = reverse_lazy('event_calendar')
 
     def form_invalid(self, form):
         print(form.errors)
@@ -49,30 +59,45 @@ class EventUpdateView(UpdateView):
 
 class EventListView(ListView):
     model = CalendarEvent
-    template_name = "event_calendar/index.html"
+
+    # template_name = "event_calendar/index.html"
 
     def get_context_data(self):
         context = super().get_context_data()
         users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
         context['user_list'] = users
+        context['r_a'] = CalendarEvent.register_agent
+
+        context['session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                       # Start_Date__lte=datetime_now,
+
+                                                       # End_Date__gte=datetime_now,
+                                                       Course_Group__Teacher_Code=self.request.user.pk).distinct()
+
+        # print("session", context['session'])
 
         # context['teacher_list'] = users.filter(Is_Teacher=True)
         # context['student_list'] = users.filter(Is_Student=True)
         return context
 
+    def get_queryset(self):
+        queryset = super(EventListView, self).get_queryset()
+        return queryset.filter(register_agent__Center_Code=self.request.user.Center_Code)
+
 
 class EventDeleteView(DeleteView):
     model = CalendarEvent
     form_class = CalendarEventUpdateForm
-    template_name = 'event_calendar/index.html'
-    success_url = reverse_lazy('event_calendar')
+    # template_name = 'event_calendar/index.html'
+    # success_url = reverse_lazy('event_calendar')
 
 
 class EventUpdatedView(UpdateView):
     model = CalendarEvent
-    template_name = 'event_calendar/index.html'
+    # template_name = 'event_calendar/index.html'
     form_class = CalendarEventForm
-    success_url = reverse_lazy('event_calendar')
+
+    # success_url = reverse_lazy('event_calendar')
 
     def form_invalid(self, form):
         print(form.errors)
