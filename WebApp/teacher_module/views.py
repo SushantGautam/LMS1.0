@@ -2541,9 +2541,12 @@ def QuizMarkingCSV(request, quiz_pk):
             # score_index = user_ans.count('": "', 0, end_index)
             score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(i.id)
             score_list = str(quiz_sitting.score_list).split(',')
-            new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
-            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
-                totalsaq_score += float(score_list[score_index])
+            if score_index < len(score_list):
+                new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
+                if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
+                    totalsaq_score += float(score_list[score_index])
+            else:
+                new_row[answer_name + " S" + str(i + 1)] = ''
 
         new_row['MCQ Score'] = totalmcq_score
         new_row['TFQ Score'] = totaltfq_score
