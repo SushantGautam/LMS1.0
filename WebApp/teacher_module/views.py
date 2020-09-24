@@ -1002,19 +1002,19 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         context['questions'] = context['sitting'].get_questions(with_answers=True)
         total = 0
         total_score_obtained = 0
-        for q in context['questions']:
-            i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            # score_list = context['sitting'].score_list.replace("not_graded", "0")
-            try:
-                score = [s for s in context['sitting'].score_list.split(',') if s][i]
-            except:
-                score = 'not_graded'
-            q.score_obtained = score
-            total += q.score
-            if score != "not_graded":
-                total_score_obtained += float(score)
-        context['total_score_obtained'] = total_score_obtained
-        context['total'] = total
+        # for q in context['questions']:
+        #     i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
+        #     # score_list = context['sitting'].score_list.replace("not_graded", "0")
+        #     try:
+        #         score = [s for s in context['sitting'].score_list.split(',') if s][i]
+        #     except:
+        #         score = 'not_graded'
+        #     q.score_obtained = score
+        #     total += q.score
+        #     if score != "not_graded":
+        #         total_score_obtained += float(score)
+        context['total_score_obtained'] = context['sitting'].get_score_correct
+        context['total'] = context['sitting'].quiz.get_max_score
 
         return context
 
