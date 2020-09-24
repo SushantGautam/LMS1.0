@@ -546,9 +546,7 @@ def InningMapCreate_handler(sender, instance, created, **kwargs):
                         end_notification_date=(
                                 end_date - timedelta(hours=1, minutes=0)) if end_date else None,
                         sender=request.user,
-                        target_audience=InningInfo.objects.filter(
-                            Course_Group__in=InningGroup.objects.filter(
-                                Course_Code__pk=instance.target.Course_Code.pk)),
+                        target_audience=instance.Session_Code,
                         verb=verb,
                         description=student_description,
                         action_object=instance.target,
@@ -567,8 +565,7 @@ def InningMapCreate_handler(sender, instance, created, **kwargs):
                     end_notification_date=(
                             end_date - timedelta(hours=1, minutes=0)) if end_date else None,
                     sender=request.user,
-                    target_audience=InningInfo.objects.filter(
-                        Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.target.Course_Code.pk)),
+                    target_audience=instance.Session_Code,
                     verb=verb,
                     description=student_description,
                     action_object=instance.target,
@@ -578,8 +575,7 @@ def InningMapCreate_handler(sender, instance, created, **kwargs):
                 start_notification_date=timezone.now(),
                 end_notification_date=None,
                 sender=request.user,
-                target_audience=InningInfo.objects.filter(
-                    Course_Group__in=InningGroup.objects.filter(Course_Code__pk=instance.target.Course_Code.pk)),
+                target_audience=instance.Session_Code,
                 verb=verb,
                 description=student_description,
                 action_object=instance.target,
