@@ -3,6 +3,7 @@ import json
 import os
 import re
 import uuid
+import random
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from json import JSONDecodeError
@@ -1172,8 +1173,10 @@ class CourseInfoDetailView(CourseAuthMxnCls, AdminAuthMxnCls, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['other_courses'] = CourseInfo.objects.all().exclude(
-            id=self.kwargs.get('pk'))[:4]
+        other = CourseInfo.objects.all().exclude(
+            id=self.kwargs.get('pk')).values_list('id', flat=True)
+        other_id = random.sample(list(other), min(other.count(), 4))
+        context['other_courses'] = CourseInfo.objects.filter(id__in=other_id)
         context['chapters'] = ChapterInfo.objects.filter(
             Course_Code=self.kwargs.get('pk')).order_by('Chapter_No')
         context['surveycount'] = SurveyInfo.objects.filter(
