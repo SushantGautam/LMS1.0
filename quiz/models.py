@@ -839,8 +839,9 @@ class Sitting(models.Model):
         for k in self.quiz.saquestion.all():
             i = [int(n) for n in self.question_order.split(',') if n].index(k.id)
             score_list = str(self.score_list).split(',')
-            if str(score_list[i]) and str(score_list[i]) != 'not_graded':
-                totalsaq_score += float(score_list[i])
+            if i < len(score_list):
+                if str(score_list[i]) and str(score_list[i]) != 'not_graded':
+                    totalsaq_score += float(score_list[i])
 
         return totalmcq_score + totaltfq_score + totalsaq_score
 
