@@ -824,37 +824,66 @@ class Sitting(models.Model):
 
     @property
     def get_score_correct(self):
-        score = 0.0
-        for n in self.score_list.split(','):
-            if (n != "") and (n != " ") and (n != "not_graded"):
-                score += float(n)
-        return score
+        totalmcq_score = 0.0
+        totaltfq_score = 0.0
+        totalsaq_score = 0.0
+        user_answers = json.loads(self.user_answers)
+        for i in self.quiz.mcquestion.all():
+            mcq_user_ans = user_answers.get(str(i.id))
+            if i.check_if_correct(mcq_user_ans):
+                totalmcq_score += i.score
+        for j in self.quiz.tfquestion.all():
+            tfq_user_ans = user_answers.get(str(j.id))
+            if j.check_if_correct(tfq_user_ans):
+                totaltfq_score += j.score
+        for k in self.quiz.saquestion.all():
+            user_ans = str(self.user_answers)
+            saq_id = '"' + str(k.id) + '":'
+            end_index = user_ans.find(saq_id)
+            score_index = user_ans.count('": "', 0, end_index)
+            score_list = str(self.score_list).split(',')
+            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
+                totalsaq_score += float(score_list[score_index])
+
+        return totalmcq_score + totaltfq_score + totalsaq_score
+
+        # # score = 0.0
+        # # for n in self.score_list.split(','):
+        # #     if (n != "") and (n != " ") and (n != "not_graded"):
+        # #         score += float(n)
+        # return score
 
     @property
     def get_percent_correct(self):
-        # dividend = float(self.current_score)
-        dividend = 0
-        for n in self.score_list.split(','):
-            if (n != "") and (n != " ") and (n != "not_graded"):
-                dividend += float(n)
-
-        # divisor = len(self._question_ids())
-        divisor = 0
-        for x in [int(n) for n in self.question_order.split(',') if n]:
-            score = Question.objects.get(id=x).score
-            divisor += float(score)
-        if divisor < 1:
-            return 0  # prevent divide by zero error
-
-        if dividend > divisor:
-            return 100
-
-        correct = float('%.2f' % ((dividend / divisor) * 100.0))
-
-        if correct >= 1:
-            return correct
+        score = self.get_score_correct
+        total_score = self.quiz.get_max_score
+        if score > 0 and total_score > 0:
+            return round((score / total_score) * 100, 2)
         else:
             return 0
+        # # dividend = float(self.current_score)
+        # dividend = 0
+        # for n in self.score_list.split(','):
+        #     if (n != "") and (n != " ") and (n != "not_graded"):
+        #         dividend += float(n)
+
+        # # divisor = len(self._question_ids())
+        # divisor = 0
+        # for x in [int(n) for n in self.question_order.split(',') if n]:
+        #     score = Question.objects.get(id=x).score
+        #     divisor += float(score)
+        # if divisor < 1:
+        #     return 0  # prevent divide by zero error
+
+        # if dividend > divisor:
+        #     return 100
+
+        # correct = float('%.2f' % ((dividend / divisor) * 100.0))
+
+        # if correct >= 1:
+        #     return correct
+        # else:
+        #     return 0
 
     def mark_quiz_complete(self):
         self.complete = True
@@ -921,14 +950,43 @@ class Sitting(models.Model):
         if with_answers:
             user_answers = json.loads(self.user_answers)
             for q in questions:
-                # q.user_answer = user_answers[str(q.id)]
-                q.user_answer = user_answers.get(str(q.id), False)
-                i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
-                if i < len([s for s in self.score_list.split(',') if s]):
-                    score = [s for s in self.score_list.split(',') if s][i]
+                user_ans = user_answers.get(str(q.id), False)
+                if user_ans:
+                    if isinstance(q, MCQuestion):
+                        q.user_answer = Answer.objects.get(id=int(user_ans)).content
+                    else:
+                        q.user_answer = user_ans
+                    
+                    if isinstance(q, SA_Question):
+                        i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
+                        score_list = str(self.score_list).split(',')
+                        if i < len(score_list):
+                            q.score_obtained = score_list[i]
+                            q.ans_correct = True
+                            if str(q.score_obtained) == '0':
+                                 q.ans_correct = False
+                        else:
+                            q.score_obtained = "not_graded"
+                            q.ans_correct = True
+                    else:
+                        if q.check_if_correct(user_ans):
+                            q.score_obtained = q.score
+                            q.ans_correct = True
+                        else:
+                            q.score_obtained  = 0
+                            q.ans_correct = False
                 else:
-                    score = "not_graded"
-                q.score_obtained = score
+                    q.user_answer = ' '
+                    q.score_obtained  = 0
+
+                # # q.user_answer = user_answers[str(q.id)]
+                # q.user_answer = user_answers.get(str(q.id), False)
+                # i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
+                # if i < len([s for s in self.score_list.split(',') if s]):
+                #     score = [s for s in self.score_list.split(',') if s][i]
+                # else:
+                #     score = "not_graded"
+                # q.score_obtained = score
 
         return questions
 

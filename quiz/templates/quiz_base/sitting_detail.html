@@ -39,9 +39,9 @@
         {% endif %}
       </td>
 {#      <td style="overflow: scroll">{{ question|answer_choice_to_string:question.user_answer }}</td>#}
-      <td>{{ question|answer_choice_to_string:question.user_answer }}</td>
+      <td>{{ question.user_answer }}</td>
       <td>
-        {% if question.id in sitting.get_incorrect_questions %}
+        {% if not question.ans_correct %}
           <i class="fa fa-times fa-2x text-danger"></i>
         {% elif question.is_saq %}
           ---
