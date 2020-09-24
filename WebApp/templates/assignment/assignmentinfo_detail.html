@@ -154,8 +154,13 @@
                             <td>{{ object.Chapter_Code }}</td>
                         </tr>
                         <tr>
-                            <td>Register Agent</td>
-                            <td>{{ object.Register_Agent }}</td>
+                            <td>Register By</td>
+                            {% if 'students' in request.path %}
+                                <td>{{ object.Register_Agent.get_full_name }}</td>
+                            {% else %}
+                                <td>{{ object.Register_Agent }}</td>
+                            {% endif %}
+                            
                         </tr>
 
                         {% if '/students' not in request.path %}

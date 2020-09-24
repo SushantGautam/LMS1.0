@@ -67,6 +67,12 @@ def getUser(userdata):
         return MemberInfo.objects.get(username=userdata)
     return userdata
 
+@register.simple_tag
+def getUserFullName(userdata):
+    if MemberInfo.objects.filter(username=userdata).exists():
+        return MemberInfo.objects.get(username=userdata).get_full_name()
+    return '--'
+
 
 @register.simple_tag
 def getAssignmentsScore(assignmentObj, userObj):
