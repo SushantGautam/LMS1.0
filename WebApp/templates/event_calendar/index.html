@@ -218,6 +218,7 @@
 
             var events = [
                 {% for event in object_list %}
+                 {% if event.register_agent.pk == request.user.pk or request.user in event.get_participants %}
                     {
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
@@ -276,6 +277,7 @@
                         {% endif %}
 
                     },
+                    {%endif%}
                 {% endfor %}
             ];
 
@@ -505,6 +507,7 @@
 
                    // modal.find('.participant_name').text(event.event_part);
                     modal.find('.part_custom').show();
+                    $(".cus_prt").css({"height": "300px","width": "fit-content",  "overflow-y": "scroll"})
 
 
 

@@ -69,9 +69,9 @@ class EventListView(ListView):
         context['r_a'] = CalendarEvent.register_agent
 
         context['session'] = InningInfo.objects.filter(Use_Flag=True,
-                                                       # Start_Date__lte=datetime_now,
+                                                       Start_Date__lte=datetime_now,
 
-                                                       # End_Date__gte=datetime_now,
+                                                       End_Date__gte=datetime_now,
                                                        Course_Group__Teacher_Code=self.request.user.pk).distinct()
 
         # print("session", context['session'])
