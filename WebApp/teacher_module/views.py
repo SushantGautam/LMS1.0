@@ -82,17 +82,16 @@ def start(request):
 
         x = request.user.get_teacher_courses()
         mycourse = x['courses']
-        sessions_list = x['session']
-        x = [x for x in sessions_list]
-        for y in x:
-            for z in y:
-                if z not in sessions:
-                    sessions.append(z)
-        activeassignments = []
-        for course in mycourse:
-            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
-                                                               Assignment_Deadline__gte=datetime_now,
-                                                               Chapter_Code__Use_Flag=True)
+        sessions = x['session']
+        # x = [x for x in sessions_list]
+        # for y in x:
+        #     for z in y:
+        #         if z not in sessions:
+        #             sessions.append(z)
+        
+        # here assignment of only active chapters can be filtered later
+        activeassignments = AssignmentInfo.objects.filter(Course_Code__in=mycourse, Use_Flag=True,
+                                                               Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
         notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
                                         Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
         if notices.exists():
@@ -1003,19 +1002,19 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         context['questions'] = context['sitting'].get_questions(with_answers=True)
         total = 0
         total_score_obtained = 0
-        for q in context['questions']:
-            i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            # score_list = context['sitting'].score_list.replace("not_graded", "0")
-            try:
-                score = [s for s in context['sitting'].score_list.split(',') if s][i]
-            except:
-                score = 'not_graded'
-            q.score_obtained = score
-            total += q.score
-            if score != "not_graded":
-                total_score_obtained += float(score)
-        context['total_score_obtained'] = total_score_obtained
-        context['total'] = total
+        # for q in context['questions']:
+        #     i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
+        #     # score_list = context['sitting'].score_list.replace("not_graded", "0")
+        #     try:
+        #         score = [s for s in context['sitting'].score_list.split(',') if s][i]
+        #     except:
+        #         score = 'not_graded'
+        #     q.score_obtained = score
+        #     total += q.score
+        #     if score != "not_graded":
+        #         total_score_obtained += float(score)
+        context['total_score_obtained'] = context['sitting'].get_score_correct
+        context['total'] = context['sitting'].quiz.get_max_score
 
         return context
 
@@ -2502,8 +2501,7 @@ def QuizMarkingCSV(request, quiz_pk):
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
         new_row = {'S.N.': counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date,
-                   'End Datetime': end_date,
-                   'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
+                   'End Datetime': end_date}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
@@ -2537,18 +2535,27 @@ def QuizMarkingCSV(request, quiz_pk):
             question_name_value = user_answers.get(str(saquestion.id))
             new_row[question_name] = question_name_value
 
-            user_ans = str(quiz_sitting.user_answers)
-            saq_id = '"' + str(saquestion.id) + '":'
-            end_index = user_ans.find(saq_id)
-            score_index = user_ans.count('": "', 0, end_index)
+            # user_ans = str(quiz_sitting.user_answers)
+            # saq_id = '"' + str(saquestion.id) + '":'
+            # end_index = user_ans.find(saq_id)
+            # score_index = user_ans.count('": "', 0, end_index)
+            score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(i.id)
             score_list = str(quiz_sitting.score_list).split(',')
-            new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
-            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
-                totalsaq_score += float(score_list[score_index])
+            if score_index < len(score_list):
+                new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
+                if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
+                    totalsaq_score += float(score_list[score_index])
+            else:
+                new_row[answer_name + " S" + str(i + 1)] = ''
 
         new_row['MCQ Score'] = totalmcq_score
         new_row['TFQ Score'] = totaltfq_score
         new_row['SAQ Score'] = totalsaq_score
+        new_row['Total Score'] = totalmcq_score + totaltfq_score + totalsaq_score
+        if new_row['Total Score']: 
+            new_row['Percentage'] = (new_row['Total Score'] / total_score) * 100
+        else:
+            new_row['Percentage'] = 0
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
 
