@@ -2539,7 +2539,7 @@ def QuizMarkingCSV(request, quiz_pk):
             # saq_id = '"' + str(saquestion.id) + '":'
             # end_index = user_ans.find(saq_id)
             # score_index = user_ans.count('": "', 0, end_index)
-            score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(i.id)
+            score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(saquestion.id)
             score_list = str(quiz_sitting.score_list).split(',')
             if score_index < len(score_list):
                 new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
