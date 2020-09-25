@@ -4103,6 +4103,11 @@ def InningInfoMappingView(request, model_name):
     inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
     Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
 
+    if model_name == "AssignmentInfo":
+        if request.POST['Start_Date'] == '' or request.POST['End_Date'] == '' or \
+                request.POST['Start_Date'] is None or request.POST['End_Date'] is None:
+            return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
+
     if (request.POST['Start_Date'] and request.POST['End_Date']):
         if (request.POST['Start_Date'] > request.POST['End_Date']):
             return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
