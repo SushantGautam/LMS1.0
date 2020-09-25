@@ -2288,7 +2288,7 @@
         }
 
         function idleTImeCheck() {
-            if (idleTime >= (idleTimeRedirectTime)) {
+            if (idleTime >= (idleTimeRedirectTime) && !($('#message-modal').is(':visible'))) {
                 displayAlertMessage()
             } else {
                 idleTime += idleTimeCheckIntervalTime;   // increment must be equal to function interval time
