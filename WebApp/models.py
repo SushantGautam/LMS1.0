@@ -934,14 +934,6 @@ class NoticeView(models.Model):
 class SessionMapInfo(models.Model):
     Start_Date = DateTimeField(null=True, blank=True)
     End_Date = DateTimeField(null=True, blank=True)
-    # Chapter_Code = ForeignKey(
-    #     'ChapterInfo',
-    #     related_name="chapterSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
-    # )
-    # Assignment_Code = ForeignKey(
-    #     'AssignmentInfo',
-    #     related_name="assignmentSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
-    # )
     content_type = models.ForeignKey(
         ContentType,
         related_name='sessionmap_target',
@@ -949,9 +941,9 @@ class SessionMapInfo(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
-    object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
     target = GenericForeignKey('content_type', 'object_id')
-    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.DO_NOTHING)
+    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.CASCADE)
 
     def clean(self):
         super().clean()
