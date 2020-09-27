@@ -63,3 +63,7 @@ function dateDifference(end_date, start_date) {
     hrs = hrs % 24;
     return days + " days, " + hrs + " hours, " + mins + " minutes"
 }
+
+$(document).on('click', '.dropdown-menu', function (e) {
+    e.stopPropagation();
+});
