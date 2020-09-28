@@ -1,0 +1,69 @@
+{% load static %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title d-block text-center">
+        <h2>{% if 'create' in request.path %}
+            Create New{% elif 'edit' in request.path %}
+            Edit {% endif %}
+            Course</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-7 col-md-12" style="margin:auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" id="FormID" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_Course_Name">Course Name *</label>
+                        <input type="text" class="form-control" name="Course_Name" id="id_Course_Name"
+                            value="{{ object.Course_Name }}" placeholder="Enter name of the course" required
+                            {% if '/teachers' in request.path %} readonly {% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_Course_Provider">Course Provider *</label>
+                        <input type="text" class="form-control" name="Course_Provider"
+                            value="{{ form.Course_Provider.value }}" maxlength="250" id="id_Course_Provider"
+                            placeholder="Enter course provider" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_Course_Description">Course Description</label>
+                        <textarea name="Course_Description" id="id_Course_Description" class="form-control"
+                            rows="10">{{ object.Course_Description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_Course_Cover_File">Course Cover File</label>
+                        <br>
+                        {{form.Course_Cover_File}}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_Course_Provider">Course Rating *</label>
+                        <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
+                            value="{{ object.Course_Level }}" min="1" max="5" required>
+                    </div>
+                    {% if 'edit' in request.path %}
+                    <div class="form-group">
+                        <label for="id_Use_Flag">
+                            Status
+                        </label><br>
+                        <input type="checkbox" id="id_Use_Flag" name="Use_Flag" {% if object.Use_Flag == False %} &nbsp;
+                            {% else %} checked {% endif %}>
+                    </div>
+                    {% else %}
+                    <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                    {% endif %}
+                    <input type="hidden" name="Center_Code" id="id_Center_Code"
+                        value="{{ request.user.Center_Code.id }}">
+                    <input type="hidden" name="Register_Agent" id="id_Register_Agent"
+                        value="{{ request.user.username }}">
+                    <div class="text-center pt-3">
+                        <button type="submit" class="btn btn-primary" style="margin:auto">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

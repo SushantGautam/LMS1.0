@@ -1,0 +1,173 @@
+{% load static %}
+
+{% block content %}
+<div class="modal fade" id="create_chapter_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_chapter_modal_title">Create Chapter
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="create_chapter_modal_body">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8 col-md-12">
+        <div class="page-header">
+            <div class="page-title">
+                <h3>{{ object.Course_Name }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-7 col-sm-12">
+                <div class="slider-for">
+                    <div class="slick-slide-item">
+                        <img src="{% if object.Course_Cover_File %}
+                        /media/{{ object.Course_Cover_File }}
+                    {% else %}
+                        {% static '/media/image/course.jpg' %}
+                    {% endif %}" class="img-fluid rounded" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-sm-12 mt-4">
+                {{ object.Course_Description }}
+            </div>
+        </div>
+        <div class="card mt-4 p-3">
+            <h4 class="text-primary m-2">List of Chapters</h4>
+            <ul>
+                {% for chapter in chapters %}
+                <li class="p-3">
+                    <a href="{% if '/students' in request.path %}
+            {{ chapter.student_get_absolute_url }}
+            {% elif '/teachers' in request.path %}
+            {{ chapter.teacher_get_absolute_url }}
+            {% else %}
+            {{ chapter.get_absolute_url }}
+            {% endif %}">
+                        <figure class="avatar avatar-sm">
+                            <span class="avatar-title rounded-circle"> {{ chapter.Chapter_No }}</span>
+                        </figure> &nbsp;
+                        {{ chapter.Chapter_Name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <div class="card">
+            <div class="px-4 pt-4">
+                <h5 class="text-primary mb-3">Course</h5>
+                <p>
+                    Difficulty :
+                    {% for i in '12345'|make_list %}
+                    {% if object.Course_Level >= forloop.counter %}
+                    <span class="fa fa-fw fa-star text-warning"></span>
+                    {% else %}
+                    <span class="fa fa-fw fa-star-o text-warning"></span>
+
+                    {% endif %}
+                    {% endfor %}
+                </p>
+                <p>Course Provider : {{ object.Course_Provider }}
+                </p>
+                <p>Status : &nbsp;
+                    {% if object.Use_Flag == True %}
+                    <span class="badge bg-success-bright text-success">Active</span>
+                    </span>
+                    {% elif object.Use_Flag == False %}
+                    <span class="badge bg-danger-bright text-danger">Inactive</span>
+                    {% endif %}
+
+                </p>
+                <p><i class="fa fa-clock-o fa-fw"></i> 4 hrs &nbsp;
+                    <i class="fa fa-calendar fa-fw"></i> 21/10/14
+                </p>
+                <p>Instructor:
+                    {% if object.get_teachers_of_this_course %}
+                <ul class="row">
+                    {% for eachTeacher in object.get_teachers_of_this_course %}
+                    <li>
+                        <img class="img-circle" src="{{ eachTeacher.Avatar }}" alt="Profile_picture" width="20"
+                            height="22">
+                        {{ eachTeacher.getFullName }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                &nbsp; No Teachers Assigned Yet
+                {% endif %}
+                </p>
+                <!-- <p>Max. students: 50</p> -->
+                <p>Attending: 30</p>
+            </div>
+            <ul class="text-center">
+                <li class="p-2 border-top">
+                    <a class="btn btn-primary relative" data-z="1" data-animated href="{% if '/teachers' in request.path %}
+                    /teachers{{ object.get_update_url }}
+                        {% else %}
+                            {{ object.get_update_url }}
+                        {% endif %}">Edit Course</a>
+                </li>
+                {% if '/students' not in request.path %}
+                <li class="p-2 border-top">
+                    <button class="btn btn-success relative" data-z="1" data-toggle="modal"
+                        data-target="#create_chapter_modal" data-animated id="add-newchapter-btn">Add
+                        Chapter</button>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="card">
+            <div class="p-3">
+                <h5 class="text-primary m-0">Other Courses</h5>
+            </div>
+            <ul class="text-center">
+                {% for courses in other_courses %}
+                <li class="p-3 border-top">
+                    <a href="{{ courses.get_absolute_url }}">{{ courses.Course_Name }}</a>
+                </li>
+                {% empty %}
+                <li class="p-3 border-top">
+                    No other Courses Available
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    $('#add-newchapter-btn').on('click', function () {
+        $('#create_chapter_modal_body').empty();
+        $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
+        $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_chapter_modal_body').append(response);
+                Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating chapter create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+                $("#id_Chapter_No").val(lastchapter + 1);
+            }
+        });
+
+
+    });
+</script>
+{% endblock %}

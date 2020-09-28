@@ -1,0 +1,22 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+
+{% block title %}
+| Course Detail
+{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="
+        {% if object.Use_Flag %}
+            {% url 'teacher_mycourses_list_active' %}
+        {% else %}
+            {% url 'teacher_mycourses_list_inactive' %}
+        {% endif %}
+    ">My Courses</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Course_Name }}</li>
+{% endblock %}
+
+
+{% block content %}
+{% include 'course/courseinfo_detail.html' %}
+{% endblock content %}
