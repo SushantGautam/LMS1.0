@@ -1,3 +1,5 @@
+{% load model_template_relation %}
+
 <style>
     .notification-icon1 {
         background-color: white;
@@ -29,9 +31,9 @@
             <h4 {% if notice.unread %}style="color: white;"{% endif %}>
                 <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
                 {% if notice.action_object %}
-                    {#            <a href=" {{ notice.action_object.get_absolute_url }}"> #}
-                    {{ notice.action_object }}
-                    {#            </a>#}
+                    <a href="javascript:void(0)" class="notification_redirect_link" data-noticeId="{{ notice.id }}">
+                        {{ notice }}
+                    </a>
                 {% endif %}
             </h4>
 
@@ -165,4 +167,19 @@
     function notificationIconClick(elem) {
         $(elem).closest('.notific-div').find('.notification-buttons').toggle()
     }
+    {% if notice.action_object %}
+        $('.notification_redirect_link*[data-noticeId="{{ notice.id }}"]').each(function (index) {
+            if (window.location.href.indexOf("/students") > -1) {
+                {% getStudentNotificationURL notice.action_object user as notification_url %}
+                if ('{{ notification_url }}') {
+                    $(this).attr('href', '{{ notification_url }}')
+                }
+
+            } else if (window.location.href.indexOf("/teachers") > -1) {
+                {#$(this).attr('href', '{{ notice.action_object.notification_teacher_url }}')#}
+            } else {
+                $(this).attr('href', '{{ notice.action_object.get_absolute_url }}')
+            }
+        });
+    {% endif %}
 </script>
