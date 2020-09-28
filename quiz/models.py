@@ -489,7 +489,7 @@ class Quiz(models.Model):
         verbose_name=_("Exam Paper"))
 
     single_attempt = models.BooleanField(
-        blank=False, default=False,
+        blank=False, default=True,
         help_text=_("If yes, only one attempt by"
                     " a user will be permitted."
                     ),

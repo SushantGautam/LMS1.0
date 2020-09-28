@@ -1019,6 +1019,34 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         return context
 
 
+class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
+    model = Quiz
+    template_name = 'teacher_quiz/sitting_detail_SAQ.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarkingDetailSAQ, self).get_context_data(**kwargs)
+        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
+        context['quiz_list'] = context['quiz_list'].filter(
+            cent_code=self.request.user.Center_Code,
+            course_code__in=innings_Course_Code
+        )
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            if not sittings:
+                context['quiz_list'] = context['quiz_list'].exclude(id=q.id)
+
+        for q in context['quiz_list']:
+            sittings = Sitting.objects.filter(quiz=q)
+            q.count = sittings.count()
+            q.complete_count = sittings.filter(complete=True).count()
+            q.student_count = sittings.annotate(Count('user', distinct=True)).count()
+            q.student_complete_count = sittings.filter(complete=True).annotate(Count('user', distinct=True)).count()
+
+  
+
+        return context     
+
+
 def anon_session_score(session, to_add=0, possible=0):
     """
     Returns the session score for non-signed in users.
