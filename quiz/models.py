@@ -567,6 +567,9 @@ class Quiz(models.Model):
     def get_tfquestions(self):
         return self.tfquestion_set.all()
 
+    def get_saquestions(self):
+        return self.saquestion.all()
+
     def has_mcqs(self):
         return (self.mcquestion.count() > 0)
 

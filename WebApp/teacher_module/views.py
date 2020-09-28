@@ -1019,32 +1019,39 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         return context
 
 
-class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
+class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
     model = Quiz
     template_name = 'teacher_quiz/sitting_detail_SAQ.html'
 
+    def post(self, request, *args, **kwargs):
+        sitting = self.get_object()
+
+        q_to_toggle = request.POST.get('saq_id', None)
+        if q_to_toggle:
+            q = Question.objects.get_subclass(id=int(q_to_toggle))
+            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            print(request.POST['new_score'], "new_score")
+            print(indx, "index")
+            score_list = [s for s in sitting.score_list.split(',') if s]
+            score_list[indx] = request.POST.get('new_score', 0)
+            sitting.score_list = ','.join(list(map(str, score_list)))
+            print(sitting.score_list, "score_list_update")
+            sitting.save()
+            # if int(q_to_toggle) in sitting.get_incorrect_questions:
+            #     sitting.remove_incorrect_question(q)
+            # else:
+            #     sitting.add_incorrect_question(q)
+
+        return self.get(request)
+
     def get_context_data(self, **kwargs):
         context = super(QuizMarkingDetailSAQ, self).get_context_data(**kwargs)
-        innings_Course_Code = InningGroup.objects.filter(Teacher_Code=self.request.user.id).values('Course_Code')
-        context['quiz_list'] = context['quiz_list'].filter(
-            cent_code=self.request.user.Center_Code,
-            course_code__in=innings_Course_Code
-        )
-        for q in context['quiz_list']:
-            sittings = Sitting.objects.filter(quiz=q)
-            if not sittings:
-                context['quiz_list'] = context['quiz_list'].exclude(id=q.id)
+        context['questions'] = context['quiz'].sitting_set.all()
 
-        for q in context['quiz_list']:
-            sittings = Sitting.objects.filter(quiz=q)
-            q.count = sittings.count()
-            q.complete_count = sittings.filter(complete=True).count()
-            q.student_count = sittings.annotate(Count('user', distinct=True)).count()
-            q.student_complete_count = sittings.filter(complete=True).annotate(Count('user', distinct=True)).count()
+        for ques in context['questions']:
+            ques.get_questions(with_answers=True)
 
-  
-
-        return context     
+        return context
 
 
 def anon_session_score(session, to_add=0, possible=0):
