@@ -1,6 +1,5 @@
 {% load static %}
 
-{% block content %}
 <div class="modal fade" id="create_chapter_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -12,6 +11,7 @@
                 </button>
             </div>
             <div class="modal-body" id="create_chapter_modal_body">
+
             </div>
         </div>
     </div>
@@ -143,8 +143,11 @@
         </div>
     </div>
 </div>
-{% endblock %}
+
+
 {% block javascript %}
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
 <script>
     $('#add-newchapter-btn').on('click', function () {
         $('#create_chapter_modal_body').empty();
@@ -166,8 +169,6 @@
                 $("#id_Chapter_No").val(lastchapter + 1);
             }
         });
-
-
     });
 </script>
 {% endblock %}

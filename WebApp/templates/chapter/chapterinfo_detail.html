@@ -1,7 +1,6 @@
 {% load static %}
 {% load model_template_relation %}
 
-
 <div class="modal fade" id="create_assignment_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -150,3 +149,43 @@
         </div>
     </div>
 </div>
+
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+<script>
+    $(document).on('click', '.chapter-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Chapter?');
+        if (ans == true) {
+            $(`#deleteChapter${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
+    $('#add-newassignment-btn').on('click', function () {
+        $('#create_assignment_modal_body').empty();
+        $('#create_assignment_modal_body').append(
+            `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+           class="select form-control">
+        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
+           class="select form-control">`
+        )
+        $.ajax({
+            type: "GET",
+            url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_assignment_modal_body').append(response);
+                $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
+                //Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating assignment create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+            }
+        });
+    });
+</script>
+{% endblock %}

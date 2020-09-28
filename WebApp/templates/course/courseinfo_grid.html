@@ -1,6 +1,5 @@
 {% load static %}
 
-{% block content %}
 <div class="page-header">
     <div class="page-title">
         <h2>Courses</h2>
@@ -101,9 +100,11 @@
     {% endfor %}
 </div>
 
-{% endblock %}
 
 {% block javascript %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
 <script>
     $(".query_form").submit(function (e) {
         val = $(this).find('input').val()
