@@ -817,7 +817,7 @@ class CreateQuizAjax(CreateView):
             self.object.pre_test = True if self.request.GET.get("test_type", None) == 'pre_test' else False
             self.object.post_test = True if self.request.GET.get("test_type", None) == 'post_test' else False
             self.object.exam_paper = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
-            self.object.single_attempt = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
+            # self.object.single_attempt = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
             self.object.save()
         self.object.url = 'quiz' + str(self.object.id)
         super().form_valid(form)

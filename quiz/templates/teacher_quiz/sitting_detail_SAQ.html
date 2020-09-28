@@ -8,12 +8,12 @@
 {% block breadcrumb %} 
 <!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li>  -->
 <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li> 
-<li class="breadcrumb-item"><a href="{% url 'teacher_individual_quiz_marking' sitting.quiz.id %}">{{ sitting.quiz.title}}</a></li>
+
 <li class="breadcrumb-item active" aria-current="page">{{ sitting.user}}</li>
 {% endblock %} 
 
 {% block content %}
-{% include "quiz_base/sitting_detail.html" %}
+{% include "quiz_base/sitting_detail_SAQ.html" %}
     
 {% endblock %}
 
