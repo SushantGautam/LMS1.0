@@ -1,137 +1,135 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
-
 {% block stylesheets %}
-    <link rel='manifest' href='/manifest.webmanifest'>
-
+<link rel='manifest' href='/manifest.webmanifest'>
 {% endblock stylesheets %}
-
-
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'teacher_home' %}">Home</a></li>
+{% endblock %}
 {% block content %}
+{% if notice %}
+{% include 'popUp.html' %}
+{% endif %}
+{# {% include 'WebApp/theme/alerts.html' %} #}
 
-    {% if notice %}
-        {% include 'popUp.html' %}
-    {% endif %}
-
-    {# {% include 'WebApp/theme/alerts.html' %} #}
-
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-        <h1 class="tableHeader"><b>
-            Welcome to Teacher Portal
-        </b></h1>
+<div class="page-header">
+    <div class="page-title">
+        <h2>Welcome to Teacher Portal</h2>
     </div>
-    <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
-        <h3 style="color: white"><b>Overview</b></h3>
-    </div>
-
-    <div class="row">
-        <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
-            <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
-                <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span>List of my Classes </span></h3>
+</div>
+<div class="text-center mb-3">
+    <h3 class="text-primary">Overview</h3>
+</div>
+<div class="row">
+    <div class="col-lg-3 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <a href="javascript:void(0)">
+                        <h6 class="card-title mb-0">List of My Classes</h6>
+                    </a>
                 </div>
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for object in Session %}
-                        {% ifchanged object %}
-
-                            <li class="list-group-item ">
-                                <h5 class="text-center">
-
-                                    <b>
-                                        <a href="{{ object.Groups.teacher_get_absolute_url }}">{{ object.Groups }}
-                                            ({{ object }})</a></b>
-                                    <!-- <a href="{{ object.Inning_Name.teacher_get_absolute_url }}">
-                        <button type="button" style="float: right;width:100px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                        ">CONTINUE <i class="fa fa-arrow-right"></i>
-                        </button>
-                    </a> -->
-
-                                </h5>
-                            </li>
-                        {% endifchanged %}
+                    {% ifchanged object %}
+                    <li class="list-group-item d-flex px-0 py-2">
+                        <b>
+                            <a href="{{ object.Groups.teacher_get_absolute_url }}">
+                                {{ object.Groups }}
+                                ({{ object }})
+                            </a>
+                        </b>
+                    </li>
+                    {% endifchanged %}
+                    {% empty%}
+                    No Active Classes
                     {% endfor %}
                 </ul>
             </div>
         </div>
-        <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
-            <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
-                <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span><b>Courses</b> - <a
-                            href="{% url 'teacher_mycourses_list_active' %}">List
-                            of my
-                            Courses </a></span></h3>
-
+    </div>
+    <div class="col-lg-4 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h6 class="card-title mb-0">
+                        <b>Courses</b> -
+                        <a href="{% url 'teacher_mycourses_list_active' %}">
+                            List of my Courses
+                        </a>
+                    </h6>
                 </div>
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for object in MyCourses %}
-                        <li class="list-group-item ">
-                            <h5>
-                                <a href='{{ object.teacher_get_absolute_url }}'><b> {{ object }}</b></a>
-                                <a onclick="RetrieveChatper('{{ object.teacher_get_absolute_url }}',{{ object.pk }})">
-                                    <button type="button" style="float: right;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                        ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                    </button>
-                                </a>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2">
+                        <b>
+                            <a href="{{ object.teacher_get_absolute_url }}">
+                                {{ object }}
+                            </a>
+                        </b>
+                        <a onclick="RetrieveChatper('{{ object.teacher_get_absolute_url }}',{{ object.pk }})">
+                            <button type="button" class="btn btn-sm btn-outline-primary">CONTINUE <i
+                                    class="fa fa-arrow-right"></i>
+                            </button>
+                        </a>
 
-                            </h5>
-                        </li>
+                    </li>
+                    {% empty%}
+                    No Courses to display
                     {% endfor %}
                 </ul>
             </div>
         </div>
-
-        <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
-            <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
-                <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span><a href="{% url 'teacher_myassignmentinfo_list' %}"><b>List of my
-                                Assignments</b></a>
-                    </span></h3>
+    </div>
+    <div class="col-lg-5 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <a href="{% url 'teacher_myassignmentinfo_list' %}">
+                        <h6 class="card-title mb-0">List of My Assignments</h6>
+                    </a>
                 </div>
-                <ul class="list-group">
+                <ul class="list-group list-group-flush">
                     {% for object in activeAssignments %}
-                        <li class="list-group-item ">
-                            <h5>
-                                <b> {{ object.Assignment_Topic }}</b>
-                                <h5 style="margin-bottom: 0;">
-                                    <a href="{{ object.teacher_get_absolute_url }}">
-                                        <button type="button" style="border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                        ">CONTINUE <i class="fa fa-arrow-right"></i>
-                                        </button>
-                                    </a>
-                                </h5>
-                            </h5>
-                        </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-2">
+                        <b>
+                            {{ object.Assignment_Topic }}
+                        </b>
+                        <a href="{{ object.teacher_get_absolute_url }}">
+                            <button type="button" class="btn btn-sm btn-outline-primary">CONTINUE <i
+                                    class="fa fa-arrow-right"></i>
+                            </button>
+                        </a>
+                    </li>
+                    {% empty%}
+                    No Active Assignments
                     {% endfor %}
                 </ul>
             </div>
-
         </div>
-
     </div>
+</div>
 
-
-    <div class="row justify-content-md-center">
-        <div class="col-sm-6" style="max-width: -webkit-fill-available;">
-            <div class="panel panel-default">
-                <div class="title text-center">
-                    <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
-                </div>
-                <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
+<div class="row justify-content-md-center">
+    <div class="col-sm-6" style="max-width: -webkit-fill-available;">
+        <div class="panel panel-default">
+            <div class="title text-center">
+                <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
             </div>
+            <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
         </div>
     </div>
-
+</div>
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
 
 <script>
     $("#noticeForm").submit(function (e) {
-
         e.preventDefault(); // avoid to execute the actual submit of the form.
         console.log($('#id_dont_show').is(":checked"));
 
-        if($('#id_dont_show').is(":checked")) {
+        if ($('#id_dont_show').is(":checked")) {
             $.ajax({
                 url: "{% url 'notice_view_create' %}",  // URL to your view that serves new info
                 data: {
@@ -151,14 +149,11 @@
                     console.log('Error in submitting response');
                 }
             });
-        }else{
+        } else {
             $('.close').click();
         }
     });
 </script>
-
-
-
 
 <script>
     var config = {
@@ -199,9 +194,6 @@
 
     var wordsDown = [];
     /* ======================= END SETUP ======================= */
-
-
-
 
 
     /* =======================  PLACEMENT FUNCTIONS =======================  */
@@ -270,10 +262,6 @@
 
     /* =======================  END PLACEMENT FUNCTIONS =======================  */
 
-
-
-
-
     /* =======================  LETS GO! =======================  */
     (function placeWords() {
         for (var i = 0; i < words.length; i += 1) {
@@ -316,28 +304,26 @@
         }
     }
 
+</script>
+
+<script>
+    function RetrieveChatper(urlx, coursepk) {
+        let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
+
+
+        if (chapterVal >= 1) {
+            window.location.href = "/teachers/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/newcontents";
+        } else
+            window.location.href = urlx;
+
+    }
 
 </script>
 
-    <script>
-        function RetrieveChatper(urlx, coursepk) {
-            let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
+<script>
+    $(window).on('load', function () {
+        $('#myModal').modal('show');
+    });
 
-
-            if (chapterVal >= 1) {
-                window.location.href = "/teachers/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/newcontents";
-            } else
-                window.location.href = urlx;
-
-        }
-
-    </script>
-
-    <script>
-        $(window).on('load', function () {
-            $('#myModal').modal('show');
-       });
-    
 </script>
-
 {% endblock %}

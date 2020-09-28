@@ -1,0 +1,11 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block title %}
+| Courses
+{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Course</li>
+{% endblock %}
+{% block content %}
+{% include 'course/courseinfo_grid.html' %}
+{% endblock %}
