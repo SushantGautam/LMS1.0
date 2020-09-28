@@ -2298,6 +2298,9 @@
         var idleTimeCheckInterval = setInterval(idleTImeCheck, idleTimeCheckIntervalTime);
 
         function displayAlertMessage() {
+            if (window.innerWidth == screen.width && window.innerHeight == screen.height) {
+                window.toggleFullScreen();
+            }
             $('#message-modal').modal('show');
             var counter = 50;   // After the alert modal is displayed, then after 50 seconds, it will redirect.
             redirectInterval = setInterval(function () {
