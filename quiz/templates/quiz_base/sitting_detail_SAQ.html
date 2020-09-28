@@ -42,8 +42,8 @@
 
 
 
-
-<table class="table table-bordered table-striped" id="MarkingDetail">
+<p style="font-size: 16px; font-weight:500">kjanjknackjsa kasdnjksandkjasndkjasd askjdnajskndkjasndakjsd kasjdnjaksndkjasn</p>
+<table class="table table-bordered table-striped MarkingDetail"  >
 
   <thead class="thead-light bg-primary">
   <tr>
@@ -113,6 +113,81 @@
   </tbody>
 
 </table>
+<div class="col-md-12" style="margin-top: 10px;">
+  <p style="font-size: 16px; font-weight:500">kjanjknackjsa kasdnjksandkjasndkjasd askjdnajskndkjasndakjsd kasjdnjaksndkjasn</p>
+</div>
+
+<table class="table table-bordered table-striped MarkingDetail"  >
+
+  <thead class="thead-light bg-primary">
+  <tr>
+    <th>{% trans "Question" %}</th>
+    <th>{% trans "User answer" %}</th>
+    <th>{% trans "Correct" %}</th>
+    <th>{% trans "Full Marks" %}</th>
+    <th>{% trans "Marks Obtained" %}</th>
+    <th>{% trans "Action" %}</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  {% for question in questions %}
+
+    <tr>
+      <td>
+        {{ question.content }}
+        {% if question.figure %}
+          <div class="detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}"
+                                                                         alt="{{ question.figure }}"/></div>
+        {% endif %}
+      </td>
+{#      <td style="overflow: scroll">{{ question|answer_choice_to_string:question.user_answer }}</td>#}
+      <td>{{ question.user_answer }}</td>
+      <td>
+        {% if not question.ans_correct %}
+          <i class="fa fa-times fa-2x text-danger"></i>
+        {% elif question.is_saq %}
+          ---
+        {% else %}
+          <i class="fa fa-check fa-2x text-success"></i>
+        {% endif %}
+      </td>
+      <td id="score{{ question.id }}">
+        {{ question.score }}
+      </td>
+      <td>
+        {{ question.score_obtained }}
+      </td>
+      {% if question.is_saq %}
+        <td style="text-align: center">
+          <form action="" method="POST">{% csrf_token %}
+            <input type="number" name="new_score" min="0" max="{{ question.score }}" id="input{{ question.id }}"
+                   step="0.5" style="width: -webkit-fill-available;" required>
+            <input type="hidden" name="saq_id" value="{{ question.id }}">
+            <br>
+            <br>
+            <button type="submit" class="btn btn-warning score_submit" id="{{ question.id }}">{% trans "Change Score" %}</button>
+          </form>
+        </td>
+      {% else %}
+        <td>---</td>
+      {% endif %}
+    </tr>
+
+  {% endfor %}
+  
+  <tr>
+    <td></td>
+    <td></td>
+    <td>Total</td>
+    <td>{{ total }}</td>
+    <td>{{ total_score_obtained }}</td>
+    <td></td>
+  </tr>
+  </tbody>
+
+</table>
+
 
 
 

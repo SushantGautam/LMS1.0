@@ -39,9 +39,10 @@
   <script type="text/javascript">
 
     $(document).ready(function () {
-        var table_main = $('#MarkingDetail').DataTable({
+        var table_main = $('.MarkingDetail').DataTable({
             responsive: true,
             dom: 'lBfrtip',
+            "searching": false,
             buttons: [
                 {
                     extend: 'csv',
