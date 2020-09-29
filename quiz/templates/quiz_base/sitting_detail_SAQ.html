@@ -1,118 +1,137 @@
 {% load i18n %}
 {% load quiz_tags %}
 
- {# <p style="font-size: 18px;"> <b>Quiz Title</b><a href="{% url 'teacher_quiz_detail'  sitting.quiz.pk %}">  {{ sitting.quiz.title }}   </a> </p>#}
-<p style="font-size: 18px;"><b>Category:</b> {{ sitting.quiz.category }}</p>
-<p>{{ sitting.quiz.description }}</p>
-<hr>
-<div class="row" style="padding-bottom: 20px ;">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-4">
-        <p><b>User:</b> {{ sitting.user }}</p>
+<h3>Mark Short Answers</h3>
 
-      </div>
-      <div class="col-md-4">
-        <p><b>Started :</b> <span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></p>
+  <hr class="header_hr">
 
-      </div>
-      <div class="col-md-4">
-        <p> <b>Completed :</b> <span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></p>
+<div class="row" style="padding-bottom: 0px ;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <p><b> Tile:</b> {{ quiz.title }}</p>
 
-      </div>
-      <div class="col-md-4">
-        <p> <b>Time Taken :</b> {{ sitting.duration|time }}</p>
+            </div>
+            <div class="col-md-4">
+                <p><b>Course :</b> {{ quiz.course_code }}</p>
 
-      </div>
-      <div class="col-md-4">
-        <p> <b>Score :</b>{{ sitting.get_percent_correct }}%</p>
-      </div>
-      <div class="col-md-4">
-        <p> <b>Negative Marking :</b> {{ sitting.quiz.negative_marking }}</p>
+            </div>
+            <div class="col-md-4">
+                <p><b>Chapter :</b> {{ quiz.chapter_code }}</p>
 
-      </div>
+            </div>
+            <div class="col-md-4">
+                <p><b>Type of Quiz :</b> {% if quiz.pre_test %}Pre Test <br>{% endif %}
+                    {% if quiz.post_test %}Post Test <br>{% endif %}
+                    {% if quiz.exam_paper %}Exam <br>{% endif %}</p>
+
+            </div>
+            <div class="col-md-4">
+                <p><b>Status :</b>
+                    {% if quiz.draft is True %}
+             
+                        <span class="text-danger"> <b>Inactive</b>
+                            </span>
+               
+            {% endif %}
+            {% if quiz.draft is False %}
+               
+                        <span class="text-success"> <b>Active</b>   </span>
+                   
+                 
+               
+            {% endif %}</p>
+            </div>
+            <div class="col-md-4">
+                <p><b> URL:</b>{{ quiz.url }}</p>
+
+            </div> 
+            <div class="col-md-12">
+                <p style="font-size: 14px;"><b>Description:</b> {{  quiz.description }}</p>
+            </div>
+            
+        </div>
     </div>
-  </div>
 </div>
 
+<hr class="header_hr">
+{% for saq in quiz.get_saquestions %}
+    
+ 
 
 
+    <p style="font-size: 16px; font-weight:500">  <b>{{forloop.counter}}</b>. {{ saq }}
+    
+        <button style="float:right" class="btn btn-primary btn-xs" type="button" data-toggle="collapse"
+        data-target="#mcqn_list{{ saq.id }}"
+        aria-expanded="false" aria-controls="collapseExample">
+             View Answer
+     </button>
+    
+    </p>
+    
+   <div  id="mcqn_list{{ saq.id }}" class="col-md-12 collapse " style="margin-bottom: 25px;">
+    <table style="width:100%!important"  class=" table table-bordered table-striped MarkingDetail ">
 
+        <thead class="thead-light bg-primary">
+        <tr>
+            <th>{% trans "S No." %}</th>
+            <th>{% trans "Username" %}</th>
+            <th>{% trans "User answer" %}</th>
+            <th>{% trans "Full Marks" %}</th>
+            <th>{% trans "Marks Obtained" %}</th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+        </thead>
 
+        <tbody>
+        {% for sitting in quiz.sitting_set.all %}
+            {% for question in sitting.questions_with_user_answers %}
+                {% if question.pk == saq.pk %}
+                    {% if question.is_saq %}
+                        <tr>
+                            <td> {{forloop.counter}} </td>
+                            <td> {{ sitting.user }} </td>
 
+                            <td>{{ question.user_answer }}</td>
 
+                            <td>{{ question.score }}</td>
+                            <td>{{ question.score_obtained }}</td>
 
+                            <td style="text-align: center">
+                                <form action="" method="POST">{% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="number" name="new_score" min="0" max="{{ question.score }}"
+                                            id="input{{ question.id }}"
+                                            step="0.5" style="width: -webkit-fill-available;" required>
+                                     <input type="hidden" name="saq_id" value="{{ question.id }}">
+                                     
 
-<table class="table table-bordered table-striped" id="MarkingDetail">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="submit" class="btn btn-warning score_submit btn-xs"
+                                            id="{{ question.id }}">{% trans "Change Score" %}</button>
+                                        </div>
+                                    </div>
+                                
+                                   
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </tbody>
 
-  <thead class="thead-light bg-primary">
-  <tr>
-    <th>{% trans "Question" %}</th>
-    <th>{% trans "User answer" %}</th>
-    <th>{% trans "Correct" %}</th>
-    <th>{% trans "Full Marks" %}</th>
-    <th>{% trans "Marks Obtained" %}</th>
-    <th>{% trans "Action" %}</th>
-  </tr>
-  </thead>
+    </table>
 
-  <tbody>
-  {% for question in questions %}
-
-    <tr>
-      <td>
-        {{ question.content }}
-        {% if question.figure %}
-          <div class="detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}"
-                                                                         alt="{{ question.figure }}"/></div>
-        {% endif %}
-      </td>
-{#      <td style="overflow: scroll">{{ question|answer_choice_to_string:question.user_answer }}</td>#}
-      <td>{{ question.user_answer }}</td>
-      <td>
-        {% if not question.ans_correct %}
-          <i class="fa fa-times fa-2x text-danger"></i>
-        {% elif question.is_saq %}
-          ---
-        {% else %}
-          <i class="fa fa-check fa-2x text-success"></i>
-        {% endif %}
-      </td>
-      <td id="score{{ question.id }}">
-        {{ question.score }}
-      </td>
-      <td>
-        {{ question.score_obtained }}
-      </td>
-      {% if question.is_saq %}
-        <td style="text-align: center">
-          <form action="" method="POST">{% csrf_token %}
-            <input type="number" name="new_score" min="0" max="{{ question.score }}" id="input{{ question.id }}"
-                   step="0.5" style="width: -webkit-fill-available;" required>
-            <input type="hidden" name="saq_id" value="{{ question.id }}">
-            <br>
-            <br>
-            <button type="submit" class="btn btn-warning score_submit" id="{{ question.id }}">{% trans "Change Score" %}</button>
-          </form>
-        </td>
-      {% else %}
-        <td>---</td>
-      {% endif %}
-    </tr>
-
-  {% endfor %}
+   </div> 
   
-  <tr>
-    <td></td>
-    <td></td>
-    <td>Total</td>
-    <td>{{ total }}</td>
-    <td>{{ total_score_obtained }}</td>
-    <td></td>
-  </tr>
-  </tbody>
+    
+    <br>
 
-</table>
-
+{% endfor %}
 
 
