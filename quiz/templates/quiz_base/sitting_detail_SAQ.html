@@ -90,7 +90,7 @@
                 {% if question.pk == saq.pk %}
                     {% if question.is_saq %}
                         <tr>
-                            <td> {{forloop.counter}} </td>
+                            <td> {{forloop.parentloop.counter}} </td>
                             <td> {{ sitting.user }} </td>
 
                             <td>{{ question.user_answer }}</td>
