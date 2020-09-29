@@ -124,7 +124,7 @@ function getCincopaThumbnail(url, divid) {
                 $('#' + divid).find('iframe').css({
                     'background-image': `url(${response.items[0].thumbnail.url})`,
                     'background-position': 'center',
-                    'background-size': 'contain',
+                    'background-size': '0 0',
                     'background-repeat': 'no-repeat'
                 })
                 // var img = `<img src = '${response.items[0].thumbnail.url}' width= "100%" height="100%" style = "object-fit: cover;"></img>`
@@ -4039,6 +4039,14 @@ async function setThumbnails(prev_page) {
     $('#tab').find('._3dobj-div').each(function () {
         $(this).css({
             'background-image': `url('${_3d_icon}')`,
+            'background-position': 'center',
+            'background-size': 'contain',
+            'background-repeat': 'no-repeat'
+        })
+    });
+
+    $('#tab').find('.video-div').each(function () {
+        $(this).find('iframe').css({
             'background-position': 'center',
             'background-size': 'contain',
             'background-repeat': 'no-repeat'

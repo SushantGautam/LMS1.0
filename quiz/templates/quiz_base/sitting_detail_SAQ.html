@@ -1,11 +1,11 @@
 {% load i18n %}
 {% load quiz_tags %}
 
-{# <p style="font-size: 18px;"> <b>Quiz Title</b><a href="{% url 'teacher_quiz_detail'  sitting.quiz.pk %}">  {{ sitting.quiz.title }}   </a> </p>#}
-<p style="font-size: 18px;"><b>Category:</b> {{ sitting.quiz.category }}</p>
-<p>{{ sitting.quiz.description }}</p>
+<h3>Mark Short Answers</h3><br>
+<p style="font-size: 14px;"><b>Quiz Title:</b> {{ quiz }}</p><br>
+<p style="font-size: 14px;"><b>Description:</b> <br>{{  quiz.description }}</p>
 <hr>
-<div class="row" style="padding-bottom: 20px ;">
+<div class="row" style="padding-bottom: 10px ;">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-4">
@@ -32,20 +32,15 @@
             <div class="col-md-4">
                 <!-- <p><b>Negative Marking :</b> {{ sitting.quiz.negative_marking }}</p> -->
 
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
 
 
-
-
-
-
-
 {% for saq in quiz.get_saquestions %}
     <br>
-    <p style="font-size: 16px; font-weight:500">{{ saq }}</p>
+    <p style="font-size: 16px; font-weight:500">{{forloop.counter}}. {{ saq }}</p>
     <table class="table table-bordered table-striped MarkingDetail">
 
         <thead class="thead-light bg-primary">
