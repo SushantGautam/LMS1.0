@@ -73,7 +73,7 @@ class CategoryInfoUpdateView(UpdateView):
 
 class SurveyInfoListView(AdminAuthMxnCls, ListView):
     model = SurveyInfo
-    template_name = 'survey/surveylist.html'
+    # template_name = 'survey/surveylist.html'
     paginate_by = 6
 
     def __init__(self, **kwargs):
@@ -126,7 +126,7 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
 
 class surveyFilterCategory(ListView):
     model = SurveyInfo
-    template_name = 'survey/common/surveyinfo_expireView.html'
+    # template_name = 'survey/common/surveyinfo_expireView.html'
 
     paginate_by = 6
 
@@ -181,7 +181,7 @@ class SurveyInfoCreateView(CreateView):
 class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+    # template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -243,7 +243,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
 class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+    # template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -320,7 +320,7 @@ class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
 class SurveyInfoAjaxUpdateLimited(AjaxableResponseMixin, UpdateView):
     model = SurveyInfo
     form_class = SurveyInfoFormUpdateLimited
-    template_name = 'ajax/survey_update_limited_ajax.html'
+    # template_name = 'ajax/survey_update_limited_ajax.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -433,7 +433,7 @@ def create_questioninfo_formset(obj_instance):
 class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+    # template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super(SurveyInfoRetake_ajax, self).get_form_kwargs()
@@ -542,7 +542,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
 
 class SurveyInfoDetailView(AdminAuthMxnCls, SurveyInfoAuthMxnCls, DetailView):
     model = SurveyInfo
-    template_name = 'survey/surveyinfo_detail.html'
+    # template_name = 'survey/surveyinfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -682,5 +682,8 @@ def deleteSurvey(request):
     if request.method == 'POST':
         if SurveyInfo.objects.filter(pk=request.POST['objectpk']).exists():
             obj = SurveyInfo.objects.get(pk=request.POST['objectpk']).delete()
+    if "teachers" in request.path:
+        s_u = "?category_name=all_survey&date_filter=active"
+        return redirect('teacher_surveyinfo_list')
     return redirect('surveyinfo_list')
 

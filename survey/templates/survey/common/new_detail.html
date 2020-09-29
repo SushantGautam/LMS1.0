@@ -106,7 +106,13 @@
          <div class="col-md-4 del_retake" >
             <div class="col-md-12">
                      {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
-                        <form method="POST" action="{% url 'surveyinfo_delete' %}"
+                        <form method="POST" action="
+                        {% if 'teachers' in request.get_full_path %}
+                         {% url 'teacher_surveyinfo_delete' %}
+                        {%else%}
+                        {% url 'surveyinfo_delete' %}
+                        {%endif%}
+                        "
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
                             <input type="hidden" value="{{ object.pk }}" name="objectpk">
@@ -374,6 +380,8 @@
             </div>
 
             <div class="col-md-3">
+                {% if 'teachers' in request.get_full_path %}
+                {%else%}
                 <div class="col-md-12">
                     <br>
                      <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers" style="float: right;">
@@ -384,6 +392,7 @@
                      </a>
                     <br><br>
                 </div>
+                {%endif%}
                 <div class="col-md-12">
 
                     <br><br><br>
