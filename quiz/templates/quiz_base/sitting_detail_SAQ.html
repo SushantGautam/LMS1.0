@@ -1,11 +1,11 @@
 {% load i18n %}
 {% load quiz_tags %}
 
-<h3>Mark Short Answers</h3><br>
-<p style="font-size: 14px;"><b>Quiz Title:</b> {{ quiz }}</p><br>
-<p style="font-size: 14px;"><b>Description:</b> <br>{{  quiz.description }}</p>
-<hr>
-<div class="row" style="padding-bottom: 10px ;">
+<h3>Mark Short Answers</h3>
+
+  <hr class="header_hr">
+
+<div class="row" style="padding-bottom: 0px ;">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-4">
@@ -27,24 +27,55 @@
 
             </div>
             <div class="col-md-4">
-                <p><b>Status :</b>{{ sitting.get_percent_correct }}%</p>
+                <p><b>Status :</b>
+                    {% if quiz.draft is True %}
+             
+                        <span class="text-danger"> <b>Inactive</b>
+                            </span>
+               
+            {% endif %}
+            {% if quiz.draft is False %}
+               
+                        <span class="text-success"> <b>Active</b>   </span>
+                   
+                 
+               
+            {% endif %}</p>
             </div>
             <div class="col-md-4">
-                <!-- <p><b>Negative Marking :</b> {{ sitting.quiz.negative_marking }}</p> -->
+                <p><b> URL:</b>{{ quiz.url }}</p>
 
-            </div> -->
+            </div> 
+            <div class="col-md-12">
+                <p style="font-size: 14px;"><b>Description:</b> {{  quiz.description }}</p>
+            </div>
+            
         </div>
     </div>
 </div>
 
-
+<hr class="header_hr">
 {% for saq in quiz.get_saquestions %}
-    <br>
-    <p style="font-size: 16px; font-weight:500">{{forloop.counter}}. {{ saq }}</p>
-    <table class="table table-bordered table-striped MarkingDetail">
+    
+ 
+
+
+    <p style="font-size: 16px; font-weight:500">  <b>{{forloop.counter}}</b>. {{ saq }}
+    
+        <button style="float:right" class="btn btn-primary btn-xs" type="button" data-toggle="collapse"
+        data-target="#mcqn_list{{ saq.id }}"
+        aria-expanded="false" aria-controls="collapseExample">
+             View Answer
+     </button>
+    
+    </p>
+    
+   <div  id="mcqn_list{{ saq.id }}" class="col-md-12 collapse " style="margin-bottom: 25px;">
+    <table style="width:100%!important"  class=" table table-bordered table-striped MarkingDetail ">
 
         <thead class="thead-light bg-primary">
         <tr>
+            <th>{% trans "S No." %}</th>
             <th>{% trans "Username" %}</th>
             <th>{% trans "User answer" %}</th>
             <th>{% trans "Full Marks" %}</th>
@@ -59,6 +90,7 @@
                 {% if question.pk == saq.pk %}
                     {% if question.is_saq %}
                         <tr>
+                            <td> {{forloop.counter}} </td>
                             <td> {{ sitting.user }} </td>
 
                             <td>{{ question.user_answer }}</td>
@@ -68,14 +100,22 @@
 
                             <td style="text-align: center">
                                 <form action="" method="POST">{% csrf_token %}
-                                    <input type="number" name="new_score" min="0" max="{{ question.score }}"
-                                           id="input{{ question.id }}"
-                                           step="0.5" style="width: -webkit-fill-available;" required>
-                                    <input type="hidden" name="saq_id" value="{{ question.id }}">
-                                    <br>
-                                    <br>
-                                    <button type="submit" class="btn btn-warning score_submit"
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="number" name="new_score" min="0" max="{{ question.score }}"
+                                            id="input{{ question.id }}"
+                                            step="0.5" style="width: -webkit-fill-available;" required>
+                                     <input type="hidden" name="saq_id" value="{{ question.id }}">
+                                     
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="submit" class="btn btn-warning score_submit btn-xs"
                                             id="{{ question.id }}">{% trans "Change Score" %}</button>
+                                        </div>
+                                    </div>
+                                
+                                   
                                 </form>
                             </td>
                         </tr>
@@ -86,7 +126,12 @@
         </tbody>
 
     </table>
+
+   </div> 
+  
+    
     <br>
+
 {% endfor %}
 
 
