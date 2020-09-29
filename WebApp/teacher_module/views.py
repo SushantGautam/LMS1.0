@@ -1024,7 +1024,7 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
     template_name = 'teacher_quiz/sitting_detail_SAQ.html'
 
     def post(self, request, *args, **kwargs):
-        sitting = self.get_object()
+        sitting = Sitting.objects.get(pk=int(request.POST['sitting_id']))
 
         q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
