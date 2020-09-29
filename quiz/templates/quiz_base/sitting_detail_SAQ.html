@@ -8,27 +8,29 @@
 <div class="row" style="padding-bottom: 10px ;">
     <div class="col-md-12">
         <div class="row">
-            <!-- <div class="col-md-4">
-                <p><b>User:</b> {{ sitting.user }}</p>
+            <div class="col-md-4">
+                <p><b> Tile:</b> {{ quiz.title }}</p>
 
             </div>
             <div class="col-md-4">
-                <p><b>Started :</b> <span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></p>
+                <p><b>Course :</b> {{ quiz.course_code }}</p>
 
             </div>
             <div class="col-md-4">
-                <p><b>Completed :</b> <span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></p>
+                <p><b>Chapter :</b> {{ quiz.chapter_code }}</p>
 
             </div>
             <div class="col-md-4">
-                <p><b>Time Taken :</b> {{ sitting.duration|time }}</p>
+                <p><b>Type of Quiz :</b> {% if quiz.pre_test %}Pre Test <br>{% endif %}
+                    {% if quiz.post_test %}Post Test <br>{% endif %}
+                    {% if quiz.exam_paper %}Exam <br>{% endif %}</p>
 
             </div>
             <div class="col-md-4">
-                <p><b>Score :</b>{{ sitting.get_percent_correct }}%</p>
+                <p><b>Status :</b>{{ sitting.get_percent_correct }}%</p>
             </div>
             <div class="col-md-4">
-                <p><b>Negative Marking :</b> {{ sitting.quiz.negative_marking }}</p>
+                <!-- <p><b>Negative Marking :</b> {{ sitting.quiz.negative_marking }}</p> -->
 
             </div> -->
         </div>
@@ -70,6 +72,7 @@
                                            id="input{{ question.id }}"
                                            step="0.5" style="width: -webkit-fill-available;" required>
                                     <input type="hidden" name="saq_id" value="{{ question.id }}">
+                                    <input type="hidden" name="sitting_id" value="{{ sitting.id }}">
                                     <br>
                                     <br>
                                     <button type="submit" class="btn btn-warning score_submit"
