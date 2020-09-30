@@ -90,7 +90,8 @@ class DeleteComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -105,6 +106,7 @@ class DeleteComment(BaseCommentView):
         self.comment.delete()
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
+
 
 class HideComment(BaseCommentView):
     comment = None
@@ -128,6 +130,7 @@ class HideComment(BaseCommentView):
         self.comment.save()
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
+
 
 class ShowComment(BaseCommentView):
     comment = None
