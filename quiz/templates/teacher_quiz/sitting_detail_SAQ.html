@@ -9,7 +9,8 @@
 <!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li>  -->
 <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li> 
 
-<li class="breadcrumb-item active" aria-current="page">{{ sitting.user}}</li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_individual_quiz_marking' quiz.pk %}">{{ quiz }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">Mark short answer</li>
 {% endblock %} 
 
 {% block content %}
@@ -39,9 +40,10 @@
   <script type="text/javascript">
 
     $(document).ready(function () {
-        var table_main = $('#MarkingDetail').DataTable({
+        var table_main = $('.MarkingDetail').DataTable({
             responsive: true,
             dom: 'lBfrtip',
+            "searching": true,
             buttons: [
                 {
                     extend: 'csv',
