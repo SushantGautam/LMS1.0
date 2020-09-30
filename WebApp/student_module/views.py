@@ -482,7 +482,9 @@ def ProfileView(request):
 
 class questions_student(ListView):
     model = SurveyInfo
-    template_name = 'student_module/questions_student.html'
+    # template_name = 'student_module/questions_student.html'
+    template_name = 'student_module/survey/surveylist.html'
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -494,6 +496,9 @@ class questions_student(ListView):
 
         context['options'] = OptionInfo.objects.all()
         context['submit'] = SubmitSurvey.objects.all()
+        context['search_q'] = self.request.GET.get('query', '')
+        context['cat'] = self.request.GET.get('category_name', '')
+        context['filter'] = self.request.GET.get('date_filter', '').lower()
 
         # context['categoryName'] = CategoryInfo.objects.values_list('Category_Name')
 
@@ -503,10 +508,34 @@ class questions_student(ListView):
 
         return context
 
+    def get_queryset(self):
+
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        category = self.request.GET.get('category_name', '').lower()
+        if category != "all_survey":
+            qs = qs.filter(Category_Code__Category_Name__iexact=category)
+
+        date_filter = self.request.GET.get('date_filter', '').lower()
+        if date_filter == "active":
+            qs = qs.filter(End_Date__gt=timezone.now())
+
+        if date_filter == "expire":
+            qs = qs.filter(End_Date__lte=timezone.now())
+
+        query = self.request.GET.get('query')
+        if query:
+            query = query.strip()
+            qs = qs.filter(Survey_Title__contains=query)
+            if not len(qs):
+                messages.error(self.request, 'Sorry No Survey Found! Try with a different keyword')
+        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return qs
+
 
 class questions_student_detail(DetailView):
     model = SurveyInfo
-    template_name = 'student_module/questions_student_detail.html'
+    # template_name = 'student_module/questions_student_detail.html'
+    template_name = 'student_module/survey/surveyinfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -35,7 +35,7 @@
                 type: "GET",
                 data: {'category_name': '{{category.Category_Name}}'},
                 {% if 'teachers' in request.get_full_path %}
-                url: "{% url 'student_surveyinfo_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
                 {%else%}
                 url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
                 {%endif%}
@@ -56,7 +56,7 @@
           $.ajax({
               type: "GET",
               data: {'category_name': 'live'},
-              url: "{% url 'student_surveyinfo_ajax' %}",  // URL to your view that serves new info
+              url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#surveyForm").html(data);
               },
@@ -106,7 +106,7 @@
                   'category_name': "all_survey",
                   'date_filter': $("input[name='survey_filter_radio']:checked").val(),
               },
-              url: "{% url 'student_surveyFilterCategory' %}",  // URL to your view that serves new info
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
               },
@@ -126,7 +126,7 @@
                   'category_name': category_name,
                   'date_filter': $("input[name='survey_filter_radio']:checked").val(),
               },
-              url: "{% url 'student_surveyFilterCategory' %}",  // URL to your view that serves new info
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
               },
@@ -145,7 +145,7 @@
                   'category_name': category_name,
                   'date_filter': 'active',
               },
-              url: "{% url 'student_surveyFilterCategory' %}",  // URL to your view that serves new info
+              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
               success: function (data) {
                   $("#rowCards").html(data);
               },

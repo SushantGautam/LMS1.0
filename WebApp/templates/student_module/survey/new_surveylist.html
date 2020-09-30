@@ -15,7 +15,7 @@
                         {% if 'active' in request.get_full_path %}
                                  active
                                 {%endif%} "
-                          href="{% url 'student_surveyinfo_list'%}?category_name={{cat}}&date_filter=active">Active</a>
+                          href="{% url 'questions_student'%}?category_name={{cat}}&date_filter=active">Active</a>
 
                     <div class="dropdown-divider"></div>
 
@@ -23,7 +23,7 @@
                         {% if 'expire' in request.get_full_path %}
                         active
                         {%endif%} "
-                         href="{% url 'student_surveyinfo_list'%}?category_name={{cat}}&date_filter=expire">Expired</a>
+                         href="{% url 'questions_student'%}?category_name={{cat}}&date_filter=expire">Expired</a>
 
 
 
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'student_surveyinfo_list' %}?category_name=all_survey&date_filter=active"
+                    <a href="{% url 'questions_student' %}?category_name=all_survey&date_filter=active"
                        class="category-name list-group-item d-flex align-items-center
                         {% if 'all_survey' in request.get_full_path %} bg-primary {% endif %}"
                        id="all_survey">
@@ -52,7 +52,7 @@
 
                 {% for category in categories %}
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'student_surveyinfo_list' %}?category_name={{ category.Category_Name }}&date_filter=active"
+                    <a href="{% url 'questions_student' %}?category_name={{ category.Category_Name }}&date_filter=active"
                        class="list-group-item d-flex align-items-center category-name
                         {% if category.Category_Name  in request.get_full_path  %} bg-primary {%endif%} "
                        id="{{ category.Category_Name }}">
@@ -153,7 +153,7 @@
                                 {% if page_obj.has_previous %}
                                 <a class="page-link"
 
-                                   href="{% url 'student_surveyinfo_list'%}?category_name={{cat}}&date_filter={{filter}}&page={{page_obj.previous_page_number}}"
+                                   href="{% url 'questions_student'%}?category_name={{cat}}&date_filter={{filter}}&page={{page_obj.previous_page_number}}"
 
 
                                    aria-label="Previous">
@@ -167,7 +167,7 @@
                                 {% if page_obj.has_next %}
                                 <a class="page-link"
 
-                                   href="{% url 'student_surveyinfo_list'%}?category_name={{cat}}&date_filter={{filter}}&page={{page_obj.next_page_number }}"
+                                   href="{% url 'questions_student'%}?category_name={{cat}}&date_filter={{filter}}&page={{page_obj.next_page_number }}"
 
                                    aria-label="Next">
                                     <i class="ti-arrow-right"></i>
@@ -190,10 +190,11 @@
 
                         {% for object in object_list%}
                         <div class="card p-3">
-                            <a href="{% if '/teachers' in request.path %}
+                            <a href="
 
-                                 {% url 'student_surveyinfo_detail' object.pk %}
-                                         {% endif %}">
+                                 {% url 'questions_student_detail' object.pk %}
+
+                                        ">
                                 <blockquote class="blockquote mb-0 card-body">
 
                                     {% if object.id in submittedSurvey %}
