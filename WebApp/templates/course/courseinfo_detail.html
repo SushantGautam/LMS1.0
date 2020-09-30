@@ -143,32 +143,3 @@
         </div>
     </div>
 </div>
-
-
-{% block javascript %}
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-    crossorigin="anonymous"></script>
-<script>
-    $('#add-newchapter-btn').on('click', function () {
-        $('#create_chapter_modal_body').empty();
-        $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
-        $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
-
-        $.ajax({
-            type: "GET",
-            url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
-            success: function (response) {
-                $('#create_chapter_modal_body').append(response);
-                Switchery(document.querySelector('.js-switch'));
-            },
-            error: function () {
-                console.log('Error in generating chapter create form')
-            },
-            complete: function () {
-                $(".se-pre-con-ajax").fadeOut("fast");
-                $("#id_Chapter_No").val(lastchapter + 1);
-            }
-        });
-    });
-</script>
-{% endblock %}

@@ -10,3 +10,16 @@
 {% block content %}
 {% include 'course/courseinfo_grid.html' %}
 {% endblock %}
+
+{% block javascript %}
+<script>
+    $(".query_form").submit(function (e) {
+        val = $(this).find('input').val()
+        if (!val.replace(/^\s+|\s+$/g, "").length != 0) {
+            console.log('empty')
+            alert('Please enter a search term')
+            e.preventDefault()
+        }
+    });
+</script>
+{% endblock %}
