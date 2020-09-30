@@ -9,9 +9,10 @@ from Notifications.models import Notification
 from Notifications.signals import notify
 from WebApp.models import CourseInfo, MemberInfo, InningInfo, InningGroup, AssignAnswerInfo, SessionMapInfo, \
     AssignmentQuestionInfo, ChapterInfo, AssignmentInfo
-
-
 # Multiple Submission of Assignment Prevention
+from comment.models import Comment
+
+
 def MultipleAssignmentSubmission(sender, instance, **kwargs):
     import inspect
     for frame_record in inspect.stack():
@@ -296,4 +297,49 @@ def AssignmentQuestionInfoDelete_handler(sender, instance, **kwargs):
                 action_object=instance,
             )
 
+
 # post_delete.connect(AssignmentQuestionInfoDelete_handler, sender=AssignmentQuestionInfo)
+
+def CommentCreate_handler(sender, instance, created, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if created:
+        if instance.parent:
+            verb = "replied to your comment in"
+        else:
+            verb = "commented on"
+    else:
+        verb = "updated comment"
+
+    action_object = instance.content_object
+
+    # For creating notification for teachers of the chapter excluding oneself.
+    if not instance.parent:
+        if action_object.__class__ == ChapterInfo:
+            recipients = action_object.Course_Code.get_teachers_of_this_course().exclude(pk=request.user.pk)
+            notify.send(
+                sender=request.user,
+                recipient=recipients,
+                verb=verb,
+                description='',
+                action_object=action_object,
+            )
+    else:
+        if action_object.__class__ == ChapterInfo:
+            recipients = action_object.Course_Code.get_teachers_of_this_course().exclude(pk=request.user.pk)
+            notify.send(
+                sender=request.user,
+                recipient=instance.parent.user,
+                verb=verb,
+                description='',
+                action_object=action_object,
+            )
+
+
+post_save.connect(CommentCreate_handler, sender=Comment)
