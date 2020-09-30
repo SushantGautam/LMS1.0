@@ -320,6 +320,11 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
     action_object = instance.content_object
 
     # For creating notification for teachers of the chapter excluding oneself.
+
+    """
+        If the comment is created, all the teachers in the course will be notified. 
+        If the comment is a reply, then only the main commentor will be notified.
+    """
     if not instance.parent:
         if action_object.__class__ == ChapterInfo:
             recipients = action_object.Course_Code.get_teachers_of_this_course().exclude(pk=request.user.pk)
@@ -344,3 +349,34 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
 
 
 post_save.connect(CommentCreate_handler, sender=Comment)
+
+
+def CommentDelete_handler(sender, instance, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if instance.parent:
+        verb = "deleted your reply to the comment in"
+    else:
+        verb = "deleted your comment in"
+
+    action_object = instance.content_object
+
+    if action_object.__class__ == ChapterInfo:
+        if request.user != instance.user.pk:
+            recipients = instance.user
+            notify.send(
+                sender=request.user,
+                recipient=recipients,
+                verb=verb,
+                description='',
+                action_object=action_object,
+            )
+
+
+post_delete.connect(CommentDelete_handler, sender=Comment)
