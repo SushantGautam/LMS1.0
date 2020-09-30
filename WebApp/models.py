@@ -488,6 +488,12 @@ class AssignmentInfo(models.Model):
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
+    def has_questions(self):
+        if AssignmentQuestionInfo.objects.filter(Assignment_Code=self).exists():
+            return True
+        else:
+            return False
+
     def get_student_assignment_status(self, user):
         status = False
         questions = AssignmentQuestionInfo.objects.filter(
