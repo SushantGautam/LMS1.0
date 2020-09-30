@@ -89,8 +89,8 @@ class DeleteComment(BaseCommentView):
 
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
-        if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(
+        if request.user != self.comment.user and not is_comment_admin(request.user) and not (
+                self.comment.is_flagged and is_comment_moderator(
             request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
@@ -113,8 +113,9 @@ class HideComment(BaseCommentView):
 
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
-        if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+        if request.user != self.comment.user and not is_comment_admin(request.user) and not (
+                self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -124,6 +125,7 @@ class HideComment(BaseCommentView):
         context["comment"] = self.comment
         data['html_form'] = render_to_string('comment/comments/comment_hide_modal.html', context, request=request)
         return JsonResponse(data)
+
 
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = False
@@ -138,7 +140,8 @@ class ShowComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -162,7 +165,8 @@ class CloseComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -186,7 +190,8 @@ class OpenComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
