@@ -332,14 +332,15 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
             )
     else:
         if action_object.__class__ == ChapterInfo:
-            recipients = action_object.Course_Code.get_teachers_of_this_course().exclude(pk=request.user.pk)
-            notify.send(
-                sender=request.user,
-                recipient=instance.parent.user,
-                verb=verb,
-                description='',
-                action_object=action_object,
-            )
+            if request.user.pk != instance.parent.user.pk:
+                recipients = action_object.Course_Code.get_teachers_of_this_course().exclude(pk=request.user.pk)
+                notify.send(
+                    sender=request.user,
+                    recipient=instance.parent.user,
+                    verb=verb,
+                    description='',
+                    action_object=action_object,
+                )
 
 
 post_save.connect(CommentCreate_handler, sender=Comment)
