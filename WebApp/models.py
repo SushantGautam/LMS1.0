@@ -693,7 +693,7 @@ class SessionInfo(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="sessioninfos", on_delete=models.DO_NOTHING
+        related_name="sessioninfos", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -730,7 +730,7 @@ class GroupMapping(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="groupmappings", on_delete=models.DO_NOTHING
+        related_name="groupmappings", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -762,7 +762,7 @@ class InningGroup(models.Model):
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
-        related_name="inninggroups", on_delete=models.DO_NOTHING
+        related_name="inninggroups", on_delete=models.CASCADE
     )
 
     Teacher_Code = models.ManyToManyField(
@@ -771,7 +771,7 @@ class InningGroup(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="inninggroups", on_delete=models.DO_NOTHING
+        related_name="inninggroups", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -976,7 +976,7 @@ class SessionMapInfo(models.Model):
     )
     object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
     target = GenericForeignKey('content_type', 'object_id')
-    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.DO_NOTHING)
+    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.CASCADE)
 
     def clean(self):
         super().clean()
