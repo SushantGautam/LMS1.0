@@ -632,7 +632,8 @@ class ParticipateSurvey(View):
 
 class surveyFilterCategory_student(ListView):
     model = SurveyInfo
-    template_name = 'student_module/questions_student_listView.html'
+    # template_name = 'student_module/questions_student_listView.html'
+    template_name = 'student_module/survey/surveylist_filter.html'
     # template_name = 'survey/common/surveyinfo_expireView.html'
 
     paginate_by = 6
@@ -695,6 +696,18 @@ class surveyFilterCategory_student(ListView):
         context['currentDate'] = datetime.now()
         context['category_name'] = self.request.GET['category_name'].lower()
         context['date_filter'] = self.request.GET['date_filter'].lower()
+        context = super().get_context_data(**kwargs)
+        context['currentDate'] = datetime.now().date()
+        context['categories'] = CategoryInfo.objects.all()
+
+        context['questions'] = QuestionInfo.objects.filter(
+            Survey_Code=self.kwargs.get('pk')).order_by('pk')
+
+        context['options'] = OptionInfo.objects.all()
+        context['submit'] = SubmitSurvey.objects.all()
+        context['search_q'] = self.request.GET.get('query', '')
+        context['cat'] = self.request.GET.get('category_name', '')
+        context['filter'] = self.request.GET.get('date_filter', '').lower()
 
         submitSurveyQuerySet = SubmitSurvey.objects.filter(
             Student_Code=self.request.user.id)

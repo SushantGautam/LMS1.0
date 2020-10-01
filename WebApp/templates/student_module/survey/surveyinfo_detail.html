@@ -1,5 +1,6 @@
 {% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+     <link href="{% static 'vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
 
 {% endblock stylesheets %} {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
@@ -20,80 +21,18 @@
 {% endblock %}
 
 {% block javascript %}
-    <script src="{% static 'js/common.js' %}"></script>
-    <script src="{% static 'worldcloud.js' %}"></script>
-    <script src="{% static 'js/jspdf.debug.js' %}"></script>
-    <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
 
+    <!-- iCheck -->
+  <script src="{% static 'vendors/iCheck/icheck.min.js' %}"></script>
 
+  <script>
 
-    <script>
-        var current_progress = 0;
-        $(document).ready(function () {
+      {% if can_submit == False %}
+          $("#survey_already_taken").show();
+          $("#surveyform :input").prop("readonly", true);
+          $("#surveyform :input").prop("disabled", true);
+      {% endif %}
 
-
-
-            var table_main = $('.SATable').DataTable({
-                colReorder: true
-
-            });
-
-
-
-            $('#survey_form_modal').on('hidden.bs.modal', function () {
-                location.reload();
-            });
-
-            var interval = setInterval(function () {
-                if ($('#chk').prop('checked')) {
-
-                    current_progress += 10;
-                    $("#dynamic")
-                        .css("width", current_progress + "%")
-                        .attr("aria-valuenow", current_progress)
-                        .text("Refreshing In :" + (10 - (current_progress / 10)));
-                } else {
-                    $("#dynamic").text("Paused");
-                }
-
-                if (current_progress >= 100) {
-                    clearInterval(interval);
-                   location.reload();
-
-                }
-
-            }, 1000);
-        });
-
-    </script>
-
-    <script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </script>
-
-    <script>
-
-
-    </script>
-
-    <script>
-
-    </script>
-     <script>
-
-
-    </script>
+  </script>
 
 {% endblock %}
