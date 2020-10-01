@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import FormView
 
+from WebApp.signals import commentActionsHandler
 from comment.forms import CommentForm
 from comment.models import Comment
 from comment.utils import get_comment_context_data, get_model_obj, is_comment_admin, is_comment_moderator
@@ -130,6 +131,7 @@ class HideComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = False
         self.comment.save()
+        commentActionsHandler(request, self.comment, "hide your comment in")
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -155,6 +157,7 @@ class ShowComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = True
         self.comment.save()
+        commentActionsHandler(request, self.comment, "shown your comment in")
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -180,6 +183,7 @@ class CloseComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_closed = True
         self.comment.save()
+        commentActionsHandler(request, self.comment, "closed your comment in")
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -205,5 +209,6 @@ class OpenComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_closed = False
         self.comment.save()
+        commentActionsHandler(request, self.comment, "opened your comment in")
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)

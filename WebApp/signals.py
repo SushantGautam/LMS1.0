@@ -315,8 +315,8 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
         else:
             verb = "commented on"
     else:
-        verb = "updated comment"
-
+        if request.POST.get('content'):
+            verb = "updated comment"
     action_object = instance.content_object
 
     # For creating notification for teachers of the chapter excluding oneself.
@@ -380,3 +380,14 @@ def CommentDelete_handler(sender, instance, **kwargs):
 
 
 post_delete.connect(CommentDelete_handler, sender=Comment)
+
+
+def commentActionsHandler(request, instance, verb, description=''):
+    if request.user.pk != instance.user.pk:
+        notify.send(
+            sender=request.user,
+            recipient=instance.user,
+            verb=verb,
+            description='',
+            action_object=instance.content_object,
+        )
