@@ -3413,11 +3413,26 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 progresspercent = 0
                 studytimeprogresspercent = 0
 
-            student_quiz = Quiz.objects.filter(chapter_code=chapter)
+            if studytimeprogresspercent > 100:
+                 studytimeprogresspercent = 100
+
+            student_quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
             student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
             # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+
+            # Calculate QUiz progress %
+            total_quiz_count = 0
+            student_complete_count = 0
+            for q in student_quiz:
+                if q.question_count() > 0:
+                    total_quiz_count += 1
+                    if Sitting.objects.filter(user=x, quiz=q, complete=True).exists():
+                        student_complete_count += 1
+            quiz_progress = round((student_complete_count / total_quiz_count) * 100,
+                                2) if total_quiz_count is not 0 else 0
+                                
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
@@ -3457,21 +3472,23 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
                                                                           'totalPage'] is not None else None,
                             'progresspercent': math.floor(progresspercent),
-                            'studytimeprogresspercent': math.floor(
-                                studytimeprogresspercent) if studytimeprogresspercent <= 100 else 100,
+                            'studytimeprogresspercent': math.floor(studytimeprogresspercent),
                             'attendance': attendance,
                         },
                         'quiz': {
-                            'quiz_count': student_quiz.count(),
-                            'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': round(student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count(),
-                                              2) if student_quiz.count() is not 0 else 0,
+                            'quiz_count': total_quiz_count,
+                            'completed_quiz': student_complete_count,
+                            'progress': quiz_progress,
+                            # 'progress': round(student_result.filter(
+                            #     complete=True).count() * 100 / student_quiz.count(),
+                            #                   2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                        }
+                            'avg_percent_score': float(total_quiz_percent_score / student_complete_count) if student_complete_count else 0
+                        },
+                        'overall_progress': round((math.floor(progresspercent) + math.floor(
+                                            studytimeprogresspercent) + float(quiz_progress))/3, 2) if total_quiz_count else round(
+                                            (math.floor(progresspercent) + math.floor(studytimeprogresspercent))/2, 2)
                     },
                 )
             else:
@@ -3489,15 +3506,16 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'attendance': attendance,
                         },
                         'quiz': {
-                            'quiz_count': student_quiz.count(),
-                            'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            'quiz_count': total_quiz_count,
+                            'completed_quiz': student_complete_count,
+                            'progress': quiz_progress,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
                                 complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                        }
+                        },
+                        'overall_progress': round((progresspercent + studytimeprogresspercent + quiz_progress)/3, 2) if total_quiz_count else round(
+                                            (progresspercent + studytimeprogresspercent)/2, 2)
                     },
                 )
     return student_data
