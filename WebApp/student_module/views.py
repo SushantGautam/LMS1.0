@@ -643,49 +643,78 @@ class surveyFilterCategory_student(ListView):
         self.GET = None
 
     def get_queryset(self):
+
+        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        category = self.request.GET.get('category_name', '').lower()
+        if category != "all_survey":
+            qs = qs.filter(Category_Code__Category_Name__iexact=category)
+
+        date_filter = self.request.GET.get('date_filter', '').lower()
+        if date_filter == "active":
+            qs = qs.filter(End_Date__gt=timezone.now())
+
+        if date_filter == "expire":
+            qs = qs.filter(End_Date__lte=timezone.now())
+
+        query = self.request.GET.get('query')
+        if query:
+            query = query.strip()
+            qs = qs.filter(Survey_Title__contains=query)
+            if not len(qs):
+                messages.error(self.request, 'Sorry No Survey Found! Try with a different keyword')
+        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+        return qs
+
+
+    # def get_queryset(self):
         # try:
-        category_name = self.request.GET['category_name'].lower()
-        date_filter = self.request.GET['date_filter'].lower()
+
+        # category_name = self.request.GET['category_name'].lower()
+        # date_filter = self.request.GET['date_filter'].lower()
         datetime_now = timezone.now().replace(microsecond=0)
         # student related data
-        student_group = self.request.user.groupmapping_set.all()
-        student_session = InningInfo.objects.filter(Groups__in=student_group)
-        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
-        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+
+
+        # student_group = self.request.user.groupmapping_set.all()
+        # student_session = InningInfo.objects.filter(Groups__in=student_group)
+        # active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        # student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+        #
+        #
 
         # Predefined category name "general, session, course, system"
-        general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
-                                                   Center_Code=self.request.user.Center_Code, Use_Flag=True)
-        session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
-                                                   Session_Code__in=student_session, Use_Flag=True)
-        course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
-                                                  Course_Code__in=student_course, Use_Flag=True)
-        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+        # general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
+        #                                            Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        # session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
+        #                                            Session_Code__in=student_session, Use_Flag=True)
+        # course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
+        #                                           Course_Code__in=student_course, Use_Flag=True)
+        # system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
-        my_queryset = None
-        if category_name == "all_survey":
-            my_queryset = general_survey | session_survey | course_survey | system_survey
-        else:
-            if category_name == "general":
-                my_queryset = general_survey
-            elif category_name == "session":
-                my_queryset = session_survey
-            elif category_name == "course":
-                my_queryset = course_survey
-            elif category_name == "system":
-                my_queryset = system_survey
-
-        if date_filter == "active":
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
-            print(date_filter, "query", len(my_queryset))
-        elif date_filter == "expire":
-            my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
-            print(date_filter, "query", len(my_queryset))
+        # my_queryset = None
+        # if category_name == "all_survey":
+        #     my_queryset = general_survey | session_survey | course_survey | system_survey
+        # else:
+        #     if category_name == "general":
+        #         my_queryset = general_survey
+        #     elif category_name == "session":
+        #         my_queryset = session_survey
+        #     elif category_name == "course":
+        #         my_queryset = course_survey
+        #     elif category_name == "system":
+        #         my_queryset = system_survey
+        #
+        # if date_filter == "active":
+        #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
+        #     print(date_filter, "query", len(my_queryset))
+        # elif date_filter == "expire":
+        #     my_queryset = my_queryset.filter(End_Date__lte=timezone.now())
+        #     print(date_filter, "query", len(my_queryset))
         # elif date_filter == "live":
         #     my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=True)
         #     print(date_filter, "query", len(my_queryset))
 
-        return my_queryset
+        # return my_queryset
 
     # except:
     #     return None
