@@ -1,0 +1,206 @@
+{% load readmore %}
+{% load i18n %}
+{% load static %}
+
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+
+<script src="{% static 'vendors/charts/apex/apexcharts.min.js' %}"></script>
+
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+             <h1 class="pollTitle" style="color:#5c6bc0;">{{ object.Survey_Title }}</h1>
+        </div>
+    </div>
+    <br><br><br>
+<!--    <div class="row">-->
+<!--        <div class="col-md-4">-->
+<!--            <div class="col-md-12">-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="row">
+        <div class="col-md-4">
+                <div class="col-md-12">
+
+
+                    <ul class="card_labels">
+                        <li>
+                            <div class="form-group">
+                                <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
+                                       for="first-name">Category:
+                                    <span class="category-label">{{ object.Category_Code }}</span>
+                                </label>
+                            </div>
+                        </li>
+
+                        <li class="surveyViewDates">
+                            <i class="fa fa-calendar"></i><label>Start date: <span
+                                class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
+                        </li>
+                        <li class="surveyViewDates">
+                            <i class="fa fa-calendar"></i><label>End date: <span
+                                class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
+                        </li>
+
+                    </ul>
+                </div>
+
+
+        </div>
+
+    </div>
+    <hr class="btn-primary">
+                   <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">
+
+                      {% if datetimeexpired %}
+                          Survey submission date has ended.
+                      {% else %}
+                          You have already taken this survey.
+                      {% endif %}
+                  </div>
+
+    <hr class="btn-primary">
+
+    <div class="row">
+
+            <div class="col-md-9">
+               <div class="col-md-12">
+                    <br>
+
+                     <form id="surveyform" method="post" action="
+                {% if request.GET.iframe %}
+                    {% url 'ParticipateSurvey' %}?iframe=1
+                {% else %}
+                    {% url 'ParticipateSurvey' %}
+               {% endif %}
+            ">
+              {% csrf_token %}
+              {% for question in questions %}
+                  {% if question.Question_Type == "MCQ" %}
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                          <div class="x_panel" id="pollsQuestions"
+                               style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);">
+                              <div class="title1">
+                                  <h2 class="title ">
+                                      <strong>{{ forloop.counter }} . &nbsp;
+                                          {{ question.Question_Name }}</strong>
+                                  </h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" style="width:500px; margin:20px; padding:10px">
+                    {% for option in options %}
+                      {% if option.Question_Code.pk == question.pk %}
+                        <div class="radio">
+                          {#                        {% if can_submit %}#}
+                          {#                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"#}
+                          {#                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}#}
+                          {#                          {% elif sub %}#}
+                          {##}
+                          {#                          {% endif %}#}
+                          <label style="line-height: 14px">
+                            <input type="radio" name="{{ question.pk }}" id="pollsOptions"
+                                   value="{{ option.pk }}"
+                                {% if option.was_chosen %}
+                                   checked
+                                {% endif %}
+                            >
+                            &nbsp; {{ option.Option_Name }}
+                          </label>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel" id="pollsQuestions" style="box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25); ">
+                  <div>
+                    <h2 class="title ">
+                      <strong>{{ forloop.counter }}. &nbsp;{{ question.Question_Name }}</strong>
+                    </h2>
+                    <h5>
+                      {#                      {% if object.pk == submit.Survey_Code %}{{ submit. }} {% endif %}#}
+                    </h5>
+                  </div>
+                  <div style="
+                        width: 100%;
+                        height: 2px;
+                        display: flex;
+                        flex-direction: auto;
+                        background-color: #f1f1f1; "></div>
+
+                  <div class="x_content" style="margin: 0 0 30px 40px;">
+                    <label class="SAQ_answer_label">Answers:</label>
+                    <textarea class="form-control SAQ_answer" name="{{ question.pk }}" rows="5" id="comment"
+                              form="surveyform"
+                              value="{{ question.answer }}"
+                    style="width:500px">{{ question.answer.Answer_Value }}</textarea>
+
+                  </div>
+                </div>
+              </div>
+
+            {% endif %} {% endfor %}
+
+          <input type="hidden" name="surveyInfoId" value="{{ object.id }}">
+          <input type="hidden" name="userId" value="{{ request.user.id }}">
+          {#                <!-- {{ request.user.id }} -->#}
+          <div class="text-center">
+            <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">Submit</button>
+          </div>
+        </form>
+
+
+                    <br><br>
+
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="col-md-12">
+
+                    <br><br><br>
+
+
+
+                </div>
+            </div>
+
+    </div>
+</div>
+
+
+<div id="survey_form_modal" class="modal  fade" style="height: -webkit-fill-available;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create Survey</h4>
+                <div class="form-group">
+                    <label class="control-label " id="categoryTitle" for="first-name">
+                        {% for category in categories %}
+                            <span class="generalLabel">{{ category.Category_Name }}</span>
+                        {% endfor %}
+                    </label>
+                </div>
+            </div>
+            <div class="modal-body" id="surveyForm">
+                <div>
+                    <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

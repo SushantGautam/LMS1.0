@@ -1,4 +1,4 @@
-{% extends "teacher_module/base.html" %} {% load static %} {% block stylesheets %}
+{% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 
 {% endblock stylesheets %} {% block breadcrumb %}
@@ -12,7 +12,8 @@
 </style>
 {% block content %}
 
-    {% include 'survey/common/new_detail.html' %}
+
+    {% include 'student_module/survey/common/new_detail.html' %}
 
 <br><br>
 
@@ -24,20 +25,7 @@
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
 
-    <script>
-       //  let checkbox = $("input[class=custom-control-input]");
-       //  checkbox.addEventListener( 'change', function() {
-       //             if(this.checked) {
 
-       //                $(this).prop('checked', false);
-
-       //             } else {
-        //                $(this).prop('checked', true);
-
-        //            }
-        //    });
-
-    </script>
 
     <script>
         var current_progress = 0;
@@ -80,81 +68,6 @@
     </script>
 
     <script>
-        $('#retakeSurveyBtn').on('click', function () {
-          //  $('div').last().remove();
-          //  $('div').last().addClass("modal-backdrop");
-         // $('<div class="show fade modal-backdrop"></div>').appendTo(document.body);
-         //  $('document.body').append(<div class=" show modal-backdrop  fade"></div>);
-        //   $('.fade .show ').addClass("modal-backdrop");
-
-            current_progress = -10000;
-
-
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
-
-                    $("#surveyForm").html(data);
-
-
-                },
-                complete: function () {
-                 //   $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
-
-            });
-        });
-
-
-
-          $('#update_survey_button').on('click', function () {
-            current_progress = -10000;
-
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
-
-                    $("#surveyForm").html(data);
-
-
-                },
-                complete: function () {
-                 //   $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
-
-            });
-        });
-        $('#update_survey_button_limited').on('click', function () {
-            current_progress = -10000;
-            let url_get = "";
-            {% if 'teachers' in request.path %}
-                url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
-            {% else %}
-                url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
-            {% endif %}
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: url_get,  // URL to your view that serves new info
-                success: function (data) {
-
-                    $("#surveyForm").html(data);
-
-
-                },
-                complete: function () {
-               //     $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
-
-            });
-        });
 
 
 
@@ -163,333 +76,22 @@
 
 
 
-        $('#update_progress').on('click', function () {
 
-            $.ajax({
-                type: "GET",
-                url: "{% url 'liveProgressResult' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
-                    console.log(data);
-                    obj = JSON.parse(data);
-                    console.log(obj);
-                    console.log(obj[0]["fields"]);
-                    console.log(obj[0].pk);
-                    for (var i = 0; i < obj.length; i++) {
-                        $("#progress" + obj[i].pk).css('width', obj[i]["fields"]["Vote_Count"] + "%");
-                        console.log($("#progress" + obj[i].pk).css('width'));
-                        $("#progress_span" + obj[i].pk).html(obj[i]["fields"]["Vote_Count"] + "%");
-                        console.log($("#progress_span" + obj[i].pk).html());
-                        console.log(obj[i].pk)
-                    }
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                }
-            });
-        });
-    </script>
 
-    <script>
-        function survey_create_content(response) {
-            //location.reload();
-            console.log(response['url']);
-            window.location.href = String(response['url']);
-        }
 
-        function askIfRemoveAll() {
-            $('#chk').prop('checked', false);
 
-            var answer = window.confirm("This will remove all student's submitted answers and cannot be undone. Continue?")
-            if (answer) {
-                {% if 'iframe' in request.GET %}
-                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/?iframe=1";
-                {% else %}
-                    window.location.href = "/survey/clearsurveys/{{ object.pk }}/";
-                {% endif %}
-            } else {
-                //some code
-            }
-        }
 
     </script>
 
     <script>
-        // Script to toogle chart
-        $( document ).ready(function() {
-            $('.mychart').click(function(){
-                $('#chk').prop('checked', false)
-                var radioID = this.id;
-                var parent_id = '';
 
-                if(radioID.includes("pie")){
-                    parent_id = "chart" + radioID.replace("pie", "");
-                    $(`#${parent_id} > .pieChart`).show();
-                    $(`#${parent_id} > .columnChart`).hide();
-                }else{
-                    parent_id = "chart" + radioID.replace("column", "");
-                    $(`#${parent_id} > .columnChart`).show();
-                    $(`#${parent_id} > .pieChart`).hide();
-                }
-            });
-        });
+
+    </script>
+
+    <script>
+
     </script>
      <script>
-
-        let lMargin = 15; //left margin in mm
-        let rMargin = 15; //right margin in mm
-        let pdfInMM = 210;
-
-        let add_text = function (doc, text, size, x_pos, y_pos, center = false) {
-            doc.setFontSize(size);
-
-            //if (center){
-            //    x_pos = (doc.internal.pageSize.width / 2) - (doc.getStringUnitWidth(text) * doc.internal.getFontSize() / 2)
-            //}
-
-            let lines = doc.splitTextToSize(text, (pdfInMM - lMargin - rMargin));
-            let lineHeight = doc.getLineHeight(text) / doc.internal.scaleFactor;
-            let lines_len = lines.length;  // splitted text is a string array
-            let blockHeight = lines_len * lineHeight;
-
-            if (center) {
-                doc.text(lines, doc.internal.pageSize.getWidth() * 0.5, y_pos, 'center');
-            } else {
-                doc.text(lines, x_pos, y_pos);
-            }
-
-
-            return y_pos + blockHeight;
-        };
-
-        function getLines(ctx, text, maxWidth) {
-            var words = text.split(" ");
-            var lines = [];
-            var currentLine = words[0];
-
-            for (var i = 1; i < words.length; i++) {
-                var word = words[i];
-                var width = ctx.measureText(currentLine + " " + word).width;
-                if (width < maxWidth) {
-                    currentLine += " " + word;
-                } else {
-                    lines.push(currentLine);
-                    currentLine = word;
-                }
-            }
-            lines.push(currentLine);
-            return lines;
-        }
-
-        function addTextCanvas(canv, ctx, text, xx, yy) {
-            let h = parseInt(ctx.font.split("px")[0]);
-            let lines = getLines(ctx, text, canv.width);
-            for (const ln of lines) {
-                ctx.fillText(ln, xx, yy);
-                yy += h + 3;
-            }
-            return yy
-        }
-
-        //$(window).on('load', function () {
-        $("#btnDownload").on('click', async function () {
-
-            var doc = new jsPDF();
-            doc.page = 1;
-
-            // width of A4 in mm
-
-            var yPos = 20;
-            var xPos = lMargin;
-
-
-            let hcanvas = document.createElement("CANVAS");
-            hcanvas.height = 150;
-            hcanvas.width = 400;
-            var hctx = hcanvas.getContext("2d");
-
-            let ini_y = 14;
-            hctx.textAlign = "center";
-            hctx.font = "16px Georgia";
-            ini_y = addTextCanvas(hcanvas, hctx, "SURVEY REPORT", hcanvas.width * 0.5, ini_y);
-            ini_y = addTextCanvas(hcanvas, hctx, "{{ object.Survey_Title }}", hcanvas.width * 0.5, ini_y);
-            hctx.textAlign = "start";
-            hctx.font = "12px Georgia";
-            ini_y += 14;
-            ini_y = addTextCanvas(hcanvas, hctx, "Start Date: " + DateConvert("{{ object.Start_Date|date:'M d, Y H:i' }}"), 0, ini_y);
-            ini_y = addTextCanvas(hcanvas, hctx, "End Date: " + DateConvert("{{ object.End_Date|date:'M d, Y H:i' }}"), 0, ini_y);
-            ini_y = addTextCanvas(hcanvas, hctx, "Number of Participants: {{ submit }}", 0, ini_y);
-
-            let a_r = hcanvas.width / hcanvas.height;
-            var imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
-            var imgWidth = (imgHeight * a_r);
-            yPos += 5;
-            doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
-            yPos += imgHeight;
-            yPos += 5;
-            //$("#test_image").attr('src', hcanvas.toDataURL());
-
-            const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-            async function asyncForEach(array, callback) {
-                for (let index = 0; index < array.length; index++) {
-                    await callback(array[index], index, array);
-                }
-            }
-
-            const start = async () => {
-                var countAnswers = 0;
-                await asyncForEach($('.SurveyAnswers'), async function (index) {
-                        // $('.SurveyAnswers').each(function (index) {
-                        countAnswers++;
-                        $this = index
-
-                        if ($this.classList.contains('MCQAnswers_div')) {
-
-
-
-                            let svgel = $($this).find('svg:visible')[0];
-                            let xml = new XMLSerializer().serializeToString(svgel);
-
-                            let svg = new Blob([xml], {type: "image/svg+xml;charset=utf-8"}),
-                                domURL = self.URL || self.webkitURL || self,
-                               // url = domURL.createObjectURL(svg);
-                               url = "data:image/svg+xml;base64,"+window.btoa(xml);
-
-                            // make it base64
-                            //var svg64 = btoa(xml);
-                            //var b64Start = 'data:image/svg+xml;base64,';
-
-                            // prepend a "header"
-                            //var image64 = b64Start + svg64;
-
-                            //let canvas = document.querySelector("#test_canvas");
-                            let canvas = document.createElement("CANVAS");
-                            canvas.height = svgel.height.baseVal.value + 200;
-                            canvas.width = svgel.width.baseVal.value + 200;
-                            var ctx = canvas.getContext("2d");
-                            var img = new Image();
-                            img.onload = function () {
-                                let qn_title = $(svgel).parent().parent().parent().attr('data-qn-title');
-                                //let qn_title = `#. 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 팔에 hello 가보고 싶나요 end`;
-                                ctx.font = "14px Georgia";
-                                let lines = getLines(ctx, qn_title, canvas.width - 10);
-                                let ini_y = 12;
-                                for (const ln of lines) {
-                                    ctx.fillText(ln, 0, ini_y);
-                                    ini_y += 15;
-                                }
-                                ctx.drawImage(img, 125, ini_y); // destination rectangle
-
-                                //let link = document.createElement('a');
-                                //link.href = canvas.toDataURL();
-                                //link.download = "test.png";
-                                //document.body.appendChild(link);
-                                //link.click();
-
-                                //var imgWidth = doc.internal.pageSize.getWidth()*0.7;
-                                let a_r = canvas.width / canvas.height;
-                                var imgHeight = (doc.internal.pageSize.getHeight() * 0.6);
-                                var imgWidth = (imgHeight);
-
-                                //yPos += 5;
-                                //yPos = add_text(doc,
-                                //    qn_title,
-                                //    12, xPos, yPos);
-                                yPos += 5;
-                                doc.addImage(canvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
-                                yPos += imgHeight;
-                                yPos += 5;
-
-
-                            };
-                            img.src = url;
-                            //img.src = image64;
-
-                        } else if ($this.classList.contains('SAQAnswers_div')) {
-                            var margin_top = 0;
-
-                            if (countAnswers === 1) {
-                                margin_top = 90
-                            } else {
-                                margin_top = 20
-                            }
-                            let currentSelectedValue = $($this).find('.dataTables_length select').val()
-                            $($this).find('.dataTables_length select').find('option[value="-1"]').prop('selected', true).trigger('change')
-                            let hcanvas = document.createElement("CANVAS");
-                            hcanvas.height = 150;
-                            hcanvas.width = 400;
-
-
-
-
-                            var hctx1 = hcanvas.getContext("2d");
-                            let ini_y = 14;
-                            hctx1.font = "14px Georgia";
-                            hctx1.textAlign = "start";
-                            ini_y = addTextCanvas(hcanvas, hctx1, $($this).find('h2').text(), 0, ini_y);
-                            ini_y += 14;
-                            let a_r = hcanvas.width / hcanvas.height;
-                            imgHeight = (doc.internal.pageSize.getHeight() * 0.2);
-                            imgWidth = (imgHeight * a_r);
-                            yPos += 1;
-                            var header = function (data) {
-
-                                // If question only in first page
-                                /*if (data.pageNumber !== 1) {
-                                    margin_top = 0
-                                    return false
-                                }*/
-
-                                doc.addImage(hcanvas.toDataURL(), 'PNG', xPos, yPos, imgWidth, imgHeight);
-
-                                {#doc.text($($this).find('h2').text(), data.settings.margin.left, data.settings.margin.top);#}
-                            };
-                            let lines = getLines(hctx1, $($this).find('h2').text(), hcanvas.width - 10);
-                            margin_top += (10 * lines.length);
-                            source = $($this).find('table')[0];
-                            doc.autoTable({
-                                html: source,
-                                didDrawPage: header,
-
-                                styles: {
-
-                                    halign: 'center'
-                                },
-                                margin: {top: margin_top, bottom: 25},
-
-                            })
-                            $($this).find('.dataTables_length select').find('option[value="' + currentSelectedValue + '"]').prop('selected', true).trigger('change')
-                        }
-
-                    await waitFor(100);
-                    {#doc.text(150, 285, 'Page ' + doc.page);#}
-                        if (countAnswers !== $('.SurveyAnswers').length) {
-                            doc.addPage();
-                            yPos = 20;
-                            doc.page++;
-                        }
-
-                    }
-                );
-
-                const pages = doc.internal.getNumberOfPages();
-                const pageWidth = doc.internal.pageSize.width;  //Optional
-                const pageHeight = doc.internal.pageSize.height;  //Optional
-                doc.setFontSize(10);  //Optional
-
-                for (let j = 1; j < pages + 1; j++) {
-                    let horizontalPos = pageWidth / 2;  //Can be fixed number
-                    let verticalPos = pageHeight - 10;  //Can be fixed number
-                    doc.setPage(j);
-                    doc.text(`Page ${j} of ${pages}`, horizontalPos, verticalPos, {align: 'center'})  //Optional text styling});
-                }
-
-                doc.autoPrint();
-                window.open(doc.output('bloburl'))
-
-            }
-            start()
-        });
 
 
     </script>
