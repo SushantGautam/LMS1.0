@@ -55,7 +55,6 @@ from survey.views import AjaxableResponseMixin
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
 
-datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from formtools.wizard.views import SessionWizardView
 from quiz.forms import QuizForm1, QuizForm2, QuizForm3
@@ -357,6 +356,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -429,6 +429,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
                                                                      )
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
@@ -626,6 +627,7 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['currentDate'] = datetime.now()
         context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
         course = []
@@ -2224,6 +2226,7 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     formset = None
     session_list = []
     session_course = []
+    datetime_now = timezone.now().replace(microsecond=0)
     if attend_date == None:
         attend_date = str(datetime.today().date())
     studentattendancejson = []
@@ -2354,7 +2357,7 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
 def chapterStudentProgress(request, course, pk, inningpk=None):
     session_list = []
     studentjson = []
-
+    datetime_now = timezone.now().replace(microsecond=0)
     course = get_object_or_404(CourseInfo, pk=course)
     chapter = get_object_or_404(ChapterInfo, pk=pk)
 
@@ -2404,6 +2407,7 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
 def teacherAttendance(request, courseid, createFile=True):
     chapters = []
     pagenumber = []
+    datetime_now = timezone.now().replace(microsecond=0)
     if request.GET.get('chapterid'):
         chapterid = request.GET.get('chapterid')
         pagenumber = request.GET.get('pagenumber')
