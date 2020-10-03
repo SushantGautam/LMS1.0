@@ -29,6 +29,7 @@ class SurveyInfoForm(forms.ModelForm):
         request = kwargs.pop("request", None)
         survey_object = kwargs.pop("object", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Use_Flag'].label = 'Publish'
 
         if survey_object:
             print(survey_object, "survey_obj")

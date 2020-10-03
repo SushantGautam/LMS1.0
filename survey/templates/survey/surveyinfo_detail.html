@@ -51,9 +51,9 @@
             });
 
 
-
+            // retake survey reload off
             $('#survey_form_modal').on('hidden.bs.modal', function () {
-                location.reload();
+              //  location.reload();
             });
 
             var interval = setInterval(function () {
@@ -97,6 +97,7 @@
                 success: function (data) {
                 
                     $("#surveyForm").html(data);
+
                     
 
                 },
@@ -490,6 +491,8 @@
             }
             start()
         });
+
+
 
 
     </script>
