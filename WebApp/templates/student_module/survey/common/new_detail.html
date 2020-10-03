@@ -57,7 +57,7 @@
 
     </div>
     <hr class="btn-primary">
-                   <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">
+                   <div class="text-success" style="display: none;text-align: center; " id="survey_already_taken">
 
                       {% if datetimeexpired %}
                           Survey submission date has ended.
@@ -137,12 +137,12 @@
                         flex-direction: auto;
                         background-color: #f1f1f1; "></div>
 
-                  <div class="x_content" style="margin: 0 0 30px 40px;">
+                  <div class="x_content" style="margin: 0 40px 30px 40px;">
                     <label class="SAQ_answer_label">Answers:</label>
                     <textarea class="form-control SAQ_answer" name="{{ question.pk }}" rows="5" id="comment"
                               form="surveyform"
                               value="{{ question.answer }}"
-                    style="width:500px">{{ question.answer.Answer_Value }}</textarea>
+                    style="width:400px;" >{{ question.answer.Answer_Value }}</textarea>
 
                   </div>
                 </div>
@@ -153,9 +153,21 @@
           <input type="hidden" name="surveyInfoId" value="{{ object.id }}">
           <input type="hidden" name="userId" value="{{ request.user.id }}">
           {#                <!-- {{ request.user.id }} -->#}
-          <div class="text-center">
-            <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">Submit</button>
-          </div>
+
+
+                      {% if datetimeexpired %}
+
+                      {% else %}
+                              {% if can_submit %}
+                                 <div class="text-center">
+                                   <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">Submit</button>
+                                  </div>
+
+                              {% endif %}
+                     {% endif %}
+
+
+
         </form>
 
 

@@ -4,7 +4,7 @@
 
 {% endblock stylesheets %} {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">Survey</a>
+        <a href="{% url 'surveyFilterCategory_student' %}?category_name=all_survey&date_filter=active">Survey</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
