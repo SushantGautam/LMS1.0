@@ -742,7 +742,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     if department is not None and department != '-':
                         if not DepartmentInfo.objects.filter(Department_Name__iexact=department,
                                                              Center_Code=request.user.Center_Code).exists():
-                            error = "Department Name <strong>" + department + "</strong> does not exists."
+                            error = "Department Name <strong>" + str(department) + "</strong> does not exists."
                             raise Exception
 
                     if not username:
