@@ -53,7 +53,7 @@
 
 
             $('#survey_form_modal').on('hidden.bs.modal', function () {
-                location.reload();
+              //  location.reload();
             });
 
             var interval = setInterval(function () {
@@ -116,7 +116,7 @@
             $.ajax({
                 type: "GET",
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
+                url: "{% url 'teacher_surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
                 success: function (data) {
 
                     $("#surveyForm").html(data);
@@ -133,11 +133,11 @@
         $('#update_survey_button_limited').on('click', function () {
             current_progress = -10000;
             let url_get = "";
-            {% if 'teachers' in request.path %}
-                url_get = "{% url 'TeacherSurveyInfo_ajax_update_limited' pk=object.id %}";
-            {% else %}
-                url_get = "{% url 'surveyinfo_ajax_update_limited' pk=object.id %}";
-            {% endif %}
+
+
+               url_get = "{% url 'teacher_surveyinfo_ajax_update_limited' pk=object.id %}";
+
+            console.log("url_sasasa", url_get);
             $.ajax({
                 type: "GET",
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},

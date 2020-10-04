@@ -423,9 +423,9 @@ urlpatterns += (
 
     path('surveyinfo_ajax/', surv_views.SurveyInfo_ajax.as_view(),
          name='teacher_surveyinfo_ajax'),
-    path('surveyinfo_ajax_update/<int:pk>/', surv_views.SurveyInfoAjaxUpdate.as_view(),
+    path('surveyinfo_ajax_update/<int:pk>/', surv_views.SurveyInfoAjaxUpdate.as_view(template_name='ajax/surveyInfoAddSurvey_ajax2.html'),
          name='teacher_surveyinfo_ajax_update'),
-    path('surveyinfo_ajax_update_limited/<int:pk>/', surv_views.SurveyInfoAjaxUpdateLimited.as_view(),
+    path('surveyinfo_ajax_update_limited/<int:pk>/', surv_views.SurveyInfoAjaxUpdateLimited.as_view(template_name='ajax/survey_update_limited_ajax.html'),
          name='teacher_surveyinfo_ajax_update_limited'),
     path('liveProgressResult/<int:pk>/', surv_views.liveProgressResult.as_view(),
          name='teacher_liveProgressResult'),
