@@ -54,6 +54,19 @@
 
 
         </div>
+          {% if not can_submit %}
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="col-md-12">
+                <ul class="card_labels">
+                    <br><br><br><br>
+                <li class="surveyViewDates"><i class="fa fa-calendar"></i><label>Submitted date: <span
+                                class="">{{ submitted_date|date:'M d, Y H:i' }}</span></label></li>
+                </ul>
+
+            </div>
+        </div>
+        {% endif %}
 
     </div>
     <hr class="btn-primary">

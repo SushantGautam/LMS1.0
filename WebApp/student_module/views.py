@@ -581,6 +581,9 @@ class questions_student_detail(DetailView):
 
         context['can_submit'], context['datetimeexpired'], context['options'], context[
             'questions'] = self.object.can_submit(self.request.user)
+        context['submitted_date'] = SubmitSurvey.objects.get(Survey_Code=self.object.id,
+                                                                Student_Code=self.request.user.id).Created_Date
+        print(context['submitted_date'])
         return context
 
 
@@ -665,15 +668,13 @@ class surveyFilterCategory_student(ListView):
         qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
         return qs
 
-
-    # def get_queryset(self):
+        # def get_queryset(self):
         # try:
 
         # category_name = self.request.GET['category_name'].lower()
         # date_filter = self.request.GET['date_filter'].lower()
         datetime_now = timezone.now().replace(microsecond=0)
         # student related data
-
 
         # student_group = self.request.user.groupmapping_set.all()
         # student_session = InningInfo.objects.filter(Groups__in=student_group)
