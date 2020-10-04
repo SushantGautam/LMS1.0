@@ -622,7 +622,8 @@ class MyAssignmentsListView(ListView):
                                               Assignment_Deadline__lt=datetime_now))
             activeAssignment.append(
                 AssignmentInfo.objects.filter(Course_Code=course,
-                                              Assignment_Deadline__gte=datetime_now))
+                                              Assignment_Deadline__gte=datetime_now,
+                                              Chapter_Code__Use_Flag=True))
         context['Assignment'].append(Assignment)
         context['activeAssignment'].append(activeAssignment)
         context['expiredAssignment'].append(expiredAssignment)

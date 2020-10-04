@@ -2,6 +2,7 @@
 {% load static %}
 {% load model_template_relation %}
 {% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="
         {% if object.Course_Code.Use_Flag %}
             {% url 'teacher_mycourses_list_active' %}
@@ -13,30 +14,11 @@
 </li>
 <li class="breadcrumb-item"><a href="{{ object.Chapter_Code.teacher_get_absolute_url }}">{{ object.Chapter_Code }}</a>
 </li>
-<li class="breadcrumb-item active" aria-current="page" style="max-width: 30ch; overflow: hidden;white-space: nowrap; text-overflow:ellipsis;
-;margin-bottom: -5px;">{{ object.Assignment_Topic }}</li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
 {% endblock %}
 
 {% block content %}
-<style>
-    @keyframes glowing {
-        0% {
-            box-shadow: 0 0 -10px #c4a300;
-        }
 
-        40% {
-            box-shadow: 0 0 20px #c4a300;
-        }
-
-        60% {
-            box-shadow: 0 0 20px #c4a300;
-        }
-
-        100% {
-            box-shadow: 0 0 -10px #c4a300;
-        }
-    }
-</style>
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true" id="create_session_modal">
     <div class="modal-dialog" role="document">
@@ -61,7 +43,7 @@
     </div>
 </div>
 
-<div style="padding-bottom: 10px;">
+<div>
     <h1 class="pageHeader">
         {{ object.Assignment_Topic }}
 
@@ -101,7 +83,7 @@
     </h1>
 
 </div>
-<div class="row" style="margin-bottom: 10px;">
+<div class="row">
     <div class="col-lg-4 col-md-4 col-sm-12 text-left">
         <b style="font-size: 15px;">Course: </b> {{ object.Course_Code }}
     </div>
@@ -125,7 +107,7 @@
 </div>
 
 <!-- Start/End Date from different session -->
-<div class="row" style="margin-bottom: 10px;">
+<div class="row">
     {% if assigned_session %}
     <table class="table">
         <tr>
@@ -197,7 +179,7 @@
 {#        </div>#}
 {#    </div>#}
 
-<div class="row text-left " style="margin-bottom: 10px;">
+<div class="row text-left">
     <div class="col-lg-4 col-md-4 col-sm-12 text-left">
         <b style="font-size: 15px;"> Status: </b>
         {% if object.Use_Flag is True %}

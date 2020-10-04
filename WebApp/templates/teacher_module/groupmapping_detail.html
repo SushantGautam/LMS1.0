@@ -1,0 +1,90 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.GroupMapping_Name }}</li>
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title d-block text-center">
+        <h2>Class Information</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-10" style="margin:auto">
+        <div class="card p-3">
+            <ul class="text-center font-weight-bold">
+                <li class="p-2">
+                    Group Name : {{ object.GroupMapping_Name }}
+                </li>
+                <li class="p-2">
+                    Register Agent : {{ object.Register_Agent }}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="page-header">
+    <div class="page-title">
+        <h4>Enrolled Students &nbsp;( {{object.Students.all.count}} )</h4>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered nowrap">
+        <thead class="thead-light">
+            <tr class="tableTitleRow">
+                <th class="text-center">S. No.</th>
+                <th>Username</th>
+                <!-- <th>Member ID</th> -->
+                <!-- <th>Full Name</th> -->
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Gender</th>
+
+                <th>Temporary Address</th>
+                <th>Permanent Address</th>
+                <th>Birthdate</th>
+                <!-- <th>Type</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for students in object.Students.all %}
+            <tr>
+                <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
+                <td style="vertical-align: middle;"><b><a
+                            href="{% url 'Student_DetailInfo' id=object.pk %}">{{ students }}</a></b>
+                </td>
+                <!-- <td style="vertical-align: middle;">{{ students.Member_ID }}</td> -->
+                <!-- <td style="vertical-align: middle;">{{ students.first_name }}&nbsp;{{ students.last_name }}</td> -->
+                <td style="vertical-align: middle;">{{ students.first_name }}</td>
+                <td style="vertical-align: middle;">{{ students.last_name }}</td>
+                <td style="vertical-align: middle;">{{ students.email }}</td>
+                <td style=" padding-top: 15px;">{{ students.Member_Phone }}</td>
+                <td style="vertical-align: middle;">
+                    {{ students.get_Member_Gender_display }}
+                </td>
+
+                <td style="vertical-align: middle;">{{ students.Member_Temporary_Address }}</td>
+                <td style="vertical-align: middle;">{{ students.Member_Permanent_Address }}</td>
+                <td style="vertical-align: middle;">{{ students.Member_BirthDate|date:"m/d/Y" }}</td>
+                <!-- <td style="vertical-align: middle;">
+                    {% if students.Is_Teacher == True and students.Is_Student == True %}
+                    Teacher, Student
+                    {% elif students.Is_Teacher == True %}
+                    Teacher
+                    {% elif students.Is_Student == True %}
+                    Student
+                    {% else %}
+                    Not Assigned
+                    {% endif %}
+                </td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
