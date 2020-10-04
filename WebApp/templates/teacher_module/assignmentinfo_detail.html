@@ -19,16 +19,15 @@
 
 {% block content %}
 
-<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" id="create_session_modal">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="create_session_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Answer
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </h4>
+                <h5 class="modal-title text-primary font-weight-bold">Answer </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
             </div>
             <div class="modal-body" style="color: black;height: -webkit-fill-available;">
                 <div id="answercontent">
@@ -42,55 +41,148 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-primary font-weight-bold">Edit Assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="editAssignment_modal_body">
+                <form method="post" id="ajaxassignmentinfoform">
+                    {% csrf_token %}
+                    <div class="alert alert-danger form-errors" style="display: none">
+                    </div>
+                    <div class="form-group has-feedback">
+                        <div id="div_id_Assignment_Topic_edit" class="form-group">
+                            <label for="id_Assignment_Topic_edit" class="control-label ">
+                                Assignment Topic *
+                            </label>
+                            <div class="controls">
+                                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic_edit"
+                                    class="textinput textInput form-control" required="required"
+                                    value="{{ object.Assignment_Topic }}">
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %}
+                    <div class="form-group has-feedback">
+                        <div id="div_id_Assignment_Start_edit" class="form-group">
+                            <label for="id_Assignment_Start_edit" class="control-label ">
+                                Assignment Start *
+                            </label>
+                            <div class="controls ">
+                                <input type="text" name="Assignment_Start_edit" class="form-control"
+                                    id="id_Assignment_Start_edit" value="{{ object.Assignment_Start|date:'c' }}" min=""
+                                    max="9999-12-31">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                        <div id="div_id_Assignment_Deadline_edit" class="form-group">
+                            <label for="id_Assignment_Deadline_edit" class="control-label ">
+                                Assignment Deadline *
+                            </label>
+                            <div class="controls ">
+                                <input type="text" name="Assignment_Deadline_edit" class="form-control"
+                                    id="id_Assignment_Deadline_edit" value="{{ object.Assignment_Deadline|date:'c' }}"
+                                    min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
+                            </div>
+                        </div>
+                    </div>
+                    {% endcomment %}
+                    <div>
+                        <label>Publish</label><br>
+                        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                            {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} checked
+                            {% endif %}><br> <br>
+                    </div>
 
-<div>
-    <h1 class="pageHeader">
-        {{ object.Assignment_Topic }}
+                    <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+                        class="select form-control">
+                    <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+                        class="select form-control">
+                    <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.Chapter_Code.id }}"
+                        class="select form-control">
+                    <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:'Y-m-d' }}"
+                        class="select form-control">
 
-        <button type="button" class=" btn btn-sm  btn-light" data-toggle="modal" data-target="#editAssignmentModal"
-            id="editAssignment-btn">
-            <i class="fa fa-edit text-info"> </i> <span>Edit</span>
-        </button>
-        {% if '/teachers' in request.path %}
-        <button type="button" class=" btn btn-sm  btn-light"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                style="color: rgb(255, 0, 0);cursor:pointer; margin:0px;padding:0px; text-decoration:none; ">
-                <i class="fa fa-trash text-danger"></i> <span>Delete</span>
-            </a></button>
-
-        <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
-            id="deleteAssignment{{ object.pk }}">
-            {% csrf_token %}
-            <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-            <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-            <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-        </form>
-        {% else %}
-        <span style="">
-            <button type="button" class="btn btn-light btn-sm"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                    style="color: rgb(255, 0, 0);cursor:pointer">
-                    <i class="fa fa-trash text-danger"></i>
-                </a></button>
-        </span>
-        <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
-            id="deleteAssignment{{ object.pk }}">
-            {% csrf_token %}
-            <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-            <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-            <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-            <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-        </form>
-        {% endif %}
-    </h1>
+                    <div class="submitButton text-center col-md-12">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="add_question_modal" tabindex="-1" role="dialog" aria-labelledby="add_question_modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-primary font-weight-bold">Add Question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body modal-auto" id="add_question_modal_body">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-header">
+    <div class="page-title">
+        <h2>{{ object.Assignment_Topic }}</h2>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-info btn-floating mr-3" data-toggle="modal"
+                data-target="#editAssignmentModal" id="editAssignment-btn">
+                <i class="fa fa-edit"> </i>
+            </button>
+            {% if '/teachers' in request.path %}
+            <button type="button" class="btn btn-sm btn-outline-danger btn-floating">
+                <a id="{{ object.pk }}" class="assignment-confirm-delete">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </button>
+            <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
+                id="deleteAssignment{{ object.pk }}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+            </form>
+            {% else %}
+            <span>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-floating">
+                    <a id="{{ object.pk }}" class="assignment-confirm-delete">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </button>
+            </span>
+            <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
+                id="deleteAssignment{{ object.pk }}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+            </form>
+            {% endif %}
+        </div>
+    </div>
 
 </div>
+
 <div class="row">
     <div class="col-lg-4 col-md-4 col-sm-12 text-left">
         <b style="font-size: 15px;">Course: </b> {{ object.Course_Code }}
     </div>
-    <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+    <div class="col-lg-4 col-md-4 col-sm-12 text-center">
         <b style="font-size: 15px;">Chapter:</b> {{ object.Chapter_Code }}
     </div>
-    <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+    <div class="col-lg-4 col-md-4 col-sm-12 text-right">
         <b style="font-size: 15px;">Session:</b>
         <select id="select_session" class="form-control-sm" style="width: 50%;">
             {% for x in session_list %}
@@ -103,13 +195,12 @@
             </option>
         </select>
     </div>
-
 </div>
 
 <!-- Start/End Date from different session -->
-<div class="row">
+<div class="py-3">
     {% if assigned_session %}
-    <table class="table">
+    <table class="table table-striped">
         <tr>
             <th>Session</th>
             <th>Start Date</th>
@@ -119,7 +210,6 @@
             <th>Action</th>
             {% endif %}
         </tr>
-
         {% for sessions in assigned_session %}
         <tr>
             <td>
@@ -164,22 +254,8 @@
     Not Assigned to any Sessions
     {% endif %}
 </div>
-{#    <div class="row" style="margin-bottom: 10px;">#}
-{#        <div class="col-lg-4 col-md-4 col-sm-12 text-left">#}
-{#            <b style="font-size: 15px;"> Session: </b> <span#}
-{#                class=""> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>#}
-{#        </div>#}
-{#        <div class="col-lg-4 col-md-4 col-sm-12 text-left">#}
-{#            <b style="font-size: 15px;"> Assignment Date: </b> <span#}
-{#                class="dateconFullMonth"> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>#}
-{#        </div>#}
-{#        <div class="col-lg-4 col-md-4 col-sm-12 text-left">#}
-{#            <b style="font-size: 15px;"> Assignment Deadline: </b> <span#}
-{#                class="dateconFullMonth"> {{ object.Assignment_Deadline|date:'d M, Y h:i A' }} </span>#}
-{#        </div>#}
-{#    </div>#}
 
-<div class="row text-left">
+<div class="row">
     <div class="col-lg-4 col-md-4 col-sm-12 text-left">
         <b style="font-size: 15px;"> Status: </b>
         {% if object.Use_Flag is True %}
@@ -187,316 +263,202 @@
         {% elif object.Use_Flag is False %}
         <span class="badge badge-danger">Not Published</span>
         {% endif %}
-
-        {#            {% now "Y-m-d H:i" as todays_datewithtime %}#}
-        {#            {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}#}
-        {#                <span class="badge badge-info">Upcoming</span>#}
-        {#            {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}#}
-        {#                <span class="badge badge-danger">Expired</span>#}
-        {#            {% else %}#}
-        {#                <span class="badge badge-success">Active</span>#}
-        {#            {% endif %}#}
     </div>
     <div class="col-lg-4 col-md-4 col-sm-12 text-left">
         <b style="font-size: 15px;">Register Agent: </b> {{ object.Register_Agent }}
     </div>
-</div>
-
-{% if '/students' not in request.path %}
-<div class="" style="text-align: right;">
-    <button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#addQuestionModal"
-        id="add-newquestion-btn">
-        Add Question
-    </button>
-</div>
-{% endif %}
-
-
-{% for question in questions %}
-<div class="row">
-    <div class="col-md-9">
-        <h5>
-            <b> Question :</b> <br><br> <b>{{ question.Question_Title }}</b>
-        </h5>
-    </div>
-    <div class="col-md-1">
-        <button class="btn btn-primary btn-sm" type="button" data-toggle="collapse"
-            data-target="#answer-collapse-{{ question.id }}" aria-expanded="false" aria-controls="collapseExample">
-            Answer
+    {% if '/students' not in request.path %}
+    <div class="col-lg-4 col-md-4 col-sm-12 text-right">
+        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#add_question_modal"
+            id="add-newquestion-btn">
+            Add Question
         </button>
     </div>
-
-    <div class="col-md-2">
-        {% if '/students' not in request.path %}
-        <button class=" btn editquestion-btn btn-light btn-sm " data-toggle="modal" data-target="#editQuestionModal"
-            data-questionpk="{{ question.pk }}" id="editquestion-btn{{ question.pk }}">
-            Edit Question
-        </button>
-
-        <div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog" aria-labelledby="editQuestionLabel"
-            aria-hidden="true" id="editquestion-btn{{ questions.pk }}">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title" id="editQuestionModalLabel"><b>Edit
-                                Question </b>
+    {% endif %}
+</div>
+<hr>
+<div class="py-4">
+    {% for question in questions %}
+    <div class="row">
+        <div class="col-lg-8 col-sm-6">
+            Question:<h5>{{ question.Question_Title }}</h5>
+        </div>
+        <div class="col-lg-4 col-sm-6 text-right">
+            <button class="btn btn-primary btn-sm mr-3" type="button" data-toggle="collapse"
+                data-target="#answer-collapse-{{ question.id }}" aria-expanded="false" aria-controls="collapseExample">
+                Answers
+            </button>
+            {% if '/students' not in request.path %}
+            <button class="btn editquestion-btn btn-info btn-sm mr-3" data-toggle="modal"
+                data-target="#editQuestionModal" data-questionpk="{{ question.pk }}"
+                id="editquestion-btn{{ question.pk }}">
+                Edit Question
+            </button>
+            <div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog"
+                aria-labelledby="editQuestionLabel" aria-hidden="true" id="editquestion-btn{{ questions.pk }}">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h5 class="modal-title text-primary font-weight-bold">Edit Question</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                                <i class="ti-close"></i>
                             </button>
-                        </h4>
-                    </div>
-                    <div class="modal-body modal-auto" id="edit_question_modal_body">
+                        </div>
+                        <div class="modal-body modal-auto" id="edit_question_modal_body">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        {% if '/teachers' in request.path %}
-
-        <span style="float: right;"><a id="{{ question.pk }}" class="confirm-delete"
-                style="color: #dc3545;cursor:pointer; line-height:30px ">
-                <b>Delete</b>
-            </a></span>
-
-        <form method="post" action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
-            id="deleteQuestion{{ question.pk }}">
-            {% csrf_token %}
-            <input type="hidden" value="{{ question.pk }}" name="question_id">
-            <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-            <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-            <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-        </form>
-        {% else %}
-        <span style="float: right;"><a id="{{ question.pk }}" class="confirm-delete"
-                style="color: #2A3F54;cursor:pointer">
-                Delete
-            </a></span>
-
-        <form method="post" action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=questions.pk %}"
-            id="deleteQuestion{{ questions.pk }}">
-            {% csrf_token %}
-            <input type="hidden" value="{{ questions.pk }}" name="question_id">
-            <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-            <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-            <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-        </form>
-        {% endif %}
-        {% endif %}
-    </div>
-</div>
-<div class="answer-div collapse" id="answer-collapse-{{ question.id }}">
-    {% if  question.Question_Score %}
-    <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
-        Question Score :
-    </div>
-    <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
-        <b style="color: #000000">{{ question.Question_Score }}</b>
-    </div>
-    {% endif %}
-    {% if  question.Question_Description %}
-    <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
-        Question Description :
-    </div>
-    <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
-        <span style="color: #000000">{{ question.Question_Description | safe }}</span>
-    </div>
-    {% endif %}
-
-    {% if question.Answer_Type %}
-    <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
-        Answer Type :
-
-    </div>
-    <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
-        <b style="color: #000000">
-            {% if question.Answer_Type == 'S' %}
-            Short Answer
+            {% if '/teachers' in request.path %}
+            <button id="{{ question.pk }}" class="btn btn-sm btn-danger confirm-delete"> Delete </button>
+            <form method="post" action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
+                id="deleteQuestion{{ question.pk }}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ question.pk }}" name="question_id">
+                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+            </form>
             {% else %}
-            File Upload
-            {% endif %}</b></div>
-    {% endif %}
-    {% if  question.Question_Media_File %}
-    <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
-        Question Media :
+            <button id="{{ question.pk }}" class="btn btn-sm btn-danger confirm-delete"> Delete </button>
+            <form method="post" action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=questions.pk %}"
+                id="deleteQuestion{{ questions.pk }}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ questions.pk }}" name="question_id">
+                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
     </div>
-    <div class=" col-md-12 col-sm-12 col-xs-12 no-padding text-center">
-        {% if question.extension == '.jpg' or question.extension == '.png' %}
-        <img class="card-img-top" width="400px" src="{{ question.Question_Media_File.url }}">
-        {% else %}
-        <a href="{{ question.Question_Media_File.url }}" target="_blank"><b style="color:#017a9b">Click
-                to view attatched file</b></a>
+
+    <div class="answer-div collapse" id="answer-collapse-{{ question.id }}">
+
+        {% if  question.Question_Score %}
+        <div class="row">
+            <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
+                Question Score :
+            </div>
+            <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
+                <b style="color: #000000">{{ question.Question_Score }}</b>
+            </div>
+        </div>
         {% endif %}
-    </div>
-    {% endif %}
-    {% if question.Answer_Type == 'F' %}
-    <button class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">
-        Download
-        All Files
-    </button>
-    {% endif %}
-    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px;">
-        <table class="table table-data table-striped table-bordered bg-white nowrap" style="width: 100%; ">
-            <thead class="thead-light bg-primary">
-                <tr class="tableTitleRow">
-                    <td>S.No.</td>
-                    <td>S.No.</td>
-                    <td>Username</td>
-                    <td>Full Name</td>
-                    <td>Total Marks</td>
-                    <td>Marks Obtained</td>
-                    <td>Answer</td>
-                    <td>Submitted on</td>
-                    <td>Action</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student in students_list %}
-                {% getAssignmentAnswer Assignment student question as answer %}
-                <tr>
-                    <td class="counterCell" style=" padding-top: 15px;"></td>
-                    <td>{{ forloop.counter }}</td>
-                    <td style=" padding-top: 15px;">{{ student.username }}</td>
-                    <td>{{ student.get_full_name }}</td>
-                    <td>{{ question.Question_Score }} </td>
 
-                    <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
-                        data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
-                        {% if answer %}
-                        {% if answer.Assignment_Score is None %}
-                        Not graded
-                        {% else %}
-                        {{ answer.Assignment_Score }}
-                        {% endif %}
-                        <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
-                            <i class="fa fa-edit"></i>
-                        </span>
-                        {% else %}
-                        Not Submitted
-                        {% endif %}
-                    </td>
-
-                    <td>{{ answer.Assignment_Answer|safe }}</td>
-                    <td>{% if answer %}
-                        Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
-                        {% elif not answer %}
-                        Not Submitted
-                        {% endif %}
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-info showanswer" data-toggle="modal" data-target="#exampleModal1"
-                            value="{{ answer.id }}" style="float: right;color:black"
-                            data-student_Score="{{ answer.Assignment_Score }}"
-                            data-assignment_feedback="{{ answer.Assignment_Feedback }}" {% if not answer %} disabled
-                            {% endif %}>
-                            <b>View Answer</b>
-                        </button>
-                    </td>
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endfor %}
-</div>
-
-<div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="height: 80vh;">
-            <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>Edit Assignment </b>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </h4>
+        {% if  question.Question_Description %}
+        <div class="row">
+            <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
+                Question Description :
             </div>
-            <div class="modal-body modal-90" id="editAssignment_modal_body">
-                <form method="post" id="ajaxassignmentinfoform">
-                    {% csrf_token %}
-                    <div class="alert alert-danger form-errors" style="display: none">
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Topic_edit" class="form-group">
-                            <label for="id_Assignment_Topic_edit" class="control-label ">
-                                Assignment Topic *
-                            </label>
-                            <div class="controls ">
-                                <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic_edit"
-                                    class="textinput textInput form-control" required="required"
-                                    value="{{ object.Assignment_Topic }}">
-                            </div>
-                        </div>
-                    </div>
-                    {% comment %}
-                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Start_edit" class="form-group">
-                            <label for="id_Assignment_Start_edit" class="control-label ">
-                                Assignment Start *
-                            </label>
-                            <div class="controls ">
-                                <input type="text" name="Assignment_Start_edit" class="form-control"
-                                    id="id_Assignment_Start_edit" value="{{ object.Assignment_Start|date:'c' }}" min=""
-                                    max="9999-12-31">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <div id="div_id_Assignment_Deadline_edit" class="form-group">
-                            <label for="id_Assignment_Deadline_edit" class="control-label ">
-                                Assignment Deadline *
-                            </label>
-                            <div class="controls ">
-                                <input type="text" name="Assignment_Deadline_edit" class="form-control"
-                                    id="id_Assignment_Deadline_edit" value="{{ object.Assignment_Deadline|date:'c' }}"
-                                    min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
-                            </div>
-                        </div>
-                    </div>
-                    {% endcomment %}
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <label>Publish</label><br>
-                        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                            {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} checked
-                            {% endif %}><br> <br>
-                    </div>
-                    <div class="result text-center"></div>
-
-                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
-                            class="select form-control">
-                        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
-                            class="select form-control">
-                        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
-                            value="{{ object.Chapter_Code.id }}" class="select form-control">
-                        <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:'Y-m-d' }}"
-                            class="select form-control">
-                    </div>
-
-                    <div class="submitButton text-center col-md-12">
-                        <button class="btn btn-success" type="submit">Submit</button>
-                    </div>
-                </form>
+            <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
+                <span style="color: #000000">{{ question.Question_Description | safe }}</span>
             </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel"
-    aria-hidden="true" id="add_question_modal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header text-center">
-                <h4 class="modal-title" id="addQuestionModalLabel"><b>Add Question </b>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </h4>
+        {% endif %}
+
+        {% if question.Answer_Type %}
+        <div class="row">
+            <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
+                Answer Type :
             </div>
-            <div class="modal-body modal-auto" id="add_question_modal_body">
+            <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
+                <b style="color: #000000">
+                    {% if question.Answer_Type == 'S' %}
+                    Short Answer
+                    {% else %}
+                    File Upload
+                    {% endif %}</b>
             </div>
         </div>
+        {% endif %}
+        {% if  question.Question_Media_File %}
+        <div class="row">
+            <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
+                Question Media :
+            </div>
+            <div class="col-12 text-center">
+                {% if question.extension == '.jpg' or question.extension == '.png' %}
+                <img class="card-img-top" width="400px" src="{{ question.Question_Media_File.url }}">
+                {% else %}
+                <a href="{{ question.Question_Media_File.url }}" target="_blank"><b style="color:#017a9b">Click
+                        to view attatched file</b></a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if question.Answer_Type == 'F' %}
+        <button class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">
+            Download
+            All Files
+        </button>
+        {% endif %}
+        <div class="py-3">
+            <table class="table table-data table-striped table-bordered bg-white nowrap" style="width: 100%;">
+                <thead>
+                    <tr class="tableTitleRow">
+                        <th>S.No.</th>
+                        <th>S.No.</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Total Marks</th>
+                        <th>Marks Obtained</th>
+                        <th>Answer</th>
+                        <th>Submitted on</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students_list %}
+                    {% getAssignmentAnswer Assignment student question as answer %}
+                    <tr>
+                        <td class="counterCell" style=" padding-top: 15px;"></td>
+                        <td>{{ forloop.counter }}</td>
+                        <td style=" padding-top: 15px;">{{ student.username }}</td>
+                        <td>{{ student.get_full_name }}</td>
+                        <td>{{ question.Question_Score }} </td>
+                        <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
+                            data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
+                            {% if answer %}
+                            {% if answer.Assignment_Score is None %}
+                            Not graded
+                            {% else %}
+                            {{ answer.Assignment_Score }}
+                            {% endif %}
+                            <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
+                                <i class="fa fa-edit"></i>
+                            </span>
+                            {% else %}
+                            Not Submitted
+                            {% endif %}
+                        </td>
+
+                        <td>{{ answer.Assignment_Answer|safe }}</td>
+                        <td>{% if answer %}
+                            Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
+                            {% elif not answer %}
+                            Not Submitted
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary showanswer" data-toggle="modal"
+                                data-target="#create_session_modal" value="{{ answer.id }}"
+                                data-student_Score="{{ answer.Assignment_Score }}"
+                                data-assignment_feedback="{{ answer.Assignment_Feedback }}" {% if not answer %} disabled
+                                {% endif %}>
+                                View Answer
+                            </button>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+    {% endfor %}
 </div>
 
 {% include 'inning/inningmapFormModal.html' %}
@@ -801,7 +763,7 @@
         {% endfor %}
     })
 
-    $('#exampleModal1').on('hidden.bs.modal', function () {
+    $('#create_session_modal').on('hidden.bs.modal', function () {
         $('.clickedShowAnswer').removeClass('clickedShowAnswer')
     })
 
@@ -872,7 +834,7 @@
                 $('#Score_' + answer_pk).css("animation", "glowing 5000ms 1");
 
                 if (!fromtd) {
-                    $('#exampleModal1').modal('toggle');
+                    $('#create_session_modal').modal('toggle');
                     $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
                 }
                 {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);# }
