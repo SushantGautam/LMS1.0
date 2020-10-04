@@ -581,9 +581,11 @@ class questions_student_detail(DetailView):
 
         context['can_submit'], context['datetimeexpired'], context['options'], context[
             'questions'] = self.object.can_submit(self.request.user)
-        context['submitted_date'] = SubmitSurvey.objects.get(Survey_Code=self.object.id,
+        context['is_submitted'] = SubmitSurvey.objects.filter(Survey_Code=self.object.id, Student_Code=self.request.user.id).exists()
+        if context['is_submitted']:
+            context['submitted_date'] = SubmitSurvey.objects.get(Survey_Code=self.object.id,
                                                                 Student_Code=self.request.user.id).Created_Date
-        print(context['submitted_date'])
+        # print(context['submitted_date'])
         return context
 
 
