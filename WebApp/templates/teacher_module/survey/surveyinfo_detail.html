@@ -24,20 +24,7 @@
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
 
-    <script>
-       //  let checkbox = $("input[class=custom-control-input]");
-       //  checkbox.addEventListener( 'change', function() {
-       //             if(this.checked) {
 
-       //                $(this).prop('checked', false);
-
-       //             } else {
-        //                $(this).prop('checked', true);
-
-        //            }
-        //    });
-
-    </script>
 
     <script>
         var current_progress = 0;
@@ -80,29 +67,18 @@
     </script>
 
     <script>
+        ////////////////////////////////////////////////// Retake Survey ///////////////////////////////////////////////
         $('#retakeSurveyBtn').on('click', function () {
-          //  $('div').last().remove();
-          //  $('div').last().addClass("modal-backdrop");
-         // $('<div class="show fade modal-backdrop"></div>').appendTo(document.body);
-         //  $('document.body').append(<div class=" show modal-backdrop  fade"></div>);
-        //   $('.fade .show ').addClass("modal-backdrop");
-
             current_progress = -10000;
-
-
             $.ajax({
                 type: "GET",
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
+                url: "{% url 'teacher_surveyinfo_retake_ajax' pk=object.id %}",  // URL to your view that serves new info
                 success: function (data) {
-
                     $("#surveyForm").html(data);
-
-
                 },
                 complete: function () {
-                 //   $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
+                 $(".se-pre-con-ajax").fadeOut("fast");
                 },
 
             });
@@ -111,45 +87,42 @@
 
 
           $('#update_survey_button').on('click', function () {
-            current_progress = -10000;
+               current_progress = -10000;
 
-            $.ajax({
-                type: "GET",
-                data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
-                url: "{% url 'teacher_surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
-                success: function (data) {
+                $.ajax({
+                    type: "GET",
+                    data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
+                    url: "{% url 'teacher_surveyinfo_ajax_update' pk=object.id %}",  // URL to your view that serves new info
+                    success: function (data) {
 
-                    $("#surveyForm").html(data);
+                        $("#surveyForm").html(data);
 
 
-                },
-                complete: function () {
-                 //   $(".modal-backdrop ").removeClass("modal-backdrop");
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
+                    },
+                    complete: function () {
+                     //   $(".modal-backdrop ").removeClass("modal-backdrop");
+                        $(".se-pre-con-ajax").fadeOut("fast");
+                    },
 
-            });
-        });
+                });
+          });
+
+
+            ///////////////////////////////////////// Edit Basic Info ///////////////////////////////////////////////
         $('#update_survey_button_limited').on('click', function () {
             current_progress = -10000;
             let url_get = "";
+            url_get = "{% url 'teacher_surveyinfo_ajax_update_limited' pk=object.id %}";
 
-
-               url_get = "{% url 'teacher_surveyinfo_ajax_update_limited' pk=object.id %}";
-
-            console.log("url_sasasa", url_get);
             $.ajax({
                 type: "GET",
                 data: {'category_name': "{{ object.Category_Code.Category_Name }}"},
                 url: url_get,  // URL to your view that serves new info
                 success: function (data) {
-
                     $("#surveyForm").html(data);
-
 
                 },
                 complete: function () {
-               //     $(".modal-backdrop ").removeClass("modal-backdrop");
                     $(".se-pre-con-ajax").fadeOut("fast");
                 },
 

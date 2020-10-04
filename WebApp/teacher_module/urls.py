@@ -407,10 +407,12 @@ urlpatterns += (
 # urls for SurveyInfo
 urlpatterns += (
 
-    path('surveyinfo/', surv_views.SurveyInfoListView.as_view(template_name='teacher_module/survey/surveylist.html'), name='teacher_surveyinfo_list'),
+    path('surveyinfo/', surv_views.SurveyInfoListView.as_view(template_name='teacher_module/survey/surveylist.html'),
+         name='teacher_surveyinfo_list'),
 
     path('surveyinfo/detail/<int:pk>/',
-         surv_views.SurveyInfoDetailView.as_view(template_name='teacher_module/survey/surveyinfo_detail.html'), name='teacher_surveyinfo_detail'),
+         surv_views.SurveyInfoDetailView.as_view(template_name='teacher_module/survey/surveyinfo_detail.html'),
+         name='teacher_surveyinfo_detail'),
 
     path('surveyinfo/create/', surv_views.SurveyInfoCreateView.as_view(),
          name='teacher_surveyinfo_create'),
@@ -423,15 +425,16 @@ urlpatterns += (
 
     path('surveyinfo_ajax/', surv_views.SurveyInfo_ajax.as_view(),
          name='teacher_surveyinfo_ajax'),
-    path('surveyinfo_ajax_update/<int:pk>/', surv_views.SurveyInfoAjaxUpdate.as_view(template_name='ajax/surveyInfoAddSurvey_ajax2.html'),
+    path('surveyinfo_ajax_update/<int:pk>/',
+         surv_views.SurveyInfoAjaxUpdate.as_view(),
          name='teacher_surveyinfo_ajax_update'),
-    path('surveyinfo_ajax_update_limited/<int:pk>/', surv_views.SurveyInfoAjaxUpdateLimited.as_view(template_name='ajax/survey_update_limited_ajax.html'),
+    path('surveyinfo_ajax_update_limited/<int:pk>/',
+         surv_views.SurveyInfoAjaxUpdateLimited.as_view(),
          name='teacher_surveyinfo_ajax_update_limited'),
     path('liveProgressResult/<int:pk>/', surv_views.liveProgressResult.as_view(),
          name='teacher_liveProgressResult'),
 
-    path('surveyinforetake_ajax/<int:pk>/', surv_views.SurveyInfoRetake_ajax.as_view(),
-         name='teacher_surveyinfo_retake_ajax'),
+
 
     path('surveyFilterCategory/', surv_views.surveyFilterCategory.as_view(),
          name='teacher_surveyFilterCategory'),

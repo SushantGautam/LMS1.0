@@ -243,7 +243,7 @@ class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
 class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    # template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -320,7 +320,7 @@ class SurveyInfoAjaxUpdate(AjaxableResponseMixin, UpdateView):
 class SurveyInfoAjaxUpdateLimited(AjaxableResponseMixin, UpdateView):
     model = SurveyInfo
     form_class = SurveyInfoFormUpdateLimited
-    # template_name = 'ajax/survey_update_limited_ajax.html'
+    template_name = 'ajax/survey_update_limited_ajax.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -433,7 +433,7 @@ def create_questioninfo_formset(obj_instance):
 class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
-    # template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
+    template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
         kwargs = super(SurveyInfoRetake_ajax, self).get_form_kwargs()
