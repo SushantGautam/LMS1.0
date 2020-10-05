@@ -131,7 +131,8 @@ class HideComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = False
         self.comment.save()
-        commentActionsHandler(request, self.comment, "hide your comment in")
+        description = "{} has hide your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="hide your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -157,7 +158,8 @@ class ShowComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = True
         self.comment.save()
-        commentActionsHandler(request, self.comment, "shown your comment in")
+        description = "{} has shown your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="shown your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -183,7 +185,8 @@ class CloseComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_closed = True
         self.comment.save()
-        commentActionsHandler(request, self.comment, "closed your comment in")
+        description = "{} has closed your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="closed your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -209,6 +212,7 @@ class OpenComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_closed = False
         self.comment.save()
-        commentActionsHandler(request, self.comment, "opened your comment in")
+        description = "{} has opened your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="opened your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)

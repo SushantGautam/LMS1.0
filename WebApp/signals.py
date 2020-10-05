@@ -382,6 +382,8 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
     else:
         if request.POST.get('content'):
             verb = "updated comment"
+        else:
+            return
     action_object = instance.content_object
 
     # For creating notification for teachers of the chapter excluding oneself.
@@ -453,6 +455,6 @@ def commentActionsHandler(request, instance, verb, description=''):
             sender=request.user,
             recipient=instance.user,
             verb=verb,
-            description='',
+            description=description,
             action_object=instance.content_object,
         )

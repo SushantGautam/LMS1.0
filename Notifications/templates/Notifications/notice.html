@@ -32,14 +32,14 @@
                 <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
                 {% if notice.action_object %}
                     <a href="javascript:void(0)" class="notification_redirect_link" data-noticeId="{{ notice.id }}">
-                        {{ notice }}
+                        {{ notice.description|linebreaksbr }}
                     </a>
                 {% endif %}
             </h4>
 
             <p>{{ notice.timesince }} ago</p>
 
-            <p class="notific-desc">  {{ notice.description|linebreaksbr }}</p>
+            {#            <p class="notific-desc">  {{ notice.description|linebreaksbr }}</p>#}
 
         </div>
         <div class="col-md-3 text-right notification-icon-click" id="notification-icon-click"
