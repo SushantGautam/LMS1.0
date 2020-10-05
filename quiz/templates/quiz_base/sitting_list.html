@@ -4,7 +4,18 @@
 
 <br>
 <h4> <b>  Marking List of Individual Quiz</b>
-    ({{ quiz }})
+    <!-- <a> ({{ quiz }})</a> -->
+    <a href="
+    {% if '/teachers' in request.path %}
+        {% url 'teacher_quiz_detail' pk=quiz.id %} 
+        {% else %}
+        {% url 'quiz_detail' pk=quiz.id %} 
+        {% endif %}
+    ">
+            ({{ quiz }})    
+         </a>
+
+   
     <a href="{% url 'quiz_marking_csv' quiz.pk %}" target="__blank">
         <button class="btn btn=sm btn-info pull-right">
             <i class="fa fa-download" aria-hidden="true"></i> Download Detail Result
