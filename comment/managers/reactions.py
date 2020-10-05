@@ -46,3 +46,5 @@ class ReactionInstanceManager(models.Manager):
 
         if not created:
             self._delete_and_create_new_instance(instance=instance, user=user, reaction_type=reaction_type)
+
+        return created

@@ -39,6 +39,13 @@ class Reaction(models.Model):
         else:
             self._decrease_count('dislikes')
 
+    def get_reactors(self, reaction_type):
+        # reaction_type
+        # Like = 1
+        # Dislike = 2
+        return ReactionInstance.objects.filter(reaction__pk=self.pk, reaction_type=reaction_type).order_by(
+            '-date_reacted')
+
 
 class ReactionInstance(models.Model):
     @unique
