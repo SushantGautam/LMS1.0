@@ -37,10 +37,12 @@
                     {% include 'comment/comments/show_comment.html' %}
                 {% endif %}
 
-                {% if comment.is_closed %}
-                    {% include 'comment/comments/open_comment.html' %}
-                {% else %}
-                    {% include 'comment/comments/close_comment.html' %}
+                {% if comment.is_parent %}
+                    {% if comment.is_closed %}
+                        {% include 'comment/comments/open_comment.html' %}
+                    {% else %}
+                        {% include 'comment/comments/close_comment.html' %}
+                    {% endif %}
                 {% endif %}
             {% else %}
                 {% if can_delete %}
@@ -60,11 +62,13 @@
                     {% endif %}
                 {% endif %}
 
-                {% if can_close %}
-                    {% if comment.is_closed %}
-                        {% include 'comment/comments/open_comment.html' %}
-                    {% else %}
-                        {% include 'comment/comments/close_comment.html' %}
+                {% if comment.is_parent %}
+                    {% if can_close %}
+                        {% if comment.is_closed %}
+                            {% include 'comment/comments/open_comment.html' %}
+                        {% else %}
+                            {% include 'comment/comments/close_comment.html' %}
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% endif %}
