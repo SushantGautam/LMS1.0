@@ -190,11 +190,7 @@
 
                         {% for object in object_list%}
                         <div class="card p-3">
-                            <a href="{% if '/teachers' in request.path %}
-                                 {% url 'surveyinfodetail' object.pk %}
-                                         {% else %}
-                                 {% url 'surveyinfo_detail' object.pk %}
-                                         {% endif %}">
+                            <a href=" {% url 'surveyinfo_detail' object.pk %} ">
                                 <blockquote class="blockquote mb-0 card-body">
 
                                     {% if object.id in submittedSurvey %}

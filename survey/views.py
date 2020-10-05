@@ -682,8 +682,8 @@ def deleteSurvey(request):
     if request.method == 'POST':
         if SurveyInfo.objects.filter(pk=request.POST['objectpk']).exists():
             obj = SurveyInfo.objects.get(pk=request.POST['objectpk']).delete()
+    s_u = "?category_name=all_survey&date_filter=active"
     if "teachers" in request.path:
-        s_u = "?category_name=all_survey&date_filter=active"
-        return redirect('teacher_surveyinfo_list')
-    return redirect('surveyinfo_list')
+        return redirect(reverse('teacher_surveyinfo_list') + s_u)
+    return redirect(reverse('surveyinfo_list') + s_u)
 
