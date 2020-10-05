@@ -102,6 +102,8 @@
             </label><br>
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
                 &nbsp; {% else %} checked {% endif %}><br> <br>
+        {% else %}
+            <input type="hidden" name="Use_Flag" value="{{ object.Use_Flag }}">
         {% endif %}
     </div>
     {% else %}

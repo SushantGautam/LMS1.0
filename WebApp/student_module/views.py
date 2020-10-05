@@ -50,22 +50,19 @@ def student_active_chapters(courses, sessions):
     datetime_now = timezone.now().replace(microsecond=0)
     chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
     active_chapters = []
-    inactive_chapters_pk = []
+
     for chapter in chapters:
-        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+        session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
                                              object_id=chapter.id,
-                                             Session_Code__in=sessions).exists():
+                                             Session_Code__in=sessions)
+        if not session_map.exists():
             active_chapters.append(chapter)
-        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                           object_id=chapter.id,
-                                           Start_Date__lte=datetime_now,
-                                           End_Date__gte=datetime_now,
-                                           Session_Code__in=sessions).exists():
+        elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                                Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
             active_chapters.append(chapter)
         else:
-            inactive_chapters_pk.append(chapter.id)
+            chapters = chapters.exclude(pk=chapter.pk)
 
-    chapters = chapters.exclude(pk__in=inactive_chapters_pk)
     return chapters
 
 
@@ -136,48 +133,15 @@ def start(request):
     #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
     # Filtering out chapters which have no content and progress is 100%
-    chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
-    active_chapters = []
     chapters_list = []
-    for chapter in chapters:
-        # Check if session map exists, if yes then check if date is None or start is greater than now and end is less than now.
-        # Filtering out chapters which have no content and progress is 100%
-        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                             object_id=chapter.id,
-                                             Session_Code__in=sessions).exists():
-            if chapter.has_content():
-                response = getChapterScore(request.user, chapter)
-                chapter.progress_score = round(float(response['totalProgressScore']), 3)
-                chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
-                chapter.quiz = response['chapterProgress'][0]['quiz']
-                if chapter.progress_score < float(100):
-                    chapters_list.append(chapter)
-
-        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                           object_id=chapter.id,
-                                           Start_Date__lte=datetime_now,
-                                           End_Date__gte=datetime_now,
-                                           Session_Code__in=sessions).exists():
-            if chapter.has_content():
-                response = getChapterScore(request.user, chapter)
-                chapter.progress_score = round(float(response['totalProgressScore']), 3)
-                chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
-                chapter.quiz = response['chapterProgress'][0]['quiz']
-                if chapter.progress_score < float(100):
-                    chapters_list.append(chapter)
-
-        elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                           object_id=chapter.id,
-                                           Start_Date=None,
-                                           End_Date=None,
-                                           Session_Code__in=sessions).exists():
-            if chapter.has_content():
-                response = getChapterScore(request.user, chapter)
-                chapter.progress_score = round(float(response['totalProgressScore']), 3)
-                chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
-                chapter.quiz = response['chapterProgress'][0]['quiz']
-                if chapter.progress_score < float(100):
-                    chapters_list.append(chapter)
+    for chapter in chapters[:5]:
+        if chapter.has_content():
+            response = getChapterScore(request.user, chapter)
+            chapter.progress_score = round(float(response['totalProgressScore']), 3)
+            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
+            chapter.quiz = response['chapterProgress'][0]['quiz']
+            if chapter.progress_score < float(100):
+                chapters_list.append(chapter)
 
     # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
     #     Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)).filter(
@@ -190,8 +154,10 @@ def start(request):
     incomplete_chapters = chapters_list[:5]
 
     # NOtice popup based on active notice and notice view turned off
-    if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True).exists():
-        notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+    notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
+                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+    if notices.exists():
+        notice = notices[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
             notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
             if notice_view_flag:
@@ -418,21 +384,13 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
         active_chapters = []
         for chapter in chapters:
-            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                 object_id=chapter.id,
-                                                 Session_Code__in=assigned_session).exists():
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                object_id=chapter.id,
+                                                Session_Code__in=assigned_session)
+            if not session_map.exists():
                 active_chapters.append(chapter)
-            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                               object_id=chapter.id,
-                                               Start_Date__lte=datetime_now,
-                                               End_Date__gte=datetime_now,
-                                               Session_Code__in=assigned_session).exists():
-                active_chapters.append(chapter)
-            elif SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                               object_id=chapter.id,
-                                               Start_Date=None,
-                                               End_Date=None,
-                                               Session_Code__in=assigned_session).exists():
+            elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                                    Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter)
         context['chapters'] = active_chapters
 

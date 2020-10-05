@@ -21,7 +21,7 @@
         <td><a href="{% url 'student_progress_detail' pk=sitting.pk %}">{{ forloop.counter }}</a></td>
         <td>{{ sitting.start|date:'M d, Y H:i' }}</td>
         <td>{{ sitting.end|date:'M d, Y H:i' }}</td>
-        <td>{{ sitting.current_score }}&nbsp;&nbsp;({{ sitting.get_percent_correct }}%)</td>
+        <td>{{ sitting.get_score_correct }}&nbsp;&nbsp;({{ sitting.get_percent_correct }}%)</td>
         <td>
           <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar"
