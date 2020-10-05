@@ -2229,7 +2229,7 @@
         }
 
         function idleTImeCheck() {
-            if (idleTime >= (idleTimeRedirectTime)) {
+            if (idleTime >= (idleTimeRedirectTime) && !($('#message-modal').is(':visible'))) {
                 displayAlertMessage()
             } else {
                 idleTime += idleTimeCheckIntervalTime;   // increment must be equal to function interval time
@@ -2239,6 +2239,9 @@
         var idleTimeCheckInterval = setInterval(idleTImeCheck, idleTimeCheckIntervalTime);
 
         function displayAlertMessage() {
+            if (window.innerWidth == screen.width && window.innerHeight == screen.height) {
+                window.toggleFullScreen();
+            }
             $('#message-modal').modal('show');
             var counter = 50;   // After the alert modal is displayed, then after 50 seconds, it will redirect.
             redirectInterval = setInterval(function () {
@@ -2273,7 +2276,6 @@
             window.localStorage.setItem('viewerID', 'viewer-1');
             window.onbeforeunload = function() {
                 window.localStorage.clear();
-                return '';
             };
         }
     </script>

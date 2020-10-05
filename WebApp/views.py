@@ -112,6 +112,7 @@ def ProfileView(request):
         return redirect('login')
     return render(request, 'WebApp/profile.html')
 
+
 class CustomAuthForm(AuthenticationForm):
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -120,13 +121,13 @@ class CustomAuthForm(AuthenticationForm):
         if username is not None and password:
             if authenticate(self.request, username=username, password=password) is None:
                 messages.error(self.request, _(
-                        "Please enter a correct username and password. Note that both "
-                        "fields may be case-sensitive."
-                    ))
+                    "Please enter a correct username and password. Note that both "
+                    "fields may be case-sensitive."
+                ))
                 return JsonResponse({'msg': 'Inavild Login'})
-                
+
         return super().clean()
-    
+
 
 class login(LoginView):
     redirect_authenticated_user = True
@@ -138,8 +139,8 @@ class login(LoginView):
         if not forcelogin:
             if not form.get_user():
                 return JsonResponse({'error': _(
-                      "Please enter a correct username and password. Note that both fields may be case-sensitive."
-                    )})
+                    "Please enter a correct username and password. Note that both fields may be case-sensitive."
+                )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
                     return JsonResponse({'msg': 'Account already login in another place'})
@@ -225,6 +226,7 @@ def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
+    datetime_now = timezone.now().replace(microsecond=0)
 
     if request.user.is_authenticated:
         if not request.user.Use_Flag:
@@ -251,19 +253,20 @@ def start(request):
             totalcount = MemberInfo.objects.filter(Center_Code=request.user.Center_Code).count
             surveys = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                 Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                Q(End_Date__gte=datetime.now()))[:5]
+                                                Q(End_Date__gte=datetime_now))[:5]
             surveycount = SurveyInfo.objects.filter(Q(Use_Flag=True),
                                                     Q(Center_Code=request.user.Center_Code) | Q(Center_Code=None),
-                                                    Q(End_Date__gte=datetime.now())).count
+                                                    Q(End_Date__gte=datetime_now)).count
             sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                 End_Date__gte=datetime.now())[:5]
+                                                 End_Date__gte=datetime_now)[:5]
             sessioncount = InningInfo.objects.filter(Center_Code=request.user.Center_Code, Use_Flag=True,
-                                                     End_Date__gte=datetime.now()).count
+                                                     End_Date__gte=datetime_now).count
 
-            if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                     status=True).exists():
-                notice = \
-                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+            notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now,
+                                            status=True).filter(
+                Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+            if notices.exists():
+                notice = notices[0]
                 if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                     notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[
                         0].dont_show
@@ -739,7 +742,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     if department is not None and department != '-':
                         if not DepartmentInfo.objects.filter(Department_Name__iexact=department,
                                                              Center_Code=request.user.Center_Code).exists():
-                            error = "Department Name <strong>" + department + "</strong> does not exists."
+                            error = "Department Name <strong>" + str(department) + "</strong> does not exists."
                             raise Exception
 
                     if not username:
@@ -1367,7 +1370,8 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
         return context
 
@@ -2928,8 +2932,10 @@ class ContentsView(TemplateView):
 
 class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
+    chapters = []
 
     def get(self, request, *args, **kwargs):
+        from WebApp.student_module.views import student_active_chapters
         datetime_now = timezone.now()
 
         if CourseAuth(request, self.kwargs.get('course')) == 1:
@@ -2946,17 +2952,29 @@ class NewContentsView(TemplateView):
             return redirect('login')
         try:
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
+
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    if chapterObj.Start_Date:
-                        if chapterObj.Start_Date >= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    student_groups = GroupMapping.objects.filter(Students=self.request.user)
+                    course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
+                    assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                                 Start_Date__lte=datetime_now,
+                                                                 End_Date__gte=datetime_now,
+                                                                 Groups__in=student_groups,
+                                                                 Course_Group__in=course_groups)
 
-                    if chapterObj.End_Date:
-                        if chapterObj.End_Date <= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    # chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('course'), Use_Flag=True)
+                    # active_chapters = []
+                    # for chapter in chapters:
+                    active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=self.kwargs.get('course')),
+                                                              assigned_session)
+
+                    self.chapters = active_chapters
+
+                    if chapterObj not in active_chapters:
+                        messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                        raise ObjectDoesNotExist
+
             else:
                 if '/students' in request.path:
                     messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
@@ -2976,9 +2994,7 @@ class NewContentsView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         if '/students' in self.request.path:
-            context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
-                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
+            context['chapterList'] = self.chapters
         else:
             context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
@@ -3397,11 +3413,26 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 progresspercent = 0
                 studytimeprogresspercent = 0
 
-            student_quiz = Quiz.objects.filter(chapter_code=chapter)
+            if studytimeprogresspercent > 100:
+                 studytimeprogresspercent = 100
+
+            student_quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
             student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
             # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+
+            # Calculate QUiz progress %
+            total_quiz_count = 0
+            student_complete_count = 0
+            for q in student_quiz:
+                if q.question_count() > 0:
+                    total_quiz_count += 1
+                    if Sitting.objects.filter(user=x, quiz=q, complete=True).exists():
+                        student_complete_count += 1
+            quiz_progress = round((student_complete_count / total_quiz_count) * 100,
+                                2) if total_quiz_count is not 0 else 0
+                                
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
@@ -3441,21 +3472,23 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
                                                                           'totalPage'] is not None else None,
                             'progresspercent': math.floor(progresspercent),
-                            'studytimeprogresspercent': math.floor(
-                                studytimeprogresspercent) if studytimeprogresspercent <= 100 else 100,
+                            'studytimeprogresspercent': math.floor(studytimeprogresspercent),
                             'attendance': attendance,
                         },
                         'quiz': {
-                            'quiz_count': student_quiz.count(),
-                            'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': round(student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count(),
-                                              2) if student_quiz.count() is not 0 else 0,
+                            'quiz_count': total_quiz_count,
+                            'completed_quiz': student_complete_count,
+                            'progress': quiz_progress,
+                            # 'progress': round(student_result.filter(
+                            #     complete=True).count() * 100 / student_quiz.count(),
+                            #                   2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                        }
+                            'avg_percent_score': float(total_quiz_percent_score / student_complete_count) if student_complete_count else 0
+                        },
+                        'overall_progress': round((math.floor(progresspercent) + math.floor(
+                                            studytimeprogresspercent) + float(quiz_progress))/3, 2) if total_quiz_count else round(
+                                            (math.floor(progresspercent) + math.floor(studytimeprogresspercent))/2, 2)
                     },
                 )
             else:
@@ -3473,15 +3506,16 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'attendance': attendance,
                         },
                         'quiz': {
-                            'quiz_count': student_quiz.count(),
-                            'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            'quiz_count': total_quiz_count,
+                            'completed_quiz': student_complete_count,
+                            'progress': quiz_progress,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
                                 complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                        }
+                        },
+                        'overall_progress': round((progresspercent + studytimeprogresspercent + quiz_progress)/3, 2) if total_quiz_count else round(
+                                            (progresspercent + studytimeprogresspercent)/2, 2)
                     },
                 )
     return student_data
@@ -3831,7 +3865,7 @@ def getChatMessageHistory(request, chapterID):
                         if contents['message_link_type'] == 'quiz':
                             if Quiz.objects.filter(pk=int(contents['message'])).exists():
                                 userSittings = Quiz.objects.get(
-                                    pk=int(contents['message'])).sitting_set.all.filter(
+                                    pk=int(contents['message'])).sitting_set.all().filter(
                                     user__id=request.user.id)
                                 if userSittings.exists():
                                     isExist = True
@@ -4086,6 +4120,11 @@ from django.apps import apps
 def InningInfoMappingView(request, model_name):
     inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
     Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+
+    if model_name == "AssignmentInfo":
+        if request.POST['Start_Date'] == '' or request.POST['End_Date'] == '' or \
+                request.POST['Start_Date'] is None or request.POST['End_Date'] is None:
+            return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
 
     if (request.POST['Start_Date'] and request.POST['End_Date']):
         if (request.POST['Start_Date'] > request.POST['End_Date']):

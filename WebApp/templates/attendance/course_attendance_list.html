@@ -160,8 +160,9 @@
                     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
                         <thead class="thead-light bg-primary">
                         <tr>
-                            <th>{% trans "Roll No." %}</th>
-                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "S. No." %}</th>
+                            <th>{% trans "Username" %}</th>
+                            <th>{% trans "Full Name" %}</th>
                             <th>{% trans "Attendance" %}</th>
 
                             <th>{% trans "Updated On" %}</th>
@@ -174,8 +175,10 @@
                         {% for a in attendance %}
 
                             <tr>
-                                <td>  {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} </td>
-                                <td>  {{ a.initial.member_code }} </td>
+                                <td>{{ forloop.counter }}</td>
+                                {# {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} #}
+                                <td> {{ a.initial.member_code.username }}  </td>
+                                <td>  {{ a.initial.member_code.get_full_name }} </td>
                                 <td style="background-color:{% if  a.initial.present %}     #29a329 {% else %} #cc2900 {% endif %}; color:white;  font-weight:700">  {% if  a.initial.present %} Present {% else %} Absent {% endif %} </td>
                                 <td class="attend_date" data-attend_date="{{ a.initial.updated|date:'m/d/Y h:i:s' }}"
                                     data-attend_datewithutc="{{ a.initial.updated|date:'m/d/Y h:i:s' }} UTC">

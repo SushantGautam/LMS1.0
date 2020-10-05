@@ -1,5 +1,7 @@
 {% load i18n %}
-
+<style>
+   
+</style>
 <div class=" ">
     <div class="row exam-results1">
         <div class="col-md-6">
@@ -8,11 +10,11 @@
         <div class="col-md-6  icon-for-quiz text-right">
             {% if not '/teachers' in request.path %}
                 <a class="icon-quiz-list" href="{% url 'quizfw' %}">
-                    <i class="fa fa-plus fa-2x"></i>
+                    <i  title="Add New Quiz" class="fa fa-plus fa-2x"></i>
                 </a>
             {% elif '/teachers' in request.path %}
                 <a class="icon-quiz-list" href="{% url 'teachers_quizfw' %}">
-                    <i class="fa fa-plus fa-2x"></i>
+                    <i title="Add New Quiz" class="fa fa-plus fa-2x"></i>
                 </a>
             {% endif %}
         </div>

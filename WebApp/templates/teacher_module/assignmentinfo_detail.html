@@ -167,7 +167,9 @@
                         {% if '/students' not in request.path %}
                             <td>
                                 {% now "Y-m-d H:i" as todays_datewithtime %}
-                                {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                {% if not sessionmap or not sessionmap.0.Start_Date or not sessionmap.0.End_Date %}
+                                    <span class="badge badge-danger">Inactive</span>
+                                {% elif sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-info">Upcoming</span>
                                 {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-danger">Expired</span>
@@ -381,7 +383,8 @@
                     <tr class="tableTitleRow">
                         <td>S.No.</td>
                         <td>S.No.</td>
-                        <td>Student Name</td>
+                        <td>Username</td>
+                        <td>Full Name</td>
                         <td>Total Marks</td>
                         <td>Marks Obtained</td>
                         <td>Answer</td>
@@ -395,7 +398,8 @@
                         <tr>
                             <td class="counterCell" style=" padding-top: 15px;"></td>
                             <td>{{ forloop.counter }}</td>
-                            <td style=" padding-top: 15px;">{{ student }}</td>
+                            <td style=" padding-top: 15px;">{{ student.username }}</td>
+                            <td>{{ student.get_full_name }}</td>
                             <td>{{ question.Question_Score }} </td>
 
                             <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
@@ -975,7 +979,7 @@
                         extend: 'csv',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5]
+                            columns: [1, 2, 3, 4, 5, 6, 7]
                         }
                     },
                     // {
@@ -986,13 +990,13 @@
                 ],
                 "columnDefs": [
                     {
-                        "targets": [1, 5],
+                        "targets": [1, 6],
                         "visible": false,
                         "searchable": true,
                     },
                     {
                         "orderable": false,
-                        "targets": [7]
+                        "targets": [8]
                     }
                 ]
             });

@@ -1,111 +1,153 @@
 {% load i18n %}
 
 {% include 'WebApp/theme/alerts.html' %}
-<div class="edit-buttons" style="float:right">
+<div class="edit-buttons" >
     <div class="col-md-12">
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-12"></div>
+        <div class="col-md-6 col-sm-12">
+            <div class="row">
+                <div class="col-md-8 text-right">
+                    {% if '/teachers' in request.path %}
+                    <a href="/teachers/quiz/marking/{{object.pk}}" class=" btn  qts-button  active" role="button"
+                       aria-pressed="true">Assign Marks to Submitted Answers</a>
+                {% endif %}
+        
+                </div>
+                <div class="col-md-2 text-right">
+        
+                    <a href="
+                {% if '/teachers' in request.path %}
+                            {% url 'teacher_quiz_update_info' quiz.id %}
+                            {% else %}
+                            {% url 'quiz_update_info' quiz.id %}
+                            {% endif %}">
+        
+                        <button class="btn qts-button ">EDIT</button>
+                    </a>
+                </div>
+                <div class="col-md-2 text-right">
+                    <a href="
+                {% url 'quiz_delete' quiz.id %}
+                ">
+                        <button class="btn qts-button ">DELETE</button>
+                    </a>
+                </div>
 
-            <a href="
-        {% if '/teachers' in request.path %}
-					{% url 'teacher_quiz_update_info' quiz.id %}
-					{% else %}
-					{% url 'quiz_update_info' quiz.id %}
-					{% endif %}">
-
-                <button class="qts-button ">EDIT</button>
-            </a>
+            </div>
         </div>
-        <div class="col-md-6">
-            <a href="
-        {% url 'quiz_delete' quiz.id %}
-        ">
-                <button class="qts-button ">DELETE</button>
-            </a>
-        </div>
+       
     </div>
 
 
 </div>
-
-<table class="table table-bordered ">
-
-    <tbody>
-    <tr>
-        <td><p>Quiz</p></td>
-        <td><p>{{ quiz.title }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Description</p></td>
-        <td><p>{{ quiz.description }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Course </p></td>
-        <td><p>{{ quiz.course_code }}</p></td>
-    </tr>
-    <tr>
-        <td><p> Chapter</p></td>
-        <td><p> {{ quiz.chapter_code }}</p></td>
-
-    </tr>
-    <tr>
-        <td><p>Type of quiz</p></td>
-        <td><p>{% if quiz.pre_test %}Pre Test <br>{% endif %}
-            {% if quiz.post_test %}Post Test <br>{% endif %}
-            {% if quiz.exam_paper %}Exam <br>{% endif %}</p></td>
-    </tr>
-    <tr>
-        <td><p>Url</p></td>
-        <td><p>{{ quiz.url }}</p></td>
-    </tr>
-    <tr>
-        <td><p>Quiz Feature</p></td>
-        <td>
+<div class="col-md-12">
+    <hr>
+</div>
+<div class="col-md-12" style="padding: 20px 10px;">
+    <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <p>
-                {% if quiz.random_order %}Random Order <br>{% endif %}
+                <b style="font-size: 16px;"> Quiz:</b> {{ quiz.title }}
+
+            </p>
+
+
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <p>
+                <b style="font-size: 16px;"> Course:</b> {{ quiz.course_code }}
+
+            </p>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <p>
+                <b style="font-size: 16px;">Chapter :</b> {{ quiz.chapter_code }}
+
+            </p>
+
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <p>
+                <b style="font-size: 16px;">Type Of Quiz :</b> {% if quiz.pre_test %}Pre Test <br>{% endif %}
+                {% if quiz.post_test %}Post Test <br>{% endif %}
+                {% if quiz.exam_paper %}Exam <br>{% endif %}
+
+            </p>
+
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <p>
+                <b style="font-size: 16px;">URL :</b> {{ quiz.url }}
+
+            </p>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <p>
+                <b style="font-size: 16px;">Quiz Feature :</b>    {% if quiz.random_order %}Random Order <br>{% endif %}
                 {% if quiz.single_attempt %}Single Attempt <br>{% endif %}
                 {% if quiz.negative_marking %}Negative Marking - {{ quiz.negative_percentage }}% <br>{% endif %}
-            </p>
-        </td>
 
-    </tr>
-    <tr>
-        <td><p>Status</p></td>
-        <td>
-            {% if quiz.draft is True %}
-                <div class="col-md-12">
-                    <div class="col-md-6">
+            </p>
+
+        </div>
+        <div class="col-md-12 col-sm-12 " >
+            <p style="margin-bottom: 0px;">
+                <b style="font-size: 16px;"> Description:</b> {{ quiz.description }}
+
+            </p>
+
+
+        </div>
+        <div class="col-md-12 col-sm-12">
+            <p>
+             <div class="col-md-6" style="padding: 0px!important;">
+                 <div class="col-md-2"  style="padding: 0px!important;">
+                    <b style="font-size: 16px;"> Status:</b> 
+
+                 </div>
+              
+                {% if quiz.draft is True %}
+               
+                    <div class="col-md-2">
                         <span class="text-danger">Inactive</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
                             <input type="hidden" value="{{ request.path }}" name="redirect-url">
                             <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
-                                   class="confirm-activate">
+                                   class="confirm-activate ">
                         </form>
                     </div>
-                </div>
+               
             {% endif %}
             {% if quiz.draft is False %}
-                <div class="col-md-12">
-                    <div class="col-md-6">
+               
+                    <div class="col-md-2">
                         <span class="text-success">Active</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <form action="{% url 'deactivate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
                             <input type="hidden" value="{{ request.path }}" name="redirect-url">
                             <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
-                                   class="confirm-deactivate">
+                                   class="confirm-deactivate ">
                         </form>
                     </div>
-                </div>
+               
+            </div>
             {% endif %}
-        </td>
+
+            </p>
+
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <hr>
+</div>
 
 
-    </tr>
-
-    </tbody>
-</table>
+<div class="col-md-12">
 
 
 <div class="quiz-question-list">
@@ -199,7 +241,7 @@
     </div>
 </div>
 <div class="quiz-question-list">
-    <a href="#tfqn_list" data-toggle="collapse">
+    <a href="#tfqn_list" data-toggle="collapse" >
         <p class="exam-results text-center">
             <span class="exam-results"> <i class="fa fa-bookmark "></i>&nbsp;LIST OF TFQUESTIONS {% if quiz.has_tfqs %}<span class="fa fa-chevron-down"
                 style="color:white"></span> {% endif %}</span>
@@ -332,11 +374,13 @@
         </ul>
     </div>
     {% if '/teachers' in request.path %}
-        <a href="/quiz/markingfilter/{{ quiz.pk }}/" class="btn btn-primary btn-lg active" role="button"
-           aria-pressed="true">Assign Marks to Submitted Answers</a>
+        <!-- <a href="/quiz/markingfilter/{{ quiz.pk }}/" class="btn btn-primary btn-sm  active" role="button"
+           aria-pressed="true">Assign Marks to Submitted Answers</a> -->
     {% endif %}
 
 </div>
+</div>
+
 
 <div id="question_form_popup" class="modal fade">
     <div class="modal-dialog">

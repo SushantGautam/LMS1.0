@@ -55,7 +55,6 @@ from survey.views import AjaxableResponseMixin
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
 
-datetime_now = datetime.now()
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from formtools.wizard.views import SessionWizardView
 from quiz.forms import QuizForm1, QuizForm2, QuizForm3
@@ -74,6 +73,7 @@ def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
+    datetime_now = timezone.now().replace(microsecond=0)
 
     if request.user.Is_Teacher:
         wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
@@ -82,20 +82,20 @@ def start(request):
 
         x = request.user.get_teacher_courses()
         mycourse = x['courses']
-        sessions_list = x['session']
-        x = [x for x in sessions_list]
-        for y in x:
-            for z in y:
-                if z not in sessions:
-                    sessions.append(z)
-        activeassignments = []
-        for course in mycourse:
-            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
-                                                               Assignment_Deadline__gte=datetime_now,
-                                                               Chapter_Code__Use_Flag=True)
-        if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                 status=True).exists():
-            notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+        sessions = x['session']
+        # x = [x for x in sessions_list]
+        # for y in x:
+        #     for z in y:
+        #         if z not in sessions:
+        #             sessions.append(z)
+        
+        # here assignment of only active chapters can be filtered later
+        activeassignments = AssignmentInfo.objects.filter(Course_Code__in=mycourse, Use_Flag=True,
+                                                               Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
+        notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
+                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+        if notices.exists():
+            notice = notices[0]
             if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                 notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
                 if notice_view_flag:
@@ -357,6 +357,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -429,6 +430,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
                                                                      )
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
@@ -626,6 +628,7 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['currentDate'] = datetime.now()
         context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
         course = []
@@ -1035,19 +1038,54 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         context['questions'] = context['sitting'].get_questions(with_answers=True)
         total = 0
         total_score_obtained = 0
-        for q in context['questions']:
-            i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
-            # score_list = context['sitting'].score_list.replace("not_graded", "0")
-            try:
-                score = [s for s in context['sitting'].score_list.split(',') if s][i]
-            except:
-                score = 'not_graded'
-            q.score_obtained = score
-            total += q.score
-            if score != "not_graded":
-                total_score_obtained += float(score)
-        context['total_score_obtained'] = total_score_obtained
-        context['total'] = total
+        # for q in context['questions']:
+        #     i = [int(n) for n in context['sitting'].question_order.split(',') if n].index(q.id)
+        #     # score_list = context['sitting'].score_list.replace("not_graded", "0")
+        #     try:
+        #         score = [s for s in context['sitting'].score_list.split(',') if s][i]
+        #     except:
+        #         score = 'not_graded'
+        #     q.score_obtained = score
+        #     total += q.score
+        #     if score != "not_graded":
+        #         total_score_obtained += float(score)
+        context['total_score_obtained'] = context['sitting'].get_score_correct
+        context['total'] = context['sitting'].quiz.get_max_score
+
+        return context
+
+
+class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
+    model = Quiz
+    template_name = 'teacher_quiz/sitting_detail_SAQ.html'
+
+    def post(self, request, *args, **kwargs):
+        sitting = Sitting.objects.get(pk=int(request.POST['sitting_id']))
+
+        q_to_toggle = request.POST.get('saq_id', None)
+        if q_to_toggle:
+            q = Question.objects.get_subclass(id=int(q_to_toggle))
+            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            print(request.POST['new_score'], "new_score")
+            print(indx, "index")
+            score_list = [s for s in sitting.score_list.split(',') if s]
+            score_list[indx] = request.POST.get('new_score', 0)
+            sitting.score_list = ','.join(list(map(str, score_list)))
+            print(sitting.score_list, "score_list_update")
+            sitting.save()
+            # if int(q_to_toggle) in sitting.get_incorrect_questions:
+            #     sitting.remove_incorrect_question(q)
+            # else:
+            #     sitting.add_incorrect_question(q)
+
+        return self.get(request)
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizMarkingDetailSAQ, self).get_context_data(**kwargs)
+        context['questions'] = context['quiz'].sitting_set.all()
+
+        for ques in context['questions']:
+            ques.get_questions(with_answers=True)
 
         return context
 
@@ -2222,6 +2260,7 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     formset = None
     session_list = []
     session_course = []
+    datetime_now = timezone.now().replace(microsecond=0)
     if attend_date == None:
         attend_date = str(datetime.today().date())
     studentattendancejson = []
@@ -2352,7 +2391,7 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
 def chapterStudentProgress(request, course, pk, inningpk=None):
     session_list = []
     studentjson = []
-
+    datetime_now = timezone.now().replace(microsecond=0)
     course = get_object_or_404(CourseInfo, pk=course)
     chapter = get_object_or_404(ChapterInfo, pk=pk)
 
@@ -2402,6 +2441,7 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
 def teacherAttendance(request, courseid, createFile=True):
     chapters = []
     pagenumber = []
+    datetime_now = timezone.now().replace(microsecond=0)
     if request.GET.get('chapterid'):
         chapterid = request.GET.get('chapterid')
         pagenumber = request.GET.get('pagenumber')
@@ -2534,8 +2574,7 @@ def QuizMarkingCSV(request, quiz_pk):
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
         new_row = {'S.N.': counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date,
-                   'End Datetime': end_date,
-                   'Total Score': quiz_sitting.get_score_correct, 'Percentage': quiz_sitting.get_percent_correct}
+                   'End Datetime': end_date}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
@@ -2569,18 +2608,27 @@ def QuizMarkingCSV(request, quiz_pk):
             question_name_value = user_answers.get(str(saquestion.id))
             new_row[question_name] = question_name_value
 
-            user_ans = str(quiz_sitting.user_answers)
-            saq_id = '"' + str(saquestion.id) + '":'
-            end_index = user_ans.find(saq_id)
-            score_index = user_ans.count('": "', 0, end_index)
+            # user_ans = str(quiz_sitting.user_answers)
+            # saq_id = '"' + str(saquestion.id) + '":'
+            # end_index = user_ans.find(saq_id)
+            # score_index = user_ans.count('": "', 0, end_index)
+            score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(saquestion.id)
             score_list = str(quiz_sitting.score_list).split(',')
-            new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
-            if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
-                totalsaq_score += float(score_list[score_index])
+            if score_index < len(score_list):
+                new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
+                if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
+                    totalsaq_score += float(score_list[score_index])
+            else:
+                new_row[answer_name + " S" + str(i + 1)] = ''
 
         new_row['MCQ Score'] = totalmcq_score
         new_row['TFQ Score'] = totaltfq_score
         new_row['SAQ Score'] = totalsaq_score
+        new_row['Total Score'] = totalmcq_score + totaltfq_score + totalsaq_score
+        if new_row['Total Score']: 
+            new_row['Percentage'] = (new_row['Total Score'] / total_score) * 100
+        else:
+            new_row['Percentage'] = 0
         # append row to the dataframe
         df = df.append(new_row, ignore_index=True)
 

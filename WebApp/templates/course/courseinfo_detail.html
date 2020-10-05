@@ -133,7 +133,11 @@
                 </tr>
                 <tr>
                     <td>Registered By</td>
-                    <td>{% getUser object.Register_Agent as register_agent %}{{ register_agent }}</td>
+                    {% if 'students' in request.path %}
+                        <td>{% getUserFullName object.Register_Agent as register_agent %}{{ register_agent }}</td>
+                    {% else %}
+                        <td>{% getUser object.Register_Agent as register_agent %}{{ register_agent }}</td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Status</td>

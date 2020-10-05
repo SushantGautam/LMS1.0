@@ -172,19 +172,34 @@ class MemberInfo(AbstractUser):
         return courses
 
     def get_teacher_courses(self):
-        courses = []
-        session_list = []
-        ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
-        for i in ig:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
-                                                    Course_Group__pk=i.pk, Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
-            if inning_info.exists():
-                courses.append(i.Course_Code)
-                session_list.append(inning_info)
-        # Remove duplicate courses
-        courses = list(set(courses))
-        return {'courses': courses, 'session': session_list}
+        datetime_now = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk)
+        assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                    Start_Date__lte=datetime_now,
+                                                    End_Date__gte=datetime_now,
+                                                    Course_Group__in=course_groups)
+        active_course_groups = []
+        course_groups = set(course_groups.values_list('pk',flat=True))
+        for session in assigned_session:
+            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))    
+        active_course_groups = set(active_course_groups)
+        final_course_groups = active_course_groups.intersection(course_groups)
+        courses_pk = InningGroup.objects.filter(pk__in=final_course_groups).values_list('Course_Code', flat=True)
+        courses =  CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
+
+        # courses = []
+        # session_list = []
+        # ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
+        # for i in ig:
+        #     inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
+        #                                             Course_Group__pk=i.pk, Use_Flag=True,
+        #                                             End_Date__gt=datetime.now()).distinct()
+        #     if inning_info.exists():
+        #         courses.append(i.Course_Code)
+        #         session_list.append(inning_info)
+        # # Remove duplicate courses
+        # courses = list(set(courses))
+        return {'courses': courses, 'session': assigned_session}
 
     @property
     def get_user_type(self):
@@ -473,6 +488,12 @@ class AssignmentInfo(models.Model):
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
+    def has_questions(self):
+        if AssignmentQuestionInfo.objects.filter(Assignment_Code=self).exists():
+            return True
+        else:
+            return False
+
     def get_student_assignment_status(self, user):
         status = False
         questions = AssignmentQuestionInfo.objects.filter(
@@ -672,7 +693,7 @@ class SessionInfo(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="sessioninfos", on_delete=models.DO_NOTHING
+        related_name="sessioninfos", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -709,7 +730,7 @@ class GroupMapping(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="groupmappings", on_delete=models.DO_NOTHING
+        related_name="groupmappings", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -741,7 +762,7 @@ class InningGroup(models.Model):
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
-        related_name="inninggroups", on_delete=models.DO_NOTHING
+        related_name="inninggroups", on_delete=models.CASCADE
     )
 
     Teacher_Code = models.ManyToManyField(
@@ -750,7 +771,7 @@ class InningGroup(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="inninggroups", on_delete=models.DO_NOTHING
+        related_name="inninggroups", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -916,6 +937,10 @@ class Notice(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="noticeviews", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
 
     def __str__(self):
         return self.title
