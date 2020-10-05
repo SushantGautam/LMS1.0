@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
@@ -922,3 +923,31 @@ class NoticeView(models.Model):
     dont_show = BooleanField(default=False)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+
+class SessionMapInfo(models.Model):
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
+    # Chapter_Code = ForeignKey(
+    #     'ChapterInfo',
+    #     related_name="chapterSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
+    # )
+    # Assignment_Code = ForeignKey(
+    #     'AssignmentInfo',
+    #     related_name="assignmentSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
+    # )
+    content_type = models.ForeignKey(
+        ContentType,
+        related_name='sessionmap_target',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
+    target = GenericForeignKey('content_type', 'object_id')
+    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.DO_NOTHING)
+
+    def clean(self):
+        super().clean()
+        if (self.Start_Date and self.End_Date):
+            if (self.Start_Date > self.End_Date):
+                raise ValidationError("End date must be greater than start date")

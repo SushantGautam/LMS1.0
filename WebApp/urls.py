@@ -157,6 +157,7 @@ urlpatterns += (
     path('assignmentinfo/<int:pk>/',
          views.AssignmentInfoDeleteView.as_view(),
          name='assignmentinfo_delete'),
+    path('assignment/inninginfomap/', views.AssignmentInningInfoMappingView, name='assignmentinninginfomap'),
 )
 
 urlpatterns += (

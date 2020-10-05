@@ -1,27 +1,5 @@
-{% extends "base.html" %}
 {% load static %}
-{% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item"><a href="
-    {% if object.Course_Code.Use_Flag %}
-        {% url 'courseinfo_grid_active' %}
-    {% else %}
-        {% url 'courseinfo_grid_inactive' %}
-    {% endif %}
-    ">Course</a></li>
-<li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
-<li class="breadcrumb-item"><a href="{{ object.get_absolute_url }}">{{ object.Chapter_Name }}</a>
-</li>
-<li class="breadcrumb-item active" aria-current="page">
-    {% if '/create/' in request.path %}
-    Create New Chapter
-    {% else %}
-    Edit Chapter
-    {% endif %}
-</li>
 
-{% endblock %}
-{% block content %}
 <div class="page-header">
     <div class="page-title d-block text-center">
         <h2>{% if 'create' in request.path %}
@@ -101,11 +79,3 @@
         </div>
     </div>
 </div>
-
-
-{% endblock %}
-{% block javascript %}
-<script>
-    document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
-</script>
-{% endblock %}
