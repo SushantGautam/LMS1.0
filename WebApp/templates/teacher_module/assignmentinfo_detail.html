@@ -167,7 +167,7 @@
                         {% if '/students' not in request.path %}
                             <td>
                                 {% now "Y-m-d H:i" as todays_datewithtime %}
-                                {% if not sessionmap or not sessionmap.0.Start_Date or sessionmap.0.End_Date %}
+                                {% if not sessionmap or not sessionmap.0.Start_Date or not sessionmap.0.End_Date %}
                                     <span class="badge badge-danger">Inactive</span>
                                 {% elif sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-info">Upcoming</span>
