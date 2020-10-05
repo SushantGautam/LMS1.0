@@ -229,8 +229,73 @@ def InningMapCreate_handler(sender, instance, created, **kwargs):
                 action_object=instance.target,
             )
 
+    if instance.target.__class__ == AssignmentInfo:
+        AssignmentDeadlineNotificationCreate(
+            sender, instance, created,
+            start_date=start_date,
+            end_date=end_date,
+            request=request,
+            description='Assignment {} will expire on {}'.format(instance.target,
+                                                                 datetime.strftime(instance.target.Assignment_Deadline,
+                                                                                   "%d-%m-%Y %H:%M")),
+            verb='expire',
+
+        )
+
 
 post_save.connect(InningMapCreate_handler, sender=SessionMapInfo)
+
+
+def AssignmentDeadlineNotificationCreate(sender, instance, created, **kwargs):
+    start_date = kwargs.get('start_date')
+    end_date = kwargs.get('end_date')
+    request = kwargs.get('request')
+    student_description = kwargs.get('description')
+    verb = kwargs.get('verb')
+    if not created:
+        # Update Notifications that have not been sent to receipents if instance is update
+        NotificationAction(instance.target, instance.target.__class__, instance.target.id, start_date,
+                           end_date).update()
+
+        '''
+            When Editing the chapter, if the start date is changed, and start date is set to future date, then create a 
+            future notification with target audience.
+        '''
+        if end_date:
+            if end_date >= timezone.now():
+                if not Notification.objects.filter(is_sent=False, start_notification_date__gt=timezone.now(),
+                                                   action_object_content_type=ContentType.objects.get_for_model(
+                                                       instance.target.__class__),
+                                                   action_object_object_id=instance.target.id).exists():
+                    notify.send(
+                        start_notification_date=(
+                                end_date - timedelta(hours=1,
+                                                     minutes=0)) if start_date else timezone.now(),
+                        end_notification_date=end_date if end_date else None,
+                        sender=request.user,
+                        target_audience=instance.Session_Code,
+                        verb=verb,
+                        description=student_description,
+                        action_object=instance.target,
+                    )
+
+    # --------------------------------------------------------------------------------
+    else:
+        if end_date and end_date >= timezone.now():
+            if InningInfo.objects.filter(
+                    Course_Group__in=InningGroup.objects.filter(
+                        Course_Code__pk=instance.target.Course_Code.pk)).exists():
+                notify.send(
+                    start_notification_date=(
+                            end_date - timedelta(hours=1,
+                                                 minutes=0)) if start_date else timezone.now(),
+                    end_notification_date=end_date if end_date else None,
+                    sender=request.user,
+                    target_audience=instance.Session_Code,
+                    verb=verb,
+                    description=student_description,
+                    action_object=instance.target,
+                )
 
 
 def AssignmentQuestionInfoCreate_handler(sender, instance, created, **kwargs):
