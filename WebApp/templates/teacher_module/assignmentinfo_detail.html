@@ -134,36 +134,103 @@
         </div>
 
     </div>
+
+    <!-- Start/End Date from different session -->
     <div class="row" style="margin-bottom: 10px;">
-        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;"> Assignment Date: </b> <span
-                class="dateconFullMonth"> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;"> Assignment Deadline: </b> <span
-                class="dateconFullMonth"> {{ object.Assignment_Deadline|date:'d M, Y h:i A' }} </span>
-        </div>
+        {% if assigned_session %}
+            <table class="table">
+                <tr>
+                    <th>Session</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    {% if '/students' not in request.path %}
+                        <th>Assignment Status</th>
+                        <th>Action</th>
+                    {% endif %}
+                </tr>
 
-        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
-            <b style="font-size: 15px;"> Register Agent: </b> {{ object.Register_Agent }}
-        </div>
-    </div>
-    <div class=" text-left " style="margin-bottom: 10px;">
-        <b style="font-size: 15px;"> Status: </b>
-        {% if object.Use_Flag is True %}
-            <span class="badge badge-success">Published</span>
-        {% elif object.Use_Flag is False %}
-            <span class="badge badge-danger">Not Published</span>
-        {% endif %}
+                {% for sessions in assigned_session %}
+                    <tr>
+                        <td>
+                            {{ sessions }}
+                            {% if '/students' not in request.path and '/teachers' not in request.path %}
+                                {% if sessions.is_active %}
+                                    <span class="badge badge-success">Active</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Inactive</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        {% getSessionMap object 'assignmentinfo' sessions as sessionmap %}
+                        <td class="start-date dateconFullMonth">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
+                        <td class="end-date dateconFullMonth">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                        {% if '/students' not in request.path %}
+                            <td>
+                                {% now "Y-m-d H:i" as todays_datewithtime %}
+                                {% if not sessionmap or not sessionmap.0.Start_Date or not sessionmap.0.End_Date %}
+                                    <span class="badge badge-danger">Inactive</span>
+                                {% elif sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-info">Upcoming</span>
+                                {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                                    <span class="badge badge-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge badge-success">Active</span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                        {% if '/students' not in request.path %}
+                            <td>
+                                <button type="button" class="btn btn-sm btn-primary inningmap-btn" data-toggle="modal"
+                                        data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                        data-objectid="{{ object.id }}">
+                                    Change
+                                </button>
+                            </td>
+                        {% endif %}
+                    </tr>
 
-        {% now "Y-m-d H:i" as todays_datewithtime %}
-        {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
-            <span class="badge badge-info">Upcoming</span>
-        {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
-            <span class="badge badge-danger">Expired</span>
+                {% endfor %}
+            </table>
         {% else %}
-            <span class="badge badge-success">Active</span>
+            Not Assigned to any Sessions
         {% endif %}
+    </div>
+    {#    <div class="row" style="margin-bottom: 10px;">#}
+    {#        <div class="col-lg-4 col-md-4 col-sm-12 text-left">#}
+    {#            <b style="font-size: 15px;"> Session: </b> <span#}
+    {#                class=""> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>#}
+    {#        </div>#}
+    {#        <div class="col-lg-4 col-md-4 col-sm-12 text-left">#}
+    {#            <b style="font-size: 15px;"> Assignment Date: </b> <span#}
+    {#                class="dateconFullMonth"> {{ object.Assignment_Start|date:'d M, Y h:i A' }} </span>#}
+    {#        </div>#}
+    {#        <div class="col-lg-4 col-md-4 col-sm-12 text-left">#}
+    {#            <b style="font-size: 15px;"> Assignment Deadline: </b> <span#}
+    {#                class="dateconFullMonth"> {{ object.Assignment_Deadline|date:'d M, Y h:i A' }} </span>#}
+    {#        </div>#}
+    {#    </div>#}
+
+    <div class="row text-left " style="margin-bottom: 10px;">
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;"> Status: </b>
+            {% if object.Use_Flag is True %}
+                <span class="badge badge-success">Published</span>
+            {% elif object.Use_Flag is False %}
+                <span class="badge badge-danger">Not Published</span>
+            {% endif %}
+
+            {#            {% now "Y-m-d H:i" as todays_datewithtime %}#}
+            {#            {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}#}
+            {#                <span class="badge badge-info">Upcoming</span>#}
+            {#            {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}#}
+            {#                <span class="badge badge-danger">Expired</span>#}
+            {#            {% else %}#}
+            {#                <span class="badge badge-success">Active</span>#}
+            {#            {% endif %}#}
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 text-left">
+            <b style="font-size: 15px;">Register Agent: </b> {{ object.Register_Agent }}
+        </div>
     </div>
 
     {% if '/students' not in request.path %}
@@ -227,7 +294,7 @@
 
                         <span style="float: right;"><a id="{{ question.pk }}" class="confirm-delete"
                                                        style="color: #dc3545;cursor:pointer; line-height:30px ">
-                              <b>Delete</b>  
+                              <b>Delete</b>
                             </a></span>
 
                         <form method="post"
@@ -316,7 +383,8 @@
                     <tr class="tableTitleRow">
                         <td>S.No.</td>
                         <td>S.No.</td>
-                        <td>Student Name</td>
+                        <td>Username</td>
+                        <td>Full Name</td>
                         <td>Total Marks</td>
                         <td>Marks Obtained</td>
                         <td>Answer</td>
@@ -330,7 +398,8 @@
                         <tr>
                             <td class="counterCell" style=" padding-top: 15px;"></td>
                             <td>{{ forloop.counter }}</td>
-                            <td style=" padding-top: 15px;">{{ student }}</td>
+                            <td style=" padding-top: 15px;">{{ student.username }}</td>
+                            <td>{{ student.get_full_name }}</td>
                             <td>{{ question.Question_Score }} </td>
 
                             <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
@@ -350,7 +419,7 @@
                                 {% endif %}
                             </td>
 
-                            <td>{{ answer.Assignment_Answer }}</td>
+                            <td>{{ answer.Assignment_Answer|safe }}</td>
                             <td>{% if answer %}
                                 Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
                             {% elif not answer %}
@@ -409,6 +478,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% comment %}
                         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                             <div id="div_id_Assignment_Start_edit" class="form-group">
                                 <label for="id_Assignment_Start_edit" class="control-label ">
@@ -437,6 +507,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endcomment %}
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <label>Publish</label><br>
                             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
@@ -483,6 +554,10 @@
             </div>
         </div>
     </div>
+
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+    {% include 'inning/inningmapFormModal.html' %}
+
 {% endblock content %}
 
 {% block customjss %}
@@ -493,19 +568,19 @@
     <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 
     <script>
-        document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
-        document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
-        $('#id_Assignment_Deadline_edit').datetimepicker();
-        $('#id_Assignment_Start_edit').datetimepicker();
+        {#document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")#}
+        {#document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")#}
+        {#$('#id_Assignment_Deadline_edit').datetimepicker();#}
+        {#$('#id_Assignment_Start_edit').datetimepicker();#}
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
-                url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
                 data: {
                     "csrfmiddlewaretoken": '{{ csrf_token }}',
                     "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
-                    "Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
-                    "Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
+                    //"Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
+                    //"Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
                     "Use_Flag": $('#id_Use_Flag').is(":checked"),
                     "Course_Code": $('#id_Course_Code').val(),
                     "Chapter_Code": $('#id_Chapter_Code').val(),
@@ -751,7 +826,7 @@
             $(this).addClass('clickedShowAnswer')
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
-                    $('#answercontent').text(`{{answer.Assignment_Answer}}`)
+                    $('#answercontent').html(`{{answer.Assignment_Answer|safe}}`)
 
                     if ('{{ answer.Assignment_File }}') {
                         $('#answercontent').append(`
@@ -764,19 +839,19 @@
                     $('#StudentScore').html(`
                         <form id="StudentScoreForm">
                         <div>
-                            <p>FeedBack</p>
+                            <p><b>FeedBack</b></p>
                             <p>
-                                <textarea name="assignment_feedback" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                                <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
                             </p>
                         </div>
                         <div>
-                        Score
-                        <input type="number" id="studentScoresubmit" value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
-                        max="{{ answer.Question_Code.Question_Score }}" >
+                        <b>Score</b>
+                        <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
+                        value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                        max="{{ answer.Question_Code.Question_Score }}" >Full Score: <b>{{ answer.Question_Code.Question_Score }} </b><br><br>
                             <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
                         </div>
                         </form>
-                        <br> Full Score: <b>{{ answer.Question_Code.Question_Score }} </b>
                          <input type="hidden" id="answerpk" value="{{ answer.pk }}">
 
                     `);
@@ -904,7 +979,7 @@
                         extend: 'csv',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5]
+                            columns: [1, 2, 3, 4, 5, 6, 7]
                         }
                     },
                     // {
@@ -915,13 +990,13 @@
                 ],
                 "columnDefs": [
                     {
-                        "targets": [1, 5],
+                        "targets": [1, 6],
                         "visible": false,
                         "searchable": true,
                     },
                     {
                         "orderable": false,
-                        "targets": [7]
+                        "targets": [8]
                     }
                 ]
             });
@@ -969,75 +1044,21 @@
                     },
                     success: function (response) {
                         window.open(response.link, '_blank');
+                        {% comment %}
                         /*setTimeout(function () {
                             $.ajax({
-                                url: "
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        {% url 'deletedownloadAssignmentAnswers' %}",
+                                url: "{% url 'deletedownloadAssignmentAnswers' %}",
                                 type: 'GET',
                                 data: {
                                     'question_id': q_id,
-                                    'assignment_id': '
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        {{ Assignment.pk }}',
+                                    'assignment_id': '{{ Assignment.pk }}',
                                 },
                                 success: function (data) {
                                     console.log(data)
                                 }
                             })
                         }, 3000)*/
+                        {% endcomment %}
                     },
                 });
             } else {
@@ -1064,6 +1085,10 @@
             } else {
                 $('.assignment_answers_div').addClass('hidden');
             }
+        })
+
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
         })
     </script>
 {% endblock %}

@@ -45,7 +45,7 @@ Course
             <form method="get" action="">
                 <div class="col-md-4">
                     <input type="text" name="studentmycoursequery" placeholder="Search Course"
-                           value="{{ request.GET.queryset }}" class="form-control">
+                           value="{{ request.GET.studentmycoursequery }}" class="form-control">
             </div>
             <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
         </form>
@@ -58,10 +58,10 @@ Course
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
             <div class="gridContentsList">
                 <div class="card-header">
-                    <a href="{{ courses.Course_Code.student_get_absolute_url }}">
+                    <a href="{{ courses.student_get_absolute_url }}">
                         <img id="courseListImage" class="card-img-top" src="
-                            {% if courses.Course_Code.Course_Cover_File %}
-                                /media/{{ courses.Course_Code.Course_Cover_File }}
+                            {% if courses.Course_Cover_File %}
+                                /media/{{ courses.Course_Cover_File }}
                             {% else %}
                                 {% static 'images/course.jpg' %}
                             {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover">
@@ -69,21 +69,21 @@ Course
                 </div>
                 <div class="card-body" id="cardInfo">
                     <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; "><strong><a
-                            href="{{ courses.Course_Code.student_get_absolute_url }}">{{ courses.Course_Code.Course_Name|truncatechars:45 }}</a></strong>
+                            href="{{ courses.student_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
                     </h2>
 
 
 
-                    {% if courses.Course_Code.get_teachers_of_this_course %}
+                    {% if courses.get_teachers_of_this_course %}
                         <p style="height:45px ; padding: 10px; overflow:auto">
                             Teacher(s): &nbsp;
-                            {% for eachTeacher in courses.Course_Code.get_teachers_of_this_course|slice:":4" %}
+                            {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
 
 
                                 {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
 
                             {% endfor %}
-                            {% if courses.Course_Code.get_teachers_of_this_course|length > 4 %}
+                            {% if courses.get_teachers_of_this_course|length > 4 %}
                                 ....
 
             {% endif%}
@@ -104,7 +104,7 @@ Course
 
                     <hr>
                     <h5 class="courseDescription" style="padding-bottom: 10px;">
-                        {% if courses.Course_Code.Course_Description %}
+                        {% if courses.Course_Description %}
                             <p style="
             padding-right: 10px;
             line-height: 1.5em;
@@ -113,7 +113,7 @@ Course
             overflow: hidden;
             white-space: normal;
             text-overflow: ellipsis;">
-                                {{ courses.Course_Code.Course_Description|truncatechars:70 }}
+                                {{ courses.Course_Description|truncatechars:70 }}
                         </p>
                         {% else %}
                             <p style="

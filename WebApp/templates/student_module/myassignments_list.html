@@ -68,11 +68,10 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
                         <p>Submission Deadline -
-                            {% now "Y-m-d H:i" as todays_date %}
-                            {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
-                                <span class="text-danger">Expired</span>
+                            {% if a.active %}
+                                <span class="text-success">{{ a.deadline|timeuntil }} left </span>
                             {% else %}
-                                <span class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span>
+                                <span class="text-danger">Expired</span>
                             {% endif %}</p>
                     </div>
                 </div>
@@ -131,7 +130,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
                         <p>Submission Deadline - <span
-                                class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span></p>
+                                class="text-success">{{ a.deadline|timeuntil }} left </span></p>
                     </div>
                 </div>
             {% endfor %}
@@ -189,7 +188,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
                         <p>Submission Deadline -
-                            <span class="text-danger dateconFullMonth">{{ a.Assignment_Deadline|date:"d M, Y h:i A" }}</span>
+                            <span class="text-danger">Expired</span>
                         </p>
                     </div>
                 </div>

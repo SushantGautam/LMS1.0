@@ -32,7 +32,7 @@
                         {% csrf_token %} <br><br>
                         <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
                         <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
-                        <a target="_blank" class="text-center" href="{% static 'importcsv_sample.csv' %}"
+                        <a target="_blank" class="text-center" href="{% static 'importcsv_sample1.csv' %}"
                            style="padding-top: 2em;">
                             <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
                         </a><br>
@@ -93,20 +93,36 @@
 
         </nav>
         <hr class="header_hr">
+
         <div class="col-md-12 col-sm-12 col-xs-12">
             <nav id="navbar_parent" class="navbar-dark">
 
                 <div class="btn-createnew">
                     <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
+                    <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
+                            data-target="#edit_checked_details_modal">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <form method="post" action="{% url 'memberinfo_delete_checked' %}" style="display: inline">
+                        {% csrf_token %}
+                        <button class="btn btn-danger deleteCheckedMembers" type="submit"
+                                onclick="return confirm('Are you sure you want to delete ?')">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
                 </div>
             </nav>
         </div>
 
 
         <div class="groupmappingtable col-md-12 col-sm-12 col-xs-12 table-responsive">
-            <table class="table table-striped dt-responsive table-bordered bg-white nowrap">
+            <span class="checkboxCheckedLength"></span>
+            <table class="table table-striped dt-responsive table-bordered bg-white nowrap" id="member_dataTable">
                 <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
+                    <td>
+                        <input type="checkbox" class="memberinfoCheckAll">
+                    </td>
                     <td class="text-center">S. No.</td>
                     <td>Username</td>
                     <td>Member ID</td>
@@ -114,6 +130,7 @@
                     <td>First Name</td>
                     <td>Last Name</td>
                     <td>Email</td>
+                    <td>Department</td>
                     <td>Phone</td>
                     <td>Gender</td>
                     <td>Student</td>
@@ -128,11 +145,13 @@
                 <tbody></tbody>
             </table>
         </div>
+        </form>
     </div>
 
     <br>
     <br>
 
+    {% include 'WebApp/memberinfo_mass_option_form.html' %}
 
 {% endblock %}
 {% block customjss %}
@@ -249,7 +268,7 @@
                         title: 'Member List',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                         exportOptions: {
-                            columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+                            columns: [2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 8]
                         },
                         action: newexportaction,
 
@@ -266,14 +285,14 @@
                     }],
                 "columnDefs": [
                     {
-                        "targets": [4, 5, 9, 10, 11, 12, 13],
+                        "targets": [5, 6, 10, 11, 12, 13, 14],
                         "visible": false,
                         "searchable": true,
                     },
                     {
                         "orderable": false,
-                        "targets": [0, 3, 11, 12, 13, 14, 15]
-                    }
+                        "targets": [0, 12, 13, 14, 15, 16, 17]
+                    },
                 ]
             });
 

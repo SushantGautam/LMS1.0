@@ -47,7 +47,7 @@
       <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> Full Marks:</span>
         &nbsp;{{ object.get_max_score }}</div>
       <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span class="text-bold"> Marks Obtained:</span>
-        &nbsp;{{ object.current_score }}</div>
+        &nbsp;{{ object.get_score_correct }}</div>
       <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span
           class="text-bold"> Percentage:</span>&nbsp; {{ object.get_percent_correct }}</div>
 
@@ -70,7 +70,7 @@
                 <i class="fa fa-chevron-down fa-2x text-info" style="margin-right: 10px"></i>
                 {{ q.content }}
                 {#              <span style="float: right">{{ q.score_obtained }} / {{ q.score }}</span>#}
-                {% if q.id in object.get_incorrect_questions %}
+                {% if not q.ans_correct %}
                   <i class="fa fa-times fa-2x text-danger" style="float: right"></i>
                 {% elif q.is_saq %}
                   <i class="fa fa-ellipsis-h fa-2x text-info" style="float: right"></i>
@@ -87,7 +87,7 @@
                   {% if option.correct %}
                     <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}</li>
                   {% else %}
-                    {% if option.id|slugify == q.user_answer|slugify %}
+                    {% if option|slugify == q.user_answer|slugify %}
                       <li class="list-group-item list-group-item-danger">
                         {#                      <i class="fa fa-times fa-2x text-danger"></i>#}
                         {{ forloop.counter }}. {{ option.content }}

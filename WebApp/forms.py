@@ -13,7 +13,7 @@ from django_summernote.widgets import SummernoteWidget
 
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, \
-    InningManager, Attendance
+    InningManager, Attendance, DepartmentInfo
 
 
 class UserRegisterForm(UserCreationForm):
@@ -55,14 +55,41 @@ class CenterInfoForm(forms.ModelForm):
                   'Use_Flag', 'Register_Agent']
 
 
+class DepartmentInfoForm(forms.ModelForm):
+    class Meta:
+        model = DepartmentInfo
+        fields = ['Department_Name', 'Center_Code',
+                  'Register_Agent', 'Use_Flag']
+        widgets = {
+            'Center_Code': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Center_Code'].initial = self.request.user.Center_Code
+        if '/edit' in self.request.path:
+            del self.fields['Register_Agent']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('Department_Name')
+        department = DepartmentInfo.objects.filter(Department_Name=name, Center_Code=self.request.user.Center_Code)
+        if department.exists():
+            if self.instance.id:
+                if department.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
+                    if department.get(pk=self.instance.id).Department_Name == name:
+                        return cleaned_data
+            raise forms.ValidationError('Department Name already Exists')
+
+
 class MemberInfoForm(forms.ModelForm):
-    Use_Flag = forms.BooleanField(initial=True, required=False)
+    Use_Flag = forms.BooleanField(initial=True, required=False, label='Status')
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
         years=range(1985, datetime.date.today().year + 10)))
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
-
         Accordion(
             AccordionGroup('Basic Information',
 
@@ -85,6 +112,13 @@ class MemberInfoForm(forms.ModelForm):
                                    'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                Field(
                                    'password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field(
+                                   'Member_Department', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Position', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
@@ -137,7 +171,16 @@ class MemberInfoForm(forms.ModelForm):
         model = MemberInfo
         Member_BirthDate = forms.DateField(widget=SelectDateWidget(
             years=range(1985, datetime.date.today().year + 10)))
-        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', \
+                 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
+                 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag', 'Member_Department', \
+                 'Member_Position'
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
+                                                                                  Center_Code=self.request.user.Center_Code)
 
 
 class MemberUpdateForm(forms.ModelForm):
@@ -168,6 +211,13 @@ class MemberUpdateForm(forms.ModelForm):
                                    'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                Field(
                                    'email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field(
+                                   'Member_Department', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Position', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
@@ -210,7 +260,16 @@ class MemberUpdateForm(forms.ModelForm):
 
     class Meta:
         model = MemberInfo
-        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student'
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', \
+                 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
+                 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Member_Department', \
+                 'Member_Position'
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
+                                                                                  Center_Code=self.request.user.Center_Code)
 
 
 class CourseInfoForm(forms.ModelForm):
@@ -239,16 +298,18 @@ class CourseInfoForm(forms.ModelForm):
 
 class ChapterInfoForm(forms.ModelForm):
     mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
-    Start_Date = forms.CharField(
-        required=False,
-    )
-    End_Date = forms.CharField(
-        required=False,
-    )
+
+    # Start_Date = forms.CharField(
+    #     required=False,
+    # )
+    # End_Date = forms.CharField(
+    #     required=False,
+    # )
 
     class Meta:
         model = ChapterInfo
-        fields = '__all__'
+        fields = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'mustreadtime', 'Use_Flag', 'Register_Agent',
+                  'is_commentable', 'Course_Code']
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -388,6 +449,9 @@ class InningInfoForm(forms.ModelForm):
     Course_Group = CoursesMultipleChoiceField(queryset=None, required=True,
                                               widget=FilteredSelectMultiple("Courses", is_stacked=False))
 
+    Start_Date = forms.CharField()
+    End_Date = forms.CharField()
+
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
         js = ('/static/build/js/jsi18n.js',)
@@ -415,22 +479,30 @@ class InningInfoForm(forms.ModelForm):
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
+    # Assignment_Start = forms.CharField(
+    #     required=True,
+    # )
+    # Assignment_Deadline = forms.CharField(
+    #     required=True,
+    # )
+
     class Meta:
         model = AssignmentInfo
-        fields = '__all__'
+        fields = ['Assignment_Topic', 'Use_Flag', 'Course_Code', 'Chapter_Code', 'Register_Agent', ]
 
 
 class QuestionInfoForm(forms.ModelForm):
     Question_Description = forms.CharField(widget=SummernoteWidget(attrs=
-                            {'summernote': 
-                            {'width': '100%', 'height': '480px',
-                             'toolbar': [["style", ["style"]],
-                                         ["font", ["bold", "italic", "underline"]],
-                                         ["para", ["ul", "ol"]],
-                                         ["table", ["table"]],
-                                         ["insert", ["link", "picture"]],
-                                         ]}
-                             }), required=False)
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '480px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
 
     class Meta:
         model = AssignmentQuestionInfo
@@ -448,6 +520,17 @@ class AssignAssignmentInfoForm(forms.ModelForm):
 
 
 class AssignAnswerInfoForm(forms.ModelForm):
+    Assignment_Answer = forms.CharField(widget=SummernoteWidget(attrs=
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '200px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
     class Meta:
         model = AssignAnswerInfo
         fields = '__all__'

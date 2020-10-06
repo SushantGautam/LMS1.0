@@ -180,7 +180,7 @@
                         </span>
                 </td>
 
-                <td>{{ answer.Assignment_Answer }}</td>
+                <td>{{ answer.Assignment_Answer|safe }}</td>
                 <td>{% if answer %}
                     Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
                 {% elif not answer %}
@@ -220,7 +220,7 @@
             $(this).addClass('clickedShowAnswer')
             {% for answer in Answers %}
                 if (this.value == '{{ answer.id }}') {
-                    $('#answercontent').text(`{{answer.Assignment_Answer}}`)
+                    $('#answercontent').html(`{{answer.Assignment_Answer|safe}}`)
 
                     if ('{{ answer.Assignment_File }}') {
                         $('#answercontent').append(`

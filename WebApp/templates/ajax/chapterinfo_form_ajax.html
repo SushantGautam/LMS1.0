@@ -24,18 +24,22 @@
         </div>
         <br>
     </div>
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        {{ form.Start_Date|as_crispy_field }}<br>
-    </div>
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        {{ form.End_Date|as_crispy_field }}<br>
-    </div>
+    {#    <div class="col-md-6 col-sm-12 col-xs-12">#}
+    {#        {{ form.Start_Date|as_crispy_field }}<br>#}
+    {#    </div>#}
+    {#    <div class="col-md-6 col-sm-12 col-xs-12">#}
+    {#        {{ form.End_Date|as_crispy_field }}<br>#}
+    {#    </div>#}
     <div class="col-md-12 col-sm-12 col-xs-12">
         {{ form.mustreadtime|as_crispy_field }}<br>
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12" id="div_use_flag">
         <label for="id_Use_Flag" class="control-label ">Publish</label>
         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12" id="div_is_commentable">
+        <label for="id_is_commentable" class="control-label ">Comment</label>
+        <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable" checked>
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -51,8 +55,8 @@
 
 <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
 <script>
-    $('#id_Start_Date').datetimepicker();
-    $('#id_End_Date').datetimepicker();
+    {#$('#id_Start_Date').datetimepicker();#}
+    {#$('#id_End_Date').datetimepicker();#}
     $("#ajaxchapterinfoform").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -67,9 +71,9 @@
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Register_Agent": $('#id_Register_Agent').val(),
                 "Course_Code": $('#id_Course_Code').val(),
-                "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
-                "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
-
+                {#"Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',#}
+                {#"End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',#}
+                "is_commentable": $('#id_is_commentable').is(":checked"),
             },
             // get the form data
             type: $(this).attr('method'), // GET or POST

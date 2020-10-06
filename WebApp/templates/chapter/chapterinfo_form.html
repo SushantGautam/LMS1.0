@@ -51,12 +51,12 @@
         {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
         {#            {{ form.Page_Num|as_crispy_field }}<br>#}
         {#        </div>#}
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            {{ form.Start_Date|as_crispy_field }}<br>
-        </div>
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            {{ form.End_Date|as_crispy_field }}<br>
-        </div>
+        {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
+        {#            {{ form.Start_Date|as_crispy_field }}<br>#}
+        {#        </div>#}
+        {#        <div class="col-md-12 col-sm-12 col-xs-12">#}
+        {#            {{ form.End_Date|as_crispy_field }}<br>#}
+        {#        </div>#}
         <div class="col-md-12 col-sm-12 col-xs-12 mustreadtime">
             {{ form.mustreadtime|as_crispy_field }}<br>
         </div>
@@ -66,6 +66,15 @@
             </label><br>
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
                    &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <label>
+                Discussion
+            </label><br>
+            <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable"
+                    {% if object.is_commentable == False %}
+                   &nbsp; {% elif object.is_commentable == True %} checked {% endif %}><br> <br>
         </div>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -86,6 +95,6 @@
 <script src="{% static 'js/common.js' %}"></script>
 <script>
     document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
-    document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
-    document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
+    {#document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")#}
+    {#document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")#}
 </script>

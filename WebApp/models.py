@@ -7,13 +7,14 @@ from django.conf import settings
 from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
-    FileField
+    FileField, Sum
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.urls import reverse
@@ -59,11 +60,48 @@ class CenterInfo(models.Model):
     def get_delete_url(self):
         return reverse('centerinfo_delete', args=(self.pk,))
 
+class DepartmentInfo(models.Model):
+    Department_Name = CharField(max_length=500)
+    Use_Flag = BooleanField(default=True)
+    Register_Agent = CharField(max_length=500, blank=True, null=True)
+    Register_DateTime = DateTimeField(auto_now_add=True)
+    Updated_DateTime = DateTimeField(auto_now=True)
+
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="departmentinfos", on_delete=models.DO_NOTHING, null=True
+    )
+
+    class Meta:
+        ordering = ('-pk',)
+
+    def __str__(self):
+        return self.Department_Name
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def get_absolute_url(self):
+        return reverse('departmentinfo_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('departmentinfo_update', args=(self.pk,))
+
+    def get_delete_url(self):
+        return reverse('departmentinfo_delete', args=(self.pk,))
 
 class MemberInfo(AbstractUser):
     Gender_Choices = (
         ('M', 'Male'),
         ('F', 'Female'),
+    )
+    Position_Choices = (
+        ('Lecturer', 'Lecturer'),
+        ('Assistant_Lecturer', 'Assistant Lecturer'),
+        ('Professor', 'Professor'),
+        ('Associated_Professor', 'Associated Professor'),
+        ('Assistant_Professor', 'Assistant Professor'),
+        ('LAB_Teacher', 'LAB Teacher'),
     )
     username_validator = UnicodeUsernameValidator()
 
@@ -118,6 +156,8 @@ class MemberInfo(AbstractUser):
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
+    Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
+    Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -132,19 +172,34 @@ class MemberInfo(AbstractUser):
         return courses
 
     def get_teacher_courses(self):
-        courses = []
-        session_list = []
-        ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
-        for i in ig:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
-                                                    Course_Group__pk=i.pk, Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
-            if inning_info.exists():
-                courses.append(i.Course_Code)
-                session_list.append(inning_info)
-        # Remove duplicate courses
-        courses = list(set(courses))
-        return {'courses': courses, 'session': session_list}
+        datetime_now = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk)
+        assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                    Start_Date__lte=datetime_now,
+                                                    End_Date__gte=datetime_now,
+                                                    Course_Group__in=course_groups)
+        active_course_groups = []
+        course_groups = set(course_groups.values_list('pk',flat=True))
+        for session in assigned_session:
+            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))    
+        active_course_groups = set(active_course_groups)
+        final_course_groups = active_course_groups.intersection(course_groups)
+        courses_pk = InningGroup.objects.filter(pk__in=final_course_groups).values_list('Course_Code', flat=True)
+        courses =  CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
+
+        # courses = []
+        # session_list = []
+        # ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
+        # for i in ig:
+        #     inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
+        #                                             Course_Group__pk=i.pk, Use_Flag=True,
+        #                                             End_Date__gt=datetime.now()).distinct()
+        #     if inning_info.exists():
+        #         courses.append(i.Course_Code)
+        #         session_list.append(inning_info)
+        # # Remove duplicate courses
+        # courses = list(set(courses))
+        return {'courses': courses, 'session': assigned_session}
 
     @property
     def get_user_type(self):
@@ -263,7 +318,12 @@ class CourseInfo(models.Model):
         return reverse('courseinfo_update', args=(self.pk,))
 
     def innings_of_this_course(self):
-        innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
+        innings = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=self.inninggroups.all())
+        return innings
+    
+    def innings_active(self):
+        innings = InningInfo.objects.filter(Use_Flag=True, Start_Date__lte=datetime.now(),
+                        End_Date__gte=datetime.now(), Course_Group__in=self.inninggroups.all())
         return innings
 
     def get_teachers_of_this_course(self):
@@ -299,6 +359,12 @@ class ChapterInfo(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
+    chapter_sessionmaps = GenericRelation('SessionMapInfo')
+
+    from comment.models import Comment
+
+    comments = GenericRelation(Comment)
+    is_commentable = models.BooleanField(default=True)
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
@@ -402,6 +468,7 @@ class AssignmentInfo(models.Model):
         'MemberInfo',
         related_name="assignmentinfos", on_delete=models.CASCADE
     )
+    assignment_sessionmaps = GenericRelation('SessionMapInfo')
 
     def __str__(self):
         return self.Assignment_Topic
@@ -420,6 +487,12 @@ class AssignmentInfo(models.Model):
 
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
+
+    def has_questions(self):
+        if AssignmentQuestionInfo.objects.filter(Assignment_Code=self).exists():
+            return True
+        else:
+            return False
 
     def get_student_assignment_status(self, user):
         status = False
@@ -480,6 +553,14 @@ class AssignmentInfo(models.Model):
         if self.Assignment_Start and self.Assignment_Deadline:
             if self.Assignment_Start > self.Assignment_Deadline:
                 raise ValidationError("End date must be greater than start date")
+    
+    @property
+    def get_total_score(self):
+        score = AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
+        if score:
+            return score
+        else:
+            return 0
 
 
 def upload_to(instance, filename):
@@ -612,7 +693,7 @@ class SessionInfo(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="sessioninfos", on_delete=models.DO_NOTHING
+        related_name="sessioninfos", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -649,7 +730,7 @@ class GroupMapping(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="groupmappings", on_delete=models.DO_NOTHING
+        related_name="groupmappings", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -681,7 +762,7 @@ class InningGroup(models.Model):
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
-        related_name="inninggroups", on_delete=models.DO_NOTHING
+        related_name="inninggroups", on_delete=models.CASCADE
     )
 
     Teacher_Code = models.ManyToManyField(
@@ -690,7 +771,7 @@ class InningGroup(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="inninggroups", on_delete=models.DO_NOTHING
+        related_name="inninggroups", on_delete=models.CASCADE
     )
 
     class Meta:
@@ -756,6 +837,14 @@ class InningInfo(models.Model):
 
     def get_teacher_update_url(self):
         return reverse('teachers_inninginfo_update', args=(self.pk,))
+
+    @property
+    def is_active(self):
+        datetime_now = timezone.now().replace(microsecond=0)
+        if self.Use_Flag == True and self.Start_Date <= datetime_now and self.End_Date >= datetime_now:
+            return True
+        else:
+            return False
 
     def __str__(self):
         return self.Inning_Name.Session_Name
@@ -848,6 +937,10 @@ class Notice(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+    Center_Code = ForeignKey(
+        'CenterInfo',
+        related_name="noticeviews", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
 
     def __str__(self):
         return self.title
@@ -859,3 +952,34 @@ class NoticeView(models.Model):
     dont_show = BooleanField(default=False)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+
+
+# For Semester
+
+class SessionMapInfo(models.Model):
+    Start_Date = DateTimeField(null=True, blank=True)
+    End_Date = DateTimeField(null=True, blank=True)
+    # Chapter_Code = ForeignKey(
+    #     'ChapterInfo',
+    #     related_name="chapterSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
+    # )
+    # Assignment_Code = ForeignKey(
+    #     'AssignmentInfo',
+    #     related_name="assignmentSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
+    # )
+    content_type = models.ForeignKey(
+        ContentType,
+        related_name='sessionmap_target',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
+    target = GenericForeignKey('content_type', 'object_id')
+    Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.CASCADE)
+
+    def clean(self):
+        super().clean()
+        if (self.Start_Date and self.End_Date):
+            if (self.Start_Date > self.End_Date):
+                raise ValidationError("End date must be greater than start date")

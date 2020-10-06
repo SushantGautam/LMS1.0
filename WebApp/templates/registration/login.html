@@ -35,6 +35,25 @@
 
 <div class="se-pre-con"></div>
 
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="alertModalLabel">Alert Message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Skip</button>
+        <button type="button" id="forcelogout" class="btn btn-warning">Force Logout & Continue</button>
+    </div>
+    </div>
+</div>
+</div>
+
 <form class="form-signin" method="POST" action="" id="FormID">
     {% csrf_token %}
     <a href="/">
@@ -49,7 +68,10 @@
         </h1>
     </a>
 
-    {% include 'WebApp/theme/alerts.html' %}
+    <div class="errors">
+        {% include 'WebApp/theme/alerts.html' %}
+    </div>
+    
 
     <div class="form-inputs">
         <div class="form-label-group">
@@ -68,7 +90,7 @@
             Not Registered Yet? <a href="{% url 'register' %}">&nbsp;Create an Account </a>
         </div>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">
+        <button class="btn btn-lg btn-primary btn-block" id="signIn" type="submit">
             Sign in
         </button>
     </div>
@@ -119,6 +141,59 @@
         $(".se-pre-con").fadeIn("fast");
     });
 
+    // Login Submit
+    $('#signIn').click(function(e) {
+        e.preventDefault();
+        $('#signIn').append(`<span class="spinner-border spinner-border-sm" style="width: 1.5rem; height: 1.5rem;" role="status" aria-hidden="true"></span>`);
+        $('#signIn').attr('disabled', true);
+        $.ajax({
+            type: "POST",
+            url: "{% url 'login' %}",
+            data: {
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+                username: $("#id_username").val(), // < note use of 'this' here
+                password: $("#id_password").val(),
+                forcelogin: ''
+            },
+            success: function(result) {
+                if(result.msg){
+                    $('#alertModal').modal('show');
+                    $('.modal-body').html(`<br>${result.msg}<br><br>`);
+                    $('#signIn').attr('disabled', false);
+                    $('#signIn').find(`.spinner-border`).remove();
+                } else {
+                    location.reload();
+                }
+            },
+            error: function(result) {
+                alert('Error login Try again');
+            }
+        });
+    });
+
+    $('#forcelogout').click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'login' %}",
+            data: {
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+                username: $("#id_username").val(), // < note use of 'this' here
+                password: $("#id_password").val(),
+                forcelogin: '1' 
+            },
+            success: function(result) {
+                location.reload();
+            },
+            error: function(result) {
+                alert('Error login Try again');
+            }
+        });
+    });
+
+    setTimeout(function () {
+        $('#alert-message').fadeOut('slow');
+    }, 3000);
 
 </script>
 

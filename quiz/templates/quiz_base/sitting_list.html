@@ -1,22 +1,47 @@
 {% load static %}
 {% load i18n %}
 
-    
-
-
-
 
 <br>
-<h3>{% trans 'Marking List of Individual Quiz' %} ({{ quiz }}) </h3>
+<h4> <b>  Marking List of Individual Quiz</b>
+    <!-- <a> ({{ quiz }})</a> -->
+    <a href="
+    {% if '/teachers' in request.path %}
+        {% url 'teacher_quiz_detail' pk=quiz.id %} 
+        {% else %}
+        {% url 'quiz_detail' pk=quiz.id %} 
+        {% endif %}
+    ">
+            ({{ quiz }})    
+         </a>
+
+   
+    <a href="{% url 'quiz_marking_csv' quiz.pk %}" target="__blank">
+        <button class="btn btn=sm btn-info pull-right">
+            <i class="fa fa-download" aria-hidden="true"></i> Download Detail Result
+        </button>
+    </a>
+</h4>
 <hr><br>
 {% if sitting_list %}
 
 <table id="MarkingList" class="table table-striped table-bordered bg-white nowrap">
+
+    {% if quiz.has_saqs %}
+        <p style="text-align: right;color: #5A738E; cursor:pointer">
+            <b><a href="{% url 'teacher_quiz_marking_saq' quiz.pk %}">
+                Mark Short Answer Question
+            </a></b>
+        </p>
+    {% endif %}
+
     <thead class="thead-light bg-primary">
 
-        <td>{% trans "User" %}</td>
+        <td>{% trans "Username" %}</td>
+        <td>{% trans "Full Name" %}</td>
         <td>{% trans "Start Datetime" %}</td>
         <td>{% trans "Completed Datetime" %}</td>
+        <td>{% trans "Obtained Score" %}</td>
         <td>{% trans "Score" %}(%)</td>
         <!-- <td></td> -->
         
@@ -47,9 +72,11 @@
                     {% else %}
                     {% url 'quiz_marking_detail' pk=sitting.id %} 
                     {% endif %}
-                " style="font-weight: bold;">{{ sitting.user }}</a></td>
+                " style="font-weight: bold;">{{ sitting.user.username }}</a></td>
+            <td>{{ sitting.user.get_full_name }}</td>
             <td><span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></td>
             <td><span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></td>
+            <td>{{ sitting.get_score_correct }}</td>
             <td>{{ sitting.get_percent_correct }}</td>
            
             <!-- <td>
