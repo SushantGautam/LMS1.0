@@ -229,7 +229,7 @@ urlpatterns += (
     #Quiz Marking
     path('quiz/marking/', views.QuizMarkingList.as_view(),
           name='teacher_quiz_marking'),
-    path('quiz/marking/<int:quiz_id>', views.QuizMarking.as_view(),
+    path('quiz/marking/<int:quiz_id>/', views.QuizMarking.as_view(),
           name='teacher_individual_quiz_marking'),
     path('quiz/marking/detail/<int:pk>/', views.QuizMarkingDetail.as_view(),
          name='teacher_quiz_marking_detail'),

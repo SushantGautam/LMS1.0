@@ -6,7 +6,7 @@
     }
     .custom-table-width{
         max-width: 40%;
-        
+
     }
     .date-width{
         max-width:25%
@@ -18,7 +18,7 @@
         .date-width{
             max-width:30%
         }
-        
+
     }
 </style>
 
@@ -83,7 +83,7 @@
                         <tr>
                             <td style="border: 0;"></td>
                         </tr>
-    
+
                         <!-- Start/End Date from different session -->
                         <!-- {% if assigned_session %}
                             <tr>
@@ -160,7 +160,7 @@
                             {% else %}
                                 <td>{{ object.Register_Agent }}</td>
                             {% endif %}
-                            
+
                         </tr>
 
                         {% if '/students' not in request.path %}
@@ -188,8 +188,8 @@
                             {% endif %}
                         </tr>
                     {% endif %}
-                   
-                    {% for sessions in assigned_session %}
+
+                        {% for sessions in assigned_session %}
                         <tr>
                             <td class="custom-table-width">
                                 {{ sessions }}
@@ -209,7 +209,9 @@
                             <td class="end-date dateconFullMonth date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
                             <td>
                                 {% now "Y-m-d H:i" as todays_datewithtime %}
-                                {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                {% if not sessionmap or not sessionmap.0.Start_Date or not sessionmap.0.End_Date %}
+                                    <span class="badge badge-danger">Inactive</span>
+                                {% elif sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-info">Upcoming</span>
                                 {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-danger">Expired</span>
@@ -233,8 +235,8 @@
                     {% endfor %}
 
                     </table>
-                
-                    
+
+
                 </h5>
             </div>
             <br>
