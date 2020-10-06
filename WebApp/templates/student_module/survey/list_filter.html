@@ -6,7 +6,7 @@
             <div class="card-body">
                 <a href="#" class="btn btn-outline-light dropdown-toggle bg-primary" data-toggle="dropdown">
                    {% if 'active' in request.get_full_path %}Active{%endif%}{% if 'expire' in request.get_full_path %} Expired {%endif%}
-
+                    {% if 'submitted' in request.get_full_path %} Participated {%endif%}
                 </a>
                 <div class="dropdown-menu dropdown-menu-left">
 
@@ -24,6 +24,15 @@
                         active
                         {%endif%} "
                          href="{% url 'surveyFilterCategory_student'%}?category_name={{cat}}&date_filter=expire">Expired</a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item
+                        {% if 'submitted' in request.get_full_path %}
+                        active
+                        {%endif%} "
+                         href="{% url 'surveyFilterCategory_student'%}?category_name={{cat}}&date_filter=submitted">Participated</a>
+
 
 
 
@@ -188,12 +197,18 @@
                                 <blockquote class="blockquote mb-0 card-body">
 
                                     {% if object.id in submittedSurvey %}
-                                    <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
+                                        {% if "date_filter=expire" in request.get_full_path %}
+                                             <i class="fa fa-check fa-5x text-danger" id="participatedSurvey" aria-hidden="true"></i>
+                                        {% else %}
+                                             <i class="fa fa-check fa-5x text-primary" id="participatedSurvey" aria-hidden="true"></i>
+                                        {% endif %}
                                     {% else %}
-                                    <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x text-primary "
+                                        {% if "date_filter=expire" in request.get_full_path %}
+                                             <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x text-danger "id="participatedSurvey"aria-hidden="true"></i>
+                                        {% else %}
+                                            <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x text-primary "id="participatedSurvey"aria-hidden="true"></i>
+                                        {% endif %}
 
-                                       id="participatedSurvey"
-                                       aria-hidden="true"></i>
                                     {% endif %}
                                     <div class="" style="text-decoration: none ;">
                                         <h3 class="survey-title-name">{{ object.Survey_Title|truncatechars:12 }}</h3>

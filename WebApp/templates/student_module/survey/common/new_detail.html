@@ -72,14 +72,16 @@
 
     </div>
     <hr class="btn-primary">
-                   <div class="text-success" style="display: none;text-align: center; " id="survey_already_taken">
+
 
                       {% if datetimeexpired %}
-                          Survey submission date has ended.
+     <div class="text-danger" style="display: none;text-align: center; " id="survey_already_taken">
+                          Survey submission date has ended.</div>
                       {% else %}
-                          You have already taken this survey.
+     <div class="text-success" style="display: none;text-align: center; " id="survey_already_taken">You have already taken this survey.</div>
                       {% endif %}
-                  </div>
+
+
 
 
 
