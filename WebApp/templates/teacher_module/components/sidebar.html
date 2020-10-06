@@ -79,17 +79,25 @@
                     <span>Course List</span>
                 </a>
             </li>
+            <li>
+                <a href="{% url 'teacher_myassignmentinfo_list' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="list"></i>
+                    </span>
+                    <span>Assignment List</span>
+                </a>
+            </li>
         </ul>
         <ul id="quiz">
             <li class="navigation-divider">Quiz</li>
             <li>
-                <a href="">
+                <a href="{% url 'teacher_quiz_list' %}">
                     <span class="nav-link-icon" data-feather="help-circle"></span>
                     <span>Quiz List</span>
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="{% url 'teacher_quiz_exam_list' %}">
                     <span class="nav-link-icon" data-feather="book-open"></span>
                     <span>Quiz Exam</span>
                 </a>
@@ -99,7 +107,7 @@
         <ul id="forum">
             <li class="navigation-divider">Forum</li>
             <li>
-                <a href="">
+                <a href="{% url 'teacher_forum' %}">
                     <span class="nav-link-icon">
                         <i data-feather="home"></i>
                     </span>
@@ -107,7 +115,7 @@
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="{% url 'teacher_user_profile' %}">
                     <span class="nav-link-icon">
                         <i data-feather="info"></i>
                     </span>
@@ -118,7 +126,7 @@
         <ul id="survey">
             <li class="navigation-divider">Survey</li>
             <li>
-                <a href="">
+                <a href="{% url 'question_teachers' %}">
                     <span class="nav-link-icon">
                         <i data-feather="layers"></i>
                     </span>

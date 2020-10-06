@@ -41,7 +41,7 @@
                 <h5> {{ a.Assignment_Topic }} </h5>
                 Chapter - {{ a.Chapter_Code }}
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
+            <div class="col-md-4 col-sm-4 col-xs-4 align-self-center">
                 <span class="assignment_status">
                     {% if a.get_QuestionAndAnswer.0|length > 0 %}
                     {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
@@ -98,7 +98,7 @@
                 <h5> {{ a.Assignment_Topic }} </h5>
                 Chapter - {{ a.Chapter_Code }}
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
+            <div class="col-md-4 col-sm-4 col-xs-4 align-self-center">
                 <span class="assignment_status">
                     {% if a.get_QuestionAndAnswer.0|length > 0 %}
                     {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
@@ -157,7 +157,7 @@
                 <h5> {{ a.Assignment_Topic }} </h5>
                 Chapter - {{ a.Chapter_Code }}
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
+            <div class="col-md-4 col-sm-4 col-xs-4 align-self-center">
                 <span class="assignment_status">
                     {% if a.get_QuestionAndAnswer.0|length > 0 %}
                     {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}

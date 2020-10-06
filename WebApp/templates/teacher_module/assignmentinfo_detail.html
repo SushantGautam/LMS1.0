@@ -277,13 +277,14 @@
     {% endif %}
 </div>
 <hr>
-<div class="py-4">
-    {% for question in questions %}
+
+{% for question in questions %}
+<div class="card p-4" </div>
     <div class="row">
         <div class="col-lg-8 col-sm-6">
             Question:<h5>{{ question.Question_Title }}</h5>
         </div>
-        <div class="col-lg-4 col-sm-6 text-right">
+        <div class="col-lg-4 col-sm-6 text-right align-self-center">
             <button class="btn btn-primary btn-sm mr-3" type="button" data-toggle="collapse"
                 data-target="#answer-collapse-{{ question.id }}" aria-expanded="false" aria-controls="collapseExample">
                 Answers
@@ -458,8 +459,9 @@
             </table>
         </div>
     </div>
-    {% endfor %}
 </div>
+{% endfor %}
+
 
 {% include 'inning/inningmapFormModal.html' %}
 
