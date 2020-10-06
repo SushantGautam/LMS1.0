@@ -70,16 +70,13 @@
                 $('#id_Course_Group_to').append(`
                     <option value="` + response.pk + `" title="` + selectedOption + `" selected>` + selectedOption + `</option>
                 `);
-                SelectBox.add_to_cache("id_Course_Group_to", {
-                    value: String(response.pk),
-                    text: selectedOption,
-                    displayed: 1
-                });
+                SelectBox.add_to_cache("id_Course_Group_to", { value: String(response.pk), text: selectedOption, displayed: 1 });
             },
             error: function () {
                 console.log('Error in posting group create form')
             }
         });
     });
+
 
 </script>

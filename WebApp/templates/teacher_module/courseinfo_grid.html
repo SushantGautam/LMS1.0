@@ -1,18 +1,15 @@
-{% extends "base.html" %}
+{% extends "teacher_module/base.html" %}
 {% load static %}
-
 {% block title %}
 | Courses
 {% endblock %}
-
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
 <li class="breadcrumb-item active" aria-current="page">Course</li>
 {% endblock %}
-
 {% block content %}
-{% include 'course/courseinfo_list.html' %}
-{% endblock content %}
+{% include 'course/courseinfo_grid.html' %}
+{% endblock %}
 
 {% block javascript %}
 <script>

@@ -21,6 +21,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.views import LogoutView, LoginView, PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
@@ -54,7 +55,7 @@ from .forms import CenterInfoForm, CourseInfoForm, ChapterInfoForm, SessionInfoF
     InningManagerForm, DepartmentInfoForm, DepartmentInfoUpdateForm
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
     CourseInfo, ChapterInfo, AssignmentInfo, AssignmentQuestionInfo, AssignAssignmentInfo, AssignAnswerInfo, Events, \
-    InningManager, Notice, NoticeView, DepartmentInfo
+    InningManager, Notice, NoticeView, DepartmentInfo, SessionMapInfo
 
 
 class Changestate(View):
@@ -1396,7 +1397,7 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
-    template_name = "WebApp/chapterinfo_edit.html"
+    template_name = "WebApp/chapterinfo_form.html"
 
     def get_form_kwargs(self):
         """
@@ -4248,3 +4249,65 @@ def DepartmentInfoDeleteView(request, pk):
     return redirect("departmentinfo_list")
 
 # ==========================    End of Department Views =========================================
+
+
+
+from django.contrib.admin.options import get_content_type_for_model
+from django.apps import apps
+
+
+def InningInfoMappingView(request, model_name):
+    inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
+    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+
+    if model_name == "AssignmentInfo":
+        if request.POST['Start_Date'] == '' or request.POST['End_Date'] == '' or \
+                request.POST['Start_Date'] is None or request.POST['End_Date'] is None:
+            return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
+
+    if (request.POST['Start_Date'] and request.POST['End_Date']):
+        if (request.POST['Start_Date'] > request.POST['End_Date']):
+            return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
+    if SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
+                                     content_type=get_content_type_for_model(Obj), object_id=Obj.pk):
+        sessionmap = SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
+                                                   content_type=get_content_type_for_model(Obj), object_id=Obj.pk)
+        sessionmap.update(
+            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
+            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            content_type=ContentType.objects.get_for_model(Obj.__class__),
+            object_id=Obj.id,
+            Session_Code=inninginfoObj
+        )
+    else:
+        sessionmap = SessionMapInfo.objects.create(
+            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
+            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            content_type=ContentType.objects.get_for_model(Obj.__class__),
+            object_id=Obj.id,
+            Session_Code=inninginfoObj
+        )
+        sessionmap.save()
+    return JsonResponse({'message': 'Success '}, status=200)
+
+
+def ChapterInningInfoMappingView(request):
+    if request.method == "POST":
+        requestStatus = InningInfoMappingView(request, 'ChapterInfo')
+        if requestStatus.status_code == 200:
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            message = json.loads(requestStatus.content)
+            return JsonResponse(message, status=requestStatus.status_code)
+    return HttpResponse('GET Request Not Allowed', status=405)
+
+
+def AssignmentInningInfoMappingView(request):
+    if request.method == "POST":
+        requestStatus = InningInfoMappingView(request, 'AssignmentInfo')
+        if requestStatus.status_code == 200:
+            return JsonResponse({'message': 'success'}, status=200)
+        else:
+            message = json.loads(requestStatus.content)
+            return JsonResponse(message, status=requestStatus.status_code)
+    return HttpResponse('GET Request Not Allowed', status=405)
