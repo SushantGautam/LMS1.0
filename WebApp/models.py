@@ -177,7 +177,6 @@ class MemberInfo(AbstractUser):
         if courseFromExpiredSession:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
-                                                         End_Date__lte=datetime_now,
                                                          Course_Group__in=course_groups)
         else:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
