@@ -377,11 +377,14 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
     if created:
         if instance.parent:
             verb = "replied to your comment in"
+            description = "{} replied to your comment in {}".format(request.user, instance.content_object)
         else:
             verb = "commented on"
+            description = "{} commented on {}".format(request.user, instance.content_object)
     else:
         if request.POST.get('content'):
             verb = "updated comment"
+            description = "{} updated comment in {}".format(request.user, instance.content_object)
         else:
             return
     action_object = instance.content_object
@@ -399,7 +402,7 @@ def CommentCreate_handler(sender, instance, created, **kwargs):
                 sender=request.user,
                 recipient=recipients,
                 verb=verb,
-                description='',
+                description=description,
                 action_object=action_object,
             )
     else:
@@ -435,13 +438,13 @@ def CommentDelete_handler(sender, instance, **kwargs):
     action_object = instance.content_object
 
     if action_object.__class__ == ChapterInfo:
-        if request.user != instance.user.pk:
+        if request.user != instance.user:
             recipients = instance.user
             notify.send(
                 sender=request.user,
                 recipient=recipients,
                 verb=verb,
-                description='',
+                description='{} deleted your reply to the comment in {}'.format(request.user, action_object),
                 action_object=action_object,
             )
 
