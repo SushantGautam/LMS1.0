@@ -171,21 +171,30 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
-    def get_teacher_courses(self):
+    def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(Teacher_Code=self.pk)
-        assigned_session = InningInfo.objects.filter(Use_Flag=True,
-                                                    Start_Date__lte=datetime_now,
-                                                    End_Date__gte=datetime_now,
-                                                    Course_Group__in=course_groups)
+        if courseFromExpiredSession:
+            assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                         Start_Date__lte=datetime_now,
+                                                         End_Date__lte=datetime_now,
+                                                         Course_Group__in=course_groups)
+        else:
+            assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                         Start_Date__lte=datetime_now,
+                                                         End_Date__gte=datetime_now,
+                                                         Course_Group__in=course_groups)
         active_course_groups = []
-        course_groups = set(course_groups.values_list('pk',flat=True))
+        course_groups = set(course_groups.values_list('pk', flat=True))
         for session in assigned_session:
-            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))    
+            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))
         active_course_groups = set(active_course_groups)
         final_course_groups = active_course_groups.intersection(course_groups)
         courses_pk = InningGroup.objects.filter(pk__in=final_course_groups).values_list('Course_Code', flat=True)
-        courses =  CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
+        if inactiveCourse:
+            courses = CourseInfo.objects.filter(pk__in=courses_pk)
+        else:
+            courses = CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
 
         # courses = []
         # session_list = []
