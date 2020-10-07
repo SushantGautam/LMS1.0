@@ -84,7 +84,7 @@ class DepartmentInfoForm(forms.ModelForm):
 
 
 class MemberInfoForm(forms.ModelForm):
-    Use_Flag = forms.BooleanField(initial=True, required=False)
+    Use_Flag = forms.BooleanField(initial=True, required=False, label='Status')
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
         years=range(1985, datetime.date.today().year + 10)))
     password = forms.CharField(initial='00000')
