@@ -54,7 +54,7 @@
         {% else %}
         {% if object.already_submitted %}
         {#                  Already Submitted#}
-        <a href="{% url 'quiz_question' quiz_name=object.url %}">Already Submitted</a>
+        Already Submitted
         {% else %}
         <a href="{% url 'quiz_question' quiz_name=object.url %}">Take Quiz</a>
         {% endif %}
