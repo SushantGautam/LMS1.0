@@ -78,7 +78,7 @@
                     {% for chapter in chapters %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td><a href="{{ course.get_absolute_url }}">{{ chapter.Chapter_Name }}</a></td>
+                            <td><a href="{{ chapter.get_absolute_url }}">{{ chapter.Chapter_Name }}</a></td>
                             <!-- Chapter has content or not -->
                             <td style="text-align:center">
                                 {% if chapter.has_content %}
