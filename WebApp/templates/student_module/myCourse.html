@@ -1,36 +1,18 @@
-{% extends "teacher_module/base.html" %}
+{% extends "student_module/base.html" %}
 {% load static %}
 {% block title %}
-| Course
+Course
 {% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_home' %}">Home</a></li>
 <li class="breadcrumb-item active" aria-current="page">My Courses</li>
 {% endblock %}
 {% block content %}
 <div class="page-header">
     <div class="page-title">
-        <h2>{% if '/active' in request.path %}
+        <h2>
             List of My Courses
-            {% else %}
-            List of Inactive Courses
-            {% endif %}
         </h2>
-        <div>
-            {% if '/active' in request.path %}
-            <a href="{% url 'teacher_mycourses_list_inactive' %}">
-                <span class="text-right " style="float:right;color:#5A738E">
-                    <b>View <span> Inactive </span>courses</b>
-                </span>
-            </a>
-            {% else %}
-            <a href="{% url 'teacher_mycourses_list_active' %}">
-                <span class="text-right " style="float:right;color:#5A738E">
-                    View <span> <b>Active</b> </span>courses
-                </span>
-            </a>
-            {% endif %}
-        </div>
     </div>
 </div>
 <div class="row">
@@ -38,8 +20,8 @@
         <form method="get" action="" class="query_form">
             <div class="row">
                 <div class="col-md-4 col-sm-6">
-                    <input type="text" name="teacher_mycoursequery" placeholder="Search Course"
-                        value="{{ request.GET.query }}" class="form-control">
+                    <input type="text" name="studentmycoursequery" placeholder="Search Course"
+                        value="{{ request.GET.studentmycoursequery }}" class="form-control">
                 </div>
                 <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
             </div>
@@ -53,8 +35,10 @@
                     id="paginate_courses">
                     <option value="6">6</option>
                     <option value="12">12</option>
+                    <option value="18">18</option>
+                    <option value="24">24</option>
                     <option value="30">30</option>
-                    <option value="60">60</option>
+                    <option value="36">36</option>
                 </select>
             </label>
             <span> <b>Entries</b> </span>
@@ -65,7 +49,7 @@
     {% for courses in response %}
     <div class="col-lg-3 col-sm-6 col-xs-12">
         <div class="card">
-            <a href="{{ courses.teacher_get_absolute_url }}">
+            <a href="{{ courses.student_get_absolute_url }}">
                 <img src="{% if courses.Course_Cover_File %}
             {{ courses.Course_Cover_File.url }}
         {% else %}
@@ -73,7 +57,8 @@
         {% endif %}" class="card-img-top" alt="image" width="100%" height="180px" style="object-fit: cover">
             </a>
             <div class="card-body p-3">
-                <h5><a href="{{ courses.teacher_get_absolute_url }}" class="text-primary">{{ courses.Course_Name }}</a>
+                <h5><a href="{{ courses.student_get_absolute_url }}"
+                        class="text-primary">{{ courses|truncatechars:45 }}</a>
                 </h5>
                 {% if courses.get_teachers_of_this_course %}
                 <p>
@@ -83,7 +68,6 @@
                     {% endfor %}
                     {% if courses.get_teachers_of_this_course|length > 4 %}
                     ....
-
                     {% endif %}
                 </p>
                 {% else %}
@@ -117,15 +101,14 @@
     </div>
     {% endfor %}
 </div>
-<div class="col-12 text-center">
+<div class="col--12 text-center">
     {% if response.has_other_pages %}
     <div class=" text-center">
         <ul class="pagination">
             {% if response.has_previous %}
             <li>
                 <a
-                    href="?page=
-                        {{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
+                    href="?page={{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
             </li>
             {% else %}
             <li class="disabled"><span>&laquo;</span></li>
@@ -143,8 +126,7 @@
             {% if response.has_next %}
             <li>
                 <a
-                    href="?page=
-                        {{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
+                    href="?page={{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
             </li>
             {% else %}
             <li class="disabled"><span>&raquo;</span></li>
@@ -164,7 +146,6 @@
                     <td>Teachers</td>
                     <td>Course Provider</td>
                     <td>Course Level</td>
-                    <td>Action</td>
                 </tr>
             </thead>
             {% for object in object_list %}
@@ -175,12 +156,14 @@
                     {% else %}
                         {{ object.get_absolute_url }}
                     {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong></td>
+
                 <td style="vertical-align: middle;"> {% if object.get_teachers_of_this_course %}
                     <p style="height: 30px; overflow:auto">
-
+                        &nbsp;
                         {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                         {{ eachTeacher.getFullName }}
                         {% endfor%}
+
                     </p>
                     {% else %}
                     <p style="height: 30px; overflow:auto"> No Teacher </p>
@@ -191,14 +174,96 @@
                 <td style="vertical-align: middle;">
                     {{object.Course_Level}}
                 </td>
-
-                <td class="text-center"><a class="btn btn-sm btn-info"
-                        href="/teachers{{ object.get_update_url }}">Edit</a>
             </tr>
             {% endfor %}
         </table>
     </div>
 </div>
+<!-- <div class="col-md-12" id="cardView">
+        {% for courses in response %}
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
+            <div class="gridContentsList">
+                <div class="card-header">
+                    <a href="{{ courses.student_get_absolute_url }}">
+                        <img id="courseListImage" class="card-img-top" src="
+                            {% if courses.Course_Cover_File %}
+                                /media/{{ courses.Course_Cover_File }}
+                            {% else %}
+                                {% static 'images/course.jpg' %}
+                            {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover">
+                    </a>
+                </div>
+                <div class="card-body" id="cardInfo">
+                    <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; "><strong><a
+                                href="{{ courses.student_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
+                    </h2>
+
+
+
+                    {% if courses.get_teachers_of_this_course %}
+                    <p style="height:45px ; padding: 10px; overflow:auto">
+                        Teacher(s): &nbsp;
+                        {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
+
+
+                        {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
+
+                        {% endfor %}
+                        {% if courses.get_teachers_of_this_course|length > 4 %}
+                        ....
+
+                        {% endif%}
+
+                    </p>
+                    {% else %}
+                    <p style="height:30px ; padding: 10px; ">
+                        No Teacher Assigned
+
+
+                    </p>
+
+
+
+                    {% endif %}
+
+
+
+                    <hr>
+                    <h5 class="courseDescription" style="padding-bottom: 10px;">
+                        {% if courses.Course_Description %}
+                        <p style="
+            padding-right: 10px;
+            line-height: 1.5em;
+            height: 3em;
+            overflow-wrap:break-word;
+            overflow: hidden;
+            white-space: normal;
+            text-overflow: ellipsis;">
+                            {{ courses.Course_Description|truncatechars:70 }}
+                        </p>
+                        {% else %}
+                        <p style="
+                        padding-right: 10px;
+                        line-height: 1.5em;
+                        height: 3em;
+                        overflow-wrap:break-word;
+                        overflow: hidden;
+                        white-space: normal;
+                        text-overflow: ellipsis;">
+                            No Description
+                        </p>
+                        {% endif %}
+                    </h5>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div> -->
+
+
+
 {% endblock %}
 
 {% block javascript %}
