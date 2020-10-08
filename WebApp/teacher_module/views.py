@@ -16,8 +16,11 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.db.models import Count
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -29,6 +32,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView, DeleteView
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
+from formtools.wizard.views import SessionWizardView
 
 from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls, InningInfoAuthMxnCls, InningInfoAuth, ChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, SurveyInfoAuthMxnCls, GroupMappingAuthMxnCls, MemberAuth, InningGroupAuthMxnCls, \
@@ -45,8 +49,10 @@ from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
+from quiz.forms import QuizForm1, QuizForm2, QuizForm3
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, \
     QuizBasicInfoForm
+from quiz.models import Progress
 from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question, Answer
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
@@ -54,16 +60,6 @@ from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, Su
 from survey.views import AjaxableResponseMixin
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
-
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
-from formtools.wizard.views import SessionWizardView
-from quiz.forms import QuizForm1, QuizForm2, QuizForm3
-
-from quiz.models import Progress
-
-from django.http import JsonResponse
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
 
@@ -87,12 +83,12 @@ def start(request):
         #     for z in y:
         #         if z not in sessions:
         #             sessions.append(z)
-        
+
         # here assignment of only active chapters can be filtered later
         activeassignments = AssignmentInfo.objects.filter(Course_Code__in=mycourse, Use_Flag=True,
-                                                               Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
+                                                          Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
         notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
-                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+            Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
         if notices.exists():
             notice = notices[0]
             if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -187,22 +183,6 @@ class MyCourseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
-        #                                      Center_Code=self.request.user.Center_Code)
-        # context['courses'] = courses
-        # sessions = []
-        # if context['courses']:
-        #     for course in context['courses']:
-        #         # Filtering out only active sessions
-        #         session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
-        #         sessions += session
-        # context['sessions'] = sessions
-        #
-        # filtered_qs = MyCourseFilter(
-        #     self.request.GET,
-        #     queryset=courses
-        # ).qs
-        # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
         courses = self.object_list
         paginator = Paginator(courses, self.paginate_by)
         page = self.request.GET.get('page')
@@ -217,10 +197,15 @@ class MyCourseListView(ListView):
         return context
 
     def get_queryset(self):
-        qsearch = self.request.user.get_teacher_courses()['courses']
+        teacheractivecourses = self.request.user.get_teacher_courses()['courses']
         if '/inactive/' in self.request.path:
-            qsearch = [x for x in qsearch if x.Use_Flag is False]
+            qsearch = self.request.user.get_teacher_courses(courseFromExpiredSession=True, inactiveCourse=True)[
+                'courses']
+            for x in teacheractivecourses:
+                if x in qsearch:
+                    qsearch = qsearch.exclude(pk=x.pk)
         if '/active/' in self.request.path:
+            qsearch = teacheractivecourses
             qsearch = [x for x in qsearch if x.Use_Flag is True]
         courses = []
         query = self.request.GET.get('teacher_mycoursequery')
@@ -2591,7 +2576,7 @@ def QuizMarkingCSV(request, quiz_pk):
         new_row['TFQ Score'] = totaltfq_score
         new_row['SAQ Score'] = totalsaq_score
         new_row['Total Score'] = totalmcq_score + totaltfq_score + totalsaq_score
-        if new_row['Total Score']: 
+        if new_row['Total Score']:
             new_row['Percentage'] = (new_row['Total Score'] / total_score) * 100
         else:
             new_row['Percentage'] = 0
