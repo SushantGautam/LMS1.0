@@ -4045,24 +4045,43 @@ class TeacherIndividualReport(TemplateView):
 
         for chapter in chapters:
             quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
+            assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
             chapter.quiz_count = quiz.count()
+            progressc = dict()
+            quizc = dict()
+            assignmentc = dict()
 
             for session in assigned_sessions:
+                progressc[session.id] = 0
+                quizc[session.id] = 0
+                assignmentc[session.id] = 0
                 students = session.Groups.Students.all()
                 dictn = {chapter.id:[0,0]}
                 for student in students:
-                    print(student)
+                    p = get_study_time(course.id, chapter, student)['progress']
+                    if p == 'Complete':
+                        progressc[session.id] += 1
+                    if quiz:
+                        s = Sitting.objects.filter(quiz__in=quiz,user=student,complete=True).count()
+                        if s == quiz.count():
+                            quizc[session.id] += 1
+                    if assignments:
+                        a = True
+                        for assignment in assignments:
+                            if not assignment.get_student_assignment_status(student):
+                                a = False
+                                break
+                        if a:
+                            assignmentc[session.id] += 1
 
-                
-                quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
                 # session[str(chapter.pk) +'quiz'] = 0
                 # session.chapters = 0
                 # if quiz:
                 #     session[str(chapter.pk) +'quiz']
 
-                assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
-
-            print(students)
+            chapter.progressc = progressc
+            chapter.quizc = quizc
+            chapter.assignmentc = assignmentc
 
         context['teacher'] = teacher
         context['course'] = course

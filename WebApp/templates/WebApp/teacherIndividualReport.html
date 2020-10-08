@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load model_template_relation %}
+{% load define_action %}
 
 {% block stylesheets %}
     <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -89,9 +90,12 @@
                             <td>{{ chapter.quiz_count }}</td>
                             <td>{{ chapter.assignment_count }}</td>
                             {% for session in sessions %}
-                                <td>{{ session.student_count }}</td>
-                                <td>{{ session }}</td>
-                                <td>{{ session }}</td>
+                                <td {% if session.student_count == chapter.progressc|get_item:session.id %}
+                                style="background:#b3e6cc"{% endif %}>{{ chapter.progressc|get_item:session.id }}</td>
+                                <td {% if session.student_count == chapter.quizc|get_item:session.id %}
+                                style="background:#b3e6cc"{% endif %}>{{ chapter.quizc|get_item:session.id }}</td>
+                                <td {% if session.student_count == chapter.assignmentc|get_item:session.id %}
+                                style="background:#b3e6cc"{% endif %}>{{ chapter.assignmentc|get_item:session.id }}</td>
                             {% endfor %}
                         </tr>
                     {% endfor %}
