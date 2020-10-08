@@ -4062,7 +4062,7 @@ class TeacherIndividualReport(TemplateView):
                     if p == 'Complete':
                         progressc[session.id] += 1
                     if quiz:
-                        s = Sitting.objects.filter(quiz__in=quiz,user=student,complete=True).count()
+                        s = Sitting.objects.filter(quiz__in=quiz,user=student,complete=True).distinct('quiz').count()
                         if s == quiz.count():
                             quizc[session.id] += 1
                     if assignments:
