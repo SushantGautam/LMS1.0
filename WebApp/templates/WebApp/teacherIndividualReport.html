@@ -89,8 +89,10 @@
                                 {% endif %}
                             </td>
                             <td>{{ chapter.display_mustreadtime }}</td>
-                            <td>{{ chapter.quiz_count }}</td>
-                            <td>{{ chapter.assignment_count }}</td>
+                            <td {% if chapter.quiz_count == 0 %}
+                            style="background:#cccccc"{% endif %}>{{ chapter.quiz_count }}</td>
+                            <td {% if chapter.assignment_count == 0 %}
+                            style="background:#cccccc"{% endif %}>{{ chapter.assignment_count }}</td>
                             {% for session in sessions %}
                                 <td {% if session.student_count == chapter.progressc|get_item:session.id %}
                                 style="background:#b3e6cc"{% endif %}>{{ chapter.progressc|get_item:session.id }}</td>
