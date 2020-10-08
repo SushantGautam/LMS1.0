@@ -177,12 +177,12 @@ class MemberInfo(AbstractUser):
         if courseFromExpiredSession:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
-                                                         Course_Group__in=course_groups)
+                                                         Course_Group__in=course_groups).distinct()
         else:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
                                                          End_Date__gte=datetime_now,
-                                                         Course_Group__in=course_groups)
+                                                         Course_Group__in=course_groups).distinct()
         active_course_groups = []
         course_groups = set(course_groups.values_list('pk', flat=True))
         for session in assigned_session:

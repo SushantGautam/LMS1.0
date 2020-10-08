@@ -4041,7 +4041,7 @@ class TeacherIndividualReport(TemplateView):
 
         chapters = ChapterInfo.objects.filter(Course_Code=course)
         teacher_course_session = teacher.get_teacher_courses()
-        assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups)
+        assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups).distinct()
 
         for chapter in chapters:
             quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
@@ -4088,7 +4088,6 @@ class TeacherIndividualReport(TemplateView):
         context['chapters'] = chapters
         context['course_list'] = teacher_course_session['courses']
         context['sessions'] = assigned_sessions
-        
         return context
 
 

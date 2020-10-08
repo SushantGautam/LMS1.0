@@ -37,15 +37,21 @@
             <div class="form-inline">
                 <div class="h5 form-group"><b>Course: </b>
 
-                <select class="form-group form-control">
-                    {% for c in course_list %}
-                        {% if c == course %}
-                            <option value="{{ c.id }}" selected>{{ c }}</option>
-                        {% else %}
-                            <option value="{{ c.id }}">{{ c }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+                {% if course_list|length == 1 %}
+                    {{ course }}
+                {% else %}
+                    <div class="dropdown form-group">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {{ course }}<span class="caret"></span></button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        {% for c in course_list %}
+                            {% if not c == course %}
+                                <li><a href="{% url 'teacher_individual_report' teacher.pk c.pk %}">{{ c }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
             
             
