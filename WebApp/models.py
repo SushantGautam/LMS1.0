@@ -171,21 +171,29 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
-    def get_teacher_courses(self):
+    def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk)
-        assigned_session = InningInfo.objects.filter(Use_Flag=True,
-                                                    Start_Date__lte=datetime_now,
-                                                    End_Date__gte=datetime_now,
-                                                    Course_Group__in=course_groups)
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True)
+        if courseFromExpiredSession:
+            assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                         Start_Date__lte=datetime_now,
+                                                         Course_Group__in=course_groups)
+        else:
+            assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                         Start_Date__lte=datetime_now,
+                                                         End_Date__gte=datetime_now,
+                                                         Course_Group__in=course_groups)
         active_course_groups = []
-        course_groups = set(course_groups.values_list('pk',flat=True))
+        course_groups = set(course_groups.values_list('pk', flat=True))
         for session in assigned_session:
-            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))    
+            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))
         active_course_groups = set(active_course_groups)
         final_course_groups = active_course_groups.intersection(course_groups)
         courses_pk = InningGroup.objects.filter(pk__in=final_course_groups).values_list('Course_Code', flat=True)
-        courses =  CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
+        if inactiveCourse:
+            courses = CourseInfo.objects.filter(pk__in=courses_pk)
+        else:
+            courses = CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
 
         # courses = []
         # session_list = []
@@ -393,6 +401,24 @@ class ChapterInfo(models.Model):
         return str(int(self.mustreadtime / 3600)) + ':' + str(int(self.mustreadtime % 3600 / 60)) + ':' + str(
             int(self.mustreadtime % 60)) if self.mustreadtime is not None else None
 
+    def display_mustreadtime(self):
+        if self.mustreadtime:
+            seconds = self.mustreadtime
+            hour = seconds // 3600
+            seconds %= 3600
+            minutes = seconds // 60
+            seconds %= 60
+            final = ''
+            if hour:
+                final = str(hour) + " hr "
+            if minutes:
+                final += str(minutes) + " min "
+            if seconds:
+                final += str(seconds) + " sec "
+            return final
+        else:
+            return '-'
+
     def __str__(self):
         return self.Chapter_Name
 
@@ -415,8 +441,13 @@ class ChapterInfo(models.Model):
     
     def has_content(self):
         file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
-
         return os.path.exists(file_path)
+
+    # def quiz_count(self):
+    #     return Quiz.objects.filter(chapter_code=self, draft=False).count()
+
+    def assignment_count(self):
+        return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
@@ -845,6 +876,9 @@ class InningInfo(models.Model):
             return True
         else:
             return False
+
+    def student_count(self):
+        return self.Groups.Students.all().count()
 
     def __str__(self):
         return self.Inning_Name.Session_Name
