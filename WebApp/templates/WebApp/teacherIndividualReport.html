@@ -67,9 +67,11 @@
                         {% endfor %}
                     </tr>
                     <tr>
-                        <th>Chapter Complete</th>
-                        <th>Quiz complete</th>
-                        <th>Assignment complete</th>                            
+                        {% for session in sessions %}
+                            <th>Chapter Complete</th>
+                            <th>Quiz complete</th>
+                            <th>Assignment complete</th> 
+                        {% endfor %}                           
                     </tr>
                     </thead>
                     <tbody>
