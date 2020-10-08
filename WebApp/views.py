@@ -30,7 +30,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q, Sum
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
@@ -4032,9 +4032,44 @@ class TeacherIndividualReport(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
-            'courses']
-        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        teacher = get_object_or_404(MemberInfo, Is_Teacher=True,
+                                Center_Code=self.request.user.Center_Code, pk=self.kwargs.get('teacherpk'))
+        course = get_object_or_404(CourseInfo, Use_Flag=True, pk=self.kwargs.get('coursepk'))
+        course_groups = InningGroup.objects.filter(Teacher_Code=teacher, Course_Code=course, Use_Flag=True)
+        if not course_groups:
+            return HttpResponseNotFound("Teacher Course data doesn't match")
+
+        chapters = ChapterInfo.objects.filter(Course_Code=course)
+        teacher_course_session = teacher.get_teacher_courses()
+        assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups)
+
+        for chapter in chapters:
+            quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
+            chapter.quiz_count = quiz.count()
+
+            for session in assigned_sessions:
+                students = session.Groups.Students.all()
+                dictn = {chapter.id:[0,0]}
+                for student in students:
+                    print(student)
+
+                
+                quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
+                # session[str(chapter.pk) +'quiz'] = 0
+                # session.chapters = 0
+                # if quiz:
+                #     session[str(chapter.pk) +'quiz']
+
+                assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
+
+            print(students)
+
+        context['teacher'] = teacher
+        context['course'] = course
+        context['chapters'] = chapters
+        context['course_list'] = teacher_course_session['courses']
+        context['sessions'] = assigned_sessions
+        
         return context
 
 

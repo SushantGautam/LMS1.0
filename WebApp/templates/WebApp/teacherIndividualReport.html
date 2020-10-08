@@ -21,16 +21,33 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_report' %}"> Report </a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_report' %}">Teacher Report</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ user.username }}</li>
 {% endblock %}
 {% block content %}
     <div class="inningInfoListClass">
         <hr class="header_hr">
-        <h2 class="tableHeader">Teacher Report of {{ user }}</h2>
+        <h2 class="tableHeader">Teacher Report of {{ teacher }}</h2>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <hr class="header_hr">
+            <div class="h5"><b>Teacher Name:</b> {{ teacher.get_full_name }}</div>
+
+            <div class="form-inline">
+                <div class="h5 form-group"><b>Course: </b>
+
+                <select class="form-group form-control">
+                    {% for c in course_list %}
+                        {% if c == course %}
+                            <option value="{{ c.id }}" selected>{{ c }}</option>
+                        {% else %}
+                            <option value="{{ c.id }}">{{ c }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            
+            
             <div class="table-responsive" id="tableView">
 
                 <br>
@@ -39,47 +56,43 @@
                     <thead class="thead-light bg-primary">
                     <tr class="tableTitleRow">
                         <th rowspan="2">S.No</th>
-                        <th rowspan="2">Course Name</th>
-                        <th colspan="{{ max_chapter_count }}">Chapter</th>
-                        <th rowspan="2">Chapter Contents</th>
-                        <th rowspan="2">Total Chapter</th>
+                        <th rowspan="2">Chapter Name</th>
+                        <th rowspan="2">Content</th>
+                        <th rowspan="2">ReadTime</th>
+                        <th rowspan="2">Quiz</th>
+                        <th rowspan="2">Assignment</th>
+                        {% for session in sessions %}
+                            <th colspan="3">{{ session }} (Total students={{ session.student_count }})</th>
+                        {% endfor %}
                     </tr>
                     <tr>
-                        {% with ''|center:max_chapter_count as range %}
-                            {% for _ in range %}
-                                <th>{{ forloop.counter }}</th>
-                            {% endfor %}
-                        {% endwith %}
+                        <th>Chapter Complete</th>
+                        <th>Quiz complete</th>
+                        <th>Assignment complete</th>                            
                     </tr>
                     </thead>
                     <tbody>
-                    {% for course in course_list %}
+                    {% for chapter in chapters %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td><a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
+                            <td><a href="{{ course.get_absolute_url }}">{{ chapter.Chapter_Name }}</a></td>
                             <!-- Chapter has content or not -->
-                            {% for chapter in course.chapterinfos.all %}
-                                <td style="text-align:center">
-                                    {% if chapter.has_content %}
-                                        <span style="color: green;text-align: center;"
-                                              class="chaptertd hasContent">✔</span>
-                                    {% else %}
-                                        <span style="color: darkred;" class="chaptertd">❌</span>
-                                    {% endif %}
-                                </td>
+                            <td style="text-align:center">
+                                {% if chapter.has_content %}
+                                    <span style="color: green;text-align: center;"
+                                            class="chaptertd hasContent">✔</span>
+                                {% else %}
+                                    <span style="color: darkred;" class="chaptertd">❌</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ chapter.display_mustreadtime }}</td>
+                            <td>{{ chapter.quiz_count }}</td>
+                            <td>{{ chapter.assignment_count }}</td>
+                            {% for session in sessions %}
+                                <td>{{ session.student_count }}</td>
+                                <td>{{ session }}</td>
+                                <td>{{ session }}</td>
                             {% endfor %}
-                            {% if course.chapterinfos.count < max_chapter_count %}
-                                {% with  max_chapter_count|subtract:course.chapterinfos.count as count %}
-                                    {% with ''|center:count as range %}
-                                        {% for _ in range %}
-                                            <td class="nochapter"> -</td>
-                                        {% endfor %}
-                                    {% endwith %}
-                                {% endwith %}
-                            {% endif %}
-
-                            <td class="chaptercount totalhasContent"></td>
-                            <td class="chaptercount totalChapters"></td>
                         </tr>
                     {% endfor %}
                     </tbody>
