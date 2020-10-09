@@ -174,7 +174,7 @@ class MemberInfo(AbstractUser):
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True).distinct()
-        all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True))
+        all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
         if courseFromExpiredSession:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
