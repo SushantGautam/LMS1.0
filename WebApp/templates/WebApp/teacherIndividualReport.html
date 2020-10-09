@@ -69,11 +69,13 @@
                         <th rowspan="2">Quiz</th>
                         <th rowspan="2">Assignment</th>
                         {% for session in sessions %}
-                            <th colspan="3">{{ session }} (Total students={{ session.student_count }})</th>
+                            <th colspan="5">{{ session }} (Total students={{ session.student_count }})</th>
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for session in sessions %}
+                            <th>Start Date</th>
+                            <th>End Date</th>
                             <th>Chapter Complete</th>
                             <th>Quiz complete</th>
                             <th>Assignment complete</th> 
@@ -100,6 +102,8 @@
                             <td {% if chapter.assignment_count == 0 %}
                             style="background:#cccccc"{% endif %}>{{ chapter.assignment_count }}</td>
                             {% for session in sessions %}
+                                <td><span class="dateconFullMonth">{{ chapter.datest|get_item:session.id|date:"d M, Y h:i A" }}</span><br></td>
+                                <td><span class="dateconFullMonth">{{ chapter.datend|get_item:session.id|date:"d M, Y h:i A" }}</span></td>
                                 <td {% if session.student_count == chapter.progressc|get_item:session.id %}
                                 style="background:#b3e6cc"{% endif %}>{{ chapter.progressc|get_item:session.id }}</td>
                                 <td {% if session.student_count == chapter.quizc|get_item:session.id %}

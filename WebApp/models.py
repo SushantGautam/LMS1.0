@@ -173,7 +173,8 @@ class MemberInfo(AbstractUser):
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True)
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True).distinct()
+        all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
         if courseFromExpiredSession:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
@@ -183,30 +184,15 @@ class MemberInfo(AbstractUser):
                                                          Start_Date__lte=datetime_now,
                                                          End_Date__gte=datetime_now,
                                                          Course_Group__in=course_groups).distinct()
-        active_course_groups = []
+                                                         
         course_groups = set(course_groups.values_list('pk', flat=True))
-        for session in assigned_session:
-            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))
-        active_course_groups = set(active_course_groups)
-        final_course_groups = active_course_groups.intersection(course_groups)
-        courses_pk = InningGroup.objects.filter(pk__in=final_course_groups).values_list('Course_Code', flat=True)
+        active_course_group = set(assigned_session.values_list('Course_Group', flat=True).distinct())
+        active_course_group = course_groups.intersection(active_course_group)
+        active_course_pk = InningGroup.objects.filter(pk__in=active_course_group).values_list('Course_Code', flat=True)
+        courses = CourseInfo.objects.filter(pk__in=active_course_pk).distinct()
         if inactiveCourse:
-            courses = CourseInfo.objects.filter(pk__in=courses_pk)
-        else:
-            courses = CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
+            courses = all_courses.exclude(pk__in=courses)
 
-        # courses = []
-        # session_list = []
-        # ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
-        # for i in ig:
-        #     inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
-        #                                             Course_Group__pk=i.pk, Use_Flag=True,
-        #                                             End_Date__gt=datetime.now()).distinct()
-        #     if inning_info.exists():
-        #         courses.append(i.Course_Code)
-        #         session_list.append(inning_info)
-        # # Remove duplicate courses
-        # courses = list(set(courses))
         return {'courses': courses, 'session': assigned_session}
 
     @property
