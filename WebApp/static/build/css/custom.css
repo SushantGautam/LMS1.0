@@ -2668,3 +2668,7 @@ a.badge-dark:focus {
     width: 400px;
     overflow: auto;
 }
+
+.selector .selector-chosen input {
+    width: 210px !important;
+}
