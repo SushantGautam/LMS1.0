@@ -30,7 +30,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q, Sum
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
@@ -4032,9 +4032,73 @@ class TeacherIndividualReport(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
-            'courses']
-        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        teacher = get_object_or_404(MemberInfo, Is_Teacher=True,
+                                Center_Code=self.request.user.Center_Code, pk=self.kwargs.get('teacherpk'))
+        course = get_object_or_404(CourseInfo, Use_Flag=True, pk=self.kwargs.get('coursepk'))
+        course_groups = InningGroup.objects.filter(Teacher_Code=teacher, Course_Code=course, Use_Flag=True)
+        if not course_groups:
+            return HttpResponseNotFound("Teacher Course data doesn't match")
+
+        chapters = ChapterInfo.objects.filter(Course_Code=course)
+        teacher_course_session = teacher.get_teacher_courses()
+        assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups).distinct()
+
+        for chapter in chapters:
+            quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
+            assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
+            chapter.quiz_count = quiz.count()
+            datest = dict()
+            datend = dict()
+            progressc = dict()
+            quizc = dict()
+            assignmentc = dict()
+
+            for session in assigned_sessions:
+                datest[session.id] = ''
+                datend[session.id] = ''
+                progressc[session.id] = 0
+                quizc[session.id] = 0
+                assignmentc[session.id] = 0
+
+                if chapter.chapter_sessionmaps.filter(Session_Code=session).exists():
+                    d = chapter.chapter_sessionmaps.get(Session_Code=session)
+                    datest[session.id] = d.Start_Date
+                    datend[session.id] = d.End_Date
+
+                students = session.Groups.Students.all()
+                for student in students:
+                    p = get_study_time(course.id, chapter, student)['progress']
+                    if p == 'Complete':
+                        progressc[session.id] += 1
+                    if quiz:
+                        s = Sitting.objects.filter(quiz__in=quiz,user=student,complete=True).distinct('quiz').count()
+                        if s == quiz.count():
+                            quizc[session.id] += 1
+                    if assignments:
+                        a = True
+                        for assignment in assignments:
+                            if not assignment.get_student_assignment_status(student):
+                                a = False
+                                break
+                        if a:
+                            assignmentc[session.id] += 1
+
+                # session[str(chapter.pk) +'quiz'] = 0
+                # session.chapters = 0
+                # if quiz:
+                #     session[str(chapter.pk) +'quiz']
+
+            chapter.datest = datest
+            chapter.datend = datend
+            chapter.progressc = progressc
+            chapter.quizc = quizc
+            chapter.assignmentc = assignmentc
+
+        context['teacher'] = teacher
+        context['course'] = course
+        context['chapters'] = chapters
+        context['course_list'] = teacher_course_session['courses']
+        context['sessions'] = assigned_sessions
         return context
 
 

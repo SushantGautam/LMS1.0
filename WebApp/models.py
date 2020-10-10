@@ -173,40 +173,26 @@ class MemberInfo(AbstractUser):
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk)
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True).distinct()
+        all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
         if courseFromExpiredSession:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
-                                                         Course_Group__in=course_groups)
+                                                         Course_Group__in=course_groups).distinct()
         else:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                          Start_Date__lte=datetime_now,
                                                          End_Date__gte=datetime_now,
-                                                         Course_Group__in=course_groups)
-        active_course_groups = []
-        course_groups = set(course_groups.values_list('pk', flat=True))
-        for session in assigned_session:
-            active_course_groups.extend(list(session.Course_Group.all().values_list('pk', flat=True)))
-        active_course_groups = set(active_course_groups)
-        final_course_groups = active_course_groups.intersection(course_groups)
-        courses_pk = InningGroup.objects.filter(pk__in=final_course_groups).values_list('Course_Code', flat=True)
-        if inactiveCourse:
-            courses = CourseInfo.objects.filter(pk__in=courses_pk)
-        else:
-            courses = CourseInfo.objects.filter(pk__in=courses_pk, Use_Flag=True)
+                                                         Course_Group__in=course_groups).distinct()
 
-        # courses = []
-        # session_list = []
-        # ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
-        # for i in ig:
-        #     inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
-        #                                             Course_Group__pk=i.pk, Use_Flag=True,
-        #                                             End_Date__gt=datetime.now()).distinct()
-        #     if inning_info.exists():
-        #         courses.append(i.Course_Code)
-        #         session_list.append(inning_info)
-        # # Remove duplicate courses
-        # courses = list(set(courses))
+        course_groups = set(course_groups.values_list('pk', flat=True))
+        active_course_group = set(assigned_session.values_list('Course_Group', flat=True).distinct())
+        active_course_group = course_groups.intersection(active_course_group)
+        active_course_pk = InningGroup.objects.filter(pk__in=active_course_group).values_list('Course_Code', flat=True)
+        courses = CourseInfo.objects.filter(pk__in=active_course_pk).distinct()
+        if inactiveCourse:
+            courses = all_courses.exclude(pk__in=courses)
+
         return {'courses': courses, 'session': assigned_session}
 
     @property
@@ -401,6 +387,24 @@ class ChapterInfo(models.Model):
         return str(int(self.mustreadtime / 3600)) + ':' + str(int(self.mustreadtime % 3600 / 60)) + ':' + str(
             int(self.mustreadtime % 60)) if self.mustreadtime is not None else None
 
+    def display_mustreadtime(self):
+        if self.mustreadtime:
+            seconds = self.mustreadtime
+            hour = seconds // 3600
+            seconds %= 3600
+            minutes = seconds // 60
+            seconds %= 60
+            final = ''
+            if hour:
+                final = str(hour) + " hr "
+            if minutes:
+                final += str(minutes) + " min "
+            if seconds:
+                final += str(seconds) + " sec "
+            return final
+        else:
+            return '-'
+
     def __str__(self):
         return self.Chapter_Name
 
@@ -423,8 +427,13 @@ class ChapterInfo(models.Model):
     
     def has_content(self):
         file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
-
         return os.path.exists(file_path)
+
+    # def quiz_count(self):
+    #     return Quiz.objects.filter(chapter_code=self, draft=False).count()
+
+    def assignment_count(self):
+        return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
@@ -853,6 +862,9 @@ class InningInfo(models.Model):
             return True
         else:
             return False
+
+    def student_count(self):
+        return self.Groups.Students.all().count()
 
     def __str__(self):
         return self.Inning_Name.Session_Name
