@@ -48,7 +48,7 @@ from quiz.views import QuizUserProgressView, Sitting, Progress
 
 def student_active_chapters(courses, sessions):
     datetime_now = timezone.now().replace(microsecond=0)
-    chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True)
+    chapters = ChapterInfo.objects.filter(Course_Code__in=courses, Use_Flag=True).distinct()
     active_chapters = []
 
     for chapter in chapters:
@@ -68,7 +68,7 @@ def student_active_chapters(courses, sessions):
 
 def student_all_assignments(chapters, sessions):  # It includes expired assignments also
     datetime_now = timezone.now().replace(microsecond=0)
-    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
+    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True).distinct()
     for assignment in assignments:
         if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                              object_id=assignment.id,
@@ -93,7 +93,7 @@ def student_all_assignments(chapters, sessions):  # It includes expired assignme
 
 def filter_active_assignments(chapters, sessions):  # It only includes active assignments
     datetime_now = timezone.now().replace(microsecond=0)
-    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True)
+    assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True).distinct()
     for assignment in assignments:
         if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                              object_id=assignment.id,
@@ -450,7 +450,7 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
                                                                 Groups__in=student_groups,
-                                                                Course_Group__in=course_groups)
+                                                                Course_Group__in=course_groups).distinct()
 
         assignments = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
         active_assignments = []
@@ -507,7 +507,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
                                                                 Groups__in=student_groups,
-                                                                Course_Group__in=course_groups)
+                                                                Course_Group__in=course_groups).distinct()
         AnsweredQuestion = set()
         Question = set()
         if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(AssignmentInfo),

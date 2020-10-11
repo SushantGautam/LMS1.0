@@ -173,7 +173,7 @@ class MemberInfo(AbstractUser):
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
-        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True).distinct()
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True)
         all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
         if courseFromExpiredSession:
             assigned_session = InningInfo.objects.filter(Use_Flag=True,
@@ -186,10 +186,10 @@ class MemberInfo(AbstractUser):
                                                          Course_Group__in=course_groups).distinct()
                                                          
         course_groups = set(course_groups.values_list('pk', flat=True))
-        active_course_group = set(assigned_session.values_list('Course_Group', flat=True).distinct())
+        active_course_group = set(assigned_session.values_list('Course_Group', flat=True))
         active_course_group = course_groups.intersection(active_course_group)
         active_course_pk = InningGroup.objects.filter(pk__in=active_course_group).values_list('Course_Code', flat=True)
-        courses = CourseInfo.objects.filter(pk__in=active_course_pk).distinct()
+        courses = CourseInfo.objects.filter(pk__in=active_course_pk, Use_Flag=True).distinct()
         if inactiveCourse:
             courses = all_courses.exclude(pk__in=courses)
 

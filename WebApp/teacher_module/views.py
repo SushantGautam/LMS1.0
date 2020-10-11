@@ -352,7 +352,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
-                                                                Course_Group__in=course_groups)
+                                                                Course_Group__in=course_groups).distinct()
 
         return context
 
@@ -463,12 +463,12 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
             context['assigned_session'] = InningInfo.objects.filter(pk=inningpk, Use_Flag=True,
                                                                     Start_Date__lte=datetime_now,
                                                                     End_Date__gte=datetime_now,
-                                                                    Course_Group__in=course_groups)
+                                                                    Course_Group__in=course_groups).distinct()
         else:
             context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                     Start_Date__lte=datetime_now,
                                                                     End_Date__gte=datetime_now,
-                                                                    Course_Group__in=course_groups)
+                                                                    Course_Group__in=course_groups).distinct()
 
         # ==================== End of Assignment Answers ========================================
 
