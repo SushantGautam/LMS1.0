@@ -20,6 +20,14 @@ class CenterInfoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+class SessionMapInfoViewSet(viewsets.ModelViewSet):
+    """ViewSet for the CenterInfo class"""
+
+    queryset = models.SessionMapInfo.objects.all()
+    serializer_class = serializers.SessionMapInfoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
 from url_filter.integrations.drf import DjangoFilterBackend
 
 
