@@ -61,6 +61,12 @@ class SessionInfoSerializer(serializers.ModelSerializer):
         )
 
 
+class SessionMapInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SessionMapInfo
+        fields = '__all__'
+
+
 class InningGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.InningGroup
