@@ -1372,7 +1372,7 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups).distinct()
         return context
 
 
@@ -2046,7 +2046,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups).distinct()
         return context
 
 
