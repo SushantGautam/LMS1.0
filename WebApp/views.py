@@ -1372,7 +1372,7 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups).distinct()
         return context
 
 
@@ -2046,7 +2046,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups).distinct()
         return context
 
 
@@ -4047,16 +4047,25 @@ class TeacherIndividualReport(TemplateView):
             quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
             assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
             chapter.quiz_count = quiz.count()
+            datest = dict()
+            datend = dict()
             progressc = dict()
             quizc = dict()
             assignmentc = dict()
 
             for session in assigned_sessions:
+                datest[session.id] = ''
+                datend[session.id] = ''
                 progressc[session.id] = 0
                 quizc[session.id] = 0
                 assignmentc[session.id] = 0
+
+                if chapter.chapter_sessionmaps.filter(Session_Code=session).exists():
+                    d = chapter.chapter_sessionmaps.get(Session_Code=session)
+                    datest[session.id] = d.Start_Date
+                    datend[session.id] = d.End_Date
+
                 students = session.Groups.Students.all()
-                dictn = {chapter.id:[0,0]}
                 for student in students:
                     p = get_study_time(course.id, chapter, student)['progress']
                     if p == 'Complete':
@@ -4079,6 +4088,8 @@ class TeacherIndividualReport(TemplateView):
                 # if quiz:
                 #     session[str(chapter.pk) +'quiz']
 
+            chapter.datest = datest
+            chapter.datend = datend
             chapter.progressc = progressc
             chapter.quizc = quizc
             chapter.assignmentc = assignmentc

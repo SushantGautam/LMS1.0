@@ -292,7 +292,8 @@
                                     <span style="font-weight: 600;">Score Obtained</span>:- {{ a.quiz.avg_percent_score }} %<br>
                                     <span style="font-weight: 600;">Completed/Total Quiz</span>:- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
                                 </td>
-                                <td class="attendance" data-attendance="{{ a.chapter.overall_progress }}">
+                                <td class="attendance"
+                                    data-attendance="{% if a.overall_progress == 100.00 %}True{% else %}None{% endif %}">
                                     {% if a.chapter.attendance == None %}
                                         No Chapter Running Time
                                     {% elif a.overall_progress == 100.00 %}

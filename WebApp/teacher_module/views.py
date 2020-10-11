@@ -199,14 +199,14 @@ class MyCourseListView(ListView):
     def get_queryset(self):
         teacheractivecourses = self.request.user.get_teacher_courses()['courses']
         if '/inactive/' in self.request.path:
-            qsearch = self.request.user.get_teacher_courses(courseFromExpiredSession=True, inactiveCourse=True)[
+            qsearch = self.request.user.get_teacher_courses(inactiveCourse=True)[
                 'courses']
-            for x in teacheractivecourses:
-                if x in qsearch:
-                    qsearch = qsearch.exclude(pk=x.pk)
+            # for x in teacheractivecourses:
+            #     if x in qsearch:
+            #         qsearch = qsearch.exclude(pk=x.pk)
         if '/active/' in self.request.path:
             qsearch = teacheractivecourses
-            qsearch = [x for x in qsearch if x.Use_Flag is True]
+            # qsearch = [x for x in qsearch if x.Use_Flag is True]
         courses = []
         query = self.request.GET.get('teacher_mycoursequery')
         if query:
@@ -352,7 +352,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
-                                                                Course_Group__in=course_groups)
+                                                                Course_Group__in=course_groups).distinct()
 
         return context
 
@@ -463,12 +463,12 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
             context['assigned_session'] = InningInfo.objects.filter(pk=inningpk, Use_Flag=True,
                                                                     Start_Date__lte=datetime_now,
                                                                     End_Date__gte=datetime_now,
-                                                                    Course_Group__in=course_groups)
+                                                                    Course_Group__in=course_groups).distinct()
         else:
             context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                     Start_Date__lte=datetime_now,
                                                                     End_Date__gte=datetime_now,
-                                                                    Course_Group__in=course_groups)
+                                                                    Course_Group__in=course_groups).distinct()
 
         # ==================== End of Assignment Answers ========================================
 
