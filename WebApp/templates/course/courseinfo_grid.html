@@ -89,7 +89,13 @@
                 {% endfor %}
                 </p>
                 <hr>
-                <p class="card-text">{{ object.Course_Description }}</p>
+                <p class="card-text">
+                    {% if object.Course_Description %}
+                    {{ object.Course_Description }}
+                    {% else %}
+                    No desciption
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
