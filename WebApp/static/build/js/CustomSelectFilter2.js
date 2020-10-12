@@ -188,7 +188,7 @@ Requires jQuery, core.js, and SelectBox.js.
                 }
             });
             findForm(from_box).addEventListener('submit', function () {
-                window.SelectBox.filter('id_Students_to', '')
+                window.SelectBox.filter(field_id + '_to', '')
                 SelectBox.select_all(field_id + '_to');
             });
             SelectBox.init(field_id + '_from');
