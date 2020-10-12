@@ -392,7 +392,7 @@
                     height: 300
                 },
                 title: {
-                    text: 'Total Achievement'
+                    text: 'Quiz Achievement'
                 },
                 subtitle: {
                     text: ''
@@ -408,8 +408,9 @@
                 yAxis: {
                     title: {
                         text: 'Score'
-                    }
-
+                    },
+                    min: 0,
+                    max: 100
                 },
                 credits: {
                     enabled: false
@@ -788,10 +789,6 @@
                     "name": "Quiz Progress",
                     colorByPoint: true,
                     "data": [
-                        {
-                            name: "Total",
-                            y: total * 100 / total
-                        },
                         {
                             name: "Completed",
                             y: completed * 100 / total
