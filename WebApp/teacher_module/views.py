@@ -618,11 +618,11 @@ class MyAssignmentsListView(ListView):
         course_session_data = self.request.user.get_teacher_courses()
         assigned_sessions = course_session_data['session']
         courses = course_session_data['courses']
-
-        active_assignments = []
-        inactive_assignments = []
+        
         for course in courses:
             all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
+            active_assignments = []
+            inactive_assignments = []
             for assignment in all_assignments:
                 datemap = SessionMapInfo.objects.filter(Session_Code__in=assigned_sessions,
                                                         content_type=ContentType.objects.get_for_model(assignment),
