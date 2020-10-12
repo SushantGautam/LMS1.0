@@ -2323,6 +2323,11 @@ label .asteriskField {
 
 }
 
+.custom-btn1.active {
+    background-color: #269abc;
+    color: white;
+    font-weight: 300;
+}
 
 /* progress bar */
 .progressbar {

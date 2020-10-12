@@ -26,28 +26,25 @@
 <hr class="header_hr">
 
 <div class="tabcontent" id="allAssignments" style="display: none;">
-    {% if Assignment %}
-    {% for courses in Assignment %}
-    {% for assignment in courses %}
-    {% for a in assignment %}
-    {% ifchanged a.Course_Code %}
+    {% for course in courses %}
+    {% if course.assignments %}
     <h3 align="center">Course -
-        <a href="{{ a.Course_Code.teacher_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
+        <a href="{{ course.teacher_get_absolute_url }}"><b>{{ course }}</b> </a>
     </h3>
-    {% endifchanged %}
+    {% for assignment in course.assignments %}
         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
             <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
                 <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
                 <h5>
-                    <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+                    <b style="color: #000000">{{ assignment.Assignment_Topic }}</b>
                 </h5>
-                <h5>Chapter - {{ a.Chapter_Code }}</h5>
+                <h5>Chapter - {{ assignment.Chapter_Code }}</h5>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
-                {% if a.get_QuestionAndAnswer.0|length > 0 %}
-                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                {% if assignment.get_QuestionAndAnswer.0|length > 0 %}
+                    {% getTeacherStatusoOfAssignment assignment user as teacher_assignment_status %}
                     {% if teacher_assignment_status.assg_status %}
                         <b style="color: green">
                                 All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
@@ -61,7 +58,7 @@
                     <b style="color: orangered">No Questions</b>
                 {% endif %}
                 </span>
-                <a href="{{ a.teacher_get_absolute_url }}">
+                <a href="{{ assignment.teacher_get_absolute_url }}">
                     <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                 margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
                     </button>
@@ -71,42 +68,42 @@
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
                 <p>Submission Deadline -
-                    {% now "Y-m-d H:i" as todays_date %}
-                    {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
-                        <span class="text-danger">Expired</span>
+                    {% if assignment.status == 'inactive' %}
+                        {% if assignment.end_date %}
+                            <span class="text-danger dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }} </span>
+                            <span class="text-danger">(Expired)</span>
+                        {% else %}
+                            <span class="text-danger">Inactive</span>
+                        {% endif %}
                     {% else %}
-                        <span class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span>
+                        <span class="text-success">{{ assignment.end_date|timeuntil }} left </span>
                     {% endif %}</p>
             </div>
         </div>
     {% endfor %}
-    {% endfor %}
-    {% endfor %}
     {% endif %}
+    {% endfor %}
 </div>
 
     <div class="tabcontent" id="activeAssignments">
-        {% if activeAssignment %}
-    {% for courses in activeAssignment %}
-    {% for assignment in courses %}
-    {% for a in assignment %}
-    {% ifchanged a.Course_Code %}
-    <h3 align="center">Course -
-        <a href="{{ a.Course_Code.teacher_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
-    </h3>
-    {% endifchanged %}
+    {% for course in courses %}
+        {% if course.active_assignments %}
+        <h3 align="center">Course -
+            <a href="{{ course.teacher_get_absolute_url }}"><b>{{ course }}</b> </a>
+        </h3>
+        {% for assignment in course.active_assignments %}
         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
             <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
                 <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
                 <h5>
-                    <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+                    <b style="color: #000000">{{ assignment.Assignment_Topic }}</b>
                 </h5>
-                <h5>Chapter - {{ a.Chapter_Code }}</h5>
+                <h5>Chapter - {{ assignment.Chapter_Code }}</h5>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
-                {% if a.get_QuestionAndAnswer.0|length > 0 %}
-                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                {% if assignment.get_QuestionAndAnswer.0|length > 0 %}
+                    {% getTeacherStatusoOfAssignment assignment user as teacher_assignment_status %}
                     {% if teacher_assignment_status.assg_status %}
                         <b style="color: green">
                                 All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
@@ -120,7 +117,7 @@
                     <b style="color: orangered">No Questions</b>
                 {% endif %}
                 </span>
-                <a href="{{ a.teacher_get_absolute_url }}">
+                <a href="{{ assignment.teacher_get_absolute_url }}">
                     <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                     margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
                     </button>
@@ -129,40 +126,33 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ a.Assignment_Deadline|timeuntil }}</p>
+                <p>Submission Deadline - {{ assignment.end_date|timeuntil }}</p>
+            </div>
         </div>
-    </div>
-    {% endfor %}
-    {% endfor %}
-    {% endfor %}
+        {% endfor %}
         {% endif %}
+    {% endfor %}
     </div>
     <div class="tabcontent" id="expiredAssignments" style="display: none;">
-        {% if expiredAssignment %}
-
-    {% for courses in expiredAssignment %}
-    {% for assignment in courses %}
-
-
-    {% for a in assignment %}
-    {% ifchanged a.Course_Code %}
-    <h3 align="center">Course -
-        <a href="{{ a.Course_Code.teacher_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
-    </h3>
-    {% endifchanged %}
+    {% for course in courses %}
+        {% if course.inactive_assignments %}
+        <h3 align="center">Course -
+            <a href="{{ course.teacher_get_absolute_url }}"><b>{{ course }}</b> </a>
+        </h3>
+        {% for assignment in course.inactive_assignments %}
         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-bottom: 5px;">
 
             <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
                 <!-- <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}</h5> -->
                 <h5>
-                    <b style="color: #000000">{{ a.Assignment_Topic }}</b>
+                    <b style="color: #000000">{{ assignment.Assignment_Topic }}</b>
                 </h5>
-                <h5>Chapter - {{ a.Chapter_Code }}</h5>
+                <h5>Chapter - {{ assignment.Chapter_Code }}</h5>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
-                {% if a.get_QuestionAndAnswer.0|length > 0 %}
-                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                {% if assignment.get_QuestionAndAnswer.0|length > 0 %}
+                    {% getTeacherStatusoOfAssignment assignment user as teacher_assignment_status %}
                     {% if teacher_assignment_status.assg_status %}
                         <b style="color: green">
                                 All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
@@ -176,7 +166,7 @@
                     <b style="color: orangered">No Questions</b>
                 {% endif %}
                 </span>
-                <a href=" {{ a.teacher_get_absolute_url }}">
+                <a href=" {{ assignment.teacher_get_absolute_url }}">
                     <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
                                     margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
                     </button>
@@ -186,14 +176,17 @@
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
                 <p>Submission Deadline -
-                    <span class="text-danger dateconFullMonth">{{ a.Assignment_Deadline|date:"d M, Y h:i A" }}</span>
+                    {% if assignment.end_date %}
+                        <span class="text-danger dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }}</span>
+                    {% else %}
+                        <span class="text-danger">Inactive</span>
+                    {% endif %}
                 </p>
             </div>
         </div>
-    {% endfor %}
-    {% endfor %}
-    {% endfor %}
+        {% endfor %}
         {% endif %}
+    {% endfor %}
     </div>
 {% endblock %}
 
