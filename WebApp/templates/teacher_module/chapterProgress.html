@@ -128,7 +128,7 @@
                     {{ chapter.Chapter_No }}
                 </button>
             {% endfor %}
-            <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn" value="all">All
+            <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn active" value="all">All
             </button>
         </div>
         <div class="col-md-12">
@@ -703,7 +703,9 @@
             }).draw();
 
             $('.chapterBtn').on('click', function () {
-                chapterpk = this.value
+                chapterpk = this.value;
+                $('.chapterBtn.active').removeClass('active');
+                $(this).addClass('active');
                 var vs = 0; // visited students
                 $('#chapter-details').css('display', 'block')
                 {% for x in student_progress_data %}
