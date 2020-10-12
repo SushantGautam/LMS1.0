@@ -657,10 +657,12 @@ class surveyFilterCategory_student(ListView):
 
         date_filter = self.request.GET.get('date_filter', '').lower()
         if date_filter == "active":
-            qs = qs.filter(End_Date__gt=timezone.now(), submitsurvey__isnull=True)
+            qs = qs.filter(End_Date__gt=timezone.now())
 
         if date_filter == "expire":
-            qs = qs.filter(End_Date__lte=timezone.now(), submitsurvey__isnull=True)
+            qs = qs.filter(End_Date__lte=timezone.now()
+                           # , submitsurvey__isnull=True
+                           )
 
         if date_filter == "submitted":
 
