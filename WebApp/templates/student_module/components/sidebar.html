@@ -72,11 +72,19 @@
         <ul id="courses">
             <li class="navigation-divider">Courses</li>
             <li>
-                <a href="">
+                <a href="{% url 'student_mycourses_list' %}">
                     <span class="nav-link-icon">
                         <i data-feather="book"></i>
                     </span>
                     <span>Course List</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'student_myassignmentinfo_list' %}">
+                    <span class="nav-link-icon">
+                        <i data-feather="book"></i>
+                    </span>
+                    <span>Assignment List</span>
                 </a>
             </li>
         </ul>

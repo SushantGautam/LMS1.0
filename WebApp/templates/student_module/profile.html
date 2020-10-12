@@ -1,0 +1,11 @@
+{% extends "student_module/base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'student_home' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Profile</li>
+{% endblock %}
+
+{% block content %}
+{% include 'profile.html' %}
+{% endblock %}

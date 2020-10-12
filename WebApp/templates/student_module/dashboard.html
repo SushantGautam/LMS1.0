@@ -9,38 +9,13 @@ Dashboard
 {% block stylesheets %}
 <link rel='manifest' href='/manifest.webmanifest'>
 <link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
-
+<link rel="stylesheet" href="{% static 'vendors/slick/slick.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'vendors/slick/slick-theme.css' %}" type="text/css">
 {% endblock stylesheets %}
 {% block breadcrumb %}
 <li class="breadcrumb-item active" aria-current="page">Home</li>
 {% endblock %}
 {% block content %}
-<style>
-    .owl-prev {
-        position: absolute;
-        top: 25%;
-        left: 0;
-
-    }
-
-    .owl-next {
-        position: absolute;
-        top: 25%;
-        right: 0;
-
-    }
-
-    /*.card--content{
-            display: flex;
-            justify-content: center;
-        }
-        @media screen and (max-width: 767px){
-
-            .card--content{
-                display: block;
-            }
-        }*/
-</style>
 
 {% if notice %}
 {% include 'popUp.html' %}
@@ -52,7 +27,7 @@ Dashboard
     </div>
 </div>
 <div class="text-center mb-3">
-    <h3 class="text-primary">Overview</h3>
+    <h3 class="text-primary" id="overview">Overview</h3>
 </div>
 
 <div class="courses-lists-only">
@@ -61,245 +36,163 @@ Dashboard
                     of my Courses </a></span></h4>
     </div>
 </div>
-
-
-<div class="owl-carousel owl-theme">
-    {% for object in Course %}
-    <div class="item">
-        <div class="gridContentsList">
-            <div class="card-header">
+<div class="card p-4 my-4">
+    <div class="slick-multiple">
+        {% for object in Course %}
+        <div class="slick-slide-item">
+            <div class="card">
                 <a href="{{ object.student_get_absolute_url }}">
-                    <img id="courseListImage" class="card-img-top" src="
-                                                    {% if object.Course_Cover_File %}
-                                                        /media/{{ object.Course_Cover_File }}
-                                                    {% else %}
-                                                        {% static 'images/course.jpg' %}
-                                                    {% endif %}" alt="Card image cap" width="100%" height="180px"
-                        style="object-fit: cover">
+                    <img src="{% static 'media/image/course.jpg' %}" class="card-img-top" alt="image">
                 </a>
-            </div>
-            <div class="card-body" id="cardInfo">
-                <h2 class="card-title">
-                    <strong><a href="{{ object.student_get_absolute_url }}">{{ object }}</a></strong>
-
-                </h2>
-                <hr>
-                <h5 class="lectureDescription" style="padding-bottom: 5px;">
-
-                    <p style="padding-left: 10px;
-                                        padding-right: 10px;
-                                        line-height: 1.5em;
-                                        height: 3em;
-                                        overflow-wrap:break-word; 
-                                        overflow: hidden;
-                                        white-space: normal;
-                                        text-overflow: ellipsis;">
-                        <a onclick="RetrieveChatper('{{ object.student_get_absolute_url }}',{{ object.pk }})">
-                            <button type="button" style="text-align:center;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                            ">CONTINUE <i class="fa fa-arrow-right"></i>
-                            </button>
-                        </a>
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">{{ object }}</h6>
+                        <a onclick="RetrieveChatper('{{ object.student_get_absolute_url }}',{{ object.pk }})"
+                            class="btn btn-sm btn-outline-primary">Continue
+                            <i class="fa fa-arrow-right"></i></a>
+                    </div>
+                    {% if object.Course_Description %}
+                    <hr>
+                    <p class="card-text">
+                        {{ object.Course_Description|truncatechars:45 }}
                     </p>
-
-                </h5>
+                    {% endif %}
+                </div>
             </div>
         </div>
+        {% empty %}
+        <div>
+            No courses yet
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
-
-
-<!-- Display incomplete chapters list -->
 <div class="row">
-    <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><b>Incomplete Chapters</b>
-                        {#                       - <a#}
-                        {#                            href="{% url 'student_myassignmentinfo_list' %}">List#}
-                        {#                                        of Incomplete Chapters </a>#}
-                    </span></h3>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <h4 class="text-primary">Incomplete Chapters</h4>
+                    {% if incomplete_chapters %}
+                    <b class="text-danger">[Studied time must meet the
+                        Running time to complete chapter]</b>
+                    {% endif %}
+                </div>
                 {% if incomplete_chapters %}
-                <strong style="color: red;font-weight: 700;">[Studied time must meet the
-                    Running time to complete chapter]</strong>
-                {% endif %}
-            </div>
-            {% if incomplete_chapters %}
-            <ul class="list-group" style="max-height: 42vh;overflow:auto">
-                {% for chapter in incomplete_chapters %}
-                <li class="list-group-item1 ">
-                    <div class="col-md-12">
+                <ul class="text-center">
+                    {% for chapter in incomplete_chapters %}
+                    <li class="p-3 border-top">
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <b> {{ chapter.Chapter_Name }}</b>
                                 <h5 style="margin-bottom: 0;">
                                     <a href="{{ chapter.student_get_absolute_url }}">
-                                        <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
-                                                    ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                        <button class="btn btn-sm btn-outline-primary"> Continue <i
+                                                class="fa fa-arrow-right"></i>
                                         </button>
-
                                     </a>
                                 </h5>
-
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
-                                <div class="assignment-status-margin"
-                                    style="font-size:14px; font-style: italic;  font-weight:600 ; ">Chapter
-                                    Progress: {{ chapter.chapter_progress|floatformat }} %
-
+                                <div class="assignment-status-margin">
+                                    Chapter Progress: {{ chapter.chapter_progress|floatformat }} %
                                 </div>
                                 <div>
-                                    <span style="font-size:14px; font-style: italic;  font-weight:600;"> Quiz Progress
+                                    <span> Quiz Progress </span>
+                                    <span> :
+                                        {{ chapter.quiz.progress|floatformat }} %
                                     </span>
-                                    <span style="font-size:14px; font-style: italic;  font-weight:600;"> :
-                                        {{ chapter.quiz.progress|floatformat }} %</span>
                                 </div>
                                 <div>
-                                    <span style="font-size:14px; font-style: italic;  font-weight:600;"> Completed/Total
+                                    <span> Completed/Total </span>
+                                    <span> :
+                                        {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}
                                     </span>
-                                    <span style="font-size:14px; font-style: italic;  font-weight:600;"> :
-                                        {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <div class="text-center">
-                <strong style="color: limegreen;font-weight: 700;">There are no incomplete chapters.</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center">
+                    <b class="text-success">There are no incomplete chapters.</b>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
-
     </div>
-
-    <div class="padding_homepage col-md-6 col-sm-12 col-xs-12">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h3 style="margin-left: 10px"><span><b>Assignments</b> - <a
-                            href="{% url 'student_myassignmentinfo_list' %}">List
-                            of Active Assignments </a></span></h3>
-            </div>
-            <ul class="list-group" style="max-height: 42vh;overflow:auto">
-                {% for object in activeAssignments %}
-                <li class="list-group-item1 ">
-
-
-                    <div class="col-md-12">
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <h4 class="text-primary">
+                        <span><b>Assignments</b> - <a href="{% url 'student_myassignmentinfo_list' %}">List
+                                of Active Assignments </a></span>
+                    </h4>
+                </div>
+                <ul class="text-center" style="max-height: 42vh;overflow:auto">
+                    {% for object in activeAssignments %}
+                    <li class="p-3 border-top">
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <b> {{ object.Assignment_Topic }}</b>
-                                <h5 style="margin-bottom: 0;">
+                                <h5 class="mb-0">
                                     <a href="{{ object.student_get_absolute_url }}">
-                                        <button type="button" style="width:103px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px; padding:0 2px;
-                                                ">CONTINUE <i class="fa fa-arrow-right"></i>
+                                        <button class="btn btn-sm btn-outline-primary"> Continue <i
+                                                class="fa fa-arrow-right"></i>
                                         </button>
-
                                     </a>
                                 </h5>
-
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
-                                <div class="assignment-status-margin"
-                                    style="font-size:14px; font-style: italic;  font-weight:600 ; ">Status:
+                                <div class="assignment-status-margin">Status:
                                     {% if object.has_questions %}
                                     {% getStatusoOfAssignment object user as assignment_status %}
                                     {% if assignment_status == "Complete" %}
-                                    <span style="color: green"> Complete </span>
+                                    <span class="text-success"> Complete </span>
                                     {% else %}
-                                    <span style="color: red"> Incomplete </span>
+                                    <span class="text-danger"> Incomplete </span>
                                     {% endif %}
                                     {% else %}
                                     <span style="color: gray"> No Questions </span>
                                     {% endif %}
                                 </div>
-                                <span style="font-size:14px; font-style: italic;  font-weight:600; color:red"> Deadline
-                                </span>
-                                <span style="font-size:14px; font-style: italic;  font-weight:600;"> :
-                                    {{ object.deadline|timeuntil }}</span>
+                                <span class="text-danger"> Deadline </span>
+                                <span> : {{ object.deadline|timeuntil }}</span>
                             </div>
                         </div>
-                    </div>
+                    </li>
+                    {% endfor %}
+                </ul>
 
-                </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                {% endfor %}
-            </ul>
+            </div>
         </div>
     </div>
-
-    <!-- <div class="padding_homepage col-md-4 col-sm-12 col-xs-12 ">
-            <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
-                <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span><b>At a Glance</b></span></h3>
-                </div>
-                <ul class="list-group">
-                    {% if GroupName %}
-                        {% for object in GroupName %}
-
-                            <li class="list-group-item ">
-                                <h5>
-                                    Group &nbsp; : <b style="float: right">{{ object.GroupMapping_Name }}</b>
-                                  
-                                </h5>
-                            </li>
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if Group %}
-                        {% for object in Group %}
-
-                            <li class="list-group-item ">
-                                <h5>
-                                    Session &nbsp; : <b style="float: right">{{ object.Inning_Name }}</b>
-                               
-                                </h5>
-                            </li>
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-            </div>
-        </div> -->
 </div>
 
+<!-- Display incomplete chapters list -->
 
 <div class="row">
-    <div class="col-sm-6">
-
-        <div class="title text-center">
-            <h2 style="font-size: 2em">&nbsp;<b>Your Quiz Score</b></h2>
+    <div class="col-6">
+        <div class="card p-3">
+            <div class="title text-center">
+                <h4 class="text-primary">Your Quiz Score</h4>
+            </div>
+            <div class="col-12" id="container"
+                style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto">
+            </div>
         </div>
-        <div class="col-md-12 col-sm-12 col-xs-12" id="container"
-            style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto"></div>
     </div>
 
-
-    <div class="col-sm-6" style="max-width: -webkit-fill-available;">
-        <div class="panel panel-default">
-            <div class="title text-center">
-                <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+    <div class="col-6">
+        <div class="card p-3">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h4 class="text-primary">Word Cloud - Forum</h4>
+                </div>
+                <div class="col-12" id="word-cloud" style="padding-top:13em; width:100%; "></div>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; width:100%; "></div>
         </div>
     </div>
 </div>
@@ -310,7 +203,15 @@ Dashboard
 
 <script src="{% static 'js/highcharts.js' %}"></script>
 <script src="{% static 'js/highchart_data.js' %}"></script>
+<script src="{% static 'vendors/slick/slick.min.js' %}"></script>
 
+<script>
+    $('.slick-multiple').slick({
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 4
+    });
+</script>
 <script>
     $("#noticeForm").submit(function (e) {
 
@@ -634,31 +535,7 @@ Dashboard
     </script> -->
 
 <script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
-<script>
-    $('.owl-carousel').owlCarousel({
-        autoplayTimeout: 2000,
-        autoplayHoverPause: true,
-        loop: false,
-        margin: 10,
-        rewind: true,
-        nav: true,
-        autoplay: true,
-        navText: ["<i class=' fa fa-chevron-circle-left fa-2x'></i>",
-            "<i class='fa  fa-chevron-circle-right  fa-2x'></i>"],
 
-        responsive: {
-            0: {
-                items: 1
-            },
-            600: {
-                items: 3
-            },
-            1000: {
-                items: 3
-            }
-        }
-    })
-</script>
 <script>
     // This is the service worker with the Advanced caching
 
@@ -686,6 +563,5 @@ Dashboard
     $(window).on('load', function () {
         $('#myModal').modal('show');
     });
-
 </script>
 {% endblock %}

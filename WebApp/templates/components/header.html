@@ -294,7 +294,7 @@
                             {% if 'teachers' in request.path %}
                             <a href="{% url 'teacher_user_profile' %}" class="list-group-item">Profile</a>
                             {% elif 'students' in request.path %}
-                            <a href="#" class="list-group-item">Profile</a>
+                            <a href="{% url 'student_user_profile' %}" class="list-group-item">Profile</a>
                             {% else %}
                             <a href="{% url 'user_profile' %}" class="list-group-item">Profile</a>
                             {% endif %}
