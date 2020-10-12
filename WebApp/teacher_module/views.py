@@ -15,10 +15,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -44,7 +45,7 @@ from WebApp.forms import GroupMappingForm, InningGroupForm, \
     InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance, Notice, NoticeView
+    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance, Notice, NoticeView, SessionMapInfo
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
@@ -613,28 +614,56 @@ class MyAssignmentsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         datetime_now = timezone.now().replace(microsecond=0)
-        context['currentDate'] = datetime.now()
-        context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-        course = []
-        context['Assignment'] = []
-        context['expiredAssignment'] = []
-        context['activeAssignment'] = []
-        for c in self.request.user.get_teacher_courses()['courses']:
-            course.append(c.id)
-        Assignment = []
-        expiredAssignment = []
-        activeAssignment = []
-        for course in course:
-            Assignment.append(AssignmentInfo.objects.filter(Course_Code=course))
-            expiredAssignment.append(
-                AssignmentInfo.objects.filter(Course_Code=course,
-                                              Assignment_Deadline__lt=datetime_now))
-            activeAssignment.append(
-                AssignmentInfo.objects.filter(Course_Code=course,
-                                              Assignment_Deadline__gte=datetime_now))
-        context['Assignment'].append(Assignment)
-        context['activeAssignment'].append(activeAssignment)
-        context['expiredAssignment'].append(expiredAssignment)
+
+        course_session_data = self.request.user.get_teacher_courses()
+        assigned_sessions = course_session_data['session']
+        courses = course_session_data['courses']
+        
+        for course in courses:
+            all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
+            active_assignments = []
+            inactive_assignments = []
+            for assignment in all_assignments:
+                datemap = SessionMapInfo.objects.filter(Session_Code__in=assigned_sessions,
+                                                        content_type=ContentType.objects.get_for_model(assignment),
+                                                        object_id=assignment.id)
+                if datemap:
+                    assignment.end_date = datemap.aggregate(Max('End_Date'))['End_Date__max']
+                    if datemap.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now).exists():
+                        assignment.status = 'active'
+                        active_assignments.append(assignment)
+                    else:
+                        assignment.status = 'inactive'
+                        inactive_assignments.append(assignment)
+                else:
+                    assignment.end_date = None
+                    assignment.status = 'inactive'
+                    inactive_assignments.append(assignment)
+
+            course.assignments = all_assignments
+            course.active_assignments = active_assignments
+            course.inactive_assignments = inactive_assignments
+
+        # context['Assignment'] = []
+        # context['expiredAssignment'] = []
+        # context['activeAssignment'] = []
+        # for c in self.request.user.get_teacher_courses()['courses']:
+        #     course.append(c.id)
+        # Assignment = []
+        # expiredAssignment = []
+        # activeAssignment = []
+        # for course in course:
+        #     Assignment.append(AssignmentInfo.objects.filter(Course_Code=course))
+        #     expiredAssignment.append(
+        #         AssignmentInfo.objects.filter(Course_Code=course,
+        #                                       Assignment_Deadline__lt=datetime_now))
+        #     activeAssignment.append(
+        #         AssignmentInfo.objects.filter(Course_Code=course,
+        #                                       Assignment_Deadline__gte=datetime_now))
+        # context['Assignment'].append(Assignment)
+        # context['activeAssignment'].append(activeAssignment)
+        # context['expiredAssignment'].append(expiredAssignment)
+        context['courses'] = courses
         return context
 
 
