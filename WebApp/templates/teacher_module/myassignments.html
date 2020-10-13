@@ -20,7 +20,7 @@
 <h4 class="text-center"><b>
         <button class="tablinks tabButton active" onclick="openTab(event, 'activeAssignments')">Active</button>
         <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">All</button>
-        <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">Expired</button>
+        <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">Inactive</button>
     </b>
 </h4>
 <hr class="header_hr">
@@ -75,6 +75,9 @@
                         {% else %}
                             <span class="text-danger">Inactive</span>
                         {% endif %}
+                    {% elif assignment.status == 'upcoming' %}
+                        <span class="text-info dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }} </span>
+                        <span class="text-info">(upcoming)</span>
                     {% else %}
                         <span class="text-success">{{ assignment.end_date|timeuntil }} left </span>
                     {% endif %}</p>
@@ -176,7 +179,10 @@
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
                 <p>Submission Deadline -
-                    {% if assignment.end_date %}
+                    {% if assignment.status == 'upcoming' %}
+                        <span class="text-info dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }} </span>
+                        <span class="text-info">(upcoming)</span>
+                    {% elif assignment.end_date %}
                         <span class="text-danger dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }}</span>
                     {% else %}
                         <span class="text-danger">Inactive</span>

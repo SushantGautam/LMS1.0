@@ -91,16 +91,24 @@ def student_all_assignments(chapters, sessions):  # It includes expired assignme
     return assignments
 
 
-def filter_active_assignments(chapters, sessions):  # It only includes active assignments
+def filter_active_assignments(chapters, sessions, filter_type="active"):  # It only includes active assignments
     datetime_now = timezone.now().replace(microsecond=0)
     assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True).distinct()
     for assignment in assignments:
-        if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                             object_id=assignment.id,
-                                             Start_Date__lte=datetime_now,
-                                             End_Date__gte=datetime_now,
-                                             Session_Code__in=sessions).exists():
-            assignments = assignments.exclude(pk=assignment.pk)
+        if filter_type == "active":
+            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                 object_id=assignment.id,
+                                                 Start_Date__lte=datetime_now,
+                                                 End_Date__gte=datetime_now,
+                                                 Session_Code__in=sessions).exists():
+                assignments = assignments.exclude(pk=assignment.pk)
+        elif filter_type == "expired":
+            if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                 object_id=assignment.id,
+                                                 Start_Date__lte=datetime_now,
+                                                 End_Date__lte=datetime_now,
+                                                 Session_Code__in=sessions).exists():
+                assignments = assignments.exclude(pk=assignment.pk)
     for assignment in assignments:
         assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                             object_id=assignment.id,
@@ -1354,7 +1362,18 @@ def singleUserHomePageJSON(request):
         courses_list = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
                                                  Use_Flag=True)
         chapters = student_active_chapters(courses_list, sessions)
-        assignments = filter_active_assignments(chapters, sessions)[:5]
+
+        if request.GET.get("assignment"):
+            if request.GET.get('assignment') == "expired":
+                assignments = filter_active_assignments(chapters, sessions, filter_type="expired")[:5]
+            elif request.GET.get('assignment') == "submitted":
+                answers = AssignAnswerInfo.objects.filter(Student_Code=request.user)[:5]
+                assignments = AssignmentInfo.objects.filter(
+                    pk__in=[x.Question_Code.Assignment_Code.pk for x in answers])
+            else:
+                assignments = filter_active_assignments(chapters, sessions)[:5]
+        else:
+            assignments = filter_active_assignments(chapters, sessions)[:5]
         assignments = AssignmentInfo.objects.filter(pk__in=[x.pk for x in assignments])
 
         # sessions = []
