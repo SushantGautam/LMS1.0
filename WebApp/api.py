@@ -27,13 +27,24 @@ class SessionMapInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SessionMapInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('content'):
+            from django.apps import apps
+            try:
+                self.model = apps.get_model('WebApp', self.request.GET.get("content"))
+            except:
+                self.model = None
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         if self.request.GET.get('session'):
             self.queryset = self.queryset.filter(Session_Code__pk=self.request.GET.get('session'))
         if self.request.GET.get('content'):
-            from django.apps import apps
-            model = apps.get_model('WebApp', self.request.GET.get("content"))
-            self.queryset = self.queryset.filter(content_type__model=model._meta.model_name)
+            if not self.model:
+                from rest_framework.exceptions import NotFound
+                raise NotFound
+
+            self.queryset = self.queryset.filter(content_type__model=self.model._meta.model_name)
 
             if self.request.GET.get('instance'):
                 self.queryset = self.queryset.filter(object_id=self.request.GET.get('instance'))
