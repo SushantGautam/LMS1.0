@@ -27,6 +27,19 @@ class SessionMapInfoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SessionMapInfoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        if self.request.GET.get('session'):
+            self.queryset = self.queryset.filter(Session_Code__pk=self.request.GET.get('session'))
+        if self.request.GET.get('content'):
+            from django.apps import apps
+            model = apps.get_model('WebApp', self.request.GET.get("content"))
+            self.queryset = self.queryset.filter(content_type__model=model._meta.model_name)
+
+            if self.request.GET.get('instance'):
+                self.queryset = self.queryset.filter(object_id=self.request.GET.get('instance'))
+
+        return self.queryset
+
 
 from url_filter.integrations.drf import DjangoFilterBackend
 
@@ -143,6 +156,7 @@ class GroupMappingViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['Students', ]
 
+
 class AssignmentInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the HomeworkInfo class"""
 
@@ -176,6 +190,7 @@ class AssignmentInfoViewSet(viewsets.ModelViewSet):
             if self.request.GET.get('expired') == '1':
                 queryset = queryset.filter(Assignment_Deadline__lte=datetime_now)
         return queryset
+
 
 class MessageInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the MessageInfo class"""
