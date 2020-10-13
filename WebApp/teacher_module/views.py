@@ -403,10 +403,10 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
     def dispatch(self, request, *args, **kwargs):
         if '/teachers' in self.request.path:
             assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
-                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
-                                                    Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct().count()
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code=self.request.user,
+                                                    Course_Group__Course_Code=assignmentinfoObj.Course_Code,
+                                                    Course_Group__Use_Flag=True,
+                                                    Use_Flag=True).distinct().count()
             if inning_info == 0:
                 messages.add_message(self.request, messages.ERROR, 'Access Denied. Please Contact Admin.')
                 return redirect('teacher_home')
@@ -416,11 +416,10 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         datetime_now = timezone.now().replace(microsecond=0)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
-                                                                     )
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
-        context['datetime'] = datetime.now()
+        context['datetime'] = datetime_now
 
         # ===================== Assignment Answers =============================================
 
@@ -429,28 +428,34 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
 
         assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
         if '/teachers' in self.request.path:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
-                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code=self.request.user,
+                                                    Course_Group__Course_Code=assignmentinfoObj.Course_Code,
+                                                    Course_Group__Use_Flag=True,
                                                     Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
+                                                    Start_Date__lte=datetime_now,
+                                                    End_Date__gte=datetime_now).distinct()
         session_list.append(inning_info)
 
+        innings = None
         if inning_info.count() > 0:
             if inningpk:
                 innings = get_object_or_404(inning_info, pk=inningpk)
-            else:
-                innings = None
 
-        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
-                                                          )
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'])
         context['questions'] = questions
         if innings:
-            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
-                                                                 Student_Code__in=innings.Groups.Students.all())
             context['students_list'] = innings.Groups.Students.all()
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=context['students_list'])
+            
         else:
-            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
-            context['students_list'] = assignmentinfoObj.Course_Code.get_students_of_this_course()
+            students_list = []
+            for inning in inning_info:
+                students_list.extend(inning.Groups.Students.all())
+            students_list = set(students_list)
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=students_list)
+            context['students_list'] = students_list
 
         context['Assignment'] = assignmentinfoObj
         context['session_list'] = session_list
@@ -458,7 +463,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
         context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
         course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
             pk=self.kwargs.get('chapter')).Course_Code,
-                                                   Teacher_Code=self.request.user.pk)
+                                                   Teacher_Code=self.request.user)
 
         if inningpk:
             context['assigned_session'] = InningInfo.objects.filter(pk=inningpk, Use_Flag=True,
@@ -628,16 +633,25 @@ class MyAssignmentsListView(ListView):
                                                         content_type=ContentType.objects.get_for_model(assignment),
                                                         object_id=assignment.id)
                 if datemap:
-                    assignment.end_date = datemap.aggregate(Max('End_Date'))['End_Date__max']
                     if datemap.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now).exists():
                         assignment.status = 'active'
+                        assignment.end_date = datemap.filter(Start_Date__lte=datetime_now,
+                                                             End_Date__gte=datetime_now).aggregate(
+                                                             Max('End_Date'))['End_Date__max']
                         active_assignments.append(assignment)
+                    elif datemap.filter(Start_Date__gte=datetime_now, End_Date__gte=datetime_now).exists():
+                        assignment.status = 'upcoming'
+                        assignment.end_date = datemap.filter(Start_Date__gte=datetime_now,
+                                                             End_Date__gte=datetime_now).aggregate(
+                                                             Max('End_Date'))['End_Date__max']
+                        inactive_assignments.append(assignment)
                     else:
                         assignment.status = 'inactive'
+                        assignment.end_date = datemap.aggregate(Max('End_Date'))['End_Date__max']
                         inactive_assignments.append(assignment)
                 else:
-                    assignment.end_date = None
                     assignment.status = 'inactive'
+                    assignment.end_date = None
                     inactive_assignments.append(assignment)
 
             course.assignments = all_assignments

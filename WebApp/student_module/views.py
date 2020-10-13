@@ -289,10 +289,10 @@ class MyCoursesListView(ListView):
         datetime_now = timezone.now().replace(microsecond=0)
         batches = GroupMapping.objects.filter(Students=self.request.user)
         sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
-        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
         courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                            Use_Flag=True)
+                                            Use_Flag=True).distinct()
 
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
         filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
@@ -314,7 +314,13 @@ class MyCoursesListView(ListView):
         return context
 
     def get_queryset(self):
-        qset = self.model.objects.all()
+        datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
+        qset = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True).distinct()
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()
