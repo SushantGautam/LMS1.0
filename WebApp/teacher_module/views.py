@@ -628,16 +628,25 @@ class MyAssignmentsListView(ListView):
                                                         content_type=ContentType.objects.get_for_model(assignment),
                                                         object_id=assignment.id)
                 if datemap:
-                    assignment.end_date = datemap.aggregate(Max('End_Date'))['End_Date__max']
                     if datemap.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now).exists():
                         assignment.status = 'active'
+                        assignment.end_date = datemap.filter(Start_Date__lte=datetime_now,
+                                                             End_Date__gte=datetime_now).aggregate(
+                                                             Max('End_Date'))['End_Date__max']
                         active_assignments.append(assignment)
+                    elif datemap.filter(Start_Date__gte=datetime_now, End_Date__gte=datetime_now).exists():
+                        assignment.status = 'upcoming'
+                        assignment.end_date = datemap.filter(Start_Date__gte=datetime_now,
+                                                             End_Date__gte=datetime_now).aggregate(
+                                                             Max('End_Date'))['End_Date__max']
+                        inactive_assignments.append(assignment)
                     else:
                         assignment.status = 'inactive'
+                        assignment.end_date = datemap.aggregate(Max('End_Date'))['End_Date__max']
                         inactive_assignments.append(assignment)
                 else:
-                    assignment.end_date = None
                     assignment.status = 'inactive'
+                    assignment.end_date = None
                     inactive_assignments.append(assignment)
 
             course.assignments = all_assignments
