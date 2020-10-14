@@ -74,7 +74,8 @@ class DepartmentInfoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('Department_Name')
-        department = DepartmentInfo.objects.filter(Department_Name=name, Center_Code=self.request.user.Center_Code)
+        department = DepartmentInfo.objects.filter(Department_Name__iexact=name,
+                                                   Center_Code=self.request.user.Center_Code)
         if department.exists():
             if self.instance.id:
                 if department.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
@@ -287,7 +288,7 @@ class CourseInfoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('Course_Name')
-        course = CourseInfo.objects.filter(Course_Name=name, Center_Code=self.request.user.Center_Code)
+        course = CourseInfo.objects.filter(Course_Name__iexact=name, Center_Code=self.request.user.Center_Code)
         if course.exists():
             if self.instance.id:
                 if course.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
@@ -324,7 +325,7 @@ class ChapterInfoForm(forms.ModelForm):
         name = cleaned_data.get('Chapter_Name')
         course = cleaned_data.get('Course_Code')
         chapternum = ChapterInfo.objects.filter(Course_Code=course, Chapter_No=num)
-        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name=name)
+        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name__iexact=name)
         if chapternum.exists():
             if self.instance.id:
                 if chapternum.filter(pk=self.instance.id, Course_Code=course).exists():
@@ -356,7 +357,7 @@ class SessionInfoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('Session_Name')
-        session = SessionInfo.objects.filter(Session_Name=name, Center_Code=self.request.user.Center_Code)
+        session = SessionInfo.objects.filter(Session_Name__iexact=name, Center_Code=self.request.user.Center_Code)
         if session.exists():
             if self.instance.id:
                 if session.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
@@ -389,7 +390,8 @@ class GroupMappingForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('GroupMapping_Name')
-        groupmapping = GroupMapping.objects.filter(GroupMapping_Name=name, Center_Code=self.request.user.Center_Code)
+        groupmapping = GroupMapping.objects.filter(GroupMapping_Name__iexact=name,
+                                                   Center_Code=self.request.user.Center_Code)
         if groupmapping.exists():
             if self.instance.id:
                 if groupmapping.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
@@ -427,7 +429,8 @@ class InningGroupForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('InningGroup_Name')
-        inninggroupname = InningGroup.objects.filter(InningGroup_Name=name, Center_Code=self.request.user.Center_Code)
+        inninggroupname = InningGroup.objects.filter(InningGroup_Name__iexact=name,
+                                                     Center_Code=self.request.user.Center_Code)
         if inninggroupname.exists():
             if self.instance.id:
                 if inninggroupname.filter(pk=self.instance.id, Center_Code=self.request.user.Center_Code).exists():
