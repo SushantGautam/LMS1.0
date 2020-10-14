@@ -655,7 +655,7 @@ class MemberInfoCreateView(CreateView):
 def validate_username(request):
     username = request.GET.get('username', None)
     data = {
-        'is_taken': MemberInfo.objects.filter(username__iexact=username).exists()
+        'is_taken': MemberInfo.objects.filter(username__exact=username).exists()
     }
     if data['is_taken']:
         data['error_message'] = 'A user with this username already exists.'
@@ -751,7 +751,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     if len(username) >= 150:
                         error = "Username can't be more than 150 characters"
                         raise Exception
-                    if MemberInfo.objects.filter(username__iexact=username).exists():
+                    if MemberInfo.objects.filter(username__exact=username).exists():
                         previous_uname.append(username)
                         continue
 
@@ -1835,11 +1835,11 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     # Teachers validation and registration
                     for teacher in teachers:
                         teacher = teacher.strip()
-                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center,
+                        if not MemberInfo.objects.filter(username__exact=teacher, Center_Code=center,
                                                          Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
-                        teacher_code = MemberInfo.objects.get(username__iexact=teacher)
+                        teacher_code = MemberInfo.objects.get(username__exact=teacher)
                         obj.Teacher_Code.add(teacher_code)
 
                 except Exception as e:
