@@ -103,6 +103,7 @@ urlpatterns += (
     path('get_static_files/', views.get_static_files, name='get_static_files'),
     # for downloading static files for mobile development
     path('students/singleUserHomePageAPI/', singleUserHomePageJSON, name='singleUserHomePage'),  # for app
+    path('students/homepage/', singleUserHomePageJSON, name='studentHomePage'),  # for app
     path('students/course/<int:coursepk>/progress', studentCourseProgress, name='studentcourseprogressapp'),  # for app
 
 )
