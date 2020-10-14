@@ -38,7 +38,7 @@ class SessionMapInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.GET.get('session'):
-            self.queryset = self.queryset.filter(Session_Code__pk=self.request.GET.get('session'))
+            self.queryset = self.queryset.filter(Session_Code__pk__in=self.request.GET.get('session').split(','))
         if self.request.GET.get('content'):
             if not self.model:
                 from rest_framework.exceptions import NotFound
