@@ -655,7 +655,7 @@ class MemberInfoCreateView(CreateView):
 def validate_username(request):
     username = request.GET.get('username', None)
     data = {
-        'is_taken': MemberInfo.objects.filter(username__iexact=username).exists()
+        'is_taken': MemberInfo.objects.filter(username__exact=username).exists()
     }
     if data['is_taken']:
         data['error_message'] = 'A user with this username already exists.'
@@ -737,9 +737,8 @@ def ImportCsvFile(request, *args, **kwargs):
                     student = df.iloc[i]['(*)Student(0/1)']
                     teacher = df.iloc[i]['(*)Teacher(0/1)']
                     department = str(df.iloc[i]['Department'])
-
                     # Validation
-                    if department is not None and department != '-':
+                    if department is not None and department != '-' and department != "None" and len(department) != 0:
                         if not DepartmentInfo.objects.filter(Department_Name__iexact=department,
                                                              Center_Code=request.user.Center_Code).exists():
                             error = "Department Name <strong>" + str(department) + "</strong> does not exists."
@@ -752,7 +751,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     if len(username) >= 150:
                         error = "Username can't be more than 150 characters"
                         raise Exception
-                    if MemberInfo.objects.filter(username__iexact=username).exists():
+                    if MemberInfo.objects.filter(username__exact=username).exists():
                         previous_uname.append(username)
                         continue
 
@@ -817,7 +816,7 @@ def ImportCsvFile(request, *args, **kwargs):
                     obj.Is_Student = student
                     obj.Center_Code = request.user.Center_Code
                     obj.Member_Department = DepartmentInfo.objects.get(Department_Name__iexact=department,
-                                                                       Center_Code=request.user.Center_Code)
+                                                                       Center_Code=request.user.Center_Code) if department else None
                     obj.Member_Gender = gender
                     obj.set_password('00000')
                     obj.save()
@@ -973,7 +972,7 @@ def ImportSession(request, *args, **kwargs):
                         # error = "Session Name <strong>" + session_name + """</strong> does not exists.
                         #                     Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
                         # raise Exception
-                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
+                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name, Center_Code=center)
 
                     # Start date and End date Validation
                     if not start_date:
@@ -1011,7 +1010,7 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                         raise Exception
-                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
+                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group, Center_Code=center)
 
                     # Courses validation
                     if not courses:
@@ -1042,7 +1041,7 @@ def ImportSession(request, *args, **kwargs):
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
                                                 Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                             raise Exception
-                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
+                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course, Center_Code=center)
                         obj.Course_Group.add(course_code)
 
                 except Exception as e:
@@ -1372,7 +1371,8 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups).distinct()
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Course_Group__in=course_groups).distinct()
         return context
 
 
@@ -1811,7 +1811,7 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     if not CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=center).exists():
                         error = "Course Name <strong>" + course_name + "</strong> does not exists."
                         raise Exception
-                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
+                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name, Center_Code=center)
 
                     # Teachers validation
                     if not teachers:
@@ -1835,11 +1835,11 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     # Teachers validation and registration
                     for teacher in teachers:
                         teacher = teacher.strip()
-                        if not MemberInfo.objects.filter(username__iexact=teacher, Center_Code=center,
+                        if not MemberInfo.objects.filter(username__exact=teacher, Center_Code=center,
                                                          Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
-                        teacher_code = MemberInfo.objects.get(username__iexact=teacher)
+                        teacher_code = MemberInfo.objects.get(username__exact=teacher)
                         obj.Teacher_Code.add(teacher_code)
 
                 except Exception as e:
@@ -2046,7 +2046,8 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
-        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=course_groups).distinct()
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Course_Group__in=course_groups).distinct()
         return context
 
 
@@ -3414,7 +3415,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                 studytimeprogresspercent = 0
 
             if studytimeprogresspercent > 100:
-                 studytimeprogresspercent = 100
+                studytimeprogresspercent = 100
 
             student_quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
@@ -3431,8 +3432,8 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                     if Sitting.objects.filter(user=x, quiz=q, complete=True).exists():
                         student_complete_count += 1
             quiz_progress = round((student_complete_count / total_quiz_count) * 100,
-                                2) if total_quiz_count is not 0 else 0
-                                
+                                  2) if total_quiz_count is not 0 else 0
+
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
@@ -3484,11 +3485,12 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             #                   2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                            'avg_percent_score': float(total_quiz_percent_score / student_complete_count) if student_complete_count else 0
+                            'avg_percent_score': float(
+                                total_quiz_percent_score / student_complete_count) if student_complete_count else 0
                         },
                         'overall_progress': round((math.floor(progresspercent) + math.floor(
-                                            studytimeprogresspercent) + float(quiz_progress))/3, 2) if total_quiz_count else round(
-                                            (math.floor(progresspercent) + math.floor(studytimeprogresspercent))/2, 2)
+                            studytimeprogresspercent) + float(quiz_progress)) / 3, 2) if total_quiz_count else round(
+                            (math.floor(progresspercent) + math.floor(studytimeprogresspercent)) / 2, 2)
                     },
                 )
             else:
@@ -3514,8 +3516,9 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
                                 complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
                         },
-                        'overall_progress': round((progresspercent + studytimeprogresspercent + quiz_progress)/3, 2) if total_quiz_count else round(
-                                            (progresspercent + studytimeprogresspercent)/2, 2)
+                        'overall_progress': round((progresspercent + studytimeprogresspercent + quiz_progress) / 3,
+                                                  2) if total_quiz_count else round(
+                            (progresspercent + studytimeprogresspercent) / 2, 2)
                     },
                 )
     return student_data
@@ -4033,7 +4036,7 @@ class TeacherIndividualReport(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         teacher = get_object_or_404(MemberInfo, Is_Teacher=True,
-                                Center_Code=self.request.user.Center_Code, pk=self.kwargs.get('teacherpk'))
+                                    Center_Code=self.request.user.Center_Code, pk=self.kwargs.get('teacherpk'))
         course = get_object_or_404(CourseInfo, Use_Flag=True, pk=self.kwargs.get('coursepk'))
         course_groups = InningGroup.objects.filter(Teacher_Code=teacher, Course_Code=course, Use_Flag=True)
         if not course_groups:
@@ -4071,7 +4074,7 @@ class TeacherIndividualReport(TemplateView):
                     if p == 'Complete':
                         progressc[session.id] += 1
                     if quiz:
-                        s = Sitting.objects.filter(quiz__in=quiz,user=student,complete=True).distinct('quiz').count()
+                        s = Sitting.objects.filter(quiz__in=quiz, user=student, complete=True).distinct('quiz').count()
                         if s == quiz.count():
                             quizc[session.id] += 1
                     if assignments:
