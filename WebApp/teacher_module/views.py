@@ -2515,13 +2515,13 @@ def QuizMarkingCSV(request, quiz_pk):
     mcquestions = quiz.mcquestion.all()
     tfquestions = quiz.tfquestion.all()
     saquestions = quiz.saquestion.all()
-    extra_row_1 = {'S.N.': 'Full Score', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '',
+    extra_row_1 = {'S.N.': 'Full Score', 'Username': '', 'Full Name': '', 'Start Datetime': '', 'End Datetime': '',
                    'Percentage': ''}
-    extra_row_2 = {'S.N.': 'Correct Answer', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '',
+    extra_row_2 = {'S.N.': 'Correct Answer', 'Username': '', 'Full Name': '', 'Start Datetime': '', 'End Datetime': '',
                    'Percentage': ''}
 
     # Deining column names
-    column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
+    column_names = ['S.N.', 'Username', 'Full Name', 'Start Datetime', 'End Datetime']
     answer_name = "O/X"
     mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
     color_column = []
@@ -2567,8 +2567,8 @@ def QuizMarkingCSV(request, quiz_pk):
             start_date = quiz_sitting.start.replace(tzinfo=None)
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
-        new_row = {'S.N.': counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date,
-                   'End Datetime': end_date}
+        new_row = {'S.N.': counter, 'Username': quiz_sitting.user.username, 'Full Name': quiz_sitting.user.get_full_name(),
+                   'Start Datetime': start_date, 'End Datetime': end_date}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
