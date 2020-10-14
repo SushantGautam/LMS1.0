@@ -973,7 +973,7 @@ def ImportSession(request, *args, **kwargs):
                         # error = "Session Name <strong>" + session_name + """</strong> does not exists.
                         #                     Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
                         # raise Exception
-                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
+                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name, Center_Code=center)
 
                     # Start date and End date Validation
                     if not start_date:
@@ -1011,7 +1011,7 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                         raise Exception
-                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
+                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group, Center_Code=center)
 
                     # Courses validation
                     if not courses:
@@ -1042,7 +1042,7 @@ def ImportSession(request, *args, **kwargs):
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
                                                 Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                             raise Exception
-                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
+                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course, Center_Code=center)
                         obj.Course_Group.add(course_code)
 
                 except Exception as e:
@@ -1811,7 +1811,7 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     if not CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=center).exists():
                         error = "Course Name <strong>" + course_name + "</strong> does not exists."
                         raise Exception
-                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
+                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name, Center_Code=center)
 
                     # Teachers validation
                     if not teachers:
