@@ -149,10 +149,13 @@ class login(LoginView):
                     dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
                     conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
                     c = conn.cursor()
-                    c.execute('SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = (%s)', (form.get_user().username))
+                    username = form.get_user().username.replace('cue','')
+                    c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
+                    if c.rowcount == 0:
+                        return JsonResponse({'type': 'submit_survey', 'msg': 'No survey data, please submit survey or contact your college administrator'})
                     for row in c:
                         if row[0] == 'N':
-                            return JsonResponse({'type': 'submit_survey', 'msg': 'Please submit all survey before logging to the account'})
+                            return JsonResponse({'type': 'submit_survey', 'msg': 'Please submit all survey before logging to this account'})
 
                 # It is for all students account
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
