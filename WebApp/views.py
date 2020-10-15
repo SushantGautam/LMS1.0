@@ -151,9 +151,10 @@ class login(LoginView):
                     c = conn.cursor()
                     username = form.get_user().username.replace('cue','')
                     c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
-                    if c.rowcount == 0:
+                    result = c.fetchall()
+                    if not result:
                         return JsonResponse({'type': 'submit_survey', 'msg': 'No survey data, please submit survey or contact your college administrator'})
-                    for row in c:
+                    for row in result:
                         if row[0] == 'N':
                             return JsonResponse({'type': 'submit_survey', 'msg': 'Please submit all survey before logging to this account'})
 
