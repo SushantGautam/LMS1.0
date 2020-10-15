@@ -973,9 +973,15 @@ class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
 class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_list.html'
+    inning = None
 
     def get_queryset(self):
-        queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
+        if 'inningpk' in self.kwargs:
+            self.inning = get_object_or_404(InningInfo, pk=self.kwargs['inningpk'])
+            queryset = super(QuizMarking, self).get_queryset().filter(complete=True,
+                                                                      user__in=self.inning.Groups.Students.all())
+        else:
+            queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
         quiz_id = int(self.kwargs['quiz_id'])
         queryset = queryset.filter(quiz__id=quiz_id)
 
@@ -993,6 +999,18 @@ class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, L
         context = super(QuizMarking, self).get_context_data(**kwargs)
         quiz_id = int(self.kwargs['quiz_id'])
         context['quiz'] = Quiz.objects.get(id=quiz_id)
+        context['session_list'] = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                            Course_Group__Course_Code__pk=context[
+                                                                'quiz'].course_code.pk, Use_Flag=True,
+                                                            End_Date__gt=datetime.now()).distinct()
+
+        if context['session_list'].count() > 0:
+            if 'inningpk' in self.kwargs:
+                innings = self.inning
+            else:
+                innings = context['session_list'].first()
+
+            context['inning'] = innings
         return context
 
 

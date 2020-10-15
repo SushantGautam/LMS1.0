@@ -6,6 +6,7 @@ import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
+import cx_Oracle
 from datetime import datetime, timedelta
 from io import BytesIO
 from json import JSONDecodeError
@@ -142,8 +143,23 @@ class login(LoginView):
                     "Please enter a correct username and password. Note that both fields may be case-sensitive."
                 )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
+                # The following code is only for chinju university student account
+                center_obj = form.get_user().Center_Code
+                if center_obj.Center_Name == '진주교육대학교' and center_obj.pk == 2:
+                    dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
+                    conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
+                    c = conn.cursor()
+                    username = form.get_user().username.replace('cue','')
+                    c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
+                    if c.rowcount == 0:
+                        return JsonResponse({'type': 'submit_survey', 'msg': 'No survey data, please submit survey or contact your college administrator'})
+                    for row in c:
+                        if row[0] == 'N':
+                            return JsonResponse({'type': 'submit_survey', 'msg': 'Please submit all survey before logging to this account'})
+
+                # It is for all students account
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
-                    return JsonResponse({'msg': 'Account already login in another place'})
+                    return JsonResponse({'type': 'multiple_login', 'msg': 'Account already login in another place'})
 
         return super().form_valid(form)
 
