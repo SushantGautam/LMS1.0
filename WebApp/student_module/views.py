@@ -53,12 +53,12 @@ def student_active_chapters(courses, sessions):
 
     for chapter in chapters:
         session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                             object_id=chapter.id,
-                                             Session_Code__in=sessions)
+                                                    object_id=chapter.id,
+                                                    Session_Code__in=sessions)
         if not session_map.exists():
             active_chapters.append(chapter)
         elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-                                Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
+                Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
             active_chapters.append(chapter)
         else:
             chapters = chapters.exclude(pk=chapter.pk)
@@ -116,6 +116,7 @@ def filter_active_assignments(chapters, sessions, filter_type="active"):  # It o
 
     return assignments
 
+
 def start(request):
     global courses, activeassignments, sessions, batches
     datetime_now = timezone.now().replace(microsecond=0)
@@ -163,7 +164,7 @@ def start(request):
 
     # NOtice popup based on active notice and notice view turned off
     notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
-                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
     if notices.exists():
         notice = notices[0]
         if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -320,7 +321,7 @@ class MyCoursesListView(ListView):
                                              Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
         course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
         qset = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                            Use_Flag=True).distinct()
+                                         Use_Flag=True).distinct()
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()
@@ -399,12 +400,12 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
         active_chapters = []
         for chapter in chapters:
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                object_id=chapter.id,
-                                                Session_Code__in=assigned_session)
+                                                        object_id=chapter.id,
+                                                        Session_Code__in=assigned_session)
             if not session_map.exists():
                 active_chapters.append(chapter)
             elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-                                    Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
+                    Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter)
         context['chapters'] = active_chapters
 
@@ -1350,20 +1351,19 @@ def singleUserHomePageJSON(request):
     if request.user.Is_Student:
         courses = request.user.get_student_courses().distinct()
         datetime_now = timezone.now().replace(microsecond=0)
-        # assignments = AssignmentInfo.objects.filter(
-        #     Course_Code__in=courses,
-        #     Chapter_Code__Use_Flag=True, Assignment_Start__lte=datetime_now,
-        #     Assignment_Deadline__gte=datetime_now).filter(
-        #     Q(Chapter_Code__Start_Date__lte=datetime_now) | Q(Chapter_Code__Start_Date=None)).filter(
-        #     Q(Chapter_Code__End_Date__gte=datetime_now) | Q(Chapter_Code__End_Date=None)
-        # )
-        # assignment_ids = [a.id for a in assignments if not a.get_student_assignment_status(request.user)]
-        # assignments = assignments.filter(id__in=assignment_ids)[:5]
 
         batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
 
         sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
                                              Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+
+        if request.GET.get("session"):
+            if request.GET.get('session') == "active":
+                session_list = sessions.values('pk', 'Start_Date', 'End_Date', 'Use_Flag', 'Inning_Name__Session_Name',
+                                               'Register_DateTime', 'Register_Agent', )
+
+                response = {'sessions': list(session_list)}
+                return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
         course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
         courses_list = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
                                                  Use_Flag=True)

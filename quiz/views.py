@@ -502,22 +502,27 @@ def anon_session_score(session, to_add=0, possible=0):
 def UpdateQuizTime(request):
     if request.method == 'POST':
         quiz = Quiz.objects.get(pk=request.POST.get('quiz_id'))
-        sitting = Sitting.objects.get(pk=request.POST.get('sitting_id'))
-        elapsed_time = request.POST.get('time_elapsed')
-        sitting.time_elapsed = elapsed_time
-        if int(elapsed_time) >= quiz.duration:
-            sitting.complete = True
-        sitting.save()
+        if quiz.exam_paper:
+            sitting = Sitting.objects.get(pk=request.POST.get('sitting_id'))
+            elapsed_time = request.POST.get('time_elapsed')
+            sitting.time_elapsed = elapsed_time
+            if int(elapsed_time) >= quiz.duration:
+                sitting.end = timezone.now()
+                sitting.complete = True
+            sitting.save()
 
-        if request.GET.get('iframe'):
-            url = "/students/quiz/progress/" + str(sitting.id) + "/?iframe=" + request.GET.get('iframe')
-        else:
-            url = "/students/quiz/progress/" + str(sitting.id)
+            if request.GET.get('iframe'):
+                url = "/students/quiz/progress/" + str(sitting.id) + "/?iframe=" + request.GET.get('iframe')
+            else:
+                url = "/students/quiz/progress/" + str(sitting.id)
 
+            return JsonResponse({
+                'sitting_time_elapsed': sitting.time_elapsed,
+                'url': url if sitting.complete else 0
+            }, status=200)
         return JsonResponse({
-            'sitting_time_elapsed': sitting.time_elapsed,
-            'url': url if sitting.complete else 0
-        }, status=200)
+            'error_message': 'Only for exams',
+        }, status=500)
 
 
 class QuestionCreateView(CreateView):
