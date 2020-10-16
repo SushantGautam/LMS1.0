@@ -1,26 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Member</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{ object.username }}</li>
+    <li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.username }}</li>
 {% endblock %}
 
 {% block content %}
 
-<div class="outerdiv">
-    <h2 class="detailListHeader">Member Information</h2>
-    <hr class="header_hr">
-    <div class="col-md-12">{% include 'WebApp/theme/alerts.html' %}</div>
-    <div class="col-md-8 col-sm-12 col-xs-12 text-center col-md-offset-2">
-        <div class="circleProfile text-center">
-            <img src="{{ object.Avatar }}">
+    <div class="outerdiv">
+        <h2 class="detailListHeader">Member Information</h2>
+        <hr class="header_hr">
+        <div class="col-md-12">{% include 'WebApp/theme/alerts.html' %}</div>
+        <div class="col-md-8 col-sm-12 col-xs-12 text-center col-md-offset-2">
+            <div class="circleProfile text-center">
+                <img src="{{ object.Avatar }}">
+            </div>
+            <div class="text-center">
+                <a class="member-edit" style="float: right;color: #2A3F54" href="{{ object.get_update_url }}"><b>Edit
+                    Member</b></a>
+            </div>
         </div>
-        <div class="text-center">
-            <a class="member-edit" style="float: right;color: #2A3F54" href="{{ object.get_update_url }}"><b>Edit Member</b></a>
-        </div>
-    </div>
-    <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
-        <h5><b>
+        <div class="col-md-8 col-sm-12 col-xs-12 col-md-offset-2">
+            <h5><b>
                 <table class="table table-striped table-bordered">
                     <tr>
                         <td class="mediumblack">Member ID</td>
@@ -71,20 +72,22 @@
                         <td class="mediumblack">Gender</td>
                         <td>{% if object.Member_Gender == 'M' %}
                             Male
-                            {% elif object.Member_Gender == 'F' %}
+                        {% elif object.Member_Gender == 'F' %}
                             Female
-                            {% endif %}
+                        {% endif %}
                         </td>
                     </tr>
                     <tr>
                         <td class="mediumblack">Status</td>
                         <td>{% if  object.Use_Flag  == True %}
                             <span class="text-success">Active</span>
-                            <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-deactivate" id="{{object.id}}"><u> Deactivate </u></a>
-                            <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}" id="deactivateForm">
+                            <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-deactivate"
+                               id="{{ object.id }}"><u> Deactivate </u></a>
+                            <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}"
+                                  id="deactivateForm">
                                 {% csrf_token %}
                             </form>
-                            {% else %}
+                        {% else %}
                             <span class="text-danger">Blocked</span>
                             <a style="float: right;color: #2A3F54;cursor:pointer" class="confirm-activate"
                                id="{{ object.id }}"><u> Activate </u></a>
@@ -112,32 +115,33 @@
                                 &nbsp;Teacher
                             {% endif %}
                             {% if object.Is_Student %}
-                            &nbsp;Student
+                                &nbsp;Student
                             {% endif %}
 
                         </td>
                     </tr>
                     {% if object.password %}
-                    <tr>
-                        <td class="mediumblack">Password</td>
-                        <td>&nbsp;******** <a style="float: right;color: #2A3F54"
-                                href="/change-password/{{ object.id }}/"><u> Change
-                                    Password </u></a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="mediumblack">Password</td>
+                            <td>&nbsp;******** <a style="float: right;color: #2A3F54"
+                                                  href="/change-password/{{ object.id }}/"><u> Change
+                                Password </u></a>
+                            </td>
+                        </tr>
                     {% elif not object.password %}
-                    <tr>
-                        <td class="mediumblack">Password</td>
-                        <td><a style="float: middle" href="/change-password/{{ object.id }}/"><u> Add New Password
-                                </u></a></td>
-                    </tr>
+                        <tr>
+                            <td class="mediumblack">Password</td>
+                            <td><a style="float: middle" href="/change-password/{{ object.id }}/"><u> Add New Password
+                            </u></a></td>
+                        </tr>
                     {% endif %}
                 </table>
             </b></h5>
             <div class="text-center">
                 <a class="confirm-delete" style="color: #2A3F54;cursor:pointer">
                     <b><u>Delete Member</u></b>
-                </a><small style="color:#2A3F54"><u> (Note: Instead of deleting a member you can deactivate him/her instead)</u></small>
+                </a><small style="color:#2A3F54"><u> (Note: Instead of deleting a member you can deactivate him/her
+                instead)</u></small>
                 <br><br>
                 <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
                     {% csrf_token %}
@@ -145,37 +149,91 @@
                 </form>
             </div>
         </div>
-</div>
+
+        <div class="row">
+            <div class="col col-md-6">
+                <h3> Member Associated Sessions List </h3>
+                <table class="table">
+                    <tr>
+                        <th>No.</th>
+                        <th>Session Name</th>
+                        <th>Status</th>
+                    </tr>
+                    {% for session in sessions %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{{ session.get_absolute_url }}">
+                                    {{ session.Inning_Name }}
+                                </a>
+                            </td>
+                            <td>
+                                {% now "Y-m-d H:i" as todays_datewithtime %}
+                                {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                                    Active
+                                {% else %}
+                                    Inactive
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col col-md-6">
+                <h3> Member Associated Groups List </h3>
+                <table class="table">
+                    <tr>
+                        <th>No.</th>
+                        <th>Group Name</th>
+                        <th>Status</th>
+                    </tr>
+                    {% for group in groups %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{{ group.get_absolute_url }}">{{ group.GroupMapping_Name }}</a></td>
+                            <td>
+                                {% if group.Use_Flag %}
+                                    Active
+                                {% else %}
+                                    Inactive
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
 
 {% block customjss %}
-<script>
-    $(document).on('click', '.confirm-deactivate', function (event) {
-        ans = confirm('Are you sure you want to deactivate this Member?');
-        if (ans == true) {
-            $('#deactivateForm').submit();
-        } else {
-            return false;
-        }
-    });
-    $(document).on('click', '.confirm-activate', function (event) {
-        ans = confirm('Are you sure you want to activate this Member?');
-        if (ans == true) {
-            $('#activateForm').submit();
-        } else {
-            return false;
-        }
-    });
+    <script>
+        $(document).on('click', '.confirm-deactivate', function (event) {
+            ans = confirm('Are you sure you want to deactivate this Member?');
+            if (ans == true) {
+                $('#deactivateForm').submit();
+            } else {
+                return false;
+            }
+        });
+        $(document).on('click', '.confirm-activate', function (event) {
+            ans = confirm('Are you sure you want to activate this Member?');
+            if (ans == true) {
+                $('#activateForm').submit();
+            } else {
+                return false;
+            }
+        });
 
-    $(document).on('click', '.confirm-delete', function () {
-        ans = confirm('Are you sure you want to delete this Member?');
-        if (ans == true) {
-            $('#delete_form').submit();
-        } else {
-            return false;
-        }
-    });
-</script>
+        $(document).on('click', '.confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Member?');
+            if (ans == true) {
+                $('#delete_form').submit();
+            } else {
+                return false;
+            }
+        });
+    </script>
 {% endblock %}

@@ -6,7 +6,6 @@ import os
 import re
 import uuid
 import zipfile  # For import/export of compressed zip folder
-import cx_Oracle
 from datetime import datetime, timedelta
 from io import BytesIO
 from json import JSONDecodeError
@@ -14,6 +13,7 @@ from json import JSONDecodeError
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
+import cx_Oracle
 import pandas as pd
 import requests
 from dateutil.parser import parse
@@ -1107,6 +1107,11 @@ class PasswordChangeView(PasswordContextMixin, FormView):
 class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     model = MemberInfo
 
+    def get_context_data(self, **kwargs):
+        context = super(MemberInfoDetailView, self).get_context_data()
+        context['groups'] = self.object.groupmapping_set.all()
+        context['sessions'] = InningInfo.objects.filter(Groups__in=context['groups'])
+        return context
 
 class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
