@@ -507,6 +507,7 @@ def UpdateQuizTime(request):
             elapsed_time = request.POST.get('time_elapsed')
             sitting.time_elapsed = elapsed_time
             if int(elapsed_time) >= quiz.duration:
+                sitting.end = timezone.now()
                 sitting.complete = True
             sitting.save()
 
