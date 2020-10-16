@@ -260,17 +260,18 @@
     {% block customjss %}
         <script>
             function updateFunctionTimeElapsed(count) {
-                $.ajax({
-                    url: "{% url 'quiz_update_time_taken' %}",
-                    method: 'post',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}',
-                        'sitting_id': '{{ sitting_id }}',
-                        'quiz_id': '{{ quiz.id }}',
-                        'time_elapsed': parseInt('{{ sitting.time_elapsed }}') + parseInt(count)
-                    },
-                    success: function (data) {
-                        if (data.url != 0 || data.url != '0') {
+                {% if quiz.exam_paper %}
+                    $.ajax({
+                        url: "{% url 'quiz_update_time_taken' %}",
+                        method: 'post',
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            'sitting_id': '{{ sitting_id }}',
+                            'quiz_id': '{{ quiz.id }}',
+                            'time_elapsed': parseInt('{{ sitting.time_elapsed }}') + parseInt(count)
+                        },
+                        success: function (data) {
+                            if (data.url != 0 || data.url != '0') {
                             clearInterval(cuentaAtras)
                             window.location.href = data.url;
                         }
@@ -279,6 +280,7 @@
                         console.log(e.responseText)
                     }
                 })
+                {% endif %}
             }
 
             $('form').on('submit', function (e) {
