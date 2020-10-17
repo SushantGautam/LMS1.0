@@ -1109,8 +1109,11 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MemberInfoDetailView, self).get_context_data()
-        context['groups'] = self.object.groupmapping_set.all()
-        context['sessions'] = InningInfo.objects.filter(Groups__in=context['groups'])
+        context['student_groups'] = self.object.groupmapping_set.filter(Use_Flag=True)
+        context['student_sessions'] = InningInfo.objects.filter(Groups__in=context['student_groups'], Use_Flag=True)
+        context['teacher_groups'] = self.object.inninggroup_set.filter(Use_Flag=True)
+        context['teacher_sessions'] = InningInfo.objects.filter(Course_Group__in=context['teacher_groups'],
+                                                                Use_Flag=True)
         return context
 
 class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):

@@ -149,60 +149,122 @@
                 </form>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col col-md-6">
-                <h3> Member Associated Sessions List </h3>
-                <table class="table">
-                    <tr>
-                        <th>No.</th>
-                        <th>Session Name</th>
-                        <th>Status</th>
-                    </tr>
-                    {% for session in sessions %}
+        {% if object.Is_Student %}
+            <div class="row">
+                <div class="col col-md-6">
+                    <h3> Student Associated Sessions List </h3>
+                    <table class="table">
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <a href="{{ session.get_absolute_url }}">
-                                    {{ session.Inning_Name }}
-                                </a>
-                            </td>
-                            <td>
-                                {% now "Y-m-d H:i" as todays_datewithtime %}
-                                {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                                    Active
-                                {% else %}
-                                    Inactive
-                                {% endif %}
-                            </td>
+                            <th>No.</th>
+                            <th>Session Name</th>
+                            <th>Status</th>
                         </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="col col-md-6">
-                <h3> Member Associated Groups List </h3>
-                <table class="table">
-                    <tr>
-                        <th>No.</th>
-                        <th>Group Name</th>
-                        <th>Status</th>
-                    </tr>
-                    {% for group in groups %}
+                        {% for session in student_sessions %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="{{ session.get_absolute_url }}">
+                                        {{ session.Inning_Name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% now "Y-m-d H:i" as todays_datewithtime %}
+                                    {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                                        Active
+                                    {% elif session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                                        Upcoming
+                                    {% else %}
+                                        Expired
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="col col-md-6">
+                    <h3> Student Associated Groups List </h3>
+                    <table class="table">
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td><a href="{{ group.get_absolute_url }}">{{ group.GroupMapping_Name }}</a></td>
-                            <td>
-                                {% if group.Use_Flag %}
-                                    Active
-                                {% else %}
-                                    Inactive
-                                {% endif %}
-                            </td>
+                            <th>No.</th>
+                            <th>Group Name</th>
+                            <th>Student Count</th>
+                            <th>Status</th>
                         </tr>
-                    {% endfor %}
-                </table>
+                        {% for group in student_groups %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{{ group.get_absolute_url }}">{{ group.GroupMapping_Name }}</a></td>
+                                <td>{{ group.Students.all.count }}</td>
+                                <td>
+                                    {% if group.Use_Flag %}
+                                        Active
+                                    {% else %}
+                                        Inactive
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
-        </div>
+        {% endif %}
+        {% if object.Is_Teacher %}
+            <div class="row">
+                <div class="col col-md-6">
+                    <h3> Teacher Associated Sessions List </h3>
+                    <table class="table">
+                        <tr>
+                            <th>No.</th>
+                            <th>Session Name</th>
+                            <th>Status</th>
+                        </tr>
+                        {% for session in teacher_sessions %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="{{ session.get_absolute_url }}">
+                                        {{ session.Inning_Name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% now "Y-m-d H:i" as todays_datewithtime %}
+                                    {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                                        Active
+                                    {% else %}
+                                        Inactive
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="col col-md-6">
+                    <h3> Teacher Associated Groups List </h3>
+                    <table class="table">
+                        <tr>
+                            <th>No.</th>
+                            <th>Group Name</th>
+                            <th>Teacher Count</th>
+                            <th>Status</th>
+                        </tr>
+                        {% for group in teacher_groups %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{{ group.get_absolute_url }}">{{ group.InningGroup_Name }}</a></td>
+                                <td>{{ group.Teacher_Code.all.count }}</td>
+                                <td>
+                                    {% if group.Use_Flag %}
+                                        Active
+                                    {% else %}
+                                        Inactive
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}
