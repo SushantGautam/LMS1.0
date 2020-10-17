@@ -145,18 +145,25 @@ class login(LoginView):
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 # The following code is only for chinju university student account
                 center_obj = form.get_user().Center_Code
-                if center_obj.Center_Name == '진주교육대학교' and center_obj.pk == 2:
-                    dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
-                    conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
-                    c = conn.cursor()
-                    username = form.get_user().username.replace('cue','')
-                    c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
-                    result = c.fetchall()
-                    if not result:
-                        return JsonResponse({'type': 'submit_survey', 'msg': 'No survey data, please submit survey or contact your college administrator'})
-                    for row in result:
-                        if row[0] == 'N':
-                            return JsonResponse({'type': 'submit_survey', 'msg': 'Please submit all survey before logging to this account'})
+                # if center_obj.Center_Name == '진주교육대학교' and center_obj.pk == 2:
+                #     dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
+                #     conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
+                #     c = conn.cursor()
+                #     username = form.get_user().username.replace('cue','')
+                #     c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
+                #     result = c.fetchall()
+                #     msg = """[원격수업강의 평가]를 완료하지 않았습니다.
+
+                #             [두류포털]-[종합정보]-[강의관리]-[원격수업강의평가]에서
+
+                #             [원격수업 강의 평가]를 완료하셔야 사이트 접속이 승인됩니다.
+
+                #             * [두류포털] 접속을 위해서는 Internet Explorer 이용해 주세요."""
+                #     if not result:
+                #         return JsonResponse({'type': 'submit_survey', 'msg': msg})
+                #     for row in result:
+                #         if row[0] == 'N':
+                #             return JsonResponse({'type': 'submit_survey', 'msg': msg})
 
                 # It is for all students account
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
