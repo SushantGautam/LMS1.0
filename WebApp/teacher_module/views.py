@@ -1008,7 +1008,7 @@ class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, L
             if 'inningpk' in self.kwargs:
                 innings = self.inning
             else:
-                innings = context['session_list'].first()
+                innings = None
 
             context['inning'] = innings
         return context
