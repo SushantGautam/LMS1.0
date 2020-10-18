@@ -147,16 +147,10 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_Member_Memo">Info about User</label>
-                        <textarea name="Member_Memo" id="id_Member_Memo" class="form-control"
+                        <textarea class="textarea form-control" name="Member_Memo" id="id_Member_Memo" cols="30"
                             rows="10">{{ user.Member_Memo }}</textarea>
+
                     </div>
-                    <!-- <div class="row">
-                        <div class="form-group controls">
-                            <label for="id_Member_Memo" class="col-form-label control-label">Info About You</label>
-                            <textarea class="textarea form-control" name="Member_Memo" id="id_Member_Memo" cols="30"
-                                rows="10">{{ user.Member_Memo }}</textarea>
-                        </div>
-                    </div> -->
                     <div class="text-center my-3">
                         <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit">Submit</button>
                         <button class="btn btn-outline-secondary pmd-ripple-effect" type="button"
@@ -170,28 +164,35 @@
 
 <div class="profile-container bg-dark align-items-center" style="height: 12rem;">
     <div class="profile-bar" style="background: none;">
-        <div class="d-flex align-items-center">
-            <figure class="avatar mr-2" style="height: 8rem; width: 8rem;">
-                {% if request.user.Avatar %}
-                <img src="{{ request.user.Avatar }}" class="rounded-circle" alt="avatar">
-                {% else %}
-                <img src="{% static 'media/image/user/man_avatar3.jpg'%}" class="rounded-circle" alt="avatar">
-                {% endif %}
-            </figure>
-            <div class="ml-3">
-                <h3 class="mb-2">
-                    {% if user.first_name %}
-                    {{ user.getFullName }}
+        <div class="d-flex align-items-end justify-content-between w-100">
+            <div class="d-flex align-items-center">
+                <figure class="avatar mr-2" style="height: 8rem; width: 8rem;">
+                    {% if request.user.Avatar %}
+                    <img src="{{ request.user.Avatar }}" class="rounded-circle" alt="avatar">
                     {% else %}
-                    {{ user.username}}
+                    <img src="{% static 'media/image/user/man_avatar3.jpg'%}" class="rounded-circle" alt="avatar">
                     {% endif %}
-                </h3>
-                <!-- <small class="opacity-7"> -->
-                <i class="fa fa-user"></i>&nbsp; {{ user.get_user_type }}
-                <!-- </small> -->
+                </figure>
+                <div class="ml-3">
+                    <h3 class="mb-2">
+                        {% if user.first_name %}
+                        {{ user.getFullName }}
+                        {% else %}
+                        {{ user.username}}
+                        {% endif %}
+                    </h3>
+                    <!-- <small class="opacity-7"> -->
+                    <i class="fa fa-user"></i>&nbsp; {{ user.get_user_type }}
+                    <!-- </small> -->
+                </div>
+            </div>
+            <div class="upload-btn-wrapper">
+                <form class="profile-pic-upload" enctype="multipart/form-data">
+                    <button class="btn btn-sm">Change Avatar</button>
+                    <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
+                </form>
             </div>
         </div>
-
     </div>
 </div>
 <div class="col-12 text-center text-primary">
@@ -405,9 +406,29 @@
             </div>
         </div>
     </h3>
-    <p class="text-dark">{% if user.Member_Memo %}
+    <p class="text-dark">
+        {% if user.Member_Memo %}
         {{ user.Member_Memo|truncatewords:80 }}
         {% else %}
-        No description ... <br><br>
-        {% endif %}</p>
+        Please Add Description about you
+        {% endif %}
+    </p>
+</div>
+<hr>
+
+<div class="col-12 text-center text-primary">
+    <!-- <h3>Password
+    </h3> -->
+    <p class="text-dark">
+        <a class="btn btn-outline-primary" href="{% if 'teacher' in request.path %}
+                                        {% url 'teacher_change_password' %}
+                                    {% elif 'student' in request.path %}
+                                        {% url 'student_change_password' %}
+                                    {% else %}
+                                        {% url 'centeradmin_change_password' %}
+                                    {% endif %}">
+            Change Password
+        </a>
+
+    </p>
 </div>
