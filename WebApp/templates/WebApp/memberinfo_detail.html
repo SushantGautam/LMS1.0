@@ -244,21 +244,19 @@
                         <tr>
                             <th>No.</th>
                             <th>Group Name</th>
+                            <th>Course Name</th>
                             <th>Teacher Count</th>
-                            <th>Status</th>
                         </tr>
                         {% for group in teacher_groups %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td><a href="{{ group.get_absolute_url }}">{{ group.InningGroup_Name }}</a></td>
-                                <td>{{ group.Teacher_Code.all.count }}</td>
                                 <td>
-                                    {% if group.Use_Flag %}
-                                        Active
-                                    {% else %}
-                                        Inactive
-                                    {% endif %}
+                                    <a href="{{ group.Course_Code.get_absolute_url }}">
+                                        {{ group.Course_Code.Course_Name }}
+                                    </a>
                                 </td>
+                                <td>{{ group.Teacher_Code.all.count }}</td>
                             </tr>
                         {% endfor %}
                     </table>
