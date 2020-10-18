@@ -1,9 +1,5 @@
-import django
 from django import forms
 from django.contrib import admin
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.html import format_html
-from django.utils.translation import gettext as _
 
 from .models import Quiz, Progress, Answer, MCQuestion, TF_Question, SA_Question, Sitting
 
@@ -46,7 +42,7 @@ class QuizAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'url', 'course_code','chapter_code','cent_code','question_count' )
     # list_filter = ('category',)
-    search_fields = ('description', 'course_code',)
+    search_fields = ('title', 'description', 'course_code__Course_Name',)
 
 
     # def changelist_view(self, request, extra_context=None):

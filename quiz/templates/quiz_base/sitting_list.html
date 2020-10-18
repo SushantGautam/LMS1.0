@@ -34,6 +34,12 @@
                     {% endif %}
             > {{ session }}</option>
         {% endfor %}
+        <option value="-1"
+                {% if not inning %}
+                selected
+                {% endif %}
+        > All Sessions
+        </option>
     </select>
 </div>
 
