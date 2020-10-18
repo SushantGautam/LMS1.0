@@ -1380,14 +1380,22 @@ def singleUserHomePageJSON(request):
                 assignments = filter_active_assignments(chapters, sessions)[:5]
         else:
             assignments = filter_active_assignments(chapters, sessions)[:5]
+
         assignments = AssignmentInfo.objects.filter(pk__in=[x.pk for x in assignments])
 
-        # sessions = []
-        # if batches:
-        #     for batch in batches:
-        #         # Filtering out only active sessions
-        #         session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
-        #         sessions += session
+        assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
+                                              'Register_DateTime', 'Assignment_Start',
+                                              course_code=F('Course_Code__pk'),
+                                              course_name=F('Course_Code__Course_Name'),
+                                              chapter_code=F('Chapter_Code__pk'),
+                                              chapter_name=F('Chapter_Code__Chapter_Name'),
+                                              Register_Agent_Username=F('Register_Agent__username'),
+                                              Register_Agent_Firstname=F('Register_Agent__first_name'),
+                                              Register_Agent_Lastname=F('Register_Agent__last_name'))
+
+        if request.GET.get('assignment'):
+            response = {'assignments': list(assignments_list), }
+            return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
 
         student_group = request.user.groupmapping_set.all()
         student_session = InningInfo.objects.filter(Groups__in=student_group)
@@ -1425,15 +1433,7 @@ def singleUserHomePageJSON(request):
                                       Course_Info=F('Course_Code__Course_Info'), Use_Flag=F('Course_Code__Use_Flag'),
                                       Center_Code=F('Course_Code__Center_Code'),
                                       Register_Agent=F('Course_Code__Register_Agent'))
-        assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
-                                              'Register_DateTime', 'Assignment_Start',
-                                              course_code=F('Course_Code__pk'),
-                                              course_name=F('Course_Code__Course_Name'),
-                                              chapter_code=F('Chapter_Code__pk'),
-                                              chapter_name=F('Chapter_Code__Chapter_Name'),
-                                              Register_Agent_Username=F('Register_Agent__username'),
-                                              Register_Agent_Firstname=F('Register_Agent__first_name'),
-                                              Register_Agent_Lastname=F('Register_Agent__last_name'))
+
         survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
                                              'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
                                              'Session_Code', 'Course_Code', 'Added_By')
