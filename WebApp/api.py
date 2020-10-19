@@ -84,6 +84,17 @@ class ChapterInfoViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id', 'Course_Code']
 
+    def get_queryset(self):
+        if self.request.GET.get('course'):
+            self.queryset = self.queryset.filter(Course_Code__pk__in=self.request.GET.get('course').split(','))
+
+            if self.request.GET.get('session'):
+                from WebApp.student_module.views import student_active_chapters
+                self.queryset = student_active_chapters(self.request.GET.get('course').split(','),
+                                                        self.request.GET.get('session').split(','))
+
+        return self.queryset
+
 
 class InningInfoViewSet(viewsets.ModelViewSet):
     """ViewSet for the InningInfo class"""

@@ -763,6 +763,7 @@ class Sitting(models.Model):
 
     score_list = models.CharField(
         max_length=1024,
+        null=True, blank=True,
         verbose_name=_("Score List"),
         validators=[])
 
