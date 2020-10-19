@@ -1393,6 +1393,9 @@ def singleUserHomePageJSON(request):
                                               Register_Agent_Firstname=F('Register_Agent__first_name'),
                                               Register_Agent_Lastname=F('Register_Agent__last_name'))
 
+        [assignment.update(complete=assignments.get(pk=assignment['id']).get_student_assignment_status(request.user))
+         for assignment in assignments_list]
+
         if request.GET.get('assignment'):
             response = {'assignments': list(assignments_list), }
             return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
