@@ -7,7 +7,7 @@ class CenterInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CenterInfo
         fields = (
-            'pk', 'Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent'
+            'pk', 'Center_Name', 'Center_Logo', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent'
         )
 
 

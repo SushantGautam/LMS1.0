@@ -1423,11 +1423,11 @@ def singleUserHomePageJSON(request):
         for course in courses:
             course_data = progress(request.user, course[0])
             courses_progress[course[0]] = course_data
-        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'first_name', 'last_name', 'Member_Avatar',
-                                                                    'email', 'username', 'Member_Permanent_Address',
-                                                                    'Member_Temporary_Address', 'Member_BirthDate',
-                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher',
-                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'username', 'Member_ID', 'first_name', 'last_name',
+                                                                    'Member_Avatar', 'email', 'Member_Permanent_Address',
+                                                                    'Member_Temporary_Address', 'Member_BirthDate', 'Member_Department__Department_Name',
+                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher', 'Register_DateTime',
+                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender', 'last_login',
                                                                     'Center_Code')
         courses_list = courses.values(pk=F('Course_Code__pk'), Course_Name=F('Course_Code__Course_Name'),
                                       Course_Description=F('Course_Code__Course_Description'),
