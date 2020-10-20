@@ -760,9 +760,13 @@ def ImportCsvFile(request, *args, **kwargs):
                     birth_date = df.iloc[i]['Birthdate']
                     student = df.iloc[i]['(*)Student(0/1)']
                     teacher = df.iloc[i]['(*)Teacher(0/1)']
-                    department = str(df.iloc[i]['Department'])
+                    department = df.iloc[i]['Department']
+
+
+                    if not department:
+                        department = ''
                     # Validation
-                    if department is not None and department != '-' and department != "None" and len(department) != 0:
+                    if department:
                         if not DepartmentInfo.objects.filter(Department_Name__iexact=department,
                                                              Center_Code=request.user.Center_Code).exists():
                             error = "Department Name <strong>" + str(department) + "</strong> does not exists."
