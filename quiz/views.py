@@ -176,7 +176,10 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
-            score_list = [s for s in sitting.score_list.split(',') if s]
+            ssl = sitting.score_list
+            if not ssl:
+                ssl = ''
+            score_list = [s for s in ssl.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
@@ -292,7 +295,10 @@ class QuizTake(FormView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         guess = form.cleaned_data['answers']
         is_correct = self.question.check_if_correct(guess)
-        score_list = [s for s in self.sitting.score_list.split(',') if s]
+        ssl = self.sitting.score_list
+        if not ssl:
+            ssl = ''
+        score_list = [s for s in ssl.split(',') if s]
         score = self.question.score
 
         if is_correct is True:
