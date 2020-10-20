@@ -1,24 +1,19 @@
 {% load crispy_forms_tags %}
 
 <div class="x_content">
-    <br>
-
     <form method="post" id="department_form">
         {% csrf_token %}
         <div class="alert alert-danger form-errors" style="display: none"></div>
         {{ form|crispy }}
-
-
-
-
-        <button type="submit" class="submit-btn btn btn-primary">
-            {% if '/update' in request.path %}
+        <div class="text-center">
+            <button type="submit" class="submit-btn btn btn-primary">
+                {% if '/update' in request.path %}
                 Update
-            {% else %}
+                {% else %}
                 Create
-            {% endif %}
-        </button>
-
+                {% endif %}
+            </button>
+        </div>
     </form>
 </div>
 

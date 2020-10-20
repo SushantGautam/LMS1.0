@@ -1,119 +1,76 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-<div class="container">
-    <div class="page-section">
-        <div class="media v-middle">
-            <div class="media-body">
-                <h1 class="text-display-1 margin-none">List of Department </h1>
-            </div>
-            <div class="btn-createnew">
-
-                 <button type="button" class="btn btn-success" id="create_department-btn" data-toggle="modal"
-                    data-target="#department-modal">
-                Create New Department
-                 </button>
-
-           {# <a class="btn btn-success" href="{% url 'departmentinfo_create' %}">Create new Department</a> #}
-            </div>
-
-        </div>
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+        <h2 class="text-primary">List of Department</h2>
     </div>
-    <div class="row">
-        <div class="col-lg-8 col-md-6 col-sm-12">
-
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
-
-        </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
+        <button class="btn btn-primary pull-right" id="create_department-btn" data-toggle="modal"
+            data-target="#department-modal">Create New Department</button>
     </div>
-    <br>
-    <div class="panel panel-default">
-        <div class="table-responsive" id="tableView">
-            <table class="table table-striped table-bordered bg-white">
-                <thead class="thead-light bg-primary">
-                <tr class="tableTitleRow">
-                    <td>ID</td>
-                    <td>Department Name</td>
-                    <td>Register Agent</td>
-                    <td>Register Date</td>
-                    <td>Updated Date</td>
-                    <td>Status</td>
-                    <td>Actions</td>
-                </tr>
-                </thead>
-                {% for object in object_list %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
+</div>
 
-                        <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td>
-                        <td>{{ object.Register_Agent }}</td>
-                        <td>{{ object.Register_DateTime }}</td>
-                        <td>{{ object.Updated_DateTime }}</td>
-                        <td>
-                    {% if object.Use_Flag == True %}
-                        <span class="text-success">Active</span>
-                    {% else %}
-                        <span class="text-danger">In-Active</span>
-                    {% endif %}
-                        </td>
-                        <td>
-                            <button class="btn btn-primary edit_department-btn" data-toggle="modal"
-                                    data-target="#department-modal" value="{{ object.pk }}">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <a class="btn btn-danger" href="{% url 'departmentinfo_delete' pk=object.pk %}"
-                               onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
+<div class="table-responsive pt-3" id="tableView">
+    <table class="table table-striped" cellspacing="0" width="100%">
+        <thead class="thead-light bg-primary">
+            <tr class="tableTitleRow">
+                <th>ID</th>
+                <th>Department Name</th>
+                <th>Register Agent</th>
+                <th>Register Date</th>
+                <th>Updated Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        {% for object in object_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
 
-
-                    </tr>
-                {% endfor %}
-            </table>
-
-        </div>
-    </div>
+            <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td>
+            <td>{{ object.Register_Agent }}</td>
+            <td>{{ object.Register_DateTime }}</td>
+            <td>{{ object.Updated_DateTime }}</td>
+            <td>
+                {% if object.Use_Flag == True %}
+                <span class="text-success">Active</span>
+                {% else %}
+                <span class="text-danger">In-Active</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <button class="btn btn-primary btn-floating edit_department-btn" data-toggle="modal"
+                    data-target="#department-modal" value="{{ object.pk }}">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <a class="btn btn-danger btn-floating" href="{% url 'departmentinfo_delete' pk=object.pk %}"
+                    onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 
 </div>
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="department-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
 
-  <!-- Modal -->
-    <div class="modal fade" id="department-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                </div>
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>
