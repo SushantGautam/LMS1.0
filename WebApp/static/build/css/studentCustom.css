@@ -723,11 +723,11 @@ form {
   padding-right: 10px;
 }
 .SAQ_answer_label {
-  font-size: 1.8rem;
+  font-size: 1.0rem;
   margin: 5px 0px;
 }
 .SAQ_answer {
-  font-size: 1.6rem;
+  font-size: 0.8rem;
   margin-top: 10px;
   margin-left: 10px;
 }
@@ -755,9 +755,10 @@ form {
 .questionContainer .btn-success {
   width: auto;
   height: 35px;
-  background-color: #5bb75b;
+  background-color: #5c6bc0 !important;
   margin-left: 50px;
 }
+
 
 #switchButtons {
   /* margin-bottom: -20px; */

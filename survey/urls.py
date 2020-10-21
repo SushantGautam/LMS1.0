@@ -32,13 +32,12 @@ urlpatterns += (
 
 urlpatterns += (
     # urls for SurveyInfo
-    path('surveyinfo/', views.SurveyInfoListView.as_view(), name='surveyinfo_list'),
+    path('surveyinfo/', views.SurveyInfoListView.as_view(template_name='survey/surveylist.html'),
+         name='surveyinfo_list'),
     # path('surveyinfo/', views.SurveyList.as_view(), name='surveylist'),
 
-
-
     path('surveyinfo/detail/<int:pk>/',
-         views.SurveyInfoDetailView.as_view(), name='surveyinfo_detail'),
+         views.SurveyInfoDetailView.as_view(template_name='survey/surveyinfo_detail.html'), name='surveyinfo_detail'),
 
     path('surveyinfo/create/', views.SurveyInfoCreateView.as_view(),
          name='surveyinfo_create'),
@@ -46,32 +45,31 @@ urlpatterns += (
     path('surveyinfo/update/<int:pk>/',
          views.SurveyInfoUpdateView.as_view(), name='surveyinfo_update'),
 
-
-
-
     path('clearsurveys/<int:pk>/',
          views.SurveyclearViewForAdmin, name='clearsurveys'),
-
-
 
     # path('surveyinfo/detail', views.get_survey_info,
     #     name='get_survey_info'),
 
     #     path('surveyinfo/<int:category>/', views.surveyinfo_category,
     #          name='surveyinfo_category'),
-    path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(),
+    path('surveyinfo_ajax/', views.SurveyInfo_ajax.as_view(template_name='ajax/surveyInfoAddSurvey_ajax2.html'),
          name='surveyinfo_ajax'),
-    path('surveyinfo_ajax_update/<int:pk>/', views.SurveyInfoAjaxUpdate.as_view(),
+    path('surveyinfo_ajax_update/<int:pk>/',
+         views.SurveyInfoAjaxUpdate.as_view(template_name='ajax/surveyInfoAddSurvey_ajax2.html'),
          name='surveyinfo_ajax_update'),
-    path('surveyinfo_ajax_update_limited/<int:pk>/', views.SurveyInfoAjaxUpdateLimited.as_view(),
+    path('surveyinfo_ajax_update_limited/<int:pk>/',
+         views.SurveyInfoAjaxUpdateLimited.as_view(template_name='ajax/survey_update_limited_ajax.html'),
          name='surveyinfo_ajax_update_limited'),
     path('liveProgressResult/<int:pk>/', views.liveProgressResult.as_view(),
          name='liveProgressResult'),
 
-    path('surveyinforetake_ajax/<int:pk>/', views.SurveyInfoRetake_ajax.as_view(),
+    path('surveyinforetake_ajax/<int:pk>/',
+         views.SurveyInfoRetake_ajax.as_view(template_name='ajax/surveyInfoAddSurvey_ajax2.html'),
          name='surveyinfo_retake_ajax'),
 
-    path('surveyFilterCategory/', views.surveyFilterCategory.as_view(),
+    path('surveyFilterCategory/',
+         views.surveyFilterCategory.as_view(template_name='survey/common/surveyinfo_expireView.html'),
          name='surveyFilterCategory'),
 )
 
@@ -125,6 +123,3 @@ urlpatterns += (
     # delete survey
     path('surveyinfo/delete/', views.deleteSurvey, name='surveyinfo_delete'),
 )
-
-
-

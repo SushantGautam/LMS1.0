@@ -1,0 +1,63 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block stylesheets %}
+
+  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item active" aria-current="page">Survey</li>
+  {% endblock %}
+{% block content %}
+   {% include 'survey/common/alerts.html' %}
+  {% include 'teacher_module/survey/new_surveylist.html' %}
+{% endblock %}
+
+
+{% block javascript %}
+
+
+      <script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
+
+      <script>
+          $(document).ready(function () {
+
+                  // ...............................Prevent Search if the Search Field is Blank.........................//
+
+                  $('#search_survey').submit(function(){
+                      $('#search_survey input[type=text]').each(function(n,element){
+                          if ($(element).val()=='') {
+                              event.preventDefault();
+                              return false;
+                          }
+                        });
+
+                      return true;
+                  });
+
+                 // ...............................Repeater Class.........................//
+
+                 $('.repeater').repeater();
+          })
+
+      </script>
+
+      <script>
+          function survey_create_content(response) {
+              //location.reload();
+              console.log(response['url']);
+              window.location.href = String(response['url']);
+          }
+      </script>
+
+
+        //............................... Prevent Default for Add Survey...............................//
+      <script>
+       $('.add_survey_btn').click(function(event){
+              event.preventDefault();
+
+        });
+      </script>
+
+{% endblock javascript %}

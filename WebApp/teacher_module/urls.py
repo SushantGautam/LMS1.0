@@ -7,6 +7,7 @@ from survey import views as survey_views
 from .. import views as admin_views
 from mail import views as mail_views
 from event_calendar import views as cal_views
+from survey import views as surv_views
 
 urlpatterns = (
     # urls for TodoTInfo
@@ -385,4 +386,110 @@ urlpatterns += (
          name='teacher_event_calendar_delete'),
     path('calendar', cal_views.EventListView.as_view(template_name='teacher_module/calendar/index.html'),
          name='teacher_event_calendar'),
+)
+
+# Teacher's Survey
+
+# URLS for CategoryInfo
+urlpatterns += (
+
+    path('categoryinfo/', surv_views.CategoryInfoListView.as_view(),
+         name='teacher_categoryinfo_list'),
+    path('categoryinfo/create/', surv_views.CategoryInfoCreateView.as_view(),
+         name='teacher_categoryinfo_create'),
+    path('categoryinfo/detail/<int:pk>/',
+         surv_views.CategoryInfoDetailView.as_view(), name='teacher_categoryinfo_detail'),
+    path('categoryinfo/update/<int:pk>/',
+         surv_views.CategoryInfoUpdateView.as_view(), name='teacher_categoryinfo_update'),
+
+)
+
+# urls for SurveyInfo
+urlpatterns += (
+
+    path('surveyinfo/', surv_views.SurveyInfoListView.as_view(template_name='teacher_module/survey/surveylist.html'),
+         name='teacher_surveyinfo_list'),
+
+    path('surveyinfo/detail/<int:pk>/',
+         surv_views.SurveyInfoDetailView.as_view(template_name='teacher_module/survey/surveyinfo_detail.html'),
+         name='teacher_surveyinfo_detail'),
+
+    path('surveyinfo/create/', surv_views.SurveyInfoCreateView.as_view(),
+         name='teacher_surveyinfo_create'),
+
+    path('surveyinfo/update/<int:pk>/',
+         surv_views.SurveyInfoUpdateView.as_view(), name='teacher_surveyinfo_update'),
+
+    path('clearsurveys/<int:pk>/',
+         surv_views.SurveyclearViewForAdmin, name='teacher_clearsurveys'),
+
+    path('surveyinfo_ajax/', surv_views.SurveyInfo_ajax.as_view(),
+         name='teacher_surveyinfo_ajax'),
+    path('surveyinfo_ajax_update/<int:pk>/',
+         surv_views.SurveyInfoAjaxUpdate.as_view(),
+         name='teacher_surveyinfo_ajax_update'),
+    path('surveyinfo_ajax_update_limited/<int:pk>/',
+         surv_views.SurveyInfoAjaxUpdateLimited.as_view(),
+         name='teacher_surveyinfo_ajax_update_limited'),
+    path('liveProgressResult/<int:pk>/', surv_views.liveProgressResult.as_view(),
+         name='teacher_liveProgressResult'),
+
+
+
+    path('surveyFilterCategory/', surv_views.surveyFilterCategory.as_view(),
+         name='teacher_surveyFilterCategory'),
+)
+
+# urls for QuestionInfo
+urlpatterns += (
+
+    path('survey/questioninfo/', surv_views.QuestionInfoListView.as_view(),
+         name='teacher_questioninfo_list'),
+    path('survey/questioninfo/create/',
+         surv_views.QuestionInfoCreateView.as_view(), name='teacher_questioninfo_create'),
+    path('survey/questioninfo/detail/<int:pk>/',
+         surv_views.QuestionInfoDetailView.as_view(), name='teacher_questioninfo_detail'),
+    path('survey/questioninfo/update/<int:pk>/',
+         surv_views.QuestionInfoUpdateView.as_view(), name='teacher_questioninfo_update'),
+)
+
+# urls for OptionInfo
+urlpatterns += (
+
+    path('optioninfo/', surv_views.OptionInfoListView.as_view(), name='teacher_optioninfo_list'),
+    path('optioninfo/create/', surv_views.OptionInfoCreateView.as_view(),
+         name='teacher_optioninfo_create'),
+    path('optioninfo/detail/<int:pk>/',
+         surv_views.OptionInfoDetailView.as_view(), name='teacher_optioninfo_detail'),
+    path('optioninfo/update/<int:pk>/',
+         surv_views.OptionInfoUpdateView.as_view(), name='teacher_optioninfo_update'),
+)
+
+# urls for SubmitSurvey
+urlpatterns += (
+
+    path('submitsurvey/', surv_views.SubmitSurveyListView.as_view(),
+         name='teacher_submitsurvey_list'),
+    path('submitsurvey/create/', surv_views.SubmitSurveyCreateView.as_view(),
+         name='teacher_submitsurvey_create'),
+    path('submitsurvey/detail/<int:pk>/',
+         surv_views.SubmitSurveyDetailView.as_view(), name='teacher_submitsurvey_detail'),
+    path('submitsurvey/update/<int:pk>/',
+         surv_views.SubmitSurveyUpdateView.as_view(), name='teacher_submitsurvey_update'),
+)
+
+# urls for AnswerInfo
+urlpatterns += (
+    path('answerinfo/', surv_views.AnswerInfoListView.as_view(), name='teacher_answerinfo_list'),
+    path('answerinfo/create/', surv_views.AnswerInfoCreateView.as_view(),
+         name='teacher_answerinfo_create'),
+    path('answerinfo/detail/<int:pk>/',
+         surv_views.AnswerInfoDetailView.as_view(), name='teacher_answerinfo_detail'),
+    path('answerinfo/update/<int:pk>/',
+         surv_views.AnswerInfoUpdateView.as_view(), name='teacher_answerinfo_update'),
+)
+
+# delete survey
+urlpatterns += (
+    path('surveyinfo/delete/', surv_views.deleteSurvey, name='teacher_surveyinfo_delete'),
 )

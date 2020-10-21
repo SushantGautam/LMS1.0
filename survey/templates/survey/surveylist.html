@@ -26,9 +26,10 @@
 
 
   <script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
+
+ ///////////////////////////////  Survey Create AJAX POPUP -- ADMIN ///////////////////////////////////////////////
   {% for category in categories %}
     <script>
-
        $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
             $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
             $.ajax({
@@ -44,8 +45,9 @@
             });
         });
     </script>
+ {% endfor %}
 
-  {% endfor %}
+
   <script>
       $('#category_Add_Button_live').on('click', function () {
           $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
@@ -67,122 +69,20 @@
 
       $(document).ready(function () {
 
-
-         // var x = document.forms["search_survey"]["query"].value;
-         // if (x == "") {
-         //   $("#search_survey").click(function(event){
-         //     event.preventDefault();
-         //    }
-         //   ,false);
-         //   }
-
-
-
-        $('#search_survey').submit(function(){
-        $('#search_survey input[type=text]').each(function(n,element){
-            if ($(element).val()=='') {
-                event.preventDefault();
-             // alert('Please Enter Survey Title In order to Search ');
-             // ($element).addClass("error");
-              return false;
-            }
+       ////////////////////////////// Prevent Blank Search  /////////////////////////////////////////
+          $('#search_survey').submit(function(){
+                $('#search_survey input[type=text]').each(function(n,element){
+                    if ($(element).val()=='') {
+                        event.preventDefault();
+                        return false;
+                     }
+                });
+                return true;
           });
-          return true;
-        });
 
+       ////////////////////// Repeater /////////////////////////////
+         $('.repeater').repeater();
 
-
-
-           $('.repeater').repeater();
-
-
-          $.ajax({
-              type: "GET",
-              data: {
-                  'category_name': "all_survey",
-                  'date_filter': $("input[name='survey_filter_radio']:checked").val(),
-              },
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
-      });
-
-
-
-      $('.category-name').on('click', function () {
-          var category_name = this.id;
-          $.ajax({
-              type: "GET",
-              data: {
-                  'category_name': category_name,
-                  'date_filter': $("input[name='survey_filter_radio']:checked").val(),
-              },
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
-      });
-
-      // -----------------------------ACTIVE AND EXPIRE -------------------------------------
-      $("#ActiveButton").on("click", function () {
-          var category_name = $(".card-text.active .category-name").attr('id');
-          $.ajax({
-              type: "GET",
-              data: {
-                  'category_name': category_name,
-                  'date_filter': 'active',
-              },
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
-      });
-      $("#ExpireButton").on("click", function () {
-         var category_name = $(".card-text.active .category-name").attr('id');
-          $.ajax({
-              type: "GET",
-              data: {
-                  'category_name': category_name,
-                  'date_filter': 'expire',
-              },
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
-      });
-      $("#LiveButton").on("click", function () {
-          var category_name = $(".card-text.active .category-name").attr('id');
-          $.ajax({
-              type: "GET",
-              data: {
-                  'category_name': category_name,
-                  'date_filter': 'live',
-              },
-              url: "{% url 'surveyFilterCategory' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#rowCards").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
       });
 
 

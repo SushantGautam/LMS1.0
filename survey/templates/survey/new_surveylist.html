@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active"
+                    <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter={{filter}}"
                        class="category-name list-group-item d-flex align-items-center
                         {% if 'all_survey' in request.get_full_path %} bg-primary {% endif %}"
                        id="all_survey">
@@ -52,7 +52,7 @@
 
                 {% for category in categories %}
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'surveyinfo_list' %}?category_name={{ category.Category_Name }}&date_filter=active"
+                    <a href="{% url 'surveyinfo_list' %}?category_name={{ category.Category_Name }}&date_filter={{filter}}"
                        class="list-group-item d-flex align-items-center category-name
                         {% if category.Category_Name  in request.get_full_path  %} bg-primary {%endif%} "
                        id="{{ category.Category_Name }}">
@@ -190,11 +190,7 @@
 
                         {% for object in object_list%}
                         <div class="card p-3">
-                            <a href="{% if '/teachers' in request.path %}
-                                 {% url 'surveyinfodetail' object.pk %}
-                                         {% else %}
-                                 {% url 'surveyinfo_detail' object.pk %}
-                                         {% endif %}">
+                            <a href=" {% url 'surveyinfo_detail' object.pk %} ">
                                 <blockquote class="blockquote mb-0 card-body">
 
                                     {% if object.id in submittedSurvey %}

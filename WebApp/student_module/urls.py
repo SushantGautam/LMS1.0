@@ -7,6 +7,7 @@ from quiz import views as quizViews
 from survey import views as surveyViews
 from mail import views as mail_views
 from event_calendar import views as cal_views
+from survey import views as surv_views
 
 #
 # urlpatterns = (
@@ -236,3 +237,4 @@ urlpatterns += (
     path('calendar', cal_views.EventListView.as_view(template_name='student_module/calendar/index.html'),
          name='student_event_calendar'),
 )
+
