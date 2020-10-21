@@ -231,7 +231,7 @@ class Question(models.Model):
                                verbose_name=_('Question'))
 
     score = models.IntegerField(
-        null=True, blank=True, default=1,
+        default=1,
         help_text=_("Full score for the question"),
         verbose_name=_("Score"))
 
@@ -387,8 +387,8 @@ class SA_Question(Question):
         return self.content
 
     class Meta:
-        verbose_name = _("Short Answer style question")
-        verbose_name_plural = _("Short Answer style questions")
+        verbose_name = _("Short Answer Question")
+        verbose_name_plural = _("Short Answer Questions")
 
     def get_absolute_url(self):
         return reverse('saquestion_detail', args=(self.pk,))

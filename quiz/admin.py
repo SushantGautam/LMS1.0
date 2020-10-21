@@ -93,10 +93,9 @@ class MCQuestionAdmin(admin.ModelAdmin):
 
     #change_form_template = 'admin_add_form.html'
     #change_list_template = 'custom_list.html'
-    list_display = ('content', 'course_code', )
+    list_display = ('content', 'score', 'course_code', )
     list_filter = ('course_code',)
-    fields = ('content', 'figure', 'explanation', 'answer_order', 'cent_code')
-
+    fields = ('content', 'figure', 'explanation', 'answer_order', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
 
@@ -108,10 +107,9 @@ class TFQuestionAdmin(admin.ModelAdmin):
     # change_form_template = 'admin_add_form.html'
     # change_list_template = 'custom_list.html'
 
-    list_display = ('content', 'course_code', )
+    list_display = ('content', 'score', 'course_code')
     list_filter = ('course_code',)
-    fields = ('content', 'figure', 'explanation', 'correct', 'cent_code')
-
+    fields = ('content', 'figure', 'explanation', 'correct', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
     # add_form_template = 'admin_add_form.html'
@@ -121,9 +119,9 @@ class SAQuestionAdmin(admin.ModelAdmin):
     # change_form_template = 'admin_add_form.html'
     # change_list_template = 'custom_list.html'
 
-    # list_display = ('content', 'category', )
-    # list_filter = ('category',)
-    fields = ('content', 'explanation', 'cent_code')
+    list_display = ('content', 'score', 'course_code')
+    list_filter = ('course_code',)
+    fields = ('content', 'figure', 'explanation', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
     # add_form_template = 'admin_add_form.html'

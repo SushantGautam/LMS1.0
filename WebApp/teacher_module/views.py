@@ -1033,7 +1033,10 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
-            score_list = [s for s in sitting.score_list.split(',') if s]
+            ssl = sitting.score_list
+            if not ssl:
+                ssl = ''
+            score_list = [s for s in ssl.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
@@ -1080,7 +1083,10 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
-            score_list = [s for s in sitting.score_list.split(',') if s]
+            ssl = sitting.score_list
+            if not ssl:
+                ssl = ''
+            score_list = [s for s in ssl.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
@@ -2625,7 +2631,10 @@ def QuizMarkingCSV(request, quiz_pk):
             # end_index = user_ans.find(saq_id)
             # score_index = user_ans.count('": "', 0, end_index)
             score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(saquestion.id)
-            score_list = str(quiz_sitting.score_list).split(',')
+            score_list = quiz_sitting.score_list
+            if not score_list:
+                score_list = ''
+            score_list = str(score_list).split(',')
             if score_index < len(score_list):
                 new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
                 if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
