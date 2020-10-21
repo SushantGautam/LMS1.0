@@ -347,19 +347,14 @@ def edit_description_info_ajax(request):
             obj.Member_Memo = request.POST['Member_Memo']
             obj.save()
             messages.success(request, 'Profile Description updated.')
-            return JsonResponse({
-                'status': 'Success',
-                'msg': 'save successfully'
-            })
+            return JsonResponse({'status': 'Success', 'msg': 'save successfully'})
         except MemberInfo.DoesNotExist:
             messages.error(request, "Object doesn't exist")
-            return JsonResponse({
-                'status': 'Fail',
-                'msg': 'Object does not exist'
-            })
+            return JsonResponse({'status': 'Fail', 'msg': 'Object does not exist'})
     else:
         messages.error(request, 'Not a valid request')
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
+
 
 
 def edit_profile_image_ajax(request):

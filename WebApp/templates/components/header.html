@@ -281,21 +281,22 @@
                         <div class="list-group list-group-flush">
 
                             {% if 'teachers' in request.path or 'students' in request.path %}
-                                {% if user.Is_CenterAdmin %}<a href="{% url 'start' %}" class="list-group-item">Admin Account</a>{% endif %}
+                            {% if user.Is_CenterAdmin %}<a href="{% url 'start' %}" class="list-group-item">Admin
+                                Account</a>{% endif %}
                             {% endif %}
                             {% if not 'teachers' in request.path and user.Is_Teacher %}
-                                <a href="{% url 'teacher_home' %}" class="list-group-item">Teacher Account</a>
+                            <a href="{% url 'teacher_home' %}" class="list-group-item">Teacher Account</a>
                             {% endif %}
                             {% if not 'students' in request.path and user.Is_Student %}
-                                <a href="{% url 'student_home' %}" class="list-group-item">Student Account</a>
+                            <a href="{% url 'student_home' %}" class="list-group-item">Student Account</a>
                             {% endif %}
 
                             {% if 'teachers' in request.path %}
-                                <a href="#" class="list-group-item">Profile</a>
+                            <a href="{% url 'teacher_user_profile' %}" class="list-group-item">Profile</a>
                             {% elif 'students' in request.path %}
-                                <a href="#" class="list-group-item">Profile</a>
+                            <a href="{% url 'student_user_profile' %}" class="list-group-item">Profile</a>
                             {% else %}
-                                <a href="{% url 'user_profile' %}" class="list-group-item">Profile</a>
+                            <a href="{% url 'user_profile' %}" class="list-group-item">Profile</a>
                             {% endif %}
                             <a href="{% url 'logout' %}" class="list-group-item text-danger">Sign Out!</a>
                         </div>

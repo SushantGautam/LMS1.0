@@ -1,0 +1,15 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+
+{% block breadcrumb%}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Profile</li>
+{% endblock %}
+
+{% block content %}
+{% include 'profile.html' %}
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'build/js/profile.js' %}"></script>
+{% endblock %}
