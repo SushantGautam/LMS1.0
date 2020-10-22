@@ -149,7 +149,7 @@ class login(LoginView):
                     dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
                     conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
                     c = conn.cursor()
-                    username = form.get_user().username.replace('cue','')
+                    username = form.get_user().username.replace('cue', '')
                     c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
                     result = c.fetchall()
                     msg = """[원격수업강의 평가]를 완료하지 않았습니다.
@@ -762,7 +762,6 @@ def ImportCsvFile(request, *args, **kwargs):
                     teacher = df.iloc[i]['(*)Teacher(0/1)']
                     department = df.iloc[i]['Department']
 
-
                     if not department:
                         department = ''
                     department = str(department)
@@ -1038,7 +1037,8 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                         raise Exception
-                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group, Center_Code=center)
+                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group,
+                                                                  Center_Code=center)
 
                     # Courses validation
                     if not courses:
@@ -1121,11 +1121,13 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
     def get_context_data(self, **kwargs):
         context = super(MemberInfoDetailView, self).get_context_data()
         context['student_groups'] = self.object.groupmapping_set.filter(Use_Flag=True)
-        context['student_sessions'] = InningInfo.objects.filter(Groups__in=context['student_groups'], Use_Flag=True)
+        context['student_sessions'] = InningInfo.objects.filter(Groups__in=context['student_groups'],
+                                                                Use_Flag=True).order_by('-Updated_DateTime')
         context['teacher_groups'] = self.object.inninggroup_set.filter(Use_Flag=True)
         context['teacher_sessions'] = InningInfo.objects.filter(Course_Group__in=context['teacher_groups'],
-                                                                Use_Flag=True)
+                                                                Use_Flag=True).order_by('-Updated_DateTime')
         return context
+
 
 class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
     model = MemberInfo
@@ -1934,7 +1936,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                                                    Center_Code=request.user.Center_Code).exists():
                         # error = "Student Group Name already exist in the center please choose another name"
                         obj = GroupMapping.objects.get(GroupMapping_Name__iexact=group_name,
-                                                   Center_Code=request.user.Center_Code)
+                                                       Center_Code=request.user.Center_Code)
 
                     else:
                         obj = GroupMapping()
@@ -1965,20 +1967,21 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         GroupMapping.objects.filter(id=k).delete()
                     msg = error + ". Can't Upload data, Problem while registering group <b>" + str(
                         group_name) + "<b><br>" + str(e)
-                    return JsonResponse(data={"message": msg, "status": "error", "class": "text-danger", "rmclass": "text-success"})
+                    return JsonResponse(
+                        data={"message": msg, "status": "error", "class": "text-danger", "rmclass": "text-success"})
         else:
             error = "The uploaded excel has no data to register"
         if not error:
             error = "All data has been Uploaded Sucessfully"
             data['status'] = 'success'
             if skipped_students:
-                error = error +"<span class='text-warning'><br>These students are skipped already present in the group:<br>" + str(
-                        skipped_students) + "</span>"
+                error = error + "<span class='text-warning'><br>These students are skipped already present in the group:<br>" + str(
+                    skipped_students) + "</span>"
                 data['status'] = 'warning'
         data["message"] = error
         data["class"] = "text-success"
         data["rmclass"] = "text-danger"
-        return JsonResponse(data = data)
+        return JsonResponse(data=data)
 
 
 class GroupMappingCreateView(CreateView):

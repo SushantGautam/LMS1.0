@@ -153,12 +153,15 @@
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col col-md-6" style="height:220px; overflow:auto">
                     <h4 style="font-weight: 600; text-align:center"> Student Associated Sessions List </h4>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped memberdatatable">
+                        <thead>
                         <tr>
                             <th>No.</th>
                             <th>Session Name</th>
                             <th>Status</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for session in student_sessions %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
@@ -170,26 +173,30 @@
                                 <td>
                                     {% now "Y-m-d H:i" as todays_datewithtime %}
                                     {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                                    <span class="badge badge-success">Active</span> 
+                                        <span class="badge badge-success">Active</span>
                                     {% elif session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                                    <span class="badge badge-warning">Expired</span> 
+                                        <span class="badge badge-warning">Expired</span>
                                     {% else %}
-                                    <span class="badge badge-danger">Expired</span> 
+                                        <span class="badge badge-danger">Expired</span>
                                     {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
+                        </tbody>
                     </table>
                 </div>
                 <div class="col col-md-6" style="height:220px; overflow:auto">
                     <h4 style="font-weight: 600; text-align:center"> Student Associated Groups List </h4>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped memberdatatable">
+                        <thead>
                         <tr>
                             <th>No.</th>
                             <th>Group Name</th>
                             <th>Student Count</th>
                             <th>Status</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for group in student_groups %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
@@ -197,27 +204,31 @@
                                 <td>{{ group.Students.all.count }}</td>
                                 <td>
                                     {% if group.Use_Flag %}
-                                      <span class="badge badge-success">Active</span>  
+                                        <span class="badge badge-success">Active</span>
                                     {% else %}
-                                    <span class="badge badge-danger">Inactive</span>  
+                                        <span class="badge badge-danger">Inactive</span>
                                     {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
+                        </tbody>
                     </table>
                 </div>
             </div>
         {% endif %}
         {% if object.Is_Teacher %}
             <div class="row">
-                <div class="col col-md-6"style="height:220px; overflow:auto">
+                <div class="col col-md-6" style="height:220px; overflow:auto">
                     <h4 style="font-weight: 600; text-align:center"> Teacher Associated Sessions List </h4>
-                    <table class="table">
+                    <table class="table table-bordered table-striped memberdatatable">
+                        <thead>
                         <tr>
                             <th>No.</th>
                             <th>Session Name</th>
                             <th>Status</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for session in teacher_sessions %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
@@ -229,24 +240,28 @@
                                 <td>
                                     {% now "Y-m-d H:i" as todays_datewithtime %}
                                     {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                                    <span class="badge badge-success">Active</span> 
+                                        <span class="badge badge-success">Active</span>
                                     {% else %}
-                                    <span class="badge badge-danger">Inactive</span> 
+                                        <span class="badge badge-danger">Inactive</span>
                                     {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
+                        </tbody>
                     </table>
                 </div>
-                <div class="col col-md-6"style="height:220px; overflow:auto">
+                <div class="col col-md-6" style="height:220px; overflow:auto">
                     <h4 style="font-weight: 600; text-align:center"> Teacher Associated Groups List </h4>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped memberdatatable">
+                        <thead>
                         <tr>
                             <th>No.</th>
                             <th>Group Name</th>
                             <th>Course Name</th>
                             <th>Teacher Count</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         {% for group in teacher_groups %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
@@ -259,6 +274,7 @@
                                 <td>{{ group.Teacher_Code.all.count }}</td>
                             </tr>
                         {% endfor %}
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -294,6 +310,21 @@
             } else {
                 return false;
             }
+        });
+
+        $(document).ready(function () {
+
+            var table_main = $('.memberdatatable').DataTable({
+                responsive: true,
+                dom: 'lBfrtip',
+                buttons: [],
+                "searching": false,
+                "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": false,
+                "bAutoWidth": false
+            });
         });
     </script>
 {% endblock %}
