@@ -54,7 +54,7 @@
                 top: 0;
                 left: 0;
                 position: absolute;
-                z-index: 9999;
+                z-index: 999;
 
             }
 
@@ -96,6 +96,10 @@
                 /* border-bottom: groove; */
                 /* text-align: center; */
                 border: none;
+            }
+
+            #message-modal {
+                z-index: 1050;
             }
         </style>
         <link rel="icon"
@@ -642,7 +646,7 @@
                 </div>
                 <div id="UBL-meet"></div>
 
-                <script src='https://meet.jit.si/external_api.js'></script>
+                <script src='https://{{ user.Center_Code.UBLMeet_URL }}/external_api.js'></script>
                 <script>
                     var videocall_on = false    // Status that shows if video call is active or not
                     $(document).on('click', '.icon-for-video', function () {
@@ -666,7 +670,7 @@
                             // 'mute-everyone',
                         ];
                         let settingsSection = ['devices'];
-                        const domain = 'meet.jit.si';
+                        const domain = '{{ user.Center_Code.UBLMeet_URL }}';
 
                         {% if not "students" in request.path %}                            
                             audioMute = false;
@@ -2282,7 +2286,7 @@
         var idleTime = 0;
         var redirectInterval;
         var idleTimeCheckIntervalTime = 5000;
-        var idleTimeRedirectTime = (15 * 60 * 1000); // Time after the alert modal is shown.
+        var idleTimeRedirectTime = (10 * 1000); // Time after the alert modal is shown.
         window.onmousemove = function () {
             idleTime = 0;
         }

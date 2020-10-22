@@ -1912,6 +1912,8 @@ def GroupMappingCSVImport(request, *args, **kwargs):
         center = request.user.Center_Code
         error = ''
         saved_id = []
+        skipped_students = []
+        data = dict()
 
         if not df.empty:
             try:
@@ -1919,6 +1921,7 @@ def GroupMappingCSVImport(request, *args, **kwargs):
             except Exception as e:
                 return JsonResponse(
                     data={"message": "There is no data in column <b>(*)Group Name</b> in the file",
+                          "status": "error",
                           "class": "text-danger",
                           "rmclass": "text-success"})
 
@@ -1929,15 +1932,17 @@ def GroupMappingCSVImport(request, *args, **kwargs):
 
                     if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name,
                                                    Center_Code=request.user.Center_Code).exists():
-                        error = "Student Group Name already exist in the center please choose another name"
-                        raise Exception
+                        # error = "Student Group Name already exist in the center please choose another name"
+                        obj = GroupMapping.objects.get(GroupMapping_Name__iexact=group_name,
+                                                   Center_Code=request.user.Center_Code)
 
-                    obj = GroupMapping()
-                    obj.GroupMapping_Name = group_name
-                    obj.Register_Agent = reg_agent
-                    obj.Center_Code = center
-                    obj.save()
-                    saved_id.append(obj.id)
+                    else:
+                        obj = GroupMapping()
+                        obj.GroupMapping_Name = group_name
+                        obj.Register_Agent = reg_agent
+                        obj.Center_Code = center
+                        obj.save()
+                        saved_id.append(obj.id)
 
                     for j in range(len(students)):
                         student = students['(*)Student Username'][j]
@@ -1947,7 +1952,10 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         student = str(student)
                         if MemberInfo.objects.filter(username=student, Center_Code=center, Is_Student=True).exists():
                             obj_student = MemberInfo.objects.get(username=student)
-                            obj.Students.add(obj_student)
+                            if obj_student in obj.Students.all():
+                                skipped_students.append(obj_student.username)
+                            else:
+                                obj.Students.add(obj_student)
                         else:
                             error = "Student Username <b>{}</b> not found<br>".format(student)
                             raise Exception
@@ -1957,12 +1965,20 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                         GroupMapping.objects.filter(id=k).delete()
                     msg = error + ". Can't Upload data, Problem while registering group <b>" + str(
                         group_name) + "<b><br>" + str(e)
-                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
-            else:
-                error = "The uploaded excel has no data to register"
+                    return JsonResponse(data={"message": msg, "status": "error", "class": "text-danger", "rmclass": "text-success"})
+        else:
+            error = "The uploaded excel has no data to register"
         if not error:
             error = "All data has been Uploaded Sucessfully"
-        return JsonResponse(data={"message": error, "class": "text-success", "rmclass": "text-danger"})
+            data['status'] = 'success'
+            if skipped_students:
+                error = error +"<span class='text-warning'><br>These students are skipped already present in the group:<br>" + str(
+                        skipped_students) + "</span>"
+                data['status'] = 'warning'
+        data["message"] = error
+        data["class"] = "text-success"
+        data["rmclass"] = "text-danger"
+        return JsonResponse(data = data)
 
 
 class GroupMappingCreateView(CreateView):

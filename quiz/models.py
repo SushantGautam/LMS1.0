@@ -284,9 +284,10 @@ class MCQuestion(Question):
 
     def check_if_correct(self, guess):
         if guess:
-            answer = Answer.objects.get(id=int(guess))
-            if answer.correct is True:
-                return True
+            if Answer.objects.filter(id=int(guess)).exists():
+                answer = Answer.objects.get(id=int(guess))
+                if answer.correct is True:
+                    return True
         return False
 
     def order_answers(self, queryset):
