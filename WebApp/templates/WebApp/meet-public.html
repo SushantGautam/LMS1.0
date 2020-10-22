@@ -14,7 +14,7 @@
 
     </span>
     <br>
-    <script src='https://meet.jit.si/external_api.js'></script>
+    <script src='https://{{ user.Center_Code.UBLMeet_URL }}/external_api.js'></script>
 
     <script>
         document.getElementById('copy-link').value = document.location.origin + '/meet/{{ userobj.id }}/{{ meetcode }}/'
@@ -33,7 +33,7 @@
     </script>
 
     <script>
-        const domain = 'meet.jit.si';
+        const domain = '{{ user.Center_Code.UBLMeet_URL }}';
         let toolbarButtons = [
             'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
             'fodeviceselection',
