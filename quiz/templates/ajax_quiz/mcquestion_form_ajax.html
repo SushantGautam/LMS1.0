@@ -93,6 +93,9 @@
                     $(this).attr({'for': forValue});
                 }
             });
+            newElement.find('div:nth-child(2) .form-group').attr({'id': "div_id_answer_set-"+ total +"-content"});
+            newElement.find('.form-group .checkbox').attr({'id': "div_id_answer_set-"+ total +"-correct"});
+            newElement.find('.checkboxinput').removeAttr( "value");
             total++;
             $('#id_' + prefix + '-TOTAL_FORMS').val(total);
             $(selector).after(newElement);
@@ -181,6 +184,7 @@
             var is_checked = false;
             var cnt = 0;
             var non_empty_count = 0;
+            console.log(new FormData($(this)[0]));
             for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
                 if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
                     is_checked = true;
@@ -202,6 +206,7 @@
                 return false;
             }
 
+            
             $.ajax({
                 //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
                 cache: false,
