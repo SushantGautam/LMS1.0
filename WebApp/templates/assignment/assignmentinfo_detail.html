@@ -356,11 +356,11 @@
                                 {% for answer in Answers %}
                                     {% if questions.id == answer.Question_Code.id %}
                                         {% if answer.Assignment_Answer != '' %}
-                                            <p class="short_answer" data-answer="{{ answer.Assignment_Answer|safe }}"
-                                               style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
+                                            <div class="short_answer">
+                                                <p class="short_answer_p"
+                                                   style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
+                                            </div>
                                             {% now "Y-m-d H:i" as todays_date %}
-                                            {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
-                                            {# {% isAssignmentActive object as isanswerable %} #}
                                             {% if object.active %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
@@ -424,11 +424,6 @@
 
                                 {% for answer in notAnswered %}
                                     {% if  questions.id == answer %}
-                                        {#                                        <form enctype="multipart/form-data" method="post" id="{{ questions.id }}"#}
-                                        {#                                              data-parsley-validate=""#}
-                                        {#                                              class="form-horizontal form-label-left submitAnswer"#}
-                                        {#                                              novalidate="" data-id="{{ questions.id }}">#}
-                                        {#                                            {% csrf_token %}#}
                                         <form class="form_{{ questions.id }}">
                                             {% if questions.Answer_Type == 'S' %}
                                                 <div class="form-group">
@@ -895,8 +890,7 @@
                 var assignementForm = $(this).parent().find(`.assignment_update_form`);
                 var iframe = $(this).parent().find(`iframe`);
                 var innerDoc = iframe.contents();
-                var shortAns = $(this).parent().find(`.short_answer`).attr('data-answer');
-
+                var shortAns = $(this).parent().find(`.short_answer`).html();
                 $(this).parent().children().css('display', 'none');
                 assignementForm.show();
 
