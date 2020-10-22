@@ -184,7 +184,6 @@
             var is_checked = false;
             var cnt = 0;
             var non_empty_count = 0;
-            console.log(new FormData($(this)[0]));
             for (cnt = 0; cnt < $("#id_answer_set-TOTAL_FORMS").val(); cnt++) {
                 if ($("#id_answer_set-" + cnt + "-correct").is(':checked')) {
                     is_checked = true;
