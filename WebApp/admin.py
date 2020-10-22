@@ -36,7 +36,7 @@ class MemberInfoAdminForm(forms.ModelForm):
         if user.id is None:
             user.set_password(self.cleaned_data["password"])
         else:
-            if MemberInfo.objects.get(id=user.id).password != user.password:
+            if not 'pbkdf2_sha256$' in user.password:
                 user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()
