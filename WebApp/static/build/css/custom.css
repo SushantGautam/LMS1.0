@@ -1691,9 +1691,9 @@ article {
 }
 
 
-ol, ul {
+/* ol, ul {
     list-style: none;
-}
+} */
 
 .answerList li:first-child {
     border-top-width: 0;
