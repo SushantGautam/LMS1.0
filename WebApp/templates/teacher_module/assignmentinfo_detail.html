@@ -1065,6 +1065,9 @@
                         }, 3000)*/
                         {% endcomment %}
                     },
+                    error: function (e) {
+                        console.log(e);
+                    }
                 });
             } else {
                 alert('No Answers to download')

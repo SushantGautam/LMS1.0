@@ -5,8 +5,9 @@ import re
 import shutil
 from datetime import datetime, timedelta
 from io import BytesIO
-
+from pathlib import Path
 import pandas as pd
+
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
@@ -568,16 +569,35 @@ def downloadAssignmentAnswers(request):
         assignment_pk = str(request.POST.get('assignment_id'))
         question_pk = str(request.POST.get('question_id'))
         path = settings.MEDIA_ROOT
+        flag = True
         dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
-        for i in list_of_ids:
-            # srcfile = os.path.join(path, src)
-            src = str(AssignAnswerInfo.objects.get(pk=int(i)).Assignment_File)
-            if os.path.isfile(os.path.join(path, src)):
-                if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
-                    shutil.copy(os.path.join(path, src), dstfolder)
-                else:
-                    os.makedirs(dstfolder)
-                    shutil.copy(os.path.join(path, src), dstfolder)
+
+        answer_files = AssignAnswerInfo.objects.filter(pk__in=list(list_of_ids)).values_list('Assignment_File', flat=True)
+        
+        # Clean previous copied content
+        if os.path.isdir(dstfolder):
+            shutil.rmtree(dstfolder)
+        Path(dstfolder).mkdir(parents=True, exist_ok=True)
+
+        # Check if no new file
+        zip_file_path = os.path.join(dstfolder, assignment_pk + '_' + question_pk + '.zip')
+        if os.path.isfile(zip_file_path):
+            for answer_file in answer_files:
+                if os.path.getmtime(zip_file_path) < os.path.getmtime(path, answer_file):
+                    flag = True
+                    break
+            flag = False
+        
+        # Copy and create new zip file
+        if flag:
+            for answer_file in answer_files:
+                # srcfile = os.path.join(path, answer_file)
+                # if os.path.isfile(os.path.join(path, src)):
+                #     if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
+                shutil.copy(os.path.join(path, answer_file), dstfolder)
+                    # else:
+                    #     os.makedirs(dstfolder)
+                    #     shutil.copy(os.path.join(path, src), dstfolder)
             shutil.make_archive(
                 path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk,
                 'zip', dstfolder)
