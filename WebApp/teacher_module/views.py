@@ -572,7 +572,7 @@ def downloadAssignmentAnswers(request):
         flag = True
         dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
 
-        answer_files = AssignAnswerInfo.objects.filter(pk__in=list(list_of_ids)).values_list('Assignment_File', flat=True)
+        answer_files = AssignAnswerInfo.objects.filter(pk__in=list_of_ids).values_list('Assignment_File', flat=True)
         
         # Clean previous copied content
         if os.path.isdir(dstfolder):
@@ -580,13 +580,15 @@ def downloadAssignmentAnswers(request):
         Path(dstfolder).mkdir(parents=True, exist_ok=True)
 
         # Check if no new file
-        zip_file_path = os.path.join(dstfolder, assignment_pk + '_' + question_pk + '.zip')
+        zip_file_path = os.path.join(path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk + '.zip')
         if os.path.isfile(zip_file_path):
             for answer_file in answer_files:
-                if os.path.getmtime(zip_file_path) < os.path.getmtime(path, answer_file):
-                    flag = True
+                answer_file_path = os.path.join(path, answer_file)
+                print(os.path.getmtime(zip_file_path), os.path.getmtime(answer_file_path))
+                if os.path.getmtime(zip_file_path) < os.path.getmtime(answer_file_path):
+                    flag = False
                     break
-            flag = False
+            flag = not flag
         
         # Copy and create new zip file
         if flag:
