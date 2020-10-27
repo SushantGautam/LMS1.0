@@ -49,9 +49,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
-                    <a href="#">
-                        <h6 class="card-title mb-0">Session</h6>
-                    </a>
+                    <h6 class="card-title mb-0">Session</h6>
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for object in sessions %}
@@ -123,7 +121,7 @@
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <!-- <a href="{% url 'forum:index' %}"> -->
                     <h6 class="card-title mb-0">Survey</h6>
-                    <span>{{ threadcount }}</span>
+                    <span>{{ surveycount  }}</span>
                     <!-- </a> -->
                 </div>
                 <ul class="list-group list-group-flush">
@@ -137,7 +135,7 @@
                 </ul>
             </div>
             <div class="card-body text-center pt-0">
-                <a href="{% url 'forum:index' %}" class="btn btn-outline-light">
+                <a href="{% url 'surveyinfo_list' %}" class="btn btn-outline-light">
                     View All
                 </a>
             </div>
