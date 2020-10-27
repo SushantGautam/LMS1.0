@@ -59,7 +59,7 @@ urlpatterns += (
          views.SurveyInfoAjaxUpdate.as_view(template_name='ajax/surveyInfoAddSurvey_ajax2.html'),
          name='surveyinfo_ajax_update'),
     path('surveyinfo_ajax_update_limited/<int:pk>/',
-         views.SurveyInfoAjaxUpdateLimited.as_view(template_name='ajax/survey_update_limited_ajax.html'),
+         views.SurveyInfoAjaxUpdateLimited.as_view(),
          name='surveyinfo_ajax_update_limited'),
     path('liveProgressResult/<int:pk>/', views.liveProgressResult.as_view(),
          name='liveProgressResult'),

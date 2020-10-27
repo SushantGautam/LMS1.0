@@ -37,31 +37,31 @@
 {% block customjss %}
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script>
-      $(document).ready(function () {
-          {#$("#smartwizard").smartWizard({selected: 0,});#}
 
-      });
   </script>
     <script>
         document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
 
-        $('#id_End_Date').datetimepicker();
+          //  $('#id_End_Date').datetimepicker();
 
-        if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
-          $('#id_End_Time').durationPicker({
-              showSeconds: true,
-              showDays: false,
-              onChanged: function (newVal) {
-              }
-          });
+            if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
+                $('#id_End_Time').durationPicker({
+                    showSeconds: true,
+                    showDays: false,
+                    onChanged: function (newVal) {
+                    }
+                });
 
-            $(".bdp-block:visible").addClass("col-md-4")
-        }
+                $(".bdp-block:visible").addClass("col-md-4")
+            }
 
         $("#categoryForm").submit(function (e) {
+
+           console.log("Hello");
             if ($('#id_End_Date').val() != "") {
                 $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
             }
+
             e.preventDefault();
             $.ajax({
                 //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
@@ -78,8 +78,8 @@
               error: function () {
                   console.log('Error in posting form');
               }
-          });
-      });
+            });
+        });
   </script>
 
 {% endblock customjss %}
