@@ -1029,21 +1029,21 @@
 
         $('.downloadallfiles').on('click', function () {
             let q_id = $(this).attr('data-question_id');
-            let answer_file_list = []
+            let answer_id_list = []
             {% for answer in Answers %}
                 if (q_id == '{{ answer.Question_Code.id }}') {
                     {% if answer.Assignment_File %}
-                        answer_file_list.push('{{ answer.Assignment_File }}')
+                        answer_id_list.push('{{ answer.id }}')
                     {% endif %}
                 }
             {% endfor %}
-            if (answer_file_list.length > 0) {
+            if (answer_id_list.length > 0) {
                 $.ajax({
                     url: "{% url 'downloadAssignmentAnswers' %}",
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': '{{ csrf_token }}',
-                        'list_of_files': answer_file_list,
+                        'list_of_ids': answer_id_list,
                         'question_id': q_id,
                         'assignment_id': '{{ Assignment.pk }}',
                     },

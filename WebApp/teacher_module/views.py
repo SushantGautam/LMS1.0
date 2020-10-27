@@ -462,7 +462,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
         context['inning'] = innings
         context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
         course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
-            pk=self.kwargs.get('chapter')).Course_Code,
+            pk=self.kwargs.get('chapter')).Course_Code, Use_Flag=True,
                                                    Teacher_Code=self.request.user)
 
         if inningpk:
@@ -564,13 +564,14 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
 
 def downloadAssignmentAnswers(request):
     if request.method == "POST":
-        list_of_files = request.POST.getlist('list_of_files[]')
+        list_of_ids = request.POST.getlist('list_of_ids[]')
         assignment_pk = str(request.POST.get('assignment_id'))
         question_pk = str(request.POST.get('question_id'))
         path = settings.MEDIA_ROOT
         dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
-        for src in list_of_files:
+        for i in list_of_ids:
             # srcfile = os.path.join(path, src)
+            src = str(AssignAnswerInfo.objects.get(pk=int(i)).Assignment_File)
             if os.path.isfile(os.path.join(path, src)):
                 if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
                     shutil.copy(os.path.join(path, src), dstfolder)
