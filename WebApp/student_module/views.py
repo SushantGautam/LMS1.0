@@ -628,11 +628,12 @@ class ParticipateSurvey(View):
             answerObject.Submit_Code = submitSurvey
             answerObject.save()
         messages.add_message(request, messages.SUCCESS, 'Your Survey has been submitted successfully.')
-        if 'iframe' in request.GET:
-            return redirect(reverse('questions_student') + '?iframe=' + self.request.GET.get(
-                'iframe'))
-        else:
-            return redirect('questions_student')
+        return redirect(reverse('surveyFilterCategory_student') + '?category_name=all_survey&date_filter=active')
+        # if 'iframe' in request.GET:
+        #     return redirect(reverse('questions_student') + '?iframe=' + self.request.GET.get(
+        #         'iframe'))
+        # else:
+        #     return redirect('questions_student')
 
 
 class surveyFilterCategory_student(ListView):

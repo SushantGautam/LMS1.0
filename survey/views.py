@@ -330,6 +330,7 @@ class SurveyInfoAjaxUpdateLimited(AjaxableResponseMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         if 'teachers' in self.request.path:
             context['update_url'] = reverse('TeacherSurveyInfo_ajax_update_limited', kwargs={'pk': self.object.pk})
         else:
@@ -354,8 +355,11 @@ class SurveyInfoAjaxUpdateLimited(AjaxableResponseMixin, UpdateView):
                 self.object.End_Date = self.object.Start_Date + timedelta(seconds=int(self.request.POST["End_Time"]))
                 self.object.save()
             super().form_valid(form)
-
-        response = {'url': self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id})),
+        if 'teachers' in self.request.path:
+            url = self.request.build_absolute_uri(reverse('teacher_surveyinfo_detail', kwargs={'pk': self.object.id}))
+        else:
+            url = self.request.build_absolute_uri(reverse('surveyinfo_detail', kwargs={'pk': self.object.id}))
+        response = {'url': url,
                     'teacher_url': self.request.build_absolute_uri(
                         reverse('surveyinfodetail', kwargs={'pk': self.object.id})),
                     'student_url': self.request.build_absolute_uri(
