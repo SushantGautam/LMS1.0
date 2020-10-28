@@ -1,4 +1,4 @@
-
+{% load i18n %}
 
 
 {% block content %}
@@ -9,7 +9,7 @@
                 {%else%}
                 <button class="btn btn-primary create_event_button" data-toggle="modal"
                         data-target="#createEventModal">
-                    <i class="ti-plus mr-2"></i> Create Event
+                    <i class="ti-plus mr-2"></i> {% trans "Create Event" %}
                 </button>
                 {%endif%}
             </div>
@@ -19,23 +19,23 @@
         <div class="col-md-3 app-sidebar">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title mb-2">Events</h6>
+                    <h6 class="card-title mb-2">{% trans "Events" %}</h6>
                      {% if 'students' in request.get_full_path %}
                      {%else%}
-                    <p class="text-muted">Drag and drop your event</p>
+                    <p class="text-muted">{% trans "Drag and drop your event" %}</p>
                     {%endif%}
                     <div class="list-group mb-3" id="external-events">
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-success" data-icon="car"></i> Holiday
+                            <i class="fa fa-circle text-success" data-icon="car"></i> {% trans "Holiday" %}
                         </div>
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-primary" data-icon="building"></i> Examination
+                            <i class="fa fa-circle text-primary" data-icon="building"></i> {% trans "Examination" %}
                         </div>
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-danger" data-icon="users"></i> Meeting
+                            <i class="fa fa-circle text-danger" data-icon="users"></i> {% trans "Meeting" %}
                         </div>
                         <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-info" data-icon="building"></i> Program
+                            <i class="fa fa-circle text-info" data-icon="building"></i> {% trans "Program" %}
                         </div>
 
                     </div>
@@ -60,7 +60,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Create Event</h5>
+                    <h5 class="modal-title">{% trans "Create Event" %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="ti-close"></i>
                     </button>
@@ -76,40 +76,40 @@
                             {% endif %}
                         {% csrf_token %}
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Title</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Title" %}</label>
                             <div class="col-sm-9">
                                 <input id="id_title" type="text" name="title" value="Program" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Event type</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Event type" %}</label>
                             <div class="col-sm-9">
                                 <div class="mt-2" id="event-type">
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="customRadioInline1" name="event_type"
                                                class="custom-control-input" value="PR" checked>
-                                        <label class="custom-control-label" for="customRadioInline1">Program</label>
+                                        <label class="custom-control-label" for="customRadioInline1">{% trans "Program" %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="customRadioInline2" name="event_type"
                                                class="custom-control-input" value="ME">
-                                        <label class="custom-control-label" for="customRadioInline2">Meeting</label>
+                                        <label class="custom-control-label" for="customRadioInline2">{% trans "Meeting" %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="customRadioInline3" name="event_type"
                                                class="custom-control-input" value="HO">
-                                        <label class="custom-control-label" for="customRadioInline3">Holiday</label>
+                                        <label class="custom-control-label" for="customRadioInline3">{% trans "Holiday" %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="customRadioInline4" name="event_type"
                                                class="custom-control-input" value="EX">
-                                        <label class="custom-control-label" for="customRadioInline4">Examination</label>
+                                        <label class="custom-control-label" for="customRadioInline4">{% trans "Examination" %}</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">All Day Event</label>
+                            <label class="col-sm-3 col-form-label">{% trans "All Day Event" %}</label>
                             <div class="col-sm-9">
                                 <div class="mt-2" id="all-day">
                                     <div class="custom-control custom-checkbox">
@@ -121,42 +121,42 @@
                             </div>
                         </div>
                         <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">Start</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Start" %}</label>
                             <div class="col-sm-5">
                                 <input id="event-start-date" type="text"
                                        class="form-control create-event-datepicker"
-                                       placeholder="Date">
+                                       placeholder="{% trans 'Date' %}">
                             </div>
                             <div class="col-sm-4 datetime_dynamic">
                                 <input id="event-start-time" type="text" class="form-control create-event-demo"
-                                       placeholder="Time">
+                                       placeholder="{% trans 'Time' %}">
                             </div>
                             <input type="hidden" name="date_start" id="id_date_start">
                         </div>
                         <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">End</label>
+                            <label class="col-sm-3 col-form-label">{% trans 'End' %}</label>
                             <div class="col-sm-5">
                                 <input id="event-end-date" type="text" class="form-control create-event-datepicker"
-                                       placeholder="Date">
+                                       placeholder="{% trans 'Date' %}">
                             </div>
                             <div class="col-sm-4 datetime_dynamic">
                                 <input id="event-end-time" type="text" class="form-control create-event-demo"
-                                       placeholder="Time">
+                                       placeholder="{% trans 'Time' %}">
                             </div>
                             <input type="hidden" name="date_end" id="id_date_end">
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Participants Type</label>
+                            <label class="col-sm-3 col-form-label">{% trans 'Participants Type' %}</label>
                             <div class="col-sm-9">
                                 <div class="mt-2" >
                                     {% if "teacher" in request.get_full_path%}
                                      <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_2" name="participation_type"  class="custom-control-input all_st" value="AS" checked>
-                                        <label class="custom-control-label" for="id_participant_type_2" >All Students</label>
+                                        <label class="custom-control-label" for="id_participant_type_2" >{% trans 'All Students' %}</label>
                                     </div>
                                      <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_4" name="participation_type"  class="custom-control-input" value="CH">
-                                        <label class="custom-control-label" for="id_participant_type_4">Choose</label>
+                                        <label class="custom-control-label" for="id_participant_type_4">{% trans 'Choose' %}</label>
                                     </div>
 
 
@@ -170,7 +170,7 @@
                                                 <div class="dropdown-menu dropdown-menu-right  ">
 
 
-                                                        <a class="dropdown-item all_select" href="#">Select All</a>
+                                                        <a class="dropdown-item all_select" href="#">{% trans 'Select All' %}</a>
 
                                                 </div>
                                         </div>
@@ -183,20 +183,20 @@
                                     {%else%}
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_1" name="participation_type" class="custom-control-input" value="AL" >
-                                        <label class="custom-control-label" for="id_participant_type_1">All Users</label>
+                                        <label class="custom-control-label" for="id_participant_type_1">{% trans 'All Users' %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_2" name="participation_type"  class="custom-control-input" value="AS" >
-                                        <label class="custom-control-label" for="id_participant_type_2">All Students</label>
+                                        <label class="custom-control-label" for="id_participant_type_2">{% trans 'All Students' %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_3" name="participation_type" class="custom-control-input" value="AT">
 
-                                        <label class="custom-control-label" for="id_participant_type_3">All Teachers</label>
+                                        <label class="custom-control-label" for="id_participant_type_3">{% trans "All Teachers" %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_participant_type_4" name="participation_type"  class="custom-control-input" value="CH">
-                                        <label class="custom-control-label" for="id_participant_type_4">Choose</label>
+                                        <label class="custom-control-label" for="id_participant_type_4">{% trans "Choose" %}</label>
                                     </div>
 
                                     {%endif%}
@@ -205,7 +205,7 @@
                         </div>
 
                         <div class="form-group row participant_dynamic">
-                            <label class="col-sm-3 col-form-label">Filter By</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Filter By" %}</label>
 
                             <div class="col-sm-9">
                                 <div class="mt-2" id="filter-type">
@@ -224,26 +224,26 @@
                                         <input type="radio" id="id_filter_type_1" name="filter_type"
                                                class="custom-control-input" value="A" checked>
                                         <label class="custom-control-label"
-                                               for="id_filter_type_1">Any</label>
+                                               for="id_filter_type_1">{% trans "Any" %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_filter_type_2" name="filter_type"
                                                class="custom-control-input" value="S">
                                         <label class="custom-control-label"
-                                               for="id_filter_type_2">Students</label>
+                                               for="id_filter_type_2">{% trans "Students" %}</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="id_filter_type_3" name="filter_type"
                                                class="custom-control-input" value="T">
                                         <label class="custom-control-label"
-                                               for="id_filter_type_3">Teachers</label>
+                                               for="id_filter_type_3">{% trans "Teachers" %}</label>
                                     </div>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row participant_dynamic">
-                            <label class="col-sm-3 col-form-label">Participants</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Participants" %}</label>
                             <div class="col-sm-9">
                                 <select name="participants" class="form-control select2-example"
                                         id="id_participants" multiple>
@@ -258,7 +258,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Description</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Description" %}</label>
                             <div class="col-sm-9">
                                 <textarea id="id_description" name="description" class="form-control" rows="6">
 
@@ -268,7 +268,7 @@
                         <div class="form-group row">
                             <label class="col-sm-3"></label>
                             <div class="col-sm-9">
-                                <button type="submit" id="btn-save" class="btn btn-primary">Create</button>
+                                <button type="submit" id="btn-save" class="btn btn-primary">{% trans "Create" %}</button>
                             </div>
                         </div>
                     </form>
@@ -290,7 +290,7 @@
             <div class="modal-header d-inline" >
                 <h5 class=" modal-title d-inline  ml-3">
 
-                    <span class="event-title ">Modal Title</span>
+                    <span class="event-title ">{% trans "Modal Title" %}</span>
                 </h5>
 
                  {% if 'students' in request.get_full_path %}
@@ -329,7 +329,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-8" style="float:left;text-align:left;">
-                            <h6> Event Type:</h6>
+                            <h6> {% trans "Event Type" %}:</h6>
                             <div>
                                 <span class="btn btn-sm   event-type"> </span>
                                 <span class="btn btn-sm  type_event"> </span>
@@ -340,13 +340,13 @@
                     <div class="row">
 
                         <div class="col-md-6" style="text-align:left;">
-                            <h6 class="strt_at"> Start At: (MM/DD/YYYY)</h6>
+                            <h6 class="strt_at"> {% trans "Start At" %}: (MM/DD/YYYY)</h6>
                             <div class="start_at"></div>
                             <br>
                         </div>
 
                         <div class="col-md-6" style="text-align:left;">
-                            <h6 class="en_at"> End At: (MM/DD/YYYY)</h6>
+                            <h6 class="en_at"> {% trans "End At" %}: (MM/DD/YYYY)</h6>
                             <div class="end_at"></div>
                         </div>
 
@@ -357,11 +357,11 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="participant" style="text-align:left;"> Participants:&nbsp;&nbsp;</h6>
+                            <h6 class="participant" style="text-align:left;"> {% trans "Participants" %}:&nbsp;&nbsp;</h6>
                         </div>
                         <div class="col-md-6 part_custom" style="text-align:left;">
                             <a class='btn btn-success btn-sm detail_btn' data-toggle="modal"
-                        data-target="#custom_Participant_Modal">Details</a>
+                        data-target="#custom_Participant_Modal">{% trans "Details" %}</a>
                         </div>
 
                     </div>
@@ -369,7 +369,7 @@
 
                     <div class="row">
                         <div class="col-md-12" style="text-align:left;">
-                            <h6> Description:&nbsp;&nbsp;</h6>
+                            <h6> {% trans "Description" %}:&nbsp;&nbsp;</h6>
                             <div class="desc"></div>
                         </div>
                     </div>
@@ -400,7 +400,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content cus_prt">
                 <div class="modal-header">
-                    <h5 class="modal-title">Participants</h5>
+                    <h5 class="modal-title">{% trans "Participants" %}</h5>
                     <button type="button" class="close close_prt" data-dismiss="modal" aria-label="Close">
                         <i class="ti-close"></i>
                     </button>
