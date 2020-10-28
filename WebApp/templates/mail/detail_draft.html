@@ -1,5 +1,6 @@
 {%extends 'mail/base.html'%}
 {%load static%}
+{% load i18n %}
 {% block email_detail %}
 <div class="card app-detail " style="height: fit-content;">
 <div class="modal-header ">
@@ -31,9 +32,9 @@
         <div class="dropdown-menu dropdown-menu-right" >
             <!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
             <!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
-            <a class="dropdown-item all_recipient " href="#">All </a>
-            <a class="dropdown-item all_stu_recipient" href="#">All Students</a>
-            <a class="dropdown-item all_tea_recipient" href="#"> All Teachers </a>
+            <a class="dropdown-item all_recipient " href="#">{% trans "All" %}</a>
+            <a class="dropdown-item all_stu_recipient" href="#">{% trans "All Students" %}</a>
+            <a class="dropdown-item all_tea_recipient" href="#">{% trans "All Teachers" %}</a>
         </div>
     </div>
 
@@ -45,9 +46,9 @@
 <div class="app-detail-article draft_article">
     <div class="card-body">
         <div >
-            <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Teacher</a>
+            <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> {% trans "Teacher" %}</a>
 
-            <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Student</a>
+            <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> {% trans "Student" %}</a>
 
         </div>
 
@@ -96,7 +97,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" name = "subject"
                        value="{{ object.subject }}"
-                       placeholder="Subject" required>
+                       placeholder="{% trans ' Subject '%} " required>
             </div>
             <div class="form-group">
                 <select name="label" class="form-control select2-example">
@@ -113,7 +114,7 @@
                     <input type="file" class="custom-file-input" name = "attachment"
 
                            multiple id="customFileLangHTMLDraft" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
-                    <label class="custom-file-label" for="customFileLangHTMLDraft" data-browse="Select files">
+                    <label class="custom-file-label" for="customFileLangHTMLDraft" data-browse="{% trans 'Select files' %}">
                         {{ object.get_file_upload_name }}</label>
 
 
@@ -121,7 +122,7 @@
 
                 {% if object.attachment%}
                 <div class="clear_div">
-                 <a href="#" id="clear_btn" class="text-danger" style="float:right;">Clear Files</a>
+                 <a href="#" id="clear_btn" class="text-danger" style="float:right;">{% trans "Clear Files" %}</a>
                  </div>
                 {% endif%}
                 <br>
@@ -131,7 +132,7 @@
 
             <div>
                 <div class="form-group d-none">
-                    <textarea class="form-control" id="input_body_draft" name = "body" rows="4" cols="50" placeholder="Type Your Email...." required>
+                    <textarea class="form-control" id="input_body_draft" name = "body" rows="4" cols="50" placeholder="{% trans 'Type Your Email....' %}" required>
                     </textarea>
                     </div>
                 <div class="compose-quill-editor quill_draft mb-3" >
@@ -146,7 +147,7 @@
                     <button class="ql-image"></button>
                 </span>
                     </div>
-                    <button class="btn btn-primary" type="submit">Send</button>
+                    <button class="btn btn-primary" type="submit">{% trans "Send" %}</button>
                 </div>
             </div>
         </form>
