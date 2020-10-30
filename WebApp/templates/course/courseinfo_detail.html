@@ -1,5 +1,11 @@
 {% load static %}
 {% load model_template_relation %}
+<style>
+    ul,ol{
+        list-style: none;
+    }
+</style>
+
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" id="create_chapter_modal" xmlns="http://www.w3.org/1999/html"
      xmlns="http://www.w3.org/1999/html">
@@ -512,6 +518,7 @@
                                 {% endif %}
                             </span>
 
+                                {% comment %}
                                 {% if '/students' in request.path %}
                                     {% for x in student_data %}
                                         {% if  o.pk == x.chapter.chapterObj.pk %}
@@ -524,6 +531,7 @@
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
+                                {% endcomment %}
                             </div>
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -564,7 +572,7 @@
                                                 <h4>
                                                 <span class="running-time"
                                                       style="font-weight:600;  font-style: italic;">
-                                                    Running Time: <b>{{ o.getmustreadtimeinformat }}</b>
+                                                    Running Time: <b>{{ o.display_mustreadtime }}</b>
                                                 </span>
                                                 </h4>
 
@@ -582,15 +590,15 @@
                                                  style="padding: 0px !important;">
                                                 <span style="font-weight: 600; font-style:italic">Status:</span>
                                                 {% if x.chapter.overall_progress == 100 %}
-                                                    <span> <strong
-                                                            style="color: #00A000;font-weight: 700;">Complete</strong></span>
+                                                    <span> <strong class="text-sucess">Complete</strong></span>
+                                                            <!-- style="color: #00A000;font-weight: 700;"> -->
                                                 {% else %}
-                                                    <span>   <strong
-                                                            style="color: red;font-weight: 700;">In Progress</strong></span>
+                                                    <span>   <strong class="text-danger">In Progress</strong></span>
+                                                            <!-- style="color: red;font-weight: 700;" -->
                                                 {% endif %}
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px !important;">
-                                                <div class="col-md-5 col-sm-12 col-xs-12">
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
                                                     <div class="progress">
                                                         <div class="progress-bar" role="progressbar" aria-valuenow="70"
                                                              aria-valuemin="0" aria-valuemax="100"
@@ -603,7 +611,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-5 col-sm-12 col-xs-12">
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
                                                     <div class="progress">
                                                         <div class="progress-bar" role="progressbar" aria-valuenow="70"
                                                              aria-valuemin="0" aria-valuemax="100"
@@ -616,9 +624,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-sm-12 col-xs-12">
-                                                    <span class="text-{% if x.quiz.completed_quiz == x.quiz.total_quiz_count %}success{% else %}danger{% endfor %}">
-                                                        Quiz completed/Total : {{ x.quiz.completed_quiz }} / {{ x.quiz.total_quiz_count }}
+                                            </div>
+                                            <div>
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <span class="text-{% if x.quiz.completed_quiz == x.quiz.quiz_count %}success{% else %}danger{% endif %}"
+                                                        style="font-weight:600;  font-style: italic;">
+                                                        Quiz Completed/Total : {{ x.quiz.completed_quiz }} / {{ x.quiz.quiz_count }}
                                                     </span>
                                                 </div>
                                             </div>
