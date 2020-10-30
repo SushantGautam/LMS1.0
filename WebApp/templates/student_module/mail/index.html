@@ -1,5 +1,6 @@
 {% extends "student_module/mail/base.html" %}
 {% load static%}
+{% load i18n %}
 
 {%block checkbox_all%}
 <input type="checkbox" class="custom-control-input" id="customCheckAll">
@@ -8,7 +9,7 @@
 
 {% block mail_action %}
 <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-   With selected
+   {% trans "With selected" %}
 </a>
 <div class="dropdown-menu">
 
@@ -20,52 +21,52 @@
 
     {% if 'inbox' in request.get_full_path %}
      <a class="dropdown-item text-primary email_status_select"
-        data-email_status="read" href="#">Mark as read</a>
+        data-email_status="read" href="#">{% trans "Mark as read" %}</a>
 
      <a class="dropdown-item text-secondary email_status_select"
-        data-email_status="unread" href="#">Mark as unread</a>
+        data-email_status="unread" href="#">{% trans "Mark as unread" %}</a>
 
 
      <a class="dropdown-item text-warning email_status_select"
-        data-email_status="spam" href="#">Spam</a>
+        data-email_status="spam" href="#">{% trans "Spam" %}</a>
      <div class="dropdown-divider"></div>
      <a class="dropdown-item text-danger email_status_select"
-        data-email_status="inbox_delete" href="#">Delete</a>
+        data-email_status="inbox_delete" href="#">{% trans "Delete" %}</a>
 
      {% elif 'send' in request.get_full_path %}
      <a class="dropdown-item text-danger email_status_select"
-        data-email_status="outbox_delete" href="#">Delete</a>
+        data-email_status="outbox_delete" href="#">{% trans "Delete" %}</a>
 
      {% elif 'draft' in request.get_full_path %}
      <a class="dropdown-item text-danger email_status_select"
-        data-email_status="outbox_delete" href="#">Delete</a>
+        data-email_status="outbox_delete" href="#">{% trans "Delete" %}</a>
 
      {% elif 'received_starred' in request.get_full_path %}
      <a class="dropdown-item  email_status_select"
-        data-email_status="star" href="#">UnMark as Star</a>
+        data-email_status="star" href="#">{% trans "UnMark as Star" %}</a>
 
      {% elif '?email_type=starred_outbox' in request.get_full_path %}
         <a class="dropdown-item  email_status_select"
-           data-email_status="star" href="#">UnMark as Star</a>
+           data-email_status="star" href="#">{% trans "UnMark as Star" %}</a>
 
      {% elif 'spam' in request.get_full_path %}
      <a class="dropdown-item text-success email_status_select"
-        data-email_status="spam" href="#">UnMark as Spam</a>
+        data-email_status="spam" href="#">{% trans "UnMark as Spam" %}</a>
      <a class="dropdown-item text-danger email_status_select"
-        data-email_status="inbox_delete" href="#">Delete</a>
+        data-email_status="inbox_delete" href="#">{% trans "Delete" %}</a>
 
      {% elif 'received_trash' in request.get_full_path %}
      <a class="dropdown-item text-success email_status_select"
-        data-email_status="inbox_delete" href="#">Recover Email</a>
+        data-email_status="inbox_delete" href="#">{% trans "Recover Email" %}</a>
      <a class="dropdown-item text-danger email_status_select"
-        data-email_status="inbox_remove" href="#">Empty Trash</a>
+        data-email_status="inbox_remove" href="#">{% trans "Empty Trash" %}</a>
 
 
     {% elif 'outbox_delete' in request.get_full_path %}
     <a class="dropdown-item text-success email_status_select"
-       data-email_status="outbox_delete" href="#">Recover Email</a>
+       data-email_status="outbox_delete" href="#">{% trans "Recover Email" %}</a>
     <a class="dropdown-item text-danger email_status_select"
-       data-email_status="outbox_remove" href="#">Empty Trash</a>
+       data-email_status="outbox_remove" href="#">{% trans "Empty Trash" %}</a>
          {%endif%}
 
 
@@ -74,7 +75,7 @@
 
 {% block mail_order %}
 <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-   Order by
+   {% trans "Order by" %}
 </a>
 <div class="dropdown-menu dropdown-menu-right">
 
@@ -87,7 +88,7 @@
    {%if 'date' in request.get_full_path%}
    active
    {%endif%}
-       " type="submit">Date
+       " type="submit">{% trans "Date" %}
       </button>
    </form>
 
@@ -99,7 +100,7 @@
       <button class="dropdown-item
         {%if 'subject' in request.get_full_path%}
    active
-   {%endif%}" type="submit">Subject
+   {%endif%}" type="submit">{% trans "Subject" %}
       </button>
    </form>
 
@@ -112,7 +113,7 @@
    {%if 'date' in request.get_full_path%}
    active
    {%endif%}"
-   type="submit">Date</button>
+   type="submit">{% trans "Date" %}</button>
    </form>
 
 
@@ -123,7 +124,7 @@
    <button class="dropdown-item
     {%if 'from' in request.get_full_path%}
    active
-   {%endif%}" type="submit">From</button>
+   {%endif%}" type="submit">{% trans "From" %}</button>
    </form>
 
 
@@ -134,7 +135,7 @@
    <button class="dropdown-item
         {%if 'subject' in request.get_full_path%}
    active
-   {%endif%}" type="submit">Subject</button>
+   {%endif%}" type="submit">{% trans "Subject" %}</button>
     </form>
 
 
@@ -147,7 +148,7 @@
    <button class="dropdown-item
         {%if 'UnRead' in request.get_full_path%}
    active
-   {%endif%}" type="submit">Unseen</button>
+   {%endif%}" type="submit">{% trans "Unseen" %}</button>
     </form>
    {%endif%}
 
@@ -165,7 +166,7 @@
       <i data-feather="menu" class="width-15 height-15"></i>
    </a>
    <div class="input-group">
-      <input type="text" class="form-control" name="search"  placeholder="Email search"
+      <input type="text" class="form-control" name="search"  placeholder="{% trans 'Email search' %}"
               value="{{ search_q }}"
              aria-describedby="button-addon1">
       <input type="hidden" class="form-control" name = "email_type" value="{{email_type}}"
@@ -316,64 +317,60 @@
 
                    {% if '?email_type=inbox' in request.get_full_path%}
                    <a class="dropdown-item reply_view text-info" id="reply_view{{ email.pk }}"
-                      data-email_id="{{ email.pk }}" href="#">Reply</a>
+                      data-email_id="{{ email.pk }}" href="#">{% trans "Reply" %}</a>
                    <a class="dropdown-item text-warning"
                       href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}">
-                      {%if email.mail_starred%}Remove Star{%else%} Add star {%endif%}</a>
-                   <a class="dropdown-item text-danger" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">Mark
-                      as Spam </a>
+                      {%if email.mail_starred%}Remove Star{%else%} {% trans "Add star" %} {%endif%}</a>
+                   <a class="dropdown-item text-danger" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">{% trans "Mark as Spam" %} </a>
                    <a class="dropdown-item text-danger"
-                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}"> Delete </a>
+                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}"> {% trans "Delete" %} </a>
                    {%endif%}
 
 
                    {% if '?email_type=send' in request.get_full_path%}
                    <a class="dropdown-item text-danger"
-                      href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}"> Delete </a>
+                      href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}"> {% trans "Delete" %} </a>
                    <a class="dropdown-item text-warning"
                       href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}">
-                      {%if email.sender_starred%}Remove Star {%else%} Add star {%endif%}</a>
+                      {%if email.sender_starred%}Remove Star {%else%} {% trans "Add star" %} {%endif%}</a>
                    {%endif%}
 
                    {%if '?email_type=draft' in request.get_full_path%}
                    <a class="dropdown-item text-danger"
-                      href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}">Delete</a>
+                      href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}">{% trans "Delete" %}</a>
                    {%endif%}
 
                    {%if '?email_type=received_starred' in request.get_full_path%}
-                   <a class="dropdown-item text-info" href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}">Remove
-                      Star</a>
-                   <a class="dropdown-item text-warning" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">Mark
-                      as Spam</a>
+                   <a class="dropdown-item text-info" href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}">{% trans "Remove Star" %}</a>
+                   <a class="dropdown-item text-warning" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">{% trans "Mark as Spam" %}</a>
                    <a class="dropdown-item text-danger"
-                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}">Delete</a>
+                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}">{% trans "Delete" %}</a>
                    {%endif%}
 
                     {%if '?email_type=starred_outbox' in request.get_full_path%}
-                     <a class="dropdown-item text-info" href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}">Remove Star</a>
-                      <a class="dropdown-item text-danger"href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}">Delete</a>
+                     <a class="dropdown-item text-info" href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}">{% trans "Remove Star" %}</a>
+                      <a class="dropdown-item text-danger"href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}">{% trans "Delete" %}</a>
                     {%endif%}
 
                    {%if '?email_type=spam' in request.get_full_path%}
-                   <a class="dropdown-item text-success" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">Unmark
-                      as Spam</a>
+                   <a class="dropdown-item text-success" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">{% trans "Unmark as Spam" %}</a>
                    <a class="dropdown-item text-danger"
-                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}">Delete</a>
+                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}">{% trans "Delete" %}</a>
                    {%endif%}
 
                    {% if '?email_type=received_trash' in request.get_full_path%}
                    <a class="dropdown-item text-success"
-                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}">Recover Email</a>
+                      href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}">{% trans "Recover Email" %}</a>
                     <form action="{%url 'student_mail_receiver_delete' email.pk%}?email_type={{email_type}}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="dropdown-item text-danger">Empty Trash</button>
+                        <button type="submit" class="dropdown-item text-danger">{% trans "Empty Trash" %}</button>
                     </form>
 <!--                   <a class="dropdown-item text-danger" href="">Empty Trash</a>-->
                    {%endif%}
 
                     {% if '?email_type=outbox_delete' in request.get_full_path%}
-                    <a class="dropdown-item text-success"href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}">Recover Email</a>
-                    <a class="dropdown-item text-danger"href="{%url 'student_mail_delete' email.pk%}?email_type={{email_type}}">Empty Trash</a>
+                    <a class="dropdown-item text-success"href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}">{% trans "Recover Email" %}</a>
+                    <a class="dropdown-item text-danger"href="{%url 'student_mail_delete' email.pk%}?email_type={{email_type}}">{% trans "Empty Trash" %}</a>
                       {%endif%}
 
 

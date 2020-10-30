@@ -34,18 +34,18 @@
                         <li>
                             <div class="form-group">
                                 <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                       for="first-name">Category:
+                                       for="first-name">{% trans "Category" %}:
                                     <span class="category-label">{{ object.Category_Code }}</span>
                                 </label>
                             </div>
                         </li>
 
                         <li class="surveyViewDates">
-                            <i class="fa fa-calendar"></i><label>Start date: <span
+                            <i class="fa fa-calendar"></i><label>{% trans "Start date" %}: <span
                                 class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
                         </li>
                         <li class="surveyViewDates">
-                            <i class="fa fa-calendar"></i><label>End date: <span
+                            <i class="fa fa-calendar"></i><label>{% trans "End date" %}: <span
                                 class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
                         </li>
 
@@ -62,7 +62,7 @@
             <div class="col-md-12">
                 <ul class="card_labels">
                     <br><br><br><br>
-                <li class="surveyViewDates"><i class="fa fa-calendar"></i><label>Submitted date: <span
+                <li class="surveyViewDates"><i class="fa fa-calendar"></i><label>{% trans "Submitted date" %}: <span
                                 class="">{{ submitted_date|date:'M d, Y H:i' }}</span></label></li>
                 </ul>
 
@@ -76,9 +76,9 @@
 
                       {% if datetimeexpired %}
      <div class="text-danger" style="display: none;text-align: center; " id="survey_already_taken">
-                          Survey submission date has ended.</div>
+                          {% trans "Survey submission date has ended" %}.</div>
                       {% else %}
-     <div class="text-success" style="display: none;text-align: center; " id="survey_already_taken">You have already taken this survey.</div>
+     <div class="text-success" style="display: none;text-align: center; " id="survey_already_taken">{% trans "You have already taken this survey" %}.</div>
                       {% endif %}
 
 
@@ -155,7 +155,7 @@
                         background-color: #f1f1f1; "></div>
 
                   <div class="x_content" style="margin: 0 40px 30px 40px; width:100%">
-                    <label class="SAQ_answer_label">Answers:</label>
+                    <label class="SAQ_answer_label">{% trans "Answers" %}:</label>
                     <textarea class="form-control SAQ_answer" name="{{ question.pk }}" rows="5" id="comment"
                               form="surveyform"
                               value="{{ question.answer }}"
@@ -177,7 +177,7 @@
                       {% else %}
                               {% if can_submit %}
                                  <div class="text-center">
-                                   <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">Submit</button>
+                                   <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">{% trans "Submit" %}</button>
                                   </div>
 
                               {% endif %}
@@ -214,7 +214,7 @@
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
+                <h4 class="modal-title">{% trans "Create Survey" %}</h4>
                 <div class="form-group">
                     <label class="control-label " id="categoryTitle" for="first-name">
                         {% for category in categories %}
