@@ -581,7 +581,7 @@
                                             <div class="col-md-6 col-sm-6 col-xs-12"
                                                  style="padding: 0px !important;">
                                                 <span style="font-weight: 600; font-style:italic">Status:</span>
-                                                {% if x.chapter.attendance %}
+                                                {% if x.chapter.overall_progress == 100 %}
                                                     <span> <strong
                                                             style="color: #00A000;font-weight: 700;">Complete</strong></span>
                                                 {% else %}
@@ -590,7 +590,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px !important;">
-                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-md-5 col-sm-12 col-xs-12">
                                                     <div class="progress">
                                                         <div class="progress-bar" role="progressbar" aria-valuenow="70"
                                                              aria-valuemin="0" aria-valuemax="100"
@@ -599,11 +599,11 @@
                                                                          background-color:green
                                                                      {% endif %}
                                                                      ">
-                                                            <span class="">Progress {{ x.chapter.progresspercent }}% ({{ x.chapter.currentpagenumber }}/{{ x.chapter.totalPage }})</span>
+                                                            <span class="">Slide {{ x.chapter.progresspercent }}% ({{ x.chapter.currentpagenumber }}/{{ x.chapter.totalPage }})</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                <div class="col-md-5 col-sm-12 col-xs-12">
                                                     <div class="progress">
                                                         <div class="progress-bar" role="progressbar" aria-valuenow="70"
                                                              aria-valuemin="0" aria-valuemax="100"
@@ -615,6 +615,11 @@
                                                             <span class="">Studied TIme {{ x.chapter.studytimeprogresspercent }}% ({{ x.chapter.totalstudytime }})</span>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div class="col-md-2 col-sm-12 col-xs-12">
+                                                    <span class="text-{% if x.quiz.completed_quiz == x.quiz.total_quiz_count %}success{% else %}danger{% endfor %}">
+                                                        Quiz completed/Total : {{ x.quiz.completed_quiz }} / {{ x.quiz.total_quiz_count }}
+                                                    </span>
                                                 </div>
                                             </div>
                                         {% endif %}
