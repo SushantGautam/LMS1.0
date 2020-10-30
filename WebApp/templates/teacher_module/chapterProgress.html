@@ -315,9 +315,9 @@
                                             <span class="text-danger">Slide ✖</span><br>
                                         {% endif %}
                                         {% if a.chapter.studytimeprogresspercent == 100.00 %}
-                                            <span class="text-success">Read time ✔</span><br>
+                                            <span class="text-success">Study time ✔</span><br>
                                         {% else %}
-                                            <span class="text-danger">Read time ✖</span><br>
+                                            <span class="text-danger">Study time ✖</span><br>
                                         {% endif %}
                                         {% if a.quiz.quiz_count != 0 %}
                                             {% if a.quiz.progress == 100.00 %}
@@ -361,7 +361,7 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <h5>Chapter Read Time: <span class="text-success" id="chapter_read_time"></span></h5>
+                    <h5>Chapter Study Time: <span class="text-success" id="chapter_read_time"></span></h5>
                     <h6>
                         <a class="studymarkcomplete" id="studymarkcomplete" href="javascript:void(0)"
                            style="float: right">Mark As Complete</a>

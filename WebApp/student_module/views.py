@@ -143,13 +143,15 @@ def start(request):
 
     # Filtering out chapters which have no content and progress is 100%
     chapters_list = []
-    for chapter in chapters[:5]:
+    for chapter in chapters:
         if chapter.has_content():
             response = getChapterScore(request.user, chapter)
-            chapter.progress_score = round(float(response['totalProgressScore']), 3)
-            chapter.chapter_progress = round(response['chapterProgress'][0]['chapter']['progresspercent'], 2)
+            study_time = float(response['chapterProgress'][0]['chapter']['studytimeprogresspercent'])
+            silde_progress = float(response['chapterProgress'][0]['chapter']['progresspercent'])
+            chapter.overall_progress = float(response['chapterProgress'][0]['overall_progress'])
+            chapter.chapter_progress = round((study_time + silde_progress)/2, 2)
             chapter.quiz = response['chapterProgress'][0]['quiz']
-            if chapter.progress_score < float(100):
+            if chapter.overall_progress < float(100):
                 chapters_list.append(chapter)
 
     # chapters = ChapterInfo.objects.filter(Course_Code__id__in=courses, Use_Flag=True).filter(
@@ -157,7 +159,7 @@ def start(request):
     #     Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None)).order_by('-pk')
 
     # Sorting chapters based on progress score
-    chapters_list.sort(key=lambda x: x.progress_score, reverse=False)
+    chapters_list.sort(key=lambda x: x.overall_progress, reverse=False)
 
     # Only taking 5 chapters
     incomplete_chapters = chapters_list[:5]
