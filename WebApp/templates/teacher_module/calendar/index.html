@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block stylesheet %}
   <!-- Fullcalendar -->
     <link rel="stylesheet" href="{% static 'vendors/fullcalendar/fullcalendar.min.css' %}" type="text/css">
@@ -11,8 +12,8 @@
 {% endblock %}
 
 {% block breadcrumb %}
- <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">Home</a></li>
- <li class="breadcrumb-item active" aria-current="page"><a href="#">Calendar</a></li>
+ <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+ <li class="breadcrumb-item active" aria-current="page"><a href="#">{% trans "Calendar" %}</a></li>
 {% endblock %}
 
 {% block content %}

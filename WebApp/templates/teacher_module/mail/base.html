@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'vendors/quill/quill.snow.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.css' %}" type="text/css">
@@ -7,7 +8,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
 {% endblock %}
 
 
@@ -21,7 +22,7 @@
            {%else%}
           <div class="card-body">
              <button class="btn btn-primary btn-block comp_eml" data-toggle="modal" data-target="#compose">
-             <i class="ti-plus mr-2"></i> Compose Email
+             <i class="ti-plus mr-2"></i> {% trans "Compose Email" %}
              </button>
           </div>
            {% endif%}
@@ -34,7 +35,7 @@
                      bg-primary
                     {% endif %}
                    d-flex align-items-center">
-                <i class="ti-email list-group-icon mr-2 text-primary"></i>Inbox
+                <i class="ti-email list-group-icon mr-2 text-primary"></i>{% trans "Inbox" %}
                 <span class="small ml-auto">{% if inbox_count %}
                     {{ inbox_count }}
                     {%else%} {%endif%}
@@ -46,7 +47,7 @@
                     {% if 'email_type=send' in request.get_full_path %}
                     bg-primary
                     {% endif %} ">
-                <i class="ti-check list-group-icon mr-2 text-success"></i>Send
+                <i class="ti-check list-group-icon mr-2 text-success"></i>{% trans "Send" %}
                 </a>
 
                 <a href="{% url 'teacher_mail_send_list' %}?email_type=draft"
@@ -54,7 +55,7 @@
                     {% if 'email_type=draft' in request.get_full_path %}
                     bg-primary
                     {% endif %} ">
-                <i class="ti-pencil-alt list-group-icon mr-2 text-secondary"></i>Draft
+                <i class="ti-pencil-alt list-group-icon mr-2 text-secondary"></i>{% trans "Draft" %}
                 </a>
 
 
@@ -65,7 +66,7 @@
                    class="list-group-item d-flex align-items-center
                      {% if 'email_type=starred' in request.get_full_path %}bg-primary
                     {% endif %}  ">
-                <i class="fa fa-star mr-2 text-warning"></i>Starred
+                <i class="fa fa-star mr-2 text-warning"></i>{% trans "Starred" %}
                 <span class="small ml-auto">
                     {%if starred_count %}{{ starred_count }} {%else%} {%endif%}
                    </span>
@@ -77,7 +78,7 @@
                 {% if 'spam' in request.get_full_path %}
                 bg-primary
                 {% endif %}">
-                <i class="ti-info-alt list-group-icon mr-2 text-danger"></i>Spam
+                <i class="ti-info-alt list-group-icon mr-2 text-danger"></i>{% trans "Spam" %}
                 </a>
 
 
@@ -87,7 +88,7 @@
                 {% if 'trash' in request.get_full_path %}
                             bg-primary
                             {% endif %} ">
-                <i class="ti-trash list-group-icon mr-2 text-danger"></i>Trash
+                <i class="ti-trash list-group-icon mr-2 text-danger"></i>{% trans "Trash" %}
                 <span class="small ml-auto">{% if trash_count %}{{ trash_count }} {%else%} {%endif%}</span>
                 </a>
 
@@ -95,7 +96,7 @@
               {% if 'mail_detail' in request.get_full_path or 'send_detail' in request.get_full_path or 'mail_draft_detail' in request.get_full_path %}
               {% else %}
              <div class="card-body">
-                <h6 class="mb-0">Labels</h6>
+                <h6 class="mb-0">{% trans "Labels" %}</h6>
              </div>
 
              <div class="list-group list-group-flush">
@@ -103,7 +104,7 @@
                    class="list-group-item d-flex align-items-center
                 {% if 'general' in request.get_full_path %} bg-dark {% endif %} ">
                    <span class="text-secondary fa fa-circle mr-2"></span>
-                    General
+                    {% trans "General" %}
                     {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{% if glc %}{{ glc }}{%else%} {%endif%}</span>
                     {%endif%}
@@ -114,7 +115,7 @@
                    class="list-group-item d-flex align-items-center
                    {% if 'support' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-warning fa fa-circle mr-2"></span>
-                    Support
+                    {% trans "Support" %}
                     {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{% if slc %}{{ slc }} {%else%} {%endif%}</span>
                     {%endif%}
@@ -125,7 +126,7 @@
                    class="list-group-item d-flex align-items-center
                    {% if 'assignment' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-success fa fa-circle mr-2"></span>
-                    Assignment
+                    {% trans "Assignment" %}
                     {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{%if alc %}{{ alc }} {%else%} {%endif%}</span>
                     {%endif%}
@@ -136,7 +137,7 @@
                    class="list-group-item d-flex align-items-center
                  {% if 'exam' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-info fa fa-circle mr-2"></span>
-                    Examination
+                    {% trans "Examination" %}
                     {%if email_type == 'inbox'%}
                     <span class="small ml-auto"> {%if elc %}{{ elc }} {%else%} {%endif%}</span>
                     {%endif%}
@@ -146,7 +147,7 @@
                    class="list-group-item d-flex align-items-center
                  {% if 'practical' in request.get_full_path %} bg-dark {% endif %} ">
                     <span class="text-danger fa fa-circle mr-2"></span>
-                    Practical
+                    {% trans "Practical" %}
                     {%if email_type == 'inbox'%}
                     <span class="small ml-auto">{% if plc %}{{ plc }} {%else%} {%endif%}</span>
                     {%endif%}
@@ -221,7 +222,7 @@
     <div class="modal-dialog" role="document">
        <div class="modal-content">
           <div class="modal-header">
-             <h5 class="modal-title">Compose Email</h5>
+             <h5 class="modal-title">{% trans "Compose Email" %}</h5>
              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
              <i class="ti-close"></i>
              </button>
@@ -255,7 +256,7 @@
 <!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
 <!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
 <!--                                <a class="dropdown-item all_recipient " href="#">All </a>-->
-                                <a class="dropdown-item all_stu_recipient" href="#">All Students</a>
+                                <a class="dropdown-item all_stu_recipient" href="#">{% trans "All Students" %}</a>
 <!--                               <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>-->
                         </div>
                  </div>
@@ -268,8 +269,8 @@
 
 <!--                  <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Teacher</a>-->
 
-                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> Student</a>
-                   <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> Custom</a>
+                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> {% trans "Student" %}</a>
+                   <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> {% trans "Custom" %}</a>
 
 
 
@@ -324,7 +325,7 @@
 
 
                 <div class="form-group">
-                   <input type="text" class="form-control" name = "subject" placeholder="Subject" required>
+                   <input type="text" class="form-control" name = "subject" placeholder="{% trans 'Subject' %}" required>
                 </div>
                 <div class="form-group">
                    <select name="label" class="form-control select2-example">
@@ -339,7 +340,7 @@
                    <div class="custom-file">
 
                       <input type="file" class="custom-file-input" name = "attachment" multiple id="customFileLangHTML">
-                      <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files"></label>
+                      <label class="custom-file-label" for="customFileLangHTML" data-browse="{% trans 'Select files' %}"></label>
 <!--                      <input type="file" class="custom-file-input" multiple id="customFileLangHTML">-->
 <!--                      <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files">Voeg-->
 <!--                      je document toe</label>-->
@@ -361,7 +362,7 @@
                          <button class="ql-image"></button>
                          </span>
                       </div>
-                      <button class="btn btn-primary">Send</button>
+                      <button class="btn btn-primary">{% trans "Send" %}</button>
                    </div>
                 </div>
              </form>

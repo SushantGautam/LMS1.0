@@ -1,5 +1,6 @@
 {% extends "teacher_module/mail/base.html" %}
 {% load static%}
+{% load i18n %}
 
 {%block checkbox_all%}
 <input type="checkbox" class="custom-control-input" id="customCheckAll">
@@ -8,21 +9,21 @@
 
 {% block mail_action %}
 <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-   With selected
+   {% trans "With selected" %}
 </a>
 
 <div class="dropdown-menu">
  <a class="dropdown-item text-success email_status_select"
-    data-email_status="recover" href="#">Recover Email</a>
+    data-email_status="recover" href="#">{% trans "Recover Email" %}</a>
  <a class="dropdown-item text-danger email_status_select"
-    data-email_status="empty_trash" href="#">Empty Trash</a>
+    data-email_status="empty_trash" href="#">{% trans "Empty Trash" %}</a>
 
 </div>
 {% endblock %}
 
 {% block mail_order %}
 <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-   Order by
+   {% trans "Order by" %}
 </a>
 <div class="dropdown-menu dropdown-menu-right">
 
@@ -35,7 +36,7 @@
    {%if 'date' in request.get_full_path%}
    active
    {%endif%}
-       " type="submit">Date
+       " type="submit">{% trans "Date" %}
       </button>
    </form>
 
@@ -47,7 +48,7 @@
       <button class="dropdown-item
         {%if 'subject' in request.get_full_path%}
    active
-   {%endif%}" type="submit">Subject
+   {%endif%}" type="submit">{% trans "Subject" %}
       </button>
    </form>
 
@@ -62,7 +63,7 @@
       <i data-feather="menu" class="width-15 height-15"></i>
    </a>
    <div class="input-group">
-      <input type="text" class="form-control" name="search"  placeholder="Email search"
+      <input type="text" class="form-control" name="search"  placeholder="{% trans 'Email search' %}"
               value="{{ search_q }}"
              aria-describedby="button-addon1">
       <input type="hidden" class="form-control" name = "email_type" value="{{email_type}}"
@@ -161,10 +162,10 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right ">
                   <a class="dropdown-item text-success"
-                      href="{%url 'teacher_mail_deleted' email.rec_obj.pk%}?email_type={{email_type}}">Recover Email</a>
+                      href="{%url 'teacher_mail_deleted' email.rec_obj.pk%}?email_type={{email_type}}">{% trans "Recover Email" %}</a>
                     <form action="{%url 'teacher_mail_receiver_delete' email.rec_obj.pk%}?email_type={{email_type}}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="dropdown-item text-danger">Empty Trash</button>
+                        <button type="submit" class="dropdown-item text-danger">{% trans "Empty Trash" %}</button>
                     </form>
                 </div>
 
@@ -236,7 +237,7 @@
     <div class="flex-grow-1 min-width-0">
        <div class="mb-1 d-flex justify-content-between align-items-center">
           <div class="text-truncate app-list-title">
-                To:
+                {% trans "To" %}:
               {% for u in user_list %}
               {% if u.pk in email.get_receiver_list %}
              {{u.username}}
@@ -260,8 +261,8 @@
 
 
 
-                     <a class="dropdown-item text-success"href="{%url 'teacher_sender_delete' email.pk%}?email_type={{email_type}}">Recover Email</a>
-                    <a class="dropdown-item text-danger"href="{%url 'teacher_mail_delete' email.pk%}?email_type={{email_type}}">Empty Trash</a>
+                     <a class="dropdown-item text-success"href="{%url 'teacher_sender_delete' email.pk%}?email_type={{email_type}}">{% trans "Recover Email" %}</a>
+                    <a class="dropdown-item text-danger"href="{%url 'teacher_mail_delete' email.pk%}?email_type={{email_type}}">{% trans "Empty Trash" %}</a>
 
 
 

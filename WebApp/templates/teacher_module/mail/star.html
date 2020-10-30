@@ -1,4 +1,5 @@
 {% extends "teacher_module/mail/base.html" %}
+{% load i18n %}
 {% load static%}
 
 {%block checkbox_all%}
@@ -8,18 +9,18 @@
 
 {% block mail_action %}
 <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-   With selected
+   {% trans "With selected" %}
 </a>
 
 <div class="dropdown-menu">
 <a class="dropdown-item  email_status_select"
-   data-email_status="star" href="#">UnMark as Star</a>
+   data-email_status="star" href="#">{% trans "UnMark as Star" %}</a>
 </div>
 {% endblock %}
 
 {% block mail_order %}
 <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
-   Order by
+   {% trans "Order by" %}
 </a>
 <div class="dropdown-menu dropdown-menu-right">
 
@@ -32,7 +33,7 @@
    {%if 'date' in request.get_full_path%}
    active
    {%endif%}
-       " type="submit">Date
+       " type="submit">{% trans "Date" %}
       </button>
    </form>
 
@@ -44,7 +45,7 @@
       <button class="dropdown-item
         {%if 'subject' in request.get_full_path%}
    active
-   {%endif%}" type="submit">Subject
+   {%endif%}" type="submit">{% trans "Subject" %}
       </button>
    </form>
 
@@ -59,7 +60,7 @@
       <i data-feather="menu" class="width-15 height-15"></i>
    </a>
    <div class="input-group">
-      <input type="text" class="form-control" name="search"  placeholder="Email search"
+      <input type="text" class="form-control" name="search"  placeholder="{% trans 'Email search' %}"
               value="{{ search_q }}"
              aria-describedby="button-addon1">
       <input type="hidden" class="form-control" name = "email_type" value="{{email_type}}"
@@ -141,7 +142,7 @@
     <div class="flex-grow-1 min-width-0">
        <div class="mb-1 d-flex justify-content-between align-items-center">
           <div class="text-truncate app-list-title">
-              From:
+              {% trans "From" %}:
              {{email.sender}}
              &lt{{email.sender.email}}&gt
 
@@ -160,8 +161,8 @@
                 <i class="fa fa-ellipsis-h"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right ">
-                   <a class="dropdown-item text-info" href="{%url 'teacher_mail_starred' email.rec_obj.pk%}?email_type={{email_type}}">Remove Star</a>
-                      <a class="dropdown-item text-danger"href="{%url 'teacher_mail_deleted' email.rec_obj.pk%}?email_type={{email_type}}">Delete</a>
+                   <a class="dropdown-item text-info" href="{%url 'teacher_mail_starred' email.rec_obj.pk%}?email_type={{email_type}}">{% trans "Remove Star" %}</a>
+                      <a class="dropdown-item text-danger"href="{%url 'teacher_mail_deleted' email.rec_obj.pk%}?email_type={{email_type}}">{% trans "Delete" %}</a>
                 </div>
 
              </div>
@@ -232,7 +233,7 @@
     <div class="flex-grow-1 min-width-0">
        <div class="mb-1 d-flex justify-content-between align-items-center">
           <div class="text-truncate app-list-title">
-             To:
+             {% trans "To" %}:
               {% for u in user_list%}
               {% if u.pk in email.get_receiver_list%}
              {{u.username}}
@@ -257,8 +258,8 @@
 
 
 
-                     <a class="dropdown-item text-info" href="{%url 'teacher_sender_starred' email.pk%}?email_type={{email_type}}">Remove Star</a>
-                      <a class="dropdown-item text-danger"href="{%url 'teacher_sender_delete' email.pk%}?email_type={{email_type}}">Delete</a>
+                     <a class="dropdown-item text-info" href="{%url 'teacher_sender_starred' email.pk%}?email_type={{email_type}}">{% trans "Remove Star" %}</a>
+                      <a class="dropdown-item text-danger"href="{%url 'teacher_sender_delete' email.pk%}?email_type={{email_type}}">{% trans "Delete" %}</a>
 
 
 
