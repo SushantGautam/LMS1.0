@@ -72,8 +72,10 @@
                                         href="{{ object.get_absolute_url }}">{{ object.Inning_Name }}</a></B></td>
                                 <td style="vertical-align: middle;">{{ object.Groups }}</td>
                                 <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
-                                <td style="vertical-align: middle;">{{ object.Start_Date }}</td>
-                                <td style="vertical-align: middle;">{{ object.End_Date }}</td>
+                                <td class="dateconFullMonth"
+                                style="vertical-align: middle;">{{ object.Start_Date|date:"M d, Y h:i A" }}</td>
+                                <td class="dateconFullMonth"
+                                    style="vertical-align: middle;">{{ object.End_Date|date:"M d, Y h:i A" }}</td>
                                 <td class="text-center"><a class="btn btn-sm btn-info"
                                                            href="{{ object.get_update_url }}">Edit</a>
                             </tr>
