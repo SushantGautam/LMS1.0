@@ -1,4 +1,17 @@
 {% if messages %}
+<script>
+    {% for message in messages %}
+        {% if message.tags|title|lower == 'danger' %}
+            toastr.error('{{ message }}');
+        {% else %}
+            toastr.{{message.tags|title|lower}}('{{ message }}');
+        {% endif %}
+    {% endfor %}
+</script>
+{% endif %}
+
+
+{% comment %}
 <div class="error" id="alert-message">
 
     {% for message in messages %}
@@ -37,3 +50,5 @@
 {% endfor %}
 
 {% endif %}
+
+{% endcomment %}
