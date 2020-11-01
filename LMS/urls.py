@@ -107,6 +107,11 @@ urlpatterns += (
 
 )
 
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        url(r'^rosetta/', include('rosetta.urls'))
+    ]
+
 # Login URL get
 urlpatterns += (
     path('loaderio-954a872bfd2583affa027425d4a0dd5a/', views.loaderverifylink),
