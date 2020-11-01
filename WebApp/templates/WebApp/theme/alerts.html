@@ -1,0 +1,39 @@
+{% if messages %}
+<div class="error" id="alert-message">
+
+    {% for message in messages %}
+    <div class="text-center errorMessage text-{{ message.tags|title|lower }} h5" id="message">
+        <strong>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            ERROR
+            {% else %}
+            {{ message.tags|title }}
+            {% endif %}
+        </strong>
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+
+{% endif %}
+
+
+
+{% if form.non_field_errors %}
+
+{% for error in form.non_field_errors %}
+
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong> {{ error }} </strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+{% endfor %}
+
+{% endif %}

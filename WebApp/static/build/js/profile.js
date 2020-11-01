@@ -15,7 +15,7 @@
 // });
 
 // // Show Hide Edit Contact Info Card
-// $(".edit-contact-card").hide();
+// // $(".edit-contact-card").hide();
 // $("#edit-contact-info").click(function () {
 //   $(".edit-contact-card").show();
 //   $(".view-contact-card").hide();
@@ -90,30 +90,35 @@ $(".edit-contact-card").submit(function (e) {
       location.reload();
     },
     error: function () {
-      console.log("Error in posting assignment create form");
+      console.log("Error in posting edit contact form");
     },
   });
 });
 
 // Submit data of contact card info
 $(".edit-description-card").submit(function (e) {
-  e.preventDefault(); // avoid to execute the actual submit of the form.
-  $.ajax({
-    url: "/editprofile/descriptioninfo",
-    type: "POST",
-    data: {
-      csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-      Member_Memo: $("#id_Member_Memo").val(),
-    },
-
-    success: function (response) {
-      console.log("Success");
-      location.reload();
-    },
-    error: function () {
-      console.log("Error in posting assignment create form");
-    },
-  });
+  val = $(this).find("textarea").val();
+  if (!val.replace(/^\s+|\s+$/g, "").length != 0) {
+    console.log("empty");
+    alert("Please enter description");
+    e.preventDefault();
+  } else {
+    $.ajax({
+      url: "/editprofile/descriptioninfo",
+      type: "POST",
+      data: {
+        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+        Member_Memo: $("#id_Member_Memo").val(),
+      },
+      success: function (response) {
+        console.log("Success");
+        location.reload();
+      },
+      error: function () {
+        console.log("Error in posting edit description form");
+      },
+    });
+  }
 });
 
 // upload image

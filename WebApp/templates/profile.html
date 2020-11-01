@@ -1,5 +1,6 @@
 {% load static %}
-
+{% load i18n %}
+{% include 'WebApp/theme/alerts.html' %}
 <div class="modal fade" id="edit_basic_info_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -15,23 +16,25 @@
                 <form method="post" class="edit-basic-card">
                     {% csrf_token %}
                     <div class="text-center">
+                        {% if 'students' not in request.path and 'teachers' not in request.path %}
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" name="username" id="id_username" type="text"
                                 value="{{ user.username}}" required autofocus {% if not request.path == '/profile/' %}
                                 readonly {% endif %}>
                         </div>
+                        {% endif %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="first_name">First Name</label>
+                                    <label for="first_name">First Name *</label>
                                     <input type="text" class="form-control" name="first_name" id="id_first_name"
                                         type="text" value="{{ user.first_name}}" required autofocus>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="last_name">Last Name</label>
+                                    <label for="last_name">Last Name *</label>
                                     <input type="text" class="form-control" name="last_name" id="id_last_name"
                                         type="text" value="{{ user.last_name}}" required autofocus>
                                 </div>
@@ -40,14 +43,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="Member_BirthDate">Date of Birth</label>
+                                    <label for="Member_BirthDate">Date of Birth *</label>
                                     <input name="Member_BirthDate" type="date" class="form-control"
                                         id="id_Member_BirthDate" max="9999-12-31"
                                         value="{{ user.Member_BirthDate|date:'Y-m-d' }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="Member_Gender">Gender</label>
+                                <label for="Member_Gender">Gender *</label>
                                 <div class="form-group mb-4">
                                     <div class="form-check form-check-inline">
                                         <input type="radio" id="male" value="M" name="gender" class="form-check-input"
@@ -66,8 +69,8 @@
                     <div class="row">
                         <div class="col-12 text-center my-3">
                             <button class="btn btn-primary" type="submit">Submit</button>
-                            <button class="btn btn-outline-secondary ml-4" type="reset"
-                                id="reset-basic-info">Cancel</button>
+                            <button class="btn btn-outline-secondary ml-4" type="reset" id="reset-basic-info"
+                                data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -122,8 +125,8 @@
                     <div class="row">
                         <div class="col-12 text-center my-3">
                             <button class="btn btn-primary" type="submit">Submit</button>
-                            <button class="btn btn-outline-secondary ml-3" type="reset"
-                                id="reset-contact-info">Cancel</button>
+                            <button class="btn btn-outline-secondary ml-3" type="reset" id="reset-contact-info"
+                                data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -153,8 +156,8 @@
                     </div>
                     <div class="text-center my-3">
                         <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised" type="submit">Submit</button>
-                        <button class="btn btn-outline-secondary pmd-ripple-effect" type="button"
-                            id="reset-description-info">Cancel</button>
+                        <button class="btn btn-outline-secondary pmd-ripple-effect ml-3" type="button"
+                            id="reset-description-info" data-dismiss="modal">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -188,7 +191,7 @@
             </div>
             <div class="upload-btn-wrapper">
                 <form class="profile-pic-upload" enctype="multipart/form-data">
-                    <button class="btn btn-sm">Change Avatar</button>
+                    <button class="btn btn-sm text-white">{% trans "Change Avatar" %}</button>
                     <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
                 </form>
             </div>
@@ -196,14 +199,14 @@
     </div>
 </div>
 <div class="col-12 text-center text-primary">
-    <h3>Basic Information
+    <h3>{% trans "Basic Information" %}
         <div class="dropdown pull-right">
-            <div data-toggle="dropdown" class="cursor-pointer">
-                <i class="fa fa-ellipsis-v "></i>
+            <div data-toggle="dropdown" class="cursor-pointer height-50 width-50">
+                <i class="fa fa-ellipsis-v"></i>
             </div>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                    data-target="#edit_basic_info_modal" data-animated>Edit</a>
+                    data-target="#edit_basic_info_modal" data-animated>{% trans "Edit" %}</a>
             </div>
         </div>
     </h3>
@@ -224,7 +227,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline align-items-baseline col-lg-2 col-4">
             <label for="member_id" class="control-label">
-                Member ID
+                {% trans "Member ID" %}
             </label>
             <i class="fa fa-hashtag"></i>
         </div>
@@ -235,7 +238,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="username" class="control-label">
-                Username
+                {% trans "Username" %}
             </label>
             <i class="fa fa-at"></i>
         </div>
@@ -245,7 +248,7 @@
     </div>
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
-            <label for="full_name" class="control-label">Full Name</label>
+            <label for="full_name" class="control-label">{% trans "Full Name" %}</label>
             <i class="fa fa-user"></i>
         </div>
         <div class="col-lg-10 col-8">
@@ -261,7 +264,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="date_of_birth" class="control-label">
-                Date of Birth
+                {% trans "Date of Birth" %}
             </label>
             <i class="fa fa-calendar"></i>
         </div>
@@ -272,7 +275,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="gender" class="control-label">
-                Gender
+                {% trans "Gender" %}
             </label>
             <i class="fa fa-venus-mars"></i>
         </div>
@@ -284,14 +287,14 @@
 <hr>
 
 <div class="col-12 text-center text-primary">
-    <h3>Contact Information
+    <h3>{% trans "Contact Information" %}
         <div class="dropdown pull-right">
-            <div data-toggle="dropdown" class="cursor-pointer">
+            <div data-toggle="dropdown" class="cursor-pointer height-50 width-50">
                 <i class="fa fa-ellipsis-v "></i>
             </div>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                    data-target="#edit_contact_info_modal" data-animated>Edit</a>
+                    data-target="#edit_contact_info_modal" data-animated>{% trans "Edit" %}</a>
             </div>
         </div>
     </h3>
@@ -300,7 +303,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-5">
             <label for="email" class="control-label">
-                Email
+                {% trans "Email" %}
             </label>
             <i class="fa fa-envelope"></i>
         </div>
@@ -311,7 +314,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-5">
             <label for="phone_number" class="control-label">
-                Phone Number
+                {% trans "Phone Number" %}
             </label>
             <i class="fa fa-phone"></i>
         </div>
@@ -322,7 +325,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-5">
             <label for="temporary_address" class="control-label">
-                Temporary Address
+                {% trans "Temporary Address" %}
             </label>
             <i class="fa fa-map-marker"></i>
         </div>
@@ -333,7 +336,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-5">
             <label for="permanent_address" class="control-label">
-                Permanent Address
+                {% trans "Permanent Address" %}
             </label>
             <i class="fa fa-home"></i>
         </div>
@@ -344,13 +347,13 @@
 </div>
 <hr>
 <div class="col-12 text-center text-primary">
-    <h3>Additional Information</h3>
+    <h3>{% trans "Additional Information" %}</h3>
 </div>
 <div class="p-3">
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="center_code" class="control-label">
-                Center Name
+                {% trans "Center Name" %}
             </label>
             <i class="fa fa-institution"></i>
         </div>
@@ -361,7 +364,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="user_type" class="control-label">
-                User Type
+                {% trans "User Type" %}
             </label>
             <i class="fa fa-user"></i>
         </div>
@@ -372,7 +375,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="user_type" class="control-label">
-                Joined Date
+                {% trans "Joined Date" %}
             </label>
             <i class="fa fa-calendar"></i>
         </div>
@@ -383,7 +386,7 @@
     <div class="form-group row">
         <div class="d-flex justify-content-between align-items-baseline col-lg-2 col-4">
             <label for="last_login" class="control-label">
-                Last Login
+                {% trans "Last Login" %}
             </label>
             <i class="fa fa-clock-o"></i>
         </div>
@@ -395,14 +398,14 @@
 <hr>
 
 <div class="col-12 text-center text-primary">
-    <h3>Description
+    <h3>{% trans "Description" %}
         <div class="dropdown pull-right">
-            <div data-toggle="dropdown" class="cursor-pointer">
+            <div data-toggle="dropdown" class="cursor-pointer height-50 width-50">
                 <i class="fa fa-ellipsis-v "></i>
             </div>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                    data-target="#edit_description_info_modal" data-animated>Edit</a>
+                    data-target="#edit_description_info_modal" data-animated>{% trans "Edit" %}</a>
             </div>
         </div>
     </h3>
@@ -410,7 +413,7 @@
         {% if user.Member_Memo %}
         {{ user.Member_Memo|truncatewords:80 }}
         {% else %}
-        Please Add Description about you
+        {% trans "Please" %}{% trans "Add" %}{% trans "Description" %}{% trans "about" %}{% trans "you" %}
         {% endif %}
     </p>
 </div>
@@ -427,7 +430,7 @@
                                     {% else %}
                                         {% url 'centeradmin_change_password' %}
                                     {% endif %}">
-            Change Password
+            {% trans "Change Password" %}
         </a>
 
     </p>

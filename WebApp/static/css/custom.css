@@ -82,7 +82,7 @@
 }
 
 .upload-btn-wrapper button {
-  cursor: pointer;
+  cursor: pointer !important;
   border: 2px solid white;
   color: white;
 }
