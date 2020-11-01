@@ -100,7 +100,6 @@ $(".edit-description-card").submit(function (e) {
   val = $(this).find("textarea").val();
   if (!val.replace(/^\s+|\s+$/g, "").length != 0) {
     console.log("empty");
-    alert("Please enter description");
     e.preventDefault();
   } else {
     $.ajax({
