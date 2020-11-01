@@ -16,7 +16,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 7rem;
-            padding: 0 2rem;
+            padding: 5rem;
             overflow: hidden;
             font-family: monospace;
         }
@@ -42,8 +42,23 @@
         .splashContent a {
             text-decoration: none;
             color: rgb(64, 108, 252);
-            font-size: 0.9rem;
+            font-size: 1.5rem;
             transition: 0.3s;
+        }
+
+        .splashContent h2 {
+            font-size: 1.5rem;
+            margin: 8px 0;
+        }
+
+        .splashContent h3 {
+            font-size: 1.5rem;
+            margin: 8px 0;
+        }
+
+        .splashContent h1 {
+            font-size: 2.5rem;
+
         }
 
         @media screen and (max-width: 1050px) {
@@ -58,8 +73,13 @@
                 margin: 8px 0;
             }
 
+            .splashContent h3 {
+                font-size: 1.5rem;
+                margin: 8px 0;
+            }
+
             .splashContent h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
 
             }
 
@@ -68,7 +88,7 @@
             }
 
             .splashContent {
-                background-image: url("static/images/LMS-svg.svg");
+                background-image: url("static/images/LMS_background.jpg");
                 background-size: cover;
             }
         }
