@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'forum',
     'quiz',
     'survey',
+    'rosetta',
     'decorator_include',
     'django_summernote',
     'Notifications',

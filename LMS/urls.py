@@ -121,6 +121,11 @@ urlpatterns += (
     path('api/v1/<int:chapterID>/chat_history/', views.getChatMessageHistoryApi, name='getChatHistory'),
 )
 
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        url(r'^rosetta/', include('rosetta.urls'))
+    ]
+
 import Notifications.urls
 
 urlpatterns += (
