@@ -25,7 +25,7 @@
             <div class="profile_info">
 
 
-                <span>Welcome,</span>
+                <span>{% trans 'Welcome' %},</span>
                 <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
@@ -40,58 +40,55 @@
         <div class="menu_section">
             {% if user.is_authenticated %}
 
-                <h3>Admin Portal Home</h3>
+                <h3>{% trans 'Admin Portal Home' %}</h3>
 
                 <hr>
 
                 <ul class="nav side-menu">
                     <li>
-                        <a href="/"><i class="fa fa-home"></i> Dashboard
-                        </a>
-
-
+                        <a href="/"><i class="fa fa-home"></i>{% trans 'Dashboard' %}</a>
                     </li>
                     <!-- <li>
                     <a href="{% url 'admin_calendar' %}"><i class="fa fa-calendar"></i> Calendar
                     </a>
                 </li> -->
                     <li>
-                        <a><i class="fa fa-user"></i>Members<span class="fa fa-chevron-down"></span></a>
+                        <a><i class="fa fa-user"></i>{% trans 'Members' %}<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{% url 'memberinfo_list' %}">Members List</a></li>
-                            <li><a href="{% url 'departmentinfo_list' %}">Departments List</a></li>
+                            <li><a href="{% url 'memberinfo_list' %}">{% trans 'Members List' %}</a></li>
+                            <li><a href="{% url 'departmentinfo_list' %}">{% trans 'Departments List' %}</a></li>
                             <li>
-                                <a href="{% url 'memberinfo_create' %}">Create New Member</a>
+                                <a href="{% url 'memberinfo_create' %}">{% trans 'Create New Member' %}</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a><i class="fa fa-book"></i> Courses
+                        <a><i class="fa fa-book"></i> {% trans 'Courses' %}
                             <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{% url 'courseinfo_list_active' %}">Course List</a></li>
+                            <li><a href="{% url 'courseinfo_list_active' %}">{% trans 'Course List' %}</a></li>
                             <li>
-                                <a href="{% url 'courseinfo_create' %}">Create New Course</a>
+                                <a href="{% url 'courseinfo_create' %}">{% trans 'Create New Course' %}</a>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <a><i class="fa fa-question-circle"></i> Quiz <span class="fa fa-chevron-down"></span>
+                        <a><i class="fa fa-question-circle"></i> {% trans 'Quiz' %} <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
-                            <li><a href="{% url 'quiz_list' %}">Quiz List</a></li>
-{#                            <li><a href="{% url 'quiz_marking' %}">Marking Page</a></li>#}
-                            <li><a href="{% url 'quiz_exam_list' %}">Quiz Exam</a></li>
+                            <li><a href="{% url 'quiz_list' %}">{% trans 'Quiz List' %}</a></li>
+{#                            <li><a href="{% url 'quiz_marking' %}">{% trans 'Marking Page' %}</a></li>#}
+                            <li><a href="{% url 'quiz_exam_list' %}">{% trans 'Quiz Exam' %}</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a><i class="fa fa-list"></i> Session
+                        <a><i class="fa fa-list"></i> {% trans 'Session' %}
                             <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{% url 'inninginfo_list' %}">Session List</a></li>
-                            <li><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
+                            <li><a href="{% url 'inninginfo_list' %}">{% trans 'Session List' %}</a></li>
+                            <li><a href="{% url 'groupmapping_list' %}">{% trans 'Student Group' %}</a></li>
 
-                            <li><a href="{% url 'inninggroup_list' %}">Teacher-Course Allocation</a></li>
+                            <li><a href="{% url 'inninggroup_list' %}">{% trans 'Teacher-Course Allocation' %}</a></li>
                             <!-- <li><a href="{% url 'inninginfo_create' %}">Register New Session</a></li> -->
                             <!-- <li><a href="{% url 'sessioninfo_list' %}">Session Name</a></li> -->
                             <!-- #TODO remove thios -->
@@ -102,7 +99,7 @@
                     </li>
 
                     <li>
-                        <a href="{% url 'teacher_report' %}"><i class="fa fa-file-text-o"></i> Teacher Report <span></span>
+                        <a href="{% url 'teacher_report' %}"><i class="fa fa-file-text-o"></i> {% trans 'Teacher Report' %} <span></span>
                         </a>
                     </li>
                 </ul>
@@ -111,11 +108,11 @@
             <hr>
             <ul class="nav side-menu">
                 <li>
-                    <a><i class="fa fa-user"></i>Forum<span class="fa fa-chevron-down"></span></a>
+                    <a><i class="fa fa-user"></i>{% trans 'Forum' %}<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{% url 'forum:index' %}">Home</a></li>
+                        <li><a href="{% url 'forum:index' %}">{% trans 'Home' %}</a></li>
                         {% if request.user.is_authenticated %}
-                            <li><a href="{% url 'forum:user_info' request.user.pk %}">profile</a></li>
+                            <li><a href="{% url 'forum:user_info' request.user.pk %}">{% trans 'Profile' %}</a></li>
                         {% endif %}
 
 
@@ -127,7 +124,7 @@
                         <i class="fa fa-envelope" id="messageSidebar"></i>Message</a>
                 </li> -->
                 <li>
-                    <a href=" {% url 'surveylist' %}"><i class="fa fa-bar-chart"></i>Survey</a>
+                    <a href=" {% url 'surveylist' %}"><i class="fa fa-bar-chart"></i>{% trans 'Survey' %}</a>
                 </li>
 
 
@@ -135,7 +132,7 @@
             <hr>
             <div style=" padding: 10px;">
 
-                <a href="https://we.tl/t-I5pJzFtHWg" target="_blank"><img
+                <a href="https://we.tl/t-TveNDiCeqW" target="_blank"><img
                         style='height: 100%; width: 100%; object-fit: contain'
                         src="{% static '3D_Viewer/google-play-badge.svg' %}"></a>
             </div>
@@ -166,7 +163,7 @@
         {% endif %}
 
         <a data-toggle="tooltip" data-placement="top" title="Download u-LMS Android App"
-           href="https://we.tl/t-I5pJzFtHWg" target="_blank">
+           href="https://we.tl/t-TveNDiCeqW" target="_blank">
             <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
         </a>
         <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout">

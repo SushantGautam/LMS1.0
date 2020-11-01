@@ -231,7 +231,7 @@ class Question(models.Model):
                                verbose_name=_('Question'))
 
     score = models.IntegerField(
-        null=True, blank=True, default=1,
+        default=1,
         help_text=_("Full score for the question"),
         verbose_name=_("Score"))
 
@@ -284,9 +284,10 @@ class MCQuestion(Question):
 
     def check_if_correct(self, guess):
         if guess:
-            answer = Answer.objects.get(id=int(guess))
-            if answer.correct is True:
-                return True
+            if Answer.objects.filter(id=int(guess)).exists():
+                answer = Answer.objects.get(id=int(guess))
+                if answer.correct is True:
+                    return True
         return False
 
     def order_answers(self, queryset):
@@ -387,8 +388,8 @@ class SA_Question(Question):
         return self.content
 
     class Meta:
-        verbose_name = _("Short Answer style question")
-        verbose_name_plural = _("Short Answer style questions")
+        verbose_name = _("Short Answer Question")
+        verbose_name_plural = _("Short Answer Questions")
 
     def get_absolute_url(self):
         return reverse('saquestion_detail', args=(self.pk,))
@@ -763,6 +764,7 @@ class Sitting(models.Model):
 
     score_list = models.CharField(
         max_length=1024,
+        null=True, blank=True,
         verbose_name=_("Score List"),
         validators=[])
 
@@ -841,10 +843,11 @@ class Sitting(models.Model):
                 totaltfq_score += j.score
         for k in self.quiz.saquestion.all():
             i = [int(n) for n in self.question_order.split(',') if n].index(k.id)
-            score_list = str(self.score_list).split(',')
-            if i < len(score_list):
-                if str(score_list[i]) and str(score_list[i]) != 'not_graded':
-                    totalsaq_score += float(score_list[i])
+            if self.score_list:
+                score_list = str(self.score_list).split(',')
+                if i < len(score_list):
+                    if str(score_list[i]) and str(score_list[i]) != 'not_graded':
+                        totalsaq_score += float(score_list[i])
 
         return totalmcq_score + totaltfq_score + totalsaq_score
 

@@ -47,8 +47,8 @@
     <div class="modal-body">
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Skip</button>
-        <button type="button" id="forcelogout" class="btn btn-warning">Force Logout & Continue</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button style="display: none;" type="button" id="forcelogout" class="btn btn-warning">Force Logout & Continue</button>
     </div>
     </div>
 </div>
@@ -159,6 +159,10 @@
                 if(result.msg){
                     $('#alertModal').modal('show');
                     $('.modal-body').html(`<br>${result.msg}<br><br>`);
+                    $('#forcelogout').attr('data-type', result.type);
+                    if(result.type == 'multiple_login'){
+                        $('#forcelogout').show();
+                    }
                     $('#signIn').attr('disabled', false);
                     $('#signIn').find(`.spinner-border`).remove();
                 } else {

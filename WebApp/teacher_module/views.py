@@ -5,8 +5,9 @@ import re
 import shutil
 from datetime import datetime, timedelta
 from io import BytesIO
-
+from pathlib import Path
 import pandas as pd
+
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
@@ -15,9 +16,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordContextMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Max
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -29,6 +34,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, TemplateView, DeleteView
 from django.views.generic.edit import FormView
 from django_addanother.views import CreatePopupMixin
+from formtools.wizard.views import SessionWizardView
 
 from LMS.auth_views import TeacherAuthMxnCls, CourseAuthMxnCls, InningInfoAuthMxnCls, InningInfoAuth, ChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, SurveyInfoAuthMxnCls, GroupMappingAuthMxnCls, MemberAuth, InningGroupAuthMxnCls, \
@@ -40,13 +46,15 @@ from WebApp.forms import GroupMappingForm, InningGroupForm, \
     InningInfoForm
 from WebApp.forms import UserUpdateForm
 from WebApp.models import CourseInfo, ChapterInfo, InningInfo, AssignmentQuestionInfo, AssignmentInfo, InningGroup, \
-    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance, Notice, NoticeView
+    AssignAnswerInfo, MemberInfo, GroupMapping, InningManager, Attendance, Notice, NoticeView, SessionMapInfo
 from forum.forms import ThreadForm, ThreadEditForm
 from forum.models import NodeGroup, Thread, Topic
 from forum.models import Post, Notification
 from forum.views import get_top_thread_keywords
+from quiz.forms import QuizForm1, QuizForm2, QuizForm3
 from quiz.forms import SAQuestionForm, QuizForm, QuestionForm, AnsFormset, MCQuestionForm, TFQuestionForm, \
     QuizBasicInfoForm
+from quiz.models import Progress
 from quiz.models import Question, Quiz, SA_Question, MCQuestion, TF_Question, Answer
 from quiz.views import QuizMarkerMixin, SittingFilterTitleMixin
 from survey.forms import SurveyInfoForm, QuestionInfoFormset, QuestionAnsInfoFormset
@@ -54,17 +62,6 @@ from survey.models import CategoryInfo, SurveyInfo, QuestionInfo, OptionInfo, Su
 from survey.views import AjaxableResponseMixin
 from .forms import TopicForm, ReplyForm
 from .misc import get_query
-
-datetime_now = datetime.now()
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
-from formtools.wizard.views import SessionWizardView
-from quiz.forms import QuizForm1, QuizForm2, QuizForm3
-
-from quiz.models import Progress
-
-from django.http import JsonResponse
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
 
@@ -88,12 +85,12 @@ def start(request):
         #     for z in y:
         #         if z not in sessions:
         #             sessions.append(z)
-        
+
         # here assignment of only active chapters can be filtered later
         activeassignments = AssignmentInfo.objects.filter(Course_Code__in=mycourse, Use_Flag=True,
-                                                               Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
+                                                          Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
         notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
-                                        Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+            Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
         if notices.exists():
             notice = notices[0]
             if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
@@ -188,22 +185,6 @@ class MyCourseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # courses = InningGroup.objects.filter(Teacher_Code=self.request.user.id,
-        #                                      Center_Code=self.request.user.Center_Code)
-        # context['courses'] = courses
-        # sessions = []
-        # if context['courses']:
-        #     for course in context['courses']:
-        #         # Filtering out only active sessions
-        #         session = InningInfo.objects.filter(Groups__id=course.id, End_Date__gt=datetime_now)
-        #         sessions += session
-        # context['sessions'] = sessions
-        #
-        # filtered_qs = MyCourseFilter(
-        #     self.request.GET,
-        #     queryset=courses
-        # ).qs
-        # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
         courses = self.object_list
         paginator = Paginator(courses, self.paginate_by)
         page = self.request.GET.get('page')
@@ -218,11 +199,16 @@ class MyCourseListView(ListView):
         return context
 
     def get_queryset(self):
-        qsearch = self.request.user.get_teacher_courses()['courses']
+        teacheractivecourses = self.request.user.get_teacher_courses()['courses']
         if '/inactive/' in self.request.path:
-            qsearch = [x for x in qsearch if x.Use_Flag is False]
+            qsearch = self.request.user.get_teacher_courses(inactiveCourse=True)[
+                'courses']
+            # for x in teacheractivecourses:
+            #     if x in qsearch:
+            #         qsearch = qsearch.exclude(pk=x.pk)
         if '/active/' in self.request.path:
-            qsearch = [x for x in qsearch if x.Use_Flag is True]
+            qsearch = teacheractivecourses
+            # qsearch = [x for x in qsearch if x.Use_Flag is True]
         courses = []
         query = self.request.GET.get('teacher_mycoursequery')
         if query:
@@ -357,6 +343,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        datetime_now = timezone.now().replace(microsecond=0)
         context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
@@ -367,7 +354,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
                                                                 End_Date__gte=datetime_now,
-                                                                Course_Group__in=course_groups)
+                                                                Course_Group__in=course_groups).distinct()
 
         return context
 
@@ -417,10 +404,10 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
     def dispatch(self, request, *args, **kwargs):
         if '/teachers' in self.request.path:
             assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
-                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
-                                                    Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct().count()
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code=self.request.user,
+                                                    Course_Group__Course_Code=assignmentinfoObj.Course_Code,
+                                                    Course_Group__Use_Flag=True,
+                                                    Use_Flag=True).distinct().count()
             if inning_info == 0:
                 messages.add_message(self.request, messages.ERROR, 'Access Denied. Please Contact Admin.')
                 return redirect('teacher_home')
@@ -429,11 +416,11 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'),
-                                                                     )
+        datetime_now = timezone.now().replace(microsecond=0)
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
-        context['datetime'] = datetime.now()
+        context['datetime'] = datetime_now
 
         # ===================== Assignment Answers =============================================
 
@@ -442,47 +429,53 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
 
         assignmentinfoObj = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('pk'))
         if '/teachers' in self.request.path:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
-                                                    Course_Group__Course_Code__pk=assignmentinfoObj.Course_Code.pk,
+            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code=self.request.user,
+                                                    Course_Group__Course_Code=assignmentinfoObj.Course_Code,
+                                                    Course_Group__Use_Flag=True,
                                                     Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
+                                                    Start_Date__lte=datetime_now,
+                                                    End_Date__gte=datetime_now).distinct()
         session_list.append(inning_info)
 
+        innings = None
         if inning_info.count() > 0:
             if inningpk:
                 innings = get_object_or_404(inning_info, pk=inningpk)
-            else:
-                innings = None
 
-        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'],
-                                                          )
+        questions = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs['pk'])
         context['questions'] = questions
         if innings:
-            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
-                                                                 Student_Code__in=innings.Groups.Students.all())
             context['students_list'] = innings.Groups.Students.all()
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=context['students_list'])
+            
         else:
-            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions)
-            context['students_list'] = assignmentinfoObj.Course_Code.get_students_of_this_course()
+            students_list = []
+            for inning in inning_info:
+                students_list.extend(inning.Groups.Students.all())
+            students_list = set(students_list)
+            context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
+                                                                 Student_Code__in=students_list)
+            context['students_list'] = students_list
 
         context['Assignment'] = assignmentinfoObj
         context['session_list'] = session_list
         context['inning'] = innings
         context['chapter_list'] = assignmentinfoObj.Course_Code.chapterinfos.all()
         course_groups = InningGroup.objects.filter(Course_Code=ChapterInfo.objects.get(
-            pk=self.kwargs.get('chapter')).Course_Code,
-                                                   Teacher_Code=self.request.user.pk)
+            pk=self.kwargs.get('chapter')).Course_Code, Use_Flag=True,
+                                                   Teacher_Code=self.request.user)
 
         if inningpk:
             context['assigned_session'] = InningInfo.objects.filter(pk=inningpk, Use_Flag=True,
                                                                     Start_Date__lte=datetime_now,
                                                                     End_Date__gte=datetime_now,
-                                                                    Course_Group__in=course_groups)
+                                                                    Course_Group__in=course_groups).distinct()
         else:
             context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                     Start_Date__lte=datetime_now,
                                                                     End_Date__gte=datetime_now,
-                                                                    Course_Group__in=course_groups)
+                                                                    Course_Group__in=course_groups).distinct()
 
         # ==================== End of Assignment Answers ========================================
 
@@ -572,19 +565,41 @@ class AssignmentAnswers(AssignmentInfoAuthMxnCls, ListView):
 
 def downloadAssignmentAnswers(request):
     if request.method == "POST":
-        list_of_files = request.POST.getlist('list_of_files[]')
+        list_of_ids = request.POST.getlist('list_of_ids[]')
         assignment_pk = str(request.POST.get('assignment_id'))
         question_pk = str(request.POST.get('question_id'))
         path = settings.MEDIA_ROOT
+        flag = True
         dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
-        for src in list_of_files:
-            # srcfile = os.path.join(path, src)
-            if os.path.isfile(os.path.join(path, src)):
-                if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
-                    shutil.copy(os.path.join(path, src), dstfolder)
-                else:
-                    os.makedirs(dstfolder)
-                    shutil.copy(os.path.join(path, src), dstfolder)
+
+        answer_files = AssignAnswerInfo.objects.filter(pk__in=list_of_ids).values_list('Assignment_File', flat=True)
+        
+        # Clean previous copied content
+        if os.path.isdir(dstfolder):
+            shutil.rmtree(dstfolder)
+        Path(dstfolder).mkdir(parents=True, exist_ok=True)
+
+        # Check if no new file
+        zip_file_path = os.path.join(path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk + '.zip')
+        if os.path.isfile(zip_file_path):
+            for answer_file in answer_files:
+                answer_file_path = os.path.join(path, answer_file)
+                print(os.path.getmtime(zip_file_path), os.path.getmtime(answer_file_path))
+                if os.path.getmtime(zip_file_path) < os.path.getmtime(answer_file_path):
+                    flag = False
+                    break
+            flag = not flag
+        
+        # Copy and create new zip file
+        if flag:
+            for answer_file in answer_files:
+                # srcfile = os.path.join(path, answer_file)
+                # if os.path.isfile(os.path.join(path, src)):
+                #     if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
+                shutil.copy(os.path.join(path, answer_file), dstfolder)
+                    # else:
+                    #     os.makedirs(dstfolder)
+                    #     shutil.copy(os.path.join(path, src), dstfolder)
             shutil.make_archive(
                 path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk,
                 'zip', dstfolder)
@@ -626,28 +641,66 @@ class MyAssignmentsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['currentDate'] = datetime.now()
-        context['Group'] = InningGroup.objects.filter(Teacher_Code=self.request.user.id)
-        course = []
-        context['Assignment'] = []
-        context['expiredAssignment'] = []
-        context['activeAssignment'] = []
-        for c in self.request.user.get_teacher_courses()['courses']:
-            course.append(c.id)
-        Assignment = []
-        expiredAssignment = []
-        activeAssignment = []
-        for course in course:
-            Assignment.append(AssignmentInfo.objects.filter(Course_Code=course))
-            expiredAssignment.append(
-                AssignmentInfo.objects.filter(Course_Code=course,
-                                              Assignment_Deadline__lt=datetime_now))
-            activeAssignment.append(
-                AssignmentInfo.objects.filter(Course_Code=course,
-                                              Assignment_Deadline__gte=datetime_now))
-        context['Assignment'].append(Assignment)
-        context['activeAssignment'].append(activeAssignment)
-        context['expiredAssignment'].append(expiredAssignment)
+        datetime_now = timezone.now().replace(microsecond=0)
+
+        course_session_data = self.request.user.get_teacher_courses()
+        assigned_sessions = course_session_data['session']
+        courses = course_session_data['courses']
+        
+        for course in courses:
+            all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
+            active_assignments = []
+            inactive_assignments = []
+            for assignment in all_assignments:
+                datemap = SessionMapInfo.objects.filter(Session_Code__in=assigned_sessions,
+                                                        content_type=ContentType.objects.get_for_model(assignment),
+                                                        object_id=assignment.id)
+                if datemap:
+                    if datemap.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now).exists():
+                        assignment.status = 'active'
+                        assignment.end_date = datemap.filter(Start_Date__lte=datetime_now,
+                                                             End_Date__gte=datetime_now).aggregate(
+                                                             Max('End_Date'))['End_Date__max']
+                        active_assignments.append(assignment)
+                    elif datemap.filter(Start_Date__gte=datetime_now, End_Date__gte=datetime_now).exists():
+                        assignment.status = 'upcoming'
+                        assignment.end_date = datemap.filter(Start_Date__gte=datetime_now,
+                                                             End_Date__gte=datetime_now).aggregate(
+                                                             Max('End_Date'))['End_Date__max']
+                        inactive_assignments.append(assignment)
+                    else:
+                        assignment.status = 'inactive'
+                        assignment.end_date = datemap.aggregate(Max('End_Date'))['End_Date__max']
+                        inactive_assignments.append(assignment)
+                else:
+                    assignment.status = 'inactive'
+                    assignment.end_date = None
+                    inactive_assignments.append(assignment)
+
+            course.assignments = all_assignments
+            course.active_assignments = active_assignments
+            course.inactive_assignments = inactive_assignments
+
+        # context['Assignment'] = []
+        # context['expiredAssignment'] = []
+        # context['activeAssignment'] = []
+        # for c in self.request.user.get_teacher_courses()['courses']:
+        #     course.append(c.id)
+        # Assignment = []
+        # expiredAssignment = []
+        # activeAssignment = []
+        # for course in course:
+        #     Assignment.append(AssignmentInfo.objects.filter(Course_Code=course))
+        #     expiredAssignment.append(
+        #         AssignmentInfo.objects.filter(Course_Code=course,
+        #                                       Assignment_Deadline__lt=datetime_now))
+        #     activeAssignment.append(
+        #         AssignmentInfo.objects.filter(Course_Code=course,
+        #                                       Assignment_Deadline__gte=datetime_now))
+        # context['Assignment'].append(Assignment)
+        # context['activeAssignment'].append(activeAssignment)
+        # context['expiredAssignment'].append(expiredAssignment)
+        context['courses'] = courses
         return context
 
 
@@ -943,9 +996,15 @@ class QuizMarkingList(TeacherAuthMxnCls, QuizMarkerMixin, ListView):
 class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, ListView):
     model = Sitting
     template_name = 'teacher_quiz/sitting_list.html'
+    inning = None
 
     def get_queryset(self):
-        queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
+        if 'inningpk' in self.kwargs:
+            self.inning = get_object_or_404(InningInfo, pk=self.kwargs['inningpk'])
+            queryset = super(QuizMarking, self).get_queryset().filter(complete=True,
+                                                                      user__in=self.inning.Groups.Students.all())
+        else:
+            queryset = super(QuizMarking, self).get_queryset().filter(complete=True)
         quiz_id = int(self.kwargs['quiz_id'])
         queryset = queryset.filter(quiz__id=quiz_id)
 
@@ -963,6 +1022,18 @@ class QuizMarking(TeacherAuthMxnCls, QuizMarkerMixin, SittingFilterTitleMixin, L
         context = super(QuizMarking, self).get_context_data(**kwargs)
         quiz_id = int(self.kwargs['quiz_id'])
         context['quiz'] = Quiz.objects.get(id=quiz_id)
+        context['session_list'] = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.request.user.pk,
+                                                            Course_Group__Course_Code__pk=context[
+                                                                'quiz'].course_code.pk, Use_Flag=True,
+                                                            End_Date__gt=datetime.now()).distinct()
+
+        if context['session_list'].count() > 0:
+            if 'inningpk' in self.kwargs:
+                innings = self.inning
+            else:
+                innings = None
+
+            context['inning'] = innings
         return context
 
 
@@ -985,7 +1056,10 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
-            score_list = [s for s in sitting.score_list.split(',') if s]
+            ssl = sitting.score_list
+            if not ssl:
+                ssl = ''
+            score_list = [s for s in ssl.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
@@ -1032,7 +1106,10 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
-            score_list = [s for s in sitting.score_list.split(',') if s]
+            ssl = sitting.score_list
+            if not ssl:
+                ssl = ''
+            score_list = [s for s in ssl.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
@@ -2224,6 +2301,7 @@ def CourseAttendanceList(request, inningpk=None, course=None, attend_date=None):
     formset = None
     session_list = []
     session_course = []
+    datetime_now = timezone.now().replace(microsecond=0)
     if attend_date == None:
         attend_date = str(datetime.today().date())
     studentattendancejson = []
@@ -2354,7 +2432,7 @@ def maintainLastPageofStudent(courseid, chapterid, studentid, currentPageNumber=
 def chapterStudentProgress(request, course, pk, inningpk=None):
     session_list = []
     studentjson = []
-
+    datetime_now = timezone.now().replace(microsecond=0)
     course = get_object_or_404(CourseInfo, pk=course)
     chapter = get_object_or_404(ChapterInfo, pk=pk)
 
@@ -2404,6 +2482,7 @@ def chapterStudentProgress(request, course, pk, inningpk=None):
 def teacherAttendance(request, courseid, createFile=True):
     chapters = []
     pagenumber = []
+    datetime_now = timezone.now().replace(microsecond=0)
     if request.GET.get('chapterid'):
         chapterid = request.GET.get('chapterid')
         pagenumber = request.GET.get('pagenumber')
@@ -2483,13 +2562,13 @@ def QuizMarkingCSV(request, quiz_pk):
     mcquestions = quiz.mcquestion.all()
     tfquestions = quiz.tfquestion.all()
     saquestions = quiz.saquestion.all()
-    extra_row_1 = {'S.N.': 'Full Score', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '',
+    extra_row_1 = {'S.N.': 'Full Score', 'Username': '', 'Full Name': '', 'Start Datetime': '', 'End Datetime': '',
                    'Percentage': ''}
-    extra_row_2 = {'S.N.': 'Correct Answer', 'Student Username': '', 'Start Datetime': '', 'End Datetime': '',
+    extra_row_2 = {'S.N.': 'Correct Answer', 'Username': '', 'Full Name': '', 'Start Datetime': '', 'End Datetime': '',
                    'Percentage': ''}
 
     # Deining column names
-    column_names = ['S.N.', 'Student Username', 'Start Datetime', 'End Datetime']
+    column_names = ['S.N.', 'Username', 'Full Name', 'Start Datetime', 'End Datetime']
     answer_name = "O/X"
     mcq_full_score, tfq_full_score, saq_full_score = 0, 0, 0
     color_column = []
@@ -2535,8 +2614,8 @@ def QuizMarkingCSV(request, quiz_pk):
             start_date = quiz_sitting.start.replace(tzinfo=None)
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
-        new_row = {'S.N.': counter, 'Student Username': quiz_sitting.user, 'Start Datetime': start_date,
-                   'End Datetime': end_date}
+        new_row = {'S.N.': counter, 'Username': quiz_sitting.user.username, 'Full Name': quiz_sitting.user.get_full_name(),
+                   'Start Datetime': start_date, 'End Datetime': end_date}
 
         user_answers = json.loads(quiz_sitting.user_answers)
         totalmcq_score = 0.0
@@ -2575,7 +2654,10 @@ def QuizMarkingCSV(request, quiz_pk):
             # end_index = user_ans.find(saq_id)
             # score_index = user_ans.count('": "', 0, end_index)
             score_index = [int(n) for n in quiz_sitting.question_order.split(',') if n].index(saquestion.id)
-            score_list = str(quiz_sitting.score_list).split(',')
+            score_list = quiz_sitting.score_list
+            if not score_list:
+                score_list = ''
+            score_list = str(score_list).split(',')
             if score_index < len(score_list):
                 new_row[answer_name + " S" + str(i + 1)] = score_list[score_index]
                 if str(score_list[score_index]) and str(score_list[score_index]) != 'not_graded':
@@ -2587,7 +2669,7 @@ def QuizMarkingCSV(request, quiz_pk):
         new_row['TFQ Score'] = totaltfq_score
         new_row['SAQ Score'] = totalsaq_score
         new_row['Total Score'] = totalmcq_score + totaltfq_score + totalsaq_score
-        if new_row['Total Score']: 
+        if new_row['Total Score']:
             new_row['Percentage'] = (new_row['Total Score'] / total_score) * 100
         else:
             new_row['Percentage'] = 0

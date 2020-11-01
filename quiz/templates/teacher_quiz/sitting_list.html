@@ -3,28 +3,30 @@
 {% load i18n %}
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 {% block breadcrumb %}
-<!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li> -->
+    <!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li> -->
 
 
-<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{ quiz }}</li>
+    <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ quiz }}</li>
 {% endblock %}
 
 
 {% block content %}
-{% include "quiz_base/sitting_list.html" %}
+    <link rel="stylesheet" href="{% static 'vendorsx/select2/dist/css/select2.min.css' %}">
+
+    {% include "quiz_base/sitting_list.html" %}
 {% endblock %}
 {% block customjss %}
-<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
-<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
 
-<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 
 
     <script type="text/javascript">
@@ -54,5 +56,30 @@
         });
 
 
+    </script>
+
+    <script src="{% static 'vendorsx/select2/dist/js/select2.min.js' %}"></script>
+
+    <script>
+        $("#select_session").on("change", function () {
+            {% if 'iframe' in request.GET %}
+                {% if '/teachers' in request.path %}
+                    if (this.value != -1) {
+                        window.location.href = `/teachers/quiz/marking/{{ quiz.id }}/inning/${this.value}/?iframe=1`;
+                    } else {
+                        window.location.href = `/teachers/quiz/marking/{{ quiz.id }}/?iframe=1`;
+                    }
+                {% endif %}
+            {% else %}
+                {% if '/teachers' in request.path %}
+                    if (this.value != -1) {
+                        window.location.href = `/teachers/quiz/marking/{{ quiz.id }}/inning/${this.value}/`;
+                    } else {
+                        window.location.href = `/teachers/quiz/marking/{{ quiz.id }}/`;
+                    }
+                {% endif %}
+            {% endif %}
+        });
+        $('#select_session').select2()
     </script>
 {% endblock %}

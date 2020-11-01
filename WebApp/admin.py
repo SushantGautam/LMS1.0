@@ -18,7 +18,7 @@ class CenterInfoAdminForm(forms.ModelForm):
 
 class CenterInfoAdmin(admin.ModelAdmin):
     form = CenterInfoAdminForm
-    list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent']
+    list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent', 'UBLMeet_URL']
 
 
 admin.site.register(CenterInfo, CenterInfoAdmin)
@@ -36,7 +36,7 @@ class MemberInfoAdminForm(forms.ModelForm):
         if user.id is None:
             user.set_password(self.cleaned_data["password"])
         else:
-            if MemberInfo.objects.get(id=user.id).password != user.password:
+            if not 'pbkdf2_sha256$' in user.password:
                 user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()

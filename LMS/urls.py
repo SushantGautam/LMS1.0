@@ -55,6 +55,7 @@ router.register(r'memberinfo', api.MemberInfoViewSet)
 router.register(r'courseinfo', api.CourseInfoViewSet)
 router.register(r'chapterinfo', api.ChapterInfoViewSet)
 router.register(r'inninginfo', api.InningInfoViewSet)
+router.register(r'sessionmapinfo', api.SessionMapInfoViewSet)
 router.register(r'sessioninfo', api.SessionInfoViewSet)
 router.register(r'assignassignmentinfo', api.AssignAssignmentInfoViewSet)
 router.register(r'inninggroup', api.InningGroupViewSet)
@@ -102,6 +103,7 @@ urlpatterns += (
     path('get_static_files/', views.get_static_files, name='get_static_files'),
     # for downloading static files for mobile development
     path('students/singleUserHomePageAPI/', singleUserHomePageJSON, name='singleUserHomePage'),  # for app
+    path('students/homepage/', singleUserHomePageJSON, name='studentHomePage'),  # for app
     path('students/course/<int:coursepk>/progress', studentCourseProgress, name='studentcourseprogressapp'),  # for app
 
 )
@@ -118,6 +120,11 @@ urlpatterns += (
     path('api/v1/video_urlresolver/', views.getDirectURLOfMedias, name='getDirectURLOfMedias'),
     path('api/v1/<int:chapterID>/chat_history/', views.getChatMessageHistoryApi, name='getChatHistory'),
 )
+
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        url(r'^rosetta/', include('rosetta.urls'))
+    ]
 
 import Notifications.urls
 

@@ -1,9 +1,5 @@
-import django
 from django import forms
 from django.contrib import admin
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.html import format_html
-from django.utils.translation import gettext as _
 
 from .models import Quiz, Progress, Answer, MCQuestion, TF_Question, SA_Question, Sitting
 
@@ -46,7 +42,7 @@ class QuizAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'url', 'course_code','chapter_code','cent_code','question_count' )
     # list_filter = ('category',)
-    search_fields = ('description', 'course_code',)
+    search_fields = ('title', 'description', 'course_code__Course_Name',)
 
 
     # def changelist_view(self, request, extra_context=None):
@@ -97,10 +93,9 @@ class MCQuestionAdmin(admin.ModelAdmin):
 
     #change_form_template = 'admin_add_form.html'
     #change_list_template = 'custom_list.html'
-    list_display = ('content', 'course_code', )
+    list_display = ('content', 'score', 'course_code', )
     list_filter = ('course_code',)
-    fields = ('content', 'figure', 'explanation', 'answer_order', 'cent_code')
-
+    fields = ('content', 'figure', 'explanation', 'answer_order', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
 
@@ -112,10 +107,9 @@ class TFQuestionAdmin(admin.ModelAdmin):
     # change_form_template = 'admin_add_form.html'
     # change_list_template = 'custom_list.html'
 
-    list_display = ('content', 'course_code', )
+    list_display = ('content', 'score', 'course_code')
     list_filter = ('course_code',)
-    fields = ('content', 'figure', 'explanation', 'correct', 'cent_code')
-
+    fields = ('content', 'figure', 'explanation', 'correct', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
     # add_form_template = 'admin_add_form.html'
@@ -125,9 +119,9 @@ class SAQuestionAdmin(admin.ModelAdmin):
     # change_form_template = 'admin_add_form.html'
     # change_list_template = 'custom_list.html'
 
-    # list_display = ('content', 'category', )
-    # list_filter = ('category',)
-    fields = ('content', 'explanation', 'cent_code')
+    list_display = ('content', 'score', 'course_code')
+    list_filter = ('course_code',)
+    fields = ('content', 'figure', 'explanation', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
     # filter_horizontal = ('quiz',)
     # add_form_template = 'admin_add_form.html'
@@ -139,7 +133,9 @@ class SittingAdminForm(forms.ModelForm):
 
 class SittingAdmin(admin.ModelAdmin):
     form = SittingAdminForm
-    list_display = ['user', 'quiz', 'question_order', 'score_list', 'question_list', 'incorrect_questions', 'current_score', 'complete', 'user_answers', 'start', 'end']
+    search_fields = ('user__username', 'quiz__title')
+    list_display = ['user', 'quiz', 'complete', 'start', 'end', 'question_order']
+    list_filter = ('complete', 'quiz')
 
 class AnswerAdminForm(forms.ModelForm):
     class Meta:

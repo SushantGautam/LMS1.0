@@ -93,6 +93,9 @@
                     $(this).attr({'for': forValue});
                 }
             });
+            newElement.find('div:nth-child(2) .form-group').attr({'id': "div_id_answer_set-"+ total +"-content"});
+            newElement.find('.form-group .checkbox').attr({'id': "div_id_answer_set-"+ total +"-correct"});
+            newElement.find('.checkboxinput').removeAttr( "value");
             total++;
             $('#id_' + prefix + '-TOTAL_FORMS').val(total);
             $(selector).after(newElement);
@@ -202,6 +205,7 @@
                 return false;
             }
 
+            
             $.ajax({
                 //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
                 cache: false,
@@ -224,6 +228,6 @@
         $("#id_course_code").val('{{ course_from_quiz }}');
         $("#div_id_cent_code").hide();
         $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
-        $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow-y", "scroll");
+        $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow", "auto");
     </script>
 {% endblock customjss %}

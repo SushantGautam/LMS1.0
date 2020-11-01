@@ -3,8 +3,19 @@
 
 
 <br>
-<h4> <b>  Marking List of Individual Quiz</b>
-    ({{ quiz }})
+<h4><b> Marking List of Individual Quiz</b>
+    <!-- <a> ({{ quiz }})</a> -->
+    <a href="
+    {% if '/teachers' in request.path %}
+        {% url 'teacher_quiz_detail' pk=quiz.id %}
+        {% else %}
+        {% url 'quiz_detail' pk=quiz.id %}
+        {% endif %}
+    ">
+        ({{ quiz }})
+    </a>
+
+
     <a href="{% url 'quiz_marking_csv' quiz.pk %}" target="__blank">
         <button class="btn btn=sm btn-info pull-right">
             <i class="fa fa-download" aria-hidden="true"></i> Download Detail Result
@@ -12,19 +23,39 @@
     </a>
 </h4>
 <hr><br>
+
+<div class="session-detail" style="padding: 10px 0;">
+    <span style="font-size:18px"><b> Session: </b></span>
+    <select id="select_session" class="" style="width: 50%;">
+        {% for session in session_list %}
+            <option value="{{ session.pk }}"
+                    {% if session.pk == inning.pk %}
+                    selected
+                    {% endif %}
+            > {{ session }}</option>
+        {% endfor %}
+        <option value="-1"
+                {% if not inning %}
+                selected
+                {% endif %}
+        > All Sessions
+        </option>
+    </select>
+</div>
+
 {% if sitting_list %}
 
-<table id="MarkingList" class="table table-striped table-bordered bg-white nowrap">
+    <table id="MarkingList" class="table table-striped table-bordered bg-white nowrap">
 
-    {% if quiz.has_saqs %}
-        <p style="text-align: right;color: #5A738E; cursor:pointer">
-            <b><a href="{% url 'teacher_quiz_marking_saq' quiz.pk %}">
-                Mark Short Answer Question
-            </a></b>
-        </p>
-    {% endif %}
+        {% if quiz.has_saqs %}
+            <p style="text-align: right;color: #5A738E; cursor:pointer">
+                <b><a href="{% url 'teacher_quiz_marking_saq' quiz.pk %}">
+                    Mark Short Answer Question
+                </a></b>
+            </p>
+        {% endif %}
 
-    <thead class="thead-light bg-primary">
+        <thead class="thead-light bg-primary">
 
         <td>{% trans "Username" %}</td>
         <td>{% trans "Full Name" %}</td>
@@ -33,11 +64,11 @@
         <td>{% trans "Obtained Score" %}</td>
         <td>{% trans "Score" %}(%)</td>
         <!-- <td></td> -->
-        
 
-    </thead>
 
-    <tbody>
+        </thead>
+
+        <tbody>
         <!-- <tr>
             <form action="" method="GET">
                 <td><input type="text" name="user_filter" /></td>
@@ -47,37 +78,37 @@
                 <td>
                     <button type="submit" class="btn btn-default">{% trans "Filter" %}</button>
                 </td>
-           
+
             </form>
         </tr> -->
 
 
         {% for sitting in sitting_list %}
 
-        <tr>
-            <td><a href="
+            <tr>
+                <td><a href="
                 {% if '/teachers' in request.path %}
-                    {% url 'teacher_quiz_marking_detail' pk=sitting.id %} 
+                    {% url 'teacher_quiz_marking_detail' pk=sitting.id %}
                     {% else %}
-                    {% url 'quiz_marking_detail' pk=sitting.id %} 
+                    {% url 'quiz_marking_detail' pk=sitting.id %}
                     {% endif %}
                 " style="font-weight: bold;">{{ sitting.user.username }}</a></td>
-            <td>{{ sitting.user.get_full_name }}</td>
-            <td><span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></td>
-            <td><span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></td>
-            <td>{{ sitting.get_score_correct }}</td>
-            <td>{{ sitting.get_percent_correct }}</td>
-           
-            <!-- <td>
+                <td>{{ sitting.user.get_full_name }}</td>
+                <td><span class="datecon">{{ sitting.start|date:'d M, Y h:i A' }}</span></td>
+                <td><span class="datecon">{{ sitting.end|date:'d M, Y h:i A' }}</span></td>
+                <td>{{ sitting.get_score_correct }}</td>
+                <td>{{ sitting.get_percent_correct }}</td>
+
+                <!-- <td>
                         {% trans "View details" %}
                 </td> -->
-        </tr>
+            </tr>
 
         {% endfor %}
 
-    </tbody>
+        </tbody>
 
-</table>
+    </table>
 {% else %}
-<p>{% trans "There are no matching markings" %}.</p>
+    <p>{% trans "There are no matching markings" %}.</p>
 {% endif %}

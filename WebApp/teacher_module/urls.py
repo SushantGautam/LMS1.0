@@ -226,11 +226,13 @@ urlpatterns += (
     path('deactivate_quiz/<int:pk>/', quizViews.DeactivateQuiz.as_view(),
          name='teacher_deactivate_quiz'),
 
-    #Quiz Marking
+    # Quiz Marking
     path('quiz/marking/', views.QuizMarkingList.as_view(),
-          name='teacher_quiz_marking'),
-    path('quiz/marking/<int:quiz_id>', views.QuizMarking.as_view(),
-          name='teacher_individual_quiz_marking'),
+         name='teacher_quiz_marking'),
+    path('quiz/marking/<int:quiz_id>/', views.QuizMarking.as_view(),
+         name='teacher_individual_quiz_marking'),
+    path('quiz/marking/<int:quiz_id>/inning/<int:inningpk>/', views.QuizMarking.as_view(),
+         name='teacher_individual_quiz_marking_inning'),
     path('quiz/marking/detail/<int:pk>/', views.QuizMarkingDetail.as_view(),
          name='teacher_quiz_marking_detail'),
     path('quiz/marking/saqmarking/<int:pk>/', views.QuizMarkingDetailSAQ.as_view(),

@@ -41,3 +41,5 @@ cloudinary==1.20.0
 django-summernote==0.8.11.6
 xlsxwriter==1.2.9
 Jinja2==2.11.2
+cx-Oracle==8.0.1
+django-rosetta==0.9.5

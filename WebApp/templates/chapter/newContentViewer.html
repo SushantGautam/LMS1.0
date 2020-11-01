@@ -54,7 +54,7 @@
                 top: 0;
                 left: 0;
                 position: absolute;
-                z-index: 9999;
+                z-index: 999;
 
             }
 
@@ -96,6 +96,10 @@
                 /* border-bottom: groove; */
                 /* text-align: center; */
                 border: none;
+            }
+
+            #message-modal {
+                z-index: 1050;
             }
         </style>
         <link rel="icon"
@@ -336,7 +340,7 @@
                 </li>
                 <li>
                     <a class="apkdownloadBtn" data-toggle="tooltip" data-placement="top" title=""
-                       href="https://we.tl/t-I5pJzFtHWg" target="_blank"
+                       href="https://we.tl/t-TveNDiCeqW" target="_blank"
                        data-original-title="Download u-LMS Android App">
                         <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
                     </a>
@@ -583,7 +587,7 @@
                 </div>
                 <div id="UBL-meet"></div>
 
-                <script src='https://meet.jit.si/external_api.js'></script>
+                <script src='https://{{ user.Center_Code.UBLMeet_URL }}/external_api.js'></script>
                 <script>
                     var videocall_on = false    // Status that shows if video call is active or not
                     $(document).on('click', '.icon-for-video', function () {
@@ -607,7 +611,7 @@
                             // 'mute-everyone',
                         ];
                         let settingsSection = ['devices'];
-                        const domain = 'meet.jit.si';
+                        const domain = '{{ user.Center_Code.UBLMeet_URL }}';
 
                         {% if not "students" in request.path %}                            
                             audioMute = false;

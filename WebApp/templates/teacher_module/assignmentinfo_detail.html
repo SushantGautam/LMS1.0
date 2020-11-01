@@ -167,7 +167,9 @@
                         {% if '/students' not in request.path %}
                             <td>
                                 {% now "Y-m-d H:i" as todays_datewithtime %}
-                                {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                                {% if not sessionmap or not sessionmap.0.Start_Date or not sessionmap.0.End_Date %}
+                                    <span class="badge badge-danger">Inactive</span>
+                                {% elif sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-info">Upcoming</span>
                                 {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
                                     <span class="badge badge-danger">Expired</span>
@@ -425,11 +427,14 @@
                             {% endif %}
                             </td>
                             <td>
+                                <span style="display: none;" id="answer_{{ answer.id }}">{{ answer.Assignment_Answer|safe }}</span>
                                 <button class="btn btn-sm btn-info showanswer" data-toggle="modal"
                                         data-target="#exampleModal1"
                                         value="{{ answer.id }}" style="float: right;color:black"
+                                        data-question_score="{{ answer.Question_Code.Question_Score }}"
                                         data-student_Score="{{ answer.Assignment_Score }}"
                                         data-assignment_feedback="{{ answer.Assignment_Feedback }}"
+                                        data-answer_file="{{ answer.Assignment_File }}"
                                         {% if not answer %}
                                         disabled
                                         {% endif %}
@@ -819,44 +824,46 @@
 
     <script>
         $('table').on('click', '.showanswer', function () {
-            $('#StudentScore').empty()
-            $('#answercontent').empty()
-            $(this).addClass('clickedShowAnswer')
-            {% for answer in Answers %}
-                if (this.value == '{{ answer.id }}') {
-                    $('#answercontent').html(`{{answer.Assignment_Answer|safe}}`)
+            $('#StudentScore').empty();
+            $('#answercontent').empty();
+            $(this).addClass('clickedShowAnswer');
+            let answer_id = this.value;
+            let question_score = this.dataset.question_score;
+            let short_answer = $(`#answer_${answer_id}`).html();
+            let file_answer = this.dataset.answer_file;
+            
+            if (short_answer){
+                $('#answercontent').html(`${short_answer}`);
+            }
+            if (file_answer) {
+                $('#answercontent').append(`
+                    <a href="/media/${file_answer}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
+                        <b>View File</b>
+                    </button>
+                    </a>
+                `)
+            }
+            $('#StudentScore').html(`
+                <form id="StudentScoreForm">
+                <div>
+                    <p><b>FeedBack</b></p>
+                    <p>
+                        <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                    </p>
+                </div>
+                <div>
+                <b>Score</b>
+                <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
+                value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                max="${question_score}" >Full Score: <b>${question_score} </b><br><br>
+                    <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
+                </div>
+                </form>
+                    <input type="hidden" id="answerpk" value="${answer_id}">
 
-                    if ('{{ answer.Assignment_File }}') {
-                        $('#answercontent').append(`
-                            <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
-                                <b>View File</b>
-                            </button>
-                            </a>
-                        `)
-                    }
-                    $('#StudentScore').html(`
-                        <form id="StudentScoreForm">
-                        <div>
-                            <p><b>FeedBack</b></p>
-                            <p>
-                                <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
-                            </p>
-                        </div>
-                        <div>
-                        <b>Score</b>
-                        <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
-                        value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
-                        max="{{ answer.Question_Code.Question_Score }}" >Full Score: <b>{{ answer.Question_Code.Question_Score }} </b><br><br>
-                            <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
-                        </div>
-                        </form>
-                         <input type="hidden" id="answerpk" value="{{ answer.pk }}">
-
-                    `);
-                    $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
-                    $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
-                }
-            {% endfor %}
+            `);
+            $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
+            $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
         })
 
         $('#exampleModal1').on('hidden.bs.modal', function () {
@@ -1022,21 +1029,21 @@
 
         $('.downloadallfiles').on('click', function () {
             let q_id = $(this).attr('data-question_id');
-            let answer_file_list = []
+            let answer_id_list = []
             {% for answer in Answers %}
                 if (q_id == '{{ answer.Question_Code.id }}') {
                     {% if answer.Assignment_File %}
-                        answer_file_list.push('{{ answer.Assignment_File }}')
+                        answer_id_list.push('{{ answer.id }}')
                     {% endif %}
                 }
             {% endfor %}
-            if (answer_file_list.length > 0) {
+            if (answer_id_list.length > 0) {
                 $.ajax({
                     url: "{% url 'downloadAssignmentAnswers' %}",
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': '{{ csrf_token }}',
-                        'list_of_files': answer_file_list,
+                        'list_of_ids': answer_id_list,
                         'question_id': q_id,
                         'assignment_id': '{{ Assignment.pk }}',
                     },
@@ -1058,6 +1065,9 @@
                         }, 3000)*/
                         {% endcomment %}
                     },
+                    error: function (e) {
+                        console.log(e);
+                    }
                 });
             } else {
                 alert('No Answers to download')
