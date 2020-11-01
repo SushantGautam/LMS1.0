@@ -27,7 +27,7 @@
     </ul>
   </div>
 
-  <form action="{% url 'quizfw' %}" method="post" id="quiz_form_3">{% csrf_token %}
+  <form action="" method="post" id="quiz_form_3">{% csrf_token %}
     {{ wizard.management_form }}
     {% if wizard.form.forms %}
       {{ wizard.form.management_form }}
