@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item active" aria-current="page">Members</li>
+<li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Members" %}</li>
 {% endblock %}
 {% block content %}
+{% include 'WebApp/theme/alerts.html' %}
 <div class="modal fade" id="import_csv_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -52,23 +54,23 @@
 </div>
 <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-12">
-        <h2 class="text-primary">List of Active Members</h2>
+        <h2 class="text-primary">{% trans "List of Active Members" %}</h2>
     </div>
     <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
-        <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">Create new Member</a>
+        <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">{% trans "Create new Member" %}</a>
     </div>
 </div>
 
 <div class="card px-2 bg-primary-gradient mt-3">
     <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-12 py-3">
-            <a class="mx-4" id="all_button" href="#">All</a>
-            <a class="mx-4" id="teacher_button" href="#">Teacher</a>
-            <a class="mx-4" id="student_button" href="#">Student</a>
+            <a class="mx-4" id="all_button" href="#">{% trans "All" %}</a>
+            <a class="mx-4" id="teacher_button" href="#">{% trans "Teacher" %}</a>
+            <a class="mx-4" id="student_button" href="#">{% trans "Student" %}</a>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew py-3">
-            <a class="pull-right text-white" href="{% url 'memberinfo_list_inactive' %}">View
-                Blocked Members</a>
+            <a class="pull-right text-white" href="{% url 'memberinfo_list_inactive' %}">
+                {% trans "View Blocked Members" %}</a>
         </div>
     </div>
 </div>
@@ -76,22 +78,22 @@
     <table class="table table-striped" cellspacing="0" width="100%" id="members_list_table">
         <thead class="thead-light">
             <tr>
-                <th class="text-center">S. No.</th>
-                <th>Username</th>
-                <th>Member ID</th>
-                <th>Full Name</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Gender</th>
-                <th>Student</th>
-                <th>Teacher</th>
-                <th>Temporary Address</th>
-                <th>Permanent Address</th>
-                <th>Birthdate</th>
-                <th>Type</th>
-                <th class="text-center">Action</th>
+                <th class="text-center">{% trans "S. No." %}</th>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "Member ID" %}</th>
+                <th>{% trans "Full Name" %}</th>
+                <th>{% trans "First Name" %}</th>
+                <th>{% trans "Last Name" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Phone" %}</th>
+                <th>{% trans "Gender" %}</th>
+                <th>{% trans "Student" %}</th>
+                <th>{% trans "Teacher" %}</th>
+                <th>{% trans "Temporary Address" %}</th>
+                <th>{% trans "Permanent Address" %}</th>
+                <th>{% trans "Birthdate" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th class="text-center">{% trans "Action" %}</th>
             </tr>
         </thead>
         <!-- <tfoot>

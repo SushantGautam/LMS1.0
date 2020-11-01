@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load i18n %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Members</a></li>
-<li class="breadcrumb-item active" aria-current="page">Inactive Members</li>
+<li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+<li class="breadcrumb-item">{% trans "Members" %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Inactive Members" %}</li>
 {% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h2 class="text-primary">List of Inactive Members</h2>
+        <h2 class="text-primary">{% trans "List of Inctive Members" %}</h2>
     </div>
     <!-- <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
         <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">Create new Member</a>
@@ -18,13 +18,12 @@
 <div class="card px-2 bg-primary-gradient mt-3">
     <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-12 py-3">
-            <a class="mx-4" id="all_button" href="#">All</a>
-            <a class="mx-4" id="teacher_button" href="#">Teacher</a>
-            <a class="mx-4" id="student_button" href="#">Student</a>
+            <a class="mx-4" id="all_button" href="#">{% trans "All" %}</a>
+            <a class="mx-4" id="teacher_button" href="#">{% trans "Teacher" %}</a>
+            <a class="mx-4" id="student_button" href="#">{% trans "Student" %}</a>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew py-3">
-            <a class="pull-right text-white" href="{% url 'memberinfo_list' %}">View
-                Active Members</a>
+            <a class="pull-right text-white" href="{% url 'memberinfo_list' %}">{% trans "View Active Members" %}</a>
         </div>
     </div>
 </div>
@@ -42,7 +41,6 @@
                     onclick="return confirm('Are you sure you want to delete ?')">
                     <i class="fa fa-trash"></i>
                 </button>
-
             </div>
         </nav>
     </div>
@@ -54,18 +52,18 @@
                     <th>
                         <input type="checkbox" class="memberinfoCheckAll">
                     </th>
-                    <th class="text-center">S. No.</th>
-                    <th>Username</th>
-                    <th>Member ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Department</th>
-                    <th>Phone</th>
-                    <th>Gender</th>
-                    <th>Student</th>
-                    <th>Teacher</th>
-                    <th>Type</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">{% trans "S. No." %}</th>
+                    <th>{% trans "Username" %}</th>
+                    <th>{% trans "Member ID" %}</th>
+                    <th>{% trans "Full Name" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Department" %}</th>
+                    <th>{% trans "Phone" %}</th>
+                    <th>{% trans "Gender" %}</th>
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Teacher" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th class="text-center">{% trans "Action" %}</th>
                 </tr>
             </thead>
             {% for object in object_list %}
@@ -88,25 +86,25 @@
                 <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
                 <td>
                     {% if object.Is_Teacher == True and object.Is_Student == True %}
-                    Teacher, Student
+                    {% trans "Teacher" %}, {% trans "Student" %}
                     {% elif object.Is_Teacher == True %}
-                    Teacher
+                    {% trans "Teacher" %}
                     {% elif object.Is_Student == True %}
-                    Student
+                    {% trans "Student" %}
                     {% else %}
-                    Not Assigned
+                    {% trans "Not Assigned" %}
                     {% endif %}
                 </td>
                 <td class="text-center">
                     <button class="btn btn-sm btn-success confirm-activate" id="{{ object.pk }}">
-                        Activate
+                        {% trans "Activate" %}
                     </button>
                     <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
                         id="activateForm-{{ object.pk }}">
                         {% csrf_token %}
                         <input type="hidden" value='memberinfo_list_inactive' name='url'>
                     </form>
-                    <button class="btn btn-sm btn-danger confirm-delete" id="{{ object.pk }}">Delete
+                    <button class="btn btn-sm btn-danger confirm-delete" id="{{ object.pk }}">{% trans "Delete" %}
                     </button>
                     <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
                         id="delete_form-{{ object.pk }}">
