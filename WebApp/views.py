@@ -2065,7 +2065,6 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         form.save(commit=False)
         form.save()
-        print(self.request.POST.get('sessiondata[]'))
         if self.request.POST.get('sessiondata[]'):
             for session in json.loads(self.request.POST.get('sessiondata[]')):
                 requestStatus = InningInfoMappingView(model_name='AssignmentInfo', start_date=session['start_date'],

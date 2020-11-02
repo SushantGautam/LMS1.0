@@ -36,6 +36,7 @@
                 <th>Session Name</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th></th>
             </tr>
             {% for session in assigned_session %}
                 <tr>
@@ -43,7 +44,8 @@
                         <input type="checkbox" name="sessiondata" class="inningInfoCheckbox" checked>
                     </td>
                     <td class="counter">{{ forloop.counter }}</td>
-                    <td class="session_id"><input type="text" value="{{ session.id }}" readonly>{{ session }}</td>
+                    <td class="session_id"><input type="text" class="form-control" value="{{ session.Inning_Name }}"
+                                                  data-value="{{ session.id }}" readonly></td>
                     <td class="session_start_date">
                         <input type="text" name="Start_Date" class="form-control"
                                value=""
@@ -54,6 +56,7 @@
                                value=""
                                max="9999-12-31" autocomplete="off">
                     </td>
+                    <td title="Copy Date in all selected fields" class="date_copybtn"><i class="fa fa-copy"></i></td>
                 </tr>
             {% endfor %}
         </table>
@@ -104,8 +107,11 @@
 
         $.each($('#inning_dataTable tr'), function (index, value) {
             if ($(value).find('td').length > 0) {
+                if ($(value).hasClass('off')) {
+                    return false
+                }
                 inputvalues = {
-                    'session_id': $(value).find('.session_id input').val(),
+                    'session_id': $(value).find('.session_id input').attr('data-value'),
                     'start_date': $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '',
                     'end_date': $(value).find('.session_end_date input').val() != '' ? new Date($(value).find('.session_end_date input').val()).toISOString() : '',
                 };
@@ -144,9 +150,11 @@
         $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
 
         if ($(this).prop("checked") == true) {
-            $('#inning_dataTable input[type=text]').removeAttr('disabled')
+            $('#inning_dataTable input[type=text]').removeAttr('disabled');
+            $('.date_copybtn').css('display', 'block');
         } else {
-            $('#inning_dataTable input[type=text]').prop('disabled', 'disabled')
+            $('#inning_dataTable input[type=text]').prop('disabled', 'disabled');
+            $('.date_copybtn').css('display', 'none');
         }
     });
 
@@ -157,10 +165,27 @@
             $('.inningInfoCheckAll').prop('checked', false);
         }
         if ($(this).prop("checked") == true) {
-            $(this).closest('tr').find('input[type=text]').removeAttr('disabled')
+            $(this).closest('tr').removeClass('off');
+            $(this).closest('tr').find('input[type=text]').removeAttr('disabled');
+            $(this).closest('tr').find('.date_copybtn').css('display', 'block');
         } else {
-            $(this).closest('tr').find('input[type=text]').prop('disabled', 'disabled')
+            $(this).closest('tr').addClass('off');
+            $(this).closest('tr').find('input[type=text]').prop('disabled', 'disabled');
+            $(this).closest('tr').find('.date_copybtn').css('display', 'none');
+
         }
     });
+
+    $('.date_copybtn').on('click', function () {
+        let start_date = $(this).closest('tr').find('.session_start_date input').val();
+        let end_date = $(this).closest('tr').find('.session_end_date input').val();
+        $.each($('#inning_dataTable tr'), function (index, value) {
+            if ($(value).find('td').length > 0) {
+                $(value).find('.session_start_date input:not(:disabled)').val(start_date);
+                $(value).find('.session_end_date input:not(:disabled)').val(end_date);
+            }
+        });
+    });
+
 
 </script>
