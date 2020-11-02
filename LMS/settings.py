@@ -236,6 +236,10 @@ REST_FRAMEWORK = {
 #     }
 # }
 
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 # SERVER_NAME = 'Indonesian_Server'
 # SERVER_NAME = 'Korean_Server'
 SERVER_NAME = 'Vietnam_Server'
