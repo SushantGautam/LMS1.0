@@ -19,28 +19,7 @@
             </div>
         </div>
     </div>
-    {#    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">#}
-    {#        <div id="div_id_Assignment_Start" class="form-group">#}
-    {#            <label for="id_Assignment_Start" class="control-label ">#}
-    {#                Assignment Starting *#}
-    {#            </label>#}
-    {#            <div class="controls ">#}
-    {#                <input type="text" name="Assignment_Start" class="form-control"#}
-    {#                       id="id_Assignment_Start" value="{{ Object.Assignment_Start|date:'c' }}" max="9999-12-31">#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
-    {#    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">#}
-    {#        <div id="div_id_Assignment_Deadline" class="form-group">#}
-    {#            <label for="id_Assignment_Deadline" class="control-label ">#}
-    {#                Assignment Deadline *#}
-    {#            </label>#}
-    {#            <div class="controls ">#}
-    {#                <input type="text" name="Assignment_Deadline" class="form-control"#}
-    {#                       id="id_Assignment_Deadline" value="{{ Object.Assignment_Deadline|date:'c' }}" max="9999-12-31">#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
+
     <div class="result text-center"></div>
 
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -49,7 +28,36 @@
         </label><br>
         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked><br> <br>
     </div>
-
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <table class="table" id="inning_dataTable">
+            <tr>
+                <th><input type="checkbox" name="sessiondataAll" class="inningInfoCheckAll" checked></th>
+                <th>S.No</th>
+                <th>Session Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+            {% for session in assigned_session %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="sessiondata" class="inningInfoCheckbox" checked>
+                    </td>
+                    <td class="counter">{{ forloop.counter }}</td>
+                    <td class="session_id"><input type="text" value="{{ session.id }}" readonly>{{ session }}</td>
+                    <td class="session_start_date">
+                        <input type="text" name="Start_Date" class="form-control"
+                               value=""
+                               max="9999-12-31" autocomplete="off">
+                    </td>
+                    <td class="session_end_date">
+                        <input type="text" name="End_Date" class="form-control"
+                               value=""
+                               max="9999-12-31" autocomplete="off">
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
                class="select form-control">
@@ -87,10 +95,23 @@
     $(".se-pre-con-ajax").fadeOut("fast");
     {#$('#id_Assignment_Deadline').datetimepicker();#}
     {#$('#id_Assignment_Start').datetimepicker();#}
+    $('input[name="Start_Date"]').datetimepicker();
+    $('input[name="End_Date"]').datetimepicker();
 
     $("#ajaxassignmentinfoform").submit(function (e) {
-
         e.preventDefault(); // avoid to execute the actual submit of the form.
+        sessiondata = [];
+
+        $.each($('#inning_dataTable tr'), function (index, value) {
+            if ($(value).find('td').length > 0) {
+                inputvalues = {
+                    'session_id': $(value).find('.session_id input').val(),
+                    'start_date': $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '',
+                    'end_date': $(value).find('.session_end_date input').val() != '' ? new Date($(value).find('.session_end_date input').val()).toISOString() : '',
+                };
+                sessiondata.push(inputvalues)
+            }
+        });
         $.ajax({
             url: $(this).attr('action'),  // URL to your view that serves new info
             data: {
@@ -101,7 +122,8 @@
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Course_Code": $('#id_Course_Code').val(),
                 "Chapter_Code": $('#id_Chapter_Code').val(),
-                "Register_Agent": $('#id_Register_Agent').val()
+                "Register_Agent": $('#id_Register_Agent').val(),
+                "sessiondata[]": JSON.stringify(sessiondata),
             },
 
             // get the form data
@@ -117,4 +139,28 @@
 
         });
     });
+
+    $('.inningInfoCheckAll').on('click', function () {
+        $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
+
+        if ($(this).prop("checked") == true) {
+            $('#inning_dataTable input[type=text]').removeAttr('disabled')
+        } else {
+            $('#inning_dataTable input[type=text]').prop('disabled', 'disabled')
+        }
+    });
+
+    $('.inningInfoCheckbox').on('click', function () {
+        if ($('.inningInfoCheckbox').length === $('.inningInfoCheckbox:checked').length) {
+            $('.inningInfoCheckAll').prop('checked', 'checked');
+        } else {
+            $('.inningInfoCheckAll').prop('checked', false);
+        }
+        if ($(this).prop("checked") == true) {
+            $(this).closest('tr').find('input[type=text]').removeAttr('disabled')
+        } else {
+            $(this).closest('tr').find('input[type=text]').prop('disabled', 'disabled')
+        }
+    });
+
 </script>

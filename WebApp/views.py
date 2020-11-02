@@ -2065,12 +2065,32 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         form.save(commit=False)
         form.save()
+        print(self.request.POST.get('sessiondata[]'))
+        if self.request.POST.get('sessiondata[]'):
+            for session in json.loads(self.request.POST.get('sessiondata[]')):
+                requestStatus = InningInfoMappingView(model_name='AssignmentInfo', start_date=session['start_date'],
+                                                      end_date=session['end_date'], session_id=session['session_id'],
+                                                      object_id=form.instance.id)
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentInfoCreateViewAjax, self).get_context_data()
+        if self.kwargs.get('chapterpk'):
+            datetime_now = timezone.now().replace(microsecond=0)
+            # student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(
+                Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapterpk')).Course_Code)
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    # Groups__in=student_groups,
+                                                                    Course_Group__in=course_groups).distinct()
+        return context
 
 
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
@@ -4239,33 +4259,40 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.apps import apps
 
 
-def InningInfoMappingView(request, model_name):
-    inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
-    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+def InningInfoMappingView(model_name, request=None, **kwargs):
+    if request:
+        start_date, end_date, session_id, object_id = request.POST['Start_Date'], request.POST['End_Date'], \
+                                                      request.POST['sessionid'], request.POST['objectid']
+    else:
+        start_date, end_date, session_id, object_id = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
+            'session_id'), kwargs.get('object_id')
+
+    inninginfoObj = get_object_or_404(InningInfo, pk=session_id)
+    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=object_id)
 
     if model_name == "AssignmentInfo":
-        if request.POST['Start_Date'] == '' or request.POST['End_Date'] == '' or \
-                request.POST['Start_Date'] is None or request.POST['End_Date'] is None:
+        if start_date == '' or end_date == '' or \
+                start_date is None or end_date is None:
             return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
 
-    if (request.POST['Start_Date'] and request.POST['End_Date']):
-        if (request.POST['Start_Date'] > request.POST['End_Date']):
+    if (start_date and end_date):
+        if (start_date > end_date):
             return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
     if SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
                                      content_type=get_content_type_for_model(Obj), object_id=Obj.pk):
         sessionmap = SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
                                                    content_type=get_content_type_for_model(Obj), object_id=Obj.pk)
         sessionmap.update(
-            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
-            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            Start_Date=start_date if start_date != "" else None,
+            End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
             Session_Code=inninginfoObj
         )
     else:
         sessionmap = SessionMapInfo.objects.create(
-            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
-            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            Start_Date=start_date if start_date != "" else None,
+            End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
             Session_Code=inninginfoObj
@@ -4276,7 +4303,7 @@ def InningInfoMappingView(request, model_name):
 
 def ChapterInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request, 'ChapterInfo')
+        requestStatus = InningInfoMappingView(request=request, model_name='ChapterInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
@@ -4287,7 +4314,7 @@ def ChapterInningInfoMappingView(request):
 
 def AssignmentInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request, 'AssignmentInfo')
+        requestStatus = InningInfoMappingView(request=request, model_name='AssignmentInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
