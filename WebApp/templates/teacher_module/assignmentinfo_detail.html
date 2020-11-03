@@ -390,6 +390,7 @@
                         <td>Answer</td>
                         <td>Submitted on</td>
                         <td>Action</td>
+                        <td>Feedback</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -442,6 +443,8 @@
                                     <b>View Answer</b>
                                 </button>
                             </td>
+                            <td>{{ answer.Assignment_Feedback }}</td>
+
                         </tr>
 
                     {% endfor %}
@@ -831,7 +834,7 @@
             let question_score = this.dataset.question_score;
             let short_answer = $(`#answer_${answer_id}`).html();
             let file_answer = this.dataset.answer_file;
-            
+
             if (short_answer){
                 $('#answercontent').html(`${short_answer}`);
             }
@@ -984,7 +987,7 @@
                         extend: 'csv',
                         text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6, 7]
+                            columns: [1, 2, 3, 4, 5, 6, 7, 9]
                         }
                     },
                     // {
@@ -995,7 +998,7 @@
                 ],
                 "columnDefs": [
                     {
-                        "targets": [1, 6],
+                        "targets": [1, 6, 9],
                         "visible": false,
                         "searchable": true,
                     },
