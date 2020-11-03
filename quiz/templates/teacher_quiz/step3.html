@@ -93,23 +93,38 @@
       });
 
       function mcq_success(response) {
-          $('#id_form3-mcquestion').prepend(
+          $('#id_form3-mcquestion_to').prepend(
               `<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
-          $('#id_form3-mcquestion').change();
+          $('#id_form3-mcquestion_to').change();
+          SelectBox.add_to_cache("id_form3-mcquestion_to", {
+            value: String(response['new_mcq_id']),
+            text: response['new_mcq_content'],
+            displayed: 1
+          });
           $('#question_form_popup').modal('toggle');
       }
 
       function tfq_success(response) {
-          $('#id_form3-tfquestion').prepend(
+          $('#id_form3-tfquestion_to').prepend(
               `<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
-          $('#id_form3-tfquestion').change();
+          $('#id_form3-tfquestion_to').change();
+          SelectBox.add_to_cache("id_form3-tfquestion_to", {
+            value: String(response['new_tfq_id']),
+            text: response['new_tfq_content'],
+            displayed: 1
+          });
           $('#question_form_popup').modal('toggle');
       }
 
       function saq_success(response) {
-          $('#id_form3-saquestion').prepend(
+          $('#id_form3-saquestion_to').prepend(
               `<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
-          $('#id_form3-saquestion').change();
+          $('#id_form3-saquestion_to').change();
+          SelectBox.add_to_cache("id_form3-saquestion_to", {
+            value: String(response['new_saq_id']),
+            text: response['new_saq_content'],
+            displayed: 1
+          });
           $('#question_form_popup').modal('toggle');
       }
 
