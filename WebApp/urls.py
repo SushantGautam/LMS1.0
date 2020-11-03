@@ -146,6 +146,8 @@ urlpatterns += (
          views.AssignmentInfoUpdateView.as_view(), name='assignmentinfo_update'),
     path('assignmentinfo/edit/<int:pk>/ajax/', views.AssignmentInfoEditViewAjax.as_view(),
          name='assignmentinfo_edit_ajax'),
+    path('chapter/<int:chapterpk>/assignmentinfo/edit/<int:pk>/ajax/', views.AssignmentInfoEditViewAjax.as_view(),
+         name='assignmentinfo_edit_ajax_chapter_id'),
     path('assignmentinfo/<int:pk>/',
          views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
     path('assignment/inninginfomap/', views.AssignmentInningInfoMappingView, name='assignmentinninginfomap'),
