@@ -525,6 +525,10 @@ class Quiz(models.Model):
         help_text=_("Percentage of total marks to use for negative marking"),
         verbose_name=_("Negative Marking Percentage"))
 
+    mcquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    saquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    tfquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+
     def get_absolute_url(self):
         return reverse('quiz_update', args=(self.pk,))
 

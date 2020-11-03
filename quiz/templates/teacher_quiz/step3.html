@@ -16,6 +16,39 @@
   <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script>
+
+        $("#quiz_form_3").submit(function(e){
+            // e.preventDefault();
+            $('#id_form3-mcquestion_to option').prop('selected', true);
+            $('#id_form3-saquestion_to option').prop('selected', true);
+            $('#id_form3-tfquestion_to option').prop('selected', true);
+            
+            //////////////////////////////////////////////////////////////
+            // get question chosen order and set to related input:      //
+            $('#id_mcquestion_order').val("");                          //            
+            $('#id_saquestion_order').val("");
+            $('#id_tfquestion_order').val("");
+            
+            let mcq_order = []
+            let saq_order = []
+            let tfq_order = []
+            
+            $("#id_form3-mcquestion_to option").each(function(){
+                mcq_order.push($(this).val());
+            });                                                                      
+            $("#id_form3-saquestion_to option").each(function(){
+                saq_order.push($(this).val());
+            });                                                                      
+            $("#id_form3-tfquestion_to option").each(function(){
+                tfq_order.push($(this).val());
+            });
+            
+            $('#id_mcquestion_order').val(mcq_order.toString());
+            $('#id_saquestion_order').val(saq_order.toString());
+            $('#id_tfquestion_order').val(tfq_order.toString());        //       
+            //////////////////////////////////////////////////////////////
+        });
+
       $('#mcq_create_button').on('click', function () {
           $.ajax({
               type: "GET",

@@ -79,6 +79,9 @@
                         {{ form.negative_percentage|as_crispy_field }}
                         {{ form.random_order|as_crispy_field }}                    </div>
                 </div>
+                <input type="hidden" name="mcquestion_order" id="id_mcquestion_order">
+                <input type="hidden" name="saquestion_order" id="id_saquestion_order">
+                <input type="hidden" name="tfquestion_order" id="id_tfquestion_order">
             </div>
         </div>
 
@@ -100,6 +103,33 @@
         $('#id_mcquestion_to option').prop('selected', true);
         $('#id_saquestion_to option').prop('selected', true);
         $('#id_tfquestion_to option').prop('selected', true);
+        
+        //////////////////////////////////////////////////////////////
+        // get question chosen order and set to related input:      //
+        $('#id_mcquestion_order').val("");                          //            
+        $('#id_saquestion_order').val("");
+        $('#id_tfquestion_order').val("");
+        
+        let mcq_order = []
+        let saq_order = []
+        let tfq_order = []
+        
+        $("#id_mcquestion_to option").each(function(){
+            mcq_order.push($(this).val());
+        });                                                                      
+        $("#id_saquestion_to option").each(function(){
+            saq_order.push($(this).val());
+        });                                                                      
+        $("#id_tfquestion_to option").each(function(){
+            tfq_order.push($(this).val());
+        });
+        
+        $('#id_mcquestion_order').val(mcq_order.toString());
+        $('#id_saquestion_order').val(saq_order.toString());
+        $('#id_tfquestion_order').val(tfq_order.toString());        //       
+        //////////////////////////////////////////////////////////////
+
+
         $.ajax({
             //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
             cache: false,

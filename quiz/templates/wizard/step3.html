@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{{ wizard.form.media }}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
 
@@ -9,6 +9,9 @@
   <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
 {% endblock %}
 {% block content %}
+  <!-- >>>> form media >>>>>> -->
+{{ wizard.form.media }}
+<!-- <<<<< form media <<<<< -->
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <div id="" class="form_wizard wizard_horizontal">
     <ul class="wizard_steps anchor">
@@ -43,71 +46,57 @@
     {% else %}
       <div class="form-group">
         {{ wizard.form.non_field_errors }}
-        <div class="col-md-12 questions-wrapper">
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">Multiple Choice Question</label>
+        <div class="row questions-wrapper">
+          <div class="col-md-2"></div>
+          <div class="col-md-7">
+          {{ wizard.form.mcquestion|as_crispy_field }}
+          {{ wizard.form.mcquestion.help_text }}
+          {{ wizard.form.mcquestion.errors }}
           </div>
-          <div class="col-md-6 questions-only">
+          <div class="col-md-3">
             <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
-            <button type="button" class="btn qts-button" id="mcq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add MCQ question
+            <button type="button" class="btn btn-primary" id="mcq_create_button" data-toggle="modal"
+              data-target="#question_form_popup">Add MCQ question
             </button>
-          </div>
-          <div class="col-md-12">
-            {{ wizard.form.mcquestion }}
-            {{ wizard.form.mcquestion.help_text }}
-            {{ wizard.form.mcquestion.errors }}
-          </div>
-          <div class="col-md-12">
-            <p class="quiz-counter" id="selected_mcq_num">0</p>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <div class="col-md-12 questions-wrapper">
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">True False Question</label>
-          </div>
-          <div class="col-md-6 questions-only">
-            <!-- <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a> -->
-            <button type="button" class="btn qts-button" id="tfq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add T/F question
-            </button>
-
-          </div>
-          <div class="col-md-12">
-            {{ wizard.form.tfquestion }}
+        <div class="row questions-wrapper">
+          <div class="col-md-2"></div>
+          <div class="col-md-7">
+            {{ wizard.form.tfquestion|as_crispy_field }}
             {{ wizard.form.tfquestion.help_text }}
             {{ wizard.form.tfquestion.errors }}
           </div>
-          <div class="col-md-12">
-            <p class="quiz-counter" id="selected_tfq_num">0</p>
+          <div class="col-md-3">
+            <!-- <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a> -->
+            <button type="button" class="btn btn-primary" id="tfq_create_button" data-toggle="modal"
+              data-target="#question_form_popup">Add T/F question
+            </button>
           </div>
         </div>
       </div>
       <div class="form-group">
         <div class="col-md-12 questions-wrapper">
-          <div class="col-md-6">
-            <label class="quiz-add-label" for="">Short Type Question</label>
-          </div>
-          <div class="col-md-6 questions-only">
-            <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
-            <button type="button" class="btn qts-button" id="saq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add SA question
-            </button>
-
-          </div>
-          <div class="col-md-12">
-            {{ wizard.form.saquestion }}
+          <div class="col-md-2"></div>
+          <div class="col-md-7">
+            {{ wizard.form.saquestion|as_crispy_field }}
             {{ wizard.form.saquestion.help_text }}
             {{ wizard.form.saquestion.errors }}
           </div>
-          <div class="col-md-12">
-            <p class="quiz-counter" id="selected_saq_num">0</p>
+          <div class="col-md-3">
+            <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
+            <button type="button" class="btn btn-primary" id="saq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup">Add SA question
+            </button>
           </div>
         </div>
       </div>
     {% endif %}
+    <input type="hidden" name="form3-mcquestion_order" id="id_mcquestion_order">
+    <input type="hidden" name="form3-saquestion_order" id="id_saquestion_order">
+    <input type="hidden" name="form3-tfquestion_order" id="id_tfquestion_order">
     <input type="hidden" id="wizard_goto_input">
     <div class="col-md-12 submitforquiz">
       <div class="col-md-4"></div>
@@ -137,12 +126,71 @@
       </div>
     </div>
   </div>
+  <style>
+    @media (min-width: 350px) and (max-width: 825px) {
+        .selector-available {
+            width: 100% !important;
+        }
+
+        .selector-chosen {
+            width: 100% !important;
+        }
+
+        .filtered {
+            width: 100% !important;
+        }
+
+        .selector ul.selector-chooser {
+            float: left; 
+            width: 22px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 5px auto 0 45% !important;
+            padding: 0;
+            transform: rotate(90deg);
+            transition: all 0.3s ease;
+        }
+    }
+</style>
 {% endblock %}
 {% block customjss %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
   <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script>
+
+    $("#quiz_form_3").submit(function(e){
+        // e.preventDefault();
+        $('#id_form3-mcquestion_to option').prop('selected', true);
+        $('#id_form3-saquestion_to option').prop('selected', true);
+        $('#id_form3-tfquestion_to option').prop('selected', true);
+        
+        //////////////////////////////////////////////////////////////
+        // get question chosen order and set to related input:      //
+        $('#id_mcquestion_order').val("");                          //            
+        $('#id_saquestion_order').val("");
+        $('#id_tfquestion_order').val("");
+        
+        let mcq_order = []
+        let saq_order = []
+        let tfq_order = []
+        
+        $("#id_form3-mcquestion_to option").each(function(){
+            mcq_order.push($(this).val());
+        });                                                                      
+        $("#id_form3-saquestion_to option").each(function(){
+            saq_order.push($(this).val());
+        });                                                                      
+        $("#id_form3-tfquestion_to option").each(function(){
+            tfq_order.push($(this).val());
+        });
+        
+        $('#id_mcquestion_order').val(mcq_order.toString());
+        $('#id_saquestion_order').val(saq_order.toString());
+        $('#id_tfquestion_order').val(tfq_order.toString());        //       
+        //////////////////////////////////////////////////////////////
+    });
+
       $('#mcq_create_button').on('click', function () {
           $.ajax({
               type: "GET",
