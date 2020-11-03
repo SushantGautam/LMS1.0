@@ -677,14 +677,14 @@ class SittingManager(models.Manager):
             mcquestion_set = quiz.mcquestion.all().order_by('?')
             tfquestion_set = quiz.tfquestion.all().order_by('?')
             saquestion_set = quiz.saquestion.all().order_by('?')
-        else:
-            mcquestion_set = quiz.mcquestion.all()
-            tfquestion_set = quiz.tfquestion.all()
-            saquestion_set = quiz.saquestion.all()
 
-        mcquestion_set = [item.id for item in mcquestion_set]
-        tfquestion_set = [item.id for item in tfquestion_set]
-        saquestion_set = [item.id for item in saquestion_set]
+            mcquestion_set = [item.id for item in mcquestion_set]
+            tfquestion_set = [item.id for item in tfquestion_set]
+            saquestion_set = [item.id for item in saquestion_set]
+        else:
+            mcquestion_set = [int(x) for x in quiz.mcquestion_order.split(",")] if quiz.mcquestion_order else []
+            tfquestion_set = [int(x) for x in quiz.tfquestion_order.split(",")] if quiz.tfquestion_order else []
+            saquestion_set = [int(x) for x in quiz.saquestion_order.split(",")] if quiz.saquestion_order else []
 
         if (len(mcquestion_set) == 0 and len(tfquestion_set) == 0 and len(saquestion_set) == 0):
             raise ImproperlyConfigured('Question set of the quiz is empty. Please configure questions properly')
