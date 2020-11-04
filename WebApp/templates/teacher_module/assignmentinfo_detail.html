@@ -443,7 +443,7 @@
                                     <b>View Answer</b>
                                 </button>
                             </td>
-                            <td> &nbsp;{{ answer.Assignment_Feedback }}</td>
+                            <td class="feedback_td"> &nbsp;{{ answer.Assignment_Feedback }}</td>
 
                         </tr>
 
@@ -942,8 +942,11 @@
                     if (!fromtd) {
                         $('#exampleModal1').modal('toggle');
                         $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
+                        var currentRow = $('.clickedShowAnswer').closest("tr");
+                        var data = $('.table-data').DataTable().row(currentRow).data();
+                        // Here data gives all the values of td in array. Feedback array index is 9 in datatable.
+                        data[9] = " " + feedback;
                     }
-                    {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);#}
                 },
                 error: function (e) {
                     console.log(e.responseText)
