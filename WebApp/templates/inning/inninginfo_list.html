@@ -86,7 +86,7 @@
                     <td style="vertical-align: middle;">{{ object.Start_Date }}</td>
                     <td style="vertical-align: middle;">{{ object.End_Date }}</td>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="   {% if '/mysessions' not in request.path %}
-                                        {{ object.get_absolute_url }}
+                                        {{ object.get_update_url }}
                                     {% elif 'mysessions' in request.path %}
                                         {% url 'teachers_mysession_detail' object.pk %}
                                     {% endif %}">Edit</a>

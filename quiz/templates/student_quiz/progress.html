@@ -13,13 +13,16 @@
 
 {% block content %}
   <hr>
+
   <div class="exam-results text-center">
+    <br>
     <h2>{% trans "Below are the quizes that you have taken" %}</h2>
+    <br>
   </div>
 
   <table class="table table-bordered table-striped">
 
-    <thead>
+    <thead class="thead-dark">
     <tr>
       <th class="quiz-capital">{% trans "Quiz Title" %}</th>
       <th class="quiz-capital">{% trans "Quiz Type" %}</th>
@@ -106,7 +109,7 @@
   </div>
 
 {% endblock %}
-{% block customjss %}
+{% block javascript %}
   <script>
       $(".quiz_history").click(function () {
           let quiz_title = $(this).attr("data-quiz_title")
@@ -120,4 +123,4 @@
           });
       })
   </script>
-{% endblock %}
+{% endblock javascript %}
