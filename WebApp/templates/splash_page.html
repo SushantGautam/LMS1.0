@@ -8,97 +8,50 @@
     <title>LMS</title>
 </head>
 
-<body class="splashContainer">
+<body class="form-membership" style="background: url(../../../static/media/image/LMS_background.jpg)no-repeat center center fixed;
+    -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;">
     <style>
-        .splashContainer {
-            width: 100vw;
-            height: 100vh;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 7rem;
-            padding: 0 2rem;
-            overflow: hidden;
-            font-family: monospace;
-        }
-
-        .splashImg {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .splashImg img {
-            width: 800px;
-        }
-
         .splashContent {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: white;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            text-align: center;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30vh auto;
         }
 
-        .splashContent a {
+        .titleText {
+            font-weight: bolder;
+            font-size: 3.5em;
+        }
+
+        .buttons .login {
             text-decoration: none;
-            color: rgb(64, 108, 252);
-            font-size: 0.9rem;
-            transition: 0.3s;
+            color: yellow;
         }
 
-        @media screen and (max-width: 1050px) {
-            .splashContainer {
-                grid-gap: 5rem;
-            }
+        .buttons .register {
+            text-decoration: none;
+            color: blueviolet;
         }
 
-        @media screen and (max-width: 1000px) {
-            .splashContent h2 {
-                font-size: 1.5rem;
-                margin: 8px 0;
-            }
-
-            .splashContent h1 {
-                font-size: 2rem;
-
-            }
-
-            .splashImg img {
-                width: 400px;
-            }
-
-            .splashContent {
-                background-image: url("static/images/LMS-svg.svg");
-                background-size: cover;
-            }
-        }
-
-        @media screen and (max-width: 900px) {
-            .splashContainer {
-                grid-template-columns: 1fr;
-            }
-
-            .splashImg {
-                display: none;
-            }
-
-            .splashContent {
-                justify-content: center;
-            }
+        .logo {
+            height: 100px;
+            width: 100px;
         }
     </style>
-
-
-    <div class="splashImg">
-        <img src="{% static 'media/image/LMS_background.jpg' %}">
-    </div>
     <div class="splashContent">
-        <h1>Welcome to LMS</h1>
-        <h2>Already a user? <a href="{% url 'login' %}">Login</a></h2>
-        <h3 style="padding-left: 5rem;">or</h3>
-        <h3><a href="{% url 'register' %}">Register</a> as a new user</h3>
+        <img src="../../static/media/image/logo/large-logo.png" class="logo">
+        <p class="titleText">Welcome to UBL CLOUD</p>
+        <h2 class="buttons">
+            [ <a href="{% url 'login' %}" class="login"> Login </a> ] /
+            [ <a href="{% url 'register' %}" class="register"> Register </a> ]
+        </h2>
     </div>
-
 </body>
 
 </html>

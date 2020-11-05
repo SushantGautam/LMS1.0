@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load i18n %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
-<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+<li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">{% trans "Member" %}</a></li>
 {% if object.username %}
 <li class="breadcrumb-item"><a href="{{ object.get_absolute_url }}">{{ object.username }}</a></li>
 {% endif %}
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/memberinfo/create/' == request.path %}
-    Create New Member
+    {% trans "Create New Member" %}
     {% else %}
-    Edit Member Info
+    {% trans "Edit Member Info" %}
     {% endif %}
 </li>
 {% endblock %}
@@ -20,9 +20,9 @@
 <div class="page-header">
     <div class="page-title d-block text-center">
         <h2>{% if 'create' in request.path %}
-            Create New{% elif 'update' in request.path %}
-            Edit {% endif %}
-            Member</h2>
+            {% trans "Create New" %}{% elif 'update' in request.path %}
+            {% trans "Edit" %} {% endif %}
+            {% trans "Member" %}</h2>
     </div>
 </div>
 <div class="row">
@@ -36,7 +36,7 @@
                     <div class="card-header" id="basic_info_header">
                         <button class="btn btn-link" type="button" data-toggle="collapse"
                             data-target="#basic_information" aria-expanded="true" aria-controls="basic_information">
-                            Basic Information
+                            {% trans "Basic Information" %}
                         </button>
                     </div>
                     <div id="basic_information" class="collapse show" aria-labelledby="basic_info_header"
@@ -45,17 +45,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_ID">Registration ID</label>
+                                        <label for="id_Member_ID">{% trans "Registration ID" %}</label>
                                         <input type="text" name="Member_ID" id="id_Member_ID" maxlength="20"
                                             value="{{ object.Member_ID }}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-4">
-                                        <label for="Member_Gender">Gender</label>
+                                        <label for="Member_Gender">{% trans "Gender" %}</label>
                                         <select id="id_Member_Gender" name="Member_Gender" class="form-control">
                                             {% for x, y in form.fields.Member_Gender.choices %}
-                                            <option value="{{ x }}" {% if if form.initial.Member_Gender == x %}
+                                            <option value="{{ x }}" {% if form.initial.Member_Gender == x %}
                                                 selected{% endif %}>{{ y }}</option>
                                             {% endfor %}
                                         </select>
@@ -65,14 +65,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_first_name">First Name</label>
+                                        <label for="id_first_name">{% trans "First Name" %}</label>
                                         <input type="text" class="form-control" name="first_name" id="id_first_name"
                                             type="text" value="{{ object.first_name}}" required autofocus>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_last_name">Last Name</label>
+                                        <label for="id_last_name">{% trans "Last Name" %}</label>
                                         <input type="text" class="form-control" name="last_name" id="id_last_name"
                                             type="text" value="{{ object.last_name}}" required autofocus>
                                     </div>
@@ -81,7 +81,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_username">Username</label>
+                                        <label for="id_username">{% trans "Username" %}</label>
                                         <input type="text" class="form-control" name="username" id="id_username"
                                             type="text" value="{{ object.username}}" required autofocus>
                                     </div>
@@ -89,7 +89,7 @@
                                 {% if 'create' in request.path %}
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_password">Password</label>
+                                        <label for="id_password">{% trans "Password" %}</label>
                                         <input type="password" name="password" value="{{ object.password }}"
                                             id="id_password" required class="form-control">
                                     </div>
@@ -97,7 +97,7 @@
                                 {% endif %}
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_email">Email</label>
+                                        <label for="id_email">{% trans "Email" %}</label>
                                         <input type="text" name="email" value="{{ object.email }}" id="id_email"
                                             required class="form-control">
                                     </div>
@@ -105,10 +105,10 @@
                                 <div class="col-md-6 mt-3">
                                     <input type="checkbox" name="Is_Student" id="id_Is_Student"
                                         {% if object.Is_Student %} checked {% endif %} class="checkboxinput">
-                                    <label for="id_Is_Student">Is Student</label>
+                                    <label for="id_Is_Student">{% trans "Is Student" %}</label>
                                     <input type="checkbox" name="Is_Teacher" id="id_Is_Teacher"
                                         {% if object.Is_Teacher %} checked {% endif %} class="ml-5">
-                                    <label for="id_Is_Teacher">Is Teacher</label>
+                                    <label for="id_Is_Teacher">{% trans "Is Teacher" %}</label>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
                             data-target="#additional_information" aria-expanded="false"
                             aria-controls="additional_information">
-                            Additional Information
+                            {% trans "Additional Information" %}
                         </button>
                     </div>
                     <div id="additional_information" class="collapse" aria-labelledby="assitional_info_header"
@@ -128,7 +128,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_Permanent_Address">Member Permanent Address</label>
+                                        <label for="id_Member_Permanent_Address">{% trans "Member Permanent
+                                            Address" %}</label>
                                         <input type="text" name="Member_Permanent_Address"
                                             id="id_Member_Permanent_Address" maxlength="150"
                                             value="{{ object.Member_Permanent_Address }}" class="form-control">
@@ -136,7 +137,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_Temporary_Address">Member Temporary Address</label>
+                                        <label for="id_Member_Temporary_Address">{% trans "Member Temporary
+                                            Address" %}</label>
                                         <input type="text" name="Member_Temporary_Address"
                                             id="id_Member_Temporary_Address" maxlength="150"
                                             value="{{ object.Member_Temporary_Address }}" class="form-control">
@@ -146,7 +148,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_BirthDate">Date of Birth</label>
+                                        <label for="id_Member_BirthDate">{% trans "Date of Birth" %}</label>
                                         <input name="Member_BirthDate" type="date" class="form-control"
                                             id="id_Member_BirthDate" max="9999-12-31"
                                             value="{{ object.Member_BirthDate|date:'Y-m-d' }}" required>
@@ -154,18 +156,18 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_Phone">Phone Number</label>
+                                        <label for="id_Member_Phone">{% trans "Phone Number" %}</label>
                                         <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone"
                                             value="{{ object.Member_Phone }}" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="id_Member_Memo">Member Memo</label>
+                                <label for="id_Member_Memo">{% trans "Member Memo" %}</label>
                                 <textarea class="form-control" name="Member_Memo" id="id_Member_Memo"
                                     rows="10">{{ object.Member_Memo }}</textarea>
                             </div>
-                            <div class="mb-2">Member Avatar</div>
+                            <div class="mb-2">{% trans "Member Avatar" %}</div>
                             {{ form.Member_Avatar }}
                         </div>
                     </div>
@@ -174,7 +176,7 @@
 
             <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="true">
             <div class="text-center mt-4">
-                <button class="btn btn-primary" type="submit">Submit</button>
+                <button class="btn btn-primary" type="submit">{% trans "Submit" %}</button>
             </div>
         </form>
     </div>
