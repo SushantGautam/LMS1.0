@@ -125,6 +125,7 @@ class SurveyInfoFormUpdateLimited(forms.ModelForm):
         request = kwargs.pop("request", None)
         survey_object = kwargs.pop("object", None)
         super().__init__(*args, **kwargs)
+        self.fields['Use_Flag'].label = 'Publish'
 
         category_name = request.GET["category_name"].lower()
         if category_name == "live" or category_name == "course":
@@ -141,7 +142,7 @@ class LiveSurveyInfoForm(forms.ModelForm):
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title',]
+        fields = ['Survey_Title', ]
         help_texts = {
             'End_Time': 'Survey Duration',
         }
@@ -162,11 +163,22 @@ class QuestionInfoForm(forms.ModelForm):
         model = QuestionInfo
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(QuestionInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Question_Name'].widget.attrs['placeholder'] = "Add Question"
+        self.fields['Question_Name'].label = ""
+
 
 class OptionInfoForm(forms.ModelForm):
     class Meta:
         model = OptionInfo
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(OptionInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Option_Name'].widget.attrs['placeholder'] = "Add Option"
+        self.fields['Option_Name'].label = ""
+
 
 
 class SubmitSurveyForm(forms.ModelForm):
@@ -191,6 +203,7 @@ OptionInfoFormset = inlineformset_factory(
     fields=('Option_Name',),
     can_delete=False,
     extra=0,
+    form=OptionInfoForm,
 )
 
 AnswerInfoFormset = inlineformset_factory(
@@ -219,6 +232,7 @@ class BaseQuestionInfoFormset(BaseInlineFormSet):
                 form.prefix,
                 OptionInfoFormset.get_default_prefix()),
         )
+
 
     def is_valid(self):
         result = super().is_valid()

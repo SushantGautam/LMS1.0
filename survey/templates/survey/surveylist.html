@@ -27,7 +27,7 @@
 
   <script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
 
- ///////////////////////////////  Survey Create AJAX POPUP -- ADMIN ///////////////////////////////////////////////
+ {# Survey Create AJAX POPUP -- ADMIN #}
   {% for category in categories %}
     <script>
        $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
@@ -96,7 +96,7 @@
   </script>
 
 
-    // Prevent Default for Add Survey
+{# Prevent Default for Add Survey #}
   <script>
    $('.add_survey_btn').click(function(event){
           event.preventDefault();

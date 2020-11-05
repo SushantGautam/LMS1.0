@@ -1,6 +1,7 @@
 {% load static %}
 
-<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+<!--<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">-->
+<link href="{% static 'build/css/new.css' %}" rel="stylesheet">
 <link href="{% static 'smart_wizard_theme_dots.css' %}" rel="stylesheet">
 
 {% load crispy_forms_tags %}
@@ -289,7 +290,7 @@
 
 
             $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3).replace(r4, str4));
-            $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-success" >Add option</button>`);
+            $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-primary" >Add option</button>`);
 
             var newel_id = String(
                 '#div_id_questioninfo-' + questionId + '-Question_Name'
@@ -461,4 +462,6 @@
         var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
         $('#id_Survey_Title').val('Survey ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
     </script>
+
+
 {% endblock customjss %}
