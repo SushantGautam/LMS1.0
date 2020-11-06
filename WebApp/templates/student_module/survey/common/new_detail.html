@@ -48,7 +48,12 @@
                             <i class="fa fa-calendar"></i><label>{% trans "End date" %}: <span
                                 class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
                         </li>
-
+                        {% if object.Publish_Result%}
+                        <li class="surveyViewDates">
+                            <i class="fa fa-user" style="padding-right: 10px;"></i><label>Number of
+                            Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                        </li>
+                            {% endif%}
                     </ul>
                 </div>
 

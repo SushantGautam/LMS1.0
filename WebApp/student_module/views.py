@@ -561,6 +561,7 @@ class questions_student_detail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['submit'] = SubmitSurvey.objects.filter(Survey_Code=self.kwargs.get('pk')).count()
         context['questions'] = QuestionInfo.objects.filter(
             Survey_Code=self.kwargs.get('pk')).order_by('pk')
         context['options'] = OptionInfo.objects.filter(
