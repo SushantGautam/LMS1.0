@@ -120,13 +120,14 @@ class SurveyInfoFormUpdateLimited(forms.ModelForm):
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'End_Date', 'Use_Flag']
+        fields = ['Survey_Title', 'End_Date', 'Use_Flag', 'Publish_Result',]
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request", None)
         survey_object = kwargs.pop("object", None)
         super().__init__(*args, **kwargs)
         self.fields['Use_Flag'].label = 'Publish'
+        self.fields['Publish_Result'].label = 'Display Result'
 
         category_name = request.GET["category_name"].lower()
         if category_name == "live" or category_name == "course":

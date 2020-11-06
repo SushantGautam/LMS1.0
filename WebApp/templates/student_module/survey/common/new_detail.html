@@ -112,7 +112,7 @@
                     <div class="clearfix"></div>
                   </div>
 
-                              {% if can_submit %}
+                              {% if can_submit or not object.Publish_Result %}
 
                             <div class="x_content" style="width:500px; margin:20px; padding:10px">
                                {% for option in options %}
@@ -137,7 +137,7 @@
 
                       <div class="x_content" style="width:500px; margin:20px; padding:10px">
 
-                           {% for option in question.optioninfo.all %}
+                           {% for option in question.options %}
 
 
                                  <div class="progress">
@@ -145,7 +145,7 @@
 
 
                                   <div class="progress-bar
-                                   {% if option.chosen %}
+                                   {% if option.was_chosen %}
                                         bg-success
                                    {% endif%}
     " role="progressbar" style="width:{{ option.get_option_percentage }}%;" aria-valuenow=" {{ option.get_option_percentage }}" aria-valuemin="0" aria-valuemax="100">

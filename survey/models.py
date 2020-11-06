@@ -113,6 +113,13 @@ class SurveyInfo(models.Model):
                     x.was_chosen = False
 
             for x in questions:
+                x.options = x.optioninfo.all()
+                for o in x.options:
+                    if len(surveys.answerinfo.filter(Answer_Value=o.id)) > 0:
+                        o.was_chosen = True
+                    else:
+                        o.was_chosen = False
+
                 try:
                     x.answer = AnswerInfo.objects.get(
                         Submit_Code=surveys.id, Question_Code=x.id)
