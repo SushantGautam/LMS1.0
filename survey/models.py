@@ -37,6 +37,7 @@ class SurveyInfo(models.Model):
     End_Date = DateTimeField(auto_now=False, auto_now_add=False, null=True)
     Survey_Cover = ImageField(upload_to="Survey_Covers/", blank=True, null=True)
     Use_Flag = BooleanField(default=True)
+    Publish_Result = BooleanField(default=True)
     Retaken_From = IntegerField(blank=True, null=True,
                                 help_text="Store id of previous survey from which it was retaken")
     Version_No = IntegerField(default=1, help_text="To maintain the versioning of the survey")
@@ -215,6 +216,13 @@ class OptionInfo(models.Model):
             option_percentage = 0
         return option_percentage
 
+    def chosen(self):
+        survey = self.Question_Code
+        if len(survey.answerinfo.filter(Answer_Value=self.id)) > 0:
+            was_chosen = True
+        else:
+            was_chosen = False
+        return was_chosen
 
 class SubmitSurvey(models.Model):
     Created_Date = DateTimeField(auto_now_add=True)

@@ -111,29 +111,58 @@
                                   </h2>
                     <div class="clearfix"></div>
                   </div>
-                  <div class="x_content" style="width:500px; margin:20px; padding:10px">
-                    {% for option in options %}
-                      {% if option.Question_Code.pk == question.pk %}
-                        <div class="radio">
-                          {#                        {% if can_submit %}#}
-                          {#                          <input type="radio" class="flat" name="{{ question.pk }}" id="pollsOptions"#}
-                          {#                                 value="{{ option.pk }}"> &nbsp; {{ option.Option_Name }}#}
-                          {#                          {% elif sub %}#}
-                          {##}
-                          {#                          {% endif %}#}
-                          <label style="line-height: 14px">
-                            <input type="radio" name="{{ question.pk }}" id="pollsOptions"
-                                   value="{{ option.pk }}"
-                                {% if option.was_chosen %}
-                                   checked
-                                {% endif %}
-                            >
-                            &nbsp; {{ option.Option_Name }}
-                          </label>
-                        </div>
-                      {% endif %}
-                    {% endfor %}
-                  </div>
+
+                              {% if can_submit %}
+
+                            <div class="x_content" style="width:500px; margin:20px; padding:10px">
+                               {% for option in options %}
+                              {% if option.Question_Code.pk == question.pk %}
+                               <div class="radio">
+
+                                  <label style="line-height: 14px">
+                                    <input type="radio" name="{{ question.pk }}" id="pollsOptions"
+                                           value="{{ option.pk }}"
+                                        {% if option.was_chosen %}
+                                          checked
+                                      {% endif %}
+                                  >
+                                   &nbsp; {{ option.Option_Name }}
+                                 </label>
+                                  </div>
+                              {% endif %}
+                                {% endfor %}
+                          </div>
+                   {% elif object.Publish_Result %}
+
+
+                      <div class="x_content" style="width:500px; margin:20px; padding:10px">
+
+                           {% for option in question.optioninfo.all %}
+
+
+                                 <div class="progress">
+                                     {{forloop.counter}}. &nbsp;{{ option.Option_Name }} &nbsp;
+
+
+                                  <div class="progress-bar
+                                   {% if option.chosen %}
+                                        bg-success
+                                   {% endif%}
+    " role="progressbar" style="width:{{ option.get_option_percentage }}%;" aria-valuenow=" {{ option.get_option_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                   {{ option.get_option_percentage }}%
+
+                                  </div>
+
+
+                                 </div>
+
+
+
+                         {% endfor %}
+
+                      </div>
+                  {% endif %}
+
                 </div>
               </div>
             {% else %}

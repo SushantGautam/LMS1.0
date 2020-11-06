@@ -21,7 +21,7 @@ class SurveyInfoForm(forms.ModelForm):
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'Category_Code', 'Start_Date', 'End_Date', 'Use_Flag',
+        fields = ['Survey_Title', 'Category_Code', 'Start_Date', 'End_Date', 'Use_Flag', 'Publish_Result',
                   'Session_Code', 'Course_Code']
 
     # To filter out only active session and course of the center
@@ -30,6 +30,7 @@ class SurveyInfoForm(forms.ModelForm):
         survey_object = kwargs.pop("object", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Use_Flag'].label = 'Publish'
+        self.fields['Publish_Result'].label = 'Display Result'
 
         if survey_object:
             print(survey_object, "survey_obj")
