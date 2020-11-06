@@ -51,10 +51,10 @@ INSTALLED_APPS = [
     'quiz',
     'survey',
     'mail',
+    'rosetta',
     'event_calendar',
     'decorator_include',
     'django_summernote',
-
 ]
 
 MIDDLEWARE = [

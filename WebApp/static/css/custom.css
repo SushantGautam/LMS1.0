@@ -82,7 +82,7 @@
 }
 
 .upload-btn-wrapper button {
-  cursor: pointer;
+  cursor: pointer !important;
   border: 2px solid white;
   color: white;
 }
@@ -93,4 +93,21 @@
   left: 0;
   top: 0;
   opacity: 0;
+}
+
+.upload-btn-wrapper input[type=file], /* FF, IE7+, chrome (except button) */
+.upload-btn-wrapper input[type=file]::-webkit-file-upload-button {
+  /* chromes and blink button */
+  cursor: pointer;
+}
+
+/* password change css */
+
+.has-error .help-block {
+  font-style: normal;
+  color: red;
+}
+
+#div_id_new_password1 .controls ul {
+  color: #ff9f43;
 }
