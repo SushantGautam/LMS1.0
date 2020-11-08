@@ -79,7 +79,7 @@ def CourseInfoCreate_handler(sender, instance, created, **kwargs):
         # verb=kwargs.pop('verb'),
         verb=verb,
         recipient=MemberInfo.objects.filter(Center_Code=instance.Center_Code, Use_Flag=True, Is_CenterAdmin=True),
-        description='{} created course {}'.format(request.user, instance.Course_Name),
+        description='{} {} course {}'.format(request.user, verb, instance.Course_Name),
         action_object=instance,
     )
 
