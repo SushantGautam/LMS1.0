@@ -110,9 +110,11 @@ def filter_active_assignments(chapters, sessions, filter_type="active"):  # It o
                                                  Session_Code__in=sessions).exists():
                 assignments = assignments.exclude(pk=assignment.pk)
     for assignment in assignments:
-        assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+        latest_sessionmap = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                             object_id=assignment.id,
-                                                            Session_Code__in=sessions).latest('End_Date').End_Date
+                                                            Session_Code__in=sessions).latest('End_Date')
+        assignment.startdate = latest_sessionmap.Start_Date                                                    
+        assignment.deadline = latest_sessionmap.End_Date
 
     return assignments
 
@@ -244,40 +246,47 @@ def quizzes(request):
 def calendar(request):
     if request.user.Is_Student:
         datetime_now = timezone.now().replace(microsecond=0)
-        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
-        sessions = []
-        if batches:
-            for batch in batches:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
-                sessions += session
-        courses = set()
-        activeassignments = []
-        if sessions:
-            for session in sessions:
-                course = session.Course_Group.all()
-                courses.update(course)
-            for course in courses:
-                activeassignments += AssignmentInfo.objects.filter(
-                    Course_Code=course.Course_Code.id, Chapter_Code__Use_Flag=True)[:7]
+        batches = GroupMapping.objects.filter(Students=request.user)
+        student_sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                            Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=student_sessions.values_list('Course_Group'))
+        student_courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True)
+        chapters = student_active_chapters(student_courses, student_sessions)
+        activeassignments = filter_active_assignments(chapters, student_sessions)
 
-        student_group = request.user.groupmapping_set.all()
-        student_session = InningInfo.objects.filter(Groups__in=student_group)
-        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
-        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+        # if batches:
+        #     for batch in batches:
+        #         # Filtering out only active sessions
+        #         session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+        #         sessions += session
+        # courses = set()
+        # activeassignments = []
+        # if sessions:
+        #     for session in sessions:
+        #         course = session.Course_Group.all()
+        #         courses.update(course)
+        #     for course in courses:
+        #         activeassignments += AssignmentInfo.objects.filter(
+        #             Course_Code=course.Course_Code.id, Chapter_Code__Use_Flag=True)[:7]
+
+        # student_group = request.user.groupmapping_set.all()
+        # student_session = InningInfo.objects.filter(Groups__in=student_group)
+        # active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        # student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
 
         # Predefined category name "general, session, course, system"
         general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
                                                    Center_Code=request.user.Center_Code, Use_Flag=True)
         session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
-                                                   Session_Code__in=student_session, Use_Flag=True)
+                                                   Session_Code__in=student_sessions, Use_Flag=True)
         course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
-                                                  Course_Code__in=student_course, Use_Flag=True)
+                                                  Course_Code__in=student_courses, Use_Flag=True)
         system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
         my_queryset = None
         my_queryset = general_survey | session_survey | course_survey | system_survey
-        my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+        my_queryset = my_queryset.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, Survey_Live=False)
 
         return render(request, 'student_module/calendar.html',
                       {'activeassignments': activeassignments, 'activesurvey': my_queryset})
