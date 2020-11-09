@@ -30,6 +30,8 @@ class SurveyInfoForm(forms.ModelForm):
         survey_object = kwargs.pop("object", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Use_Flag'].label = 'Publish'
+        self.fields['Use_Flag'].widget.attrs['style'] = "margin-top:30px"
+        self.fields['Publish_Result'].label = 'Display Result'
         self.fields['Publish_Result'].label = 'Display Result'
 
         if survey_object:

@@ -73,7 +73,8 @@
                                     {% for questioninfo_form in questioninfo_formset.forms %}
 
                                         <div class='qninfo_dynamic'>
-                                            {{ questioninfo_form|crispy }}
+                                             {{ forloop.counter }}.{{ questioninfo_form|crispy }}
+
 
                                             {% if questioninfo_form.nested %}
                                                 {{ questioninfo_form.nested.management_form }}
@@ -84,15 +85,16 @@
                                                      style="margin-left:40px;">
                                                     {% for option_form in questioninfo_form.nested.forms %}
                                                         <div style="display:flex;">
-                                                            <p>{{ forloop.counter }} &nbsp;</p>
+                                                            {{forloop.counter}}.&nbsp;
                                                             {{ option_form|crispy }}
+
                                                         </div>
                                                     {% endfor %}
                                                 </div>
 
                                                 <button
                                                         onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                                        class="btn btn-primary">Add option
+                                                        class="btn btn-sm btn-dark " style="margin-left: 50px;">New Option
                                                 </button>
 
                                             {% endif %}
@@ -100,8 +102,8 @@
                                     {% endfor %}
                                 </div>
                                 <div style="text-align:center; padding: 20px;">
-                                    <input class="add-mcq btn btn-block btn-lg btn-primary" type="button"
-                                           value="Add Question"
+                                    <input class="add-mcq btn btn-md  btn-light" style="float:left" type="button"
+                                           value="New Question"
                                            id="add_more_qn">
                                 </div>
                             </div>
@@ -116,7 +118,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-                                <input class="add-mcq btn btn-block btn-lg btn-primary" type="button"
+                                <input class="add-mcq btn  btn-md btn-light" style="margin-left:20px;" type="button"
                                        value="Add Question" id="add_more_sa_qn">
                             </div>
                             <div class="text-danger question_error"></div>
@@ -127,20 +129,26 @@
         </div>
     </div>
     <div id="step-2">
-        <div class="row">
+        <div class="row" style="margin-top:40px; text-align:center;">
 
-            <div class="col-md-12 text-center">
-                <button class="btn btn-amber-500 text-danger" type="button" data-toggle="collapse"
-                        data-target="#collapseExample"
-                        aria-expanded="false" aria-controls="collapseExample">
-                    Edit More Information
-                </button>
-            </div>
-        </div>
+            <div class="col-md-12 ">
+<!--                <button class="btn btn-amber-500 text-danger" style="" type="button" data-toggle="collapse"-->
+<!--                        data-target="#collapseExample"-->
+<!--                        aria-expanded="false" aria-controls="collapseExample">-->
+<!--                    Edit More Information-->
+<!--                </button>-->
 
-        <div class="collapse" id="collapseExample">
 
-            <label class="control-label " id="categoryTitle" for="first-name">Category :
+                <div class="accordion custom-accordion">
+  <div class="accordion-row ">
+    <a href="#" class="accordion-header ">
+      <span style="margin:auto" >Edit More Information</span>
+      <i class="accordion-status-icon close fa fa-chevron-up"></i>
+      <i class="accordion-status-icon open fa fa-chevron-down"></i>
+    </a>
+    <div class="accordion-body">
+
+        <label class="control-label " id="categoryTitle" for="first-name">Category :
                 <span class="text text-black">{{ category_name }}</span>
             </label>
             <h2 class="StepTitle text-center" style="padding: 0em 0 !important;
@@ -153,11 +161,34 @@
                 <div class="text-danger survey_error"></div>
 
             </div>
+
+    </div>
+  </div>
+                </div>
+            </div>
         </div>
+
+<!--        <div class="collapse" id="collapseExample">-->
+
+<!--            <label class="control-label " id="categoryTitle" for="first-name">Category :-->
+<!--                <span class="text text-black">{{ category_name }}</span>-->
+<!--            </label>-->
+<!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
+<!--            ">Survey Information</h2>-->
+<!--            <div class="col-xs-12">-->
+<!--                <div class="col-md-12">-->
+<!--                 {#   {{ form|crispy }} #}-->
+<!--                </div>-->
+
+<!--                <div class="text-danger survey_error"></div>-->
+
+<!--            </div>-->
+<!--        </div>-->
         <br>
+        <hr>
         <div class="row">
-            <div class="col-md-12 text-center">
-                <button id= "survey_submit_button" class="btn btn-primary" type="submit">Submit</button>
+            <div class="col-md-12 text-right">
+                <button id= "survey_submit_button" class="btn  btn-sm btn-primary" type="submit">Submit</button>
             </div>
         </div>
 
@@ -315,6 +346,12 @@
             copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
         });
 
+        function to_a(index) {
+            a = 'abcdefghijklmnopqrstuvwxyz';
+            return (a[index]);
+        }
+
+
         function addOption(event, questionId, selector, append_after, type, type2) {
             if (event) event.preventDefault();
 
@@ -331,7 +368,8 @@
                 '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
             );
             {#var option_counter = parseInt(optionId)+ 1;#}
-            var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
+            // var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
+            var counter_el = `<p>  ${to_a(parseInt(optionId)) } </p>`;
             {#$(newel_id).find('label').before(counter_el);#}
             $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
             console.log(optionId);
@@ -369,7 +407,7 @@
 
         {#..............................................For MCQ ...........................................#}
         $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
-        $('#first_que_div').prepend(`<p>1</p>`);
+       // $('#first_que_div').prepend(`<p>1</p>`);
         $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
         {#..............................................For SAQ ...........................................#}
