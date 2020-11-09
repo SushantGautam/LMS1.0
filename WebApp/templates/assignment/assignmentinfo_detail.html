@@ -703,8 +703,6 @@
     <script>
         $('#editAssignment-btn').on('click', function () {
             $('#editAssignment_modal_body').empty();
-
-
             $.ajax({
                 type: "GET",
                 url: "{% url 'assignmentinfo_edit_ajax_chapter_id' object.Chapter_Code.id object.pk %}",  // URL to your view that serves new info
