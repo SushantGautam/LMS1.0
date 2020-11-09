@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load model_template_relation %}
 
 <div class="se-pre-con-ajax"></div>
 
@@ -41,6 +42,9 @@
                 </tr>
 
                 {% for session in assigned_session %}
+                    {% if object %}
+                        {% getSessionMap object 'assignmentinfo' session as sessionmap %}
+                    {% endif %}
                     <tr>
                         <td>
                             <input type="checkbox" name="sessiondata" class="inningInfoCheckbox" checked>
@@ -50,12 +54,12 @@
                                                       data-value="{{ session.id }}" readonly required></td>
                         <td class="session_start_date">
                             <input type="text" name="Start_Date" class="form-control"
-                                   value=""
-                                   max="9999-12-31" autocomplete="off" required>
+                                   max="9999-12-31" autocomplete="off" value="{{ sessionmap.0.Start_Date|date:'c' }}"
+                                   required>
                         </td>
                         <td class="session_end_date">
                             <input type="text" name="End_Date" class="form-control"
-                                   value=""
+                                   value="{{ sessionmap.0.End_Date|date:'c' }}"
                                    max="9999-12-31" autocomplete="off" required>
                         </td>
                         {#                        <td title="Copy Date in all selected fields" class="date_copybtn"><i class="fa fa-copy"></i>#}
@@ -81,6 +85,10 @@
     {#$('#id_Assignment_Deadline').datetimepicker();#}
     {#$('#id_Assignment_Start').datetimepicker();#}
 
+    $.each($('input[name=Start_Date], input[name=End_Date]'), function (event) {
+        this.value = new Date(this.value).toLocaleString("en-US")
+        this.value = new Date(this.value).toLocaleString("en-US")
+    });
     $(document).ready(function () {
         $('#id_Assignment_Deadline').on('dp.change', function (event) {
             const result = document.querySelector('.result');
