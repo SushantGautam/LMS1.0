@@ -28,7 +28,8 @@
         <tr>
             <td>{{ forloop.counter }}</td>
 
-            <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td>
+          {#  <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td> #}
+            <td>{{ object.Department_Name }}</a></td>
             <td>{{ object.Register_Agent }}</td>
             <td>{{ object.Register_DateTime }}</td>
             <td>{{ object.Updated_DateTime }}</td>
