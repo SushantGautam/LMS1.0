@@ -37,7 +37,7 @@
                     <th>Session Name</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th></th>
+                    {#                    <th></th>#}
                 </tr>
 
                 {% for session in assigned_session %}
@@ -47,19 +47,19 @@
                         </td>
                         <td class="counter">{{ forloop.counter }}</td>
                         <td class="session_id"><input type="text" class="form-control" value="{{ session.Inning_Name }}"
-                                                      data-value="{{ session.id }}" readonly></td>
+                                                      data-value="{{ session.id }}" readonly required></td>
                         <td class="session_start_date">
                             <input type="text" name="Start_Date" class="form-control"
                                    value=""
-                                   max="9999-12-31" autocomplete="off">
+                                   max="9999-12-31" autocomplete="off" required>
                         </td>
                         <td class="session_end_date">
                             <input type="text" name="End_Date" class="form-control"
                                    value=""
-                                   max="9999-12-31" autocomplete="off">
+                                   max="9999-12-31" autocomplete="off" required>
                         </td>
-                        <td title="Copy Date in all selected fields" class="date_copybtn"><i class="fa fa-copy"></i>
-                        </td>
+                        {#                        <td title="Copy Date in all selected fields" class="date_copybtn"><i class="fa fa-copy"></i>#}
+                        {#                        </td>#}
                     </tr>
                 {% endfor %}
 
@@ -112,9 +112,11 @@
 
         $.each($('#inning_dataTable tr'), function (index, value) {
             if ($(value).find('td').length > 0) {
+                {%  comment %}
                 if ($(value).hasClass('off')) {
                     return false
                 }
+                {% endcomment %}
                 inputvalues = {
                     'session_id': $(value).find('.session_id input').attr('data-value'),
                     'start_date': $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '',
@@ -157,6 +159,7 @@
         if ($(this).prop("checked") == true) {
             $('#inning_dataTable input[type=text]').removeAttr('disabled');
             $('.date_copybtn').css('display', 'block');
+            checkboxSelectFunction()
         } else {
             $('#inning_dataTable input[type=text]').prop('disabled', 'disabled');
             $('.date_copybtn').css('display', 'none');
@@ -175,10 +178,11 @@
             $(this).closest('tr').find('.date_copybtn').css('display', 'block');
         } else {
             $(this).closest('tr').addClass('off');
-            $(this).closest('tr').find('input[type=text]').prop('disabled', 'disabled');
+            $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
             $(this).closest('tr').find('.date_copybtn').css('display', 'none');
 
         }
+        checkboxSelectFunction()
     });
 
     $('.date_copybtn').on('click', function () {
@@ -192,5 +196,26 @@
         });
     });
 
+    function checkboxSelectFunction() {
+        let start_date = null;
+        let end_date = null;
+        $.each($('.inningInfoCheckbox'), function (e) {
+            if ($(this).prop("checked") == true) {
+                if (!start_date && !end_date) {
+                    start_date = $(this).closest('tr').find('.session_start_date input').val();
+                    end_date = $(this).closest('tr').find('.session_end_date input').val();
+                } else {
+                    $(this).closest('tr').find('.session_start_date input').val(start_date);
+                    $(this).closest('tr').find('.session_end_date input').val(end_date);
+                    $(this).closest('tr').find('input[type=text]').attr('readonly', true);
+                }
+
+            }
+        })
+    }
+
+    $('input[name=Start_Date], input[name=End_Date]').on('dp.change', function (event) {
+        checkboxSelectFunction()
+    });
 
 </script>
