@@ -846,7 +846,7 @@
         * * * * * * * * * * * * * * * * */
 
         // Run Script if at least one course is present.
-    {% if object_list and request.GET.view and request.GET.view == "card" %}
+    {% if object_list and not request.GET.view or request.GET.view == "card" %}
         var init = function () {
             let pagesize = Math.ceil(document.getElementsByClassName('listcard').length / parseInt(document.getElementById('paginate_courses').value))
 
