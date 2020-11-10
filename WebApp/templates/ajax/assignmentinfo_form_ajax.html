@@ -119,7 +119,7 @@
     $("#ajaxassignmentinfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         sessiondata = [];
-
+        let submitCheck = true;
         $.each($('#inning_dataTable tr'), function (index, value) {
             if ($(value).find('td').length > 0) {
                 {%  comment %}
@@ -127,40 +127,49 @@
                     return false
                 }
                 {% endcomment %}
+                start_date = $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '';
+                end_date = $(value).find('.session_end_date input').val() != '' ? new Date($(value).find('.session_end_date input').val()).toISOString() : '';
+                if (start_date && end_date && start_date > end_date) {
+                    $('.form-errors').empty().append('End Date should be greater than Start Date.').css('display', 'block').fadeOut(7000);
+                    submitCheck = false;
+                    return false;
+                }
                 inputvalues = {
                     'session_id': $(value).find('.session_id span').attr('data-value'),
-                    'start_date': $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '',
-                    'end_date': $(value).find('.session_end_date input').val() != '' ? new Date($(value).find('.session_end_date input').val()).toISOString() : '',
+                    'start_date': start_date,
+                    'end_date': end_date,
                 };
                 sessiondata.push(inputvalues)
             }
         });
-        $.ajax({
-            url: $(this).attr('action'),  // URL to your view that serves new info
-            data: {
-                "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Topic": $('#id_Assignment_Topic').val(),
-                {#"Assignment_Start": new Date($('#id_Assignment_Start').val()).toISOString(),#}
-                {#"Assignment_Deadline": new Date($('#id_Assignment_Deadline').val()).toISOString(),#}
-                "Use_Flag": $('#id_Use_Flag').is(":checked"),
-                "Course_Code": $('#id_Course_Code').val(),
-                "Chapter_Code": $('#id_Chapter_Code').val(),
-                "Register_Agent": $('#id_Register_Agent').val(),
-                "sessiondata[]": JSON.stringify(sessiondata),
-            },
+        if (submitCheck) {
+            $.ajax({
+                url: $(this).attr('action'),  // URL to your view that serves new info
+                data: {
+                    "csrfmiddlewaretoken": '{{ csrf_token }}',
+                    "Assignment_Topic": $('#id_Assignment_Topic').val(),
+                    {#"Assignment_Start": new Date($('#id_Assignment_Start').val()).toISOString(),#}
+                    {#"Assignment_Deadline": new Date($('#id_Assignment_Deadline').val()).toISOString(),#}
+                    "Use_Flag": $('#id_Use_Flag').is(":checked"),
+                    "Course_Code": $('#id_Course_Code').val(),
+                    "Chapter_Code": $('#id_Chapter_Code').val(),
+                    "Register_Agent": $('#id_Register_Agent').val(),
+                    "sessiondata[]": JSON.stringify(sessiondata),
+                },
 
-            // get the form data
-            type: $(this).attr('method'), // GET or POST
-            success: function (response) {
-                console.log('Success')
-                location.reload()
-            },
-            error: function (err) {
-                console.log('Error in posting assignment create form', err.responseJSON.errors.__all__[0])
-                $('.form-errors').empty().append(err.responseJSON.errors.__all__[0]).css('display', 'block')
-            }
+                // get the form data
+                type: $(this).attr('method'), // GET or POST
+                success: function (response) {
+                    console.log('Success')
+                    location.reload()
+                },
+                error: function (err) {
+                    console.log('Error in posting assignment create form', err.responseJSON.errors.__all__[0]);
+                    $('.form-errors').empty().append(err.responseJSON.errors.__all__[0]).css('display', 'block');
+                }
 
-        });
+            });
+        }
     });
 
     $('.inningInfoCheckAll').on('click', function () {
@@ -214,6 +223,12 @@
     }
 
     $('input[name=Start_Date], input[name=End_Date]').on('dp.change', function (event) {
+        start_date = $(this).closest('tr').find('.session_start_date input').val();
+        end_date = $(this).closest('tr').find('.session_end_date input').val();
+        if (start_date && end_date && start_date > end_date) {
+            $('.form-errors').empty().append('End Date should be greater than Start Date.').css('display', 'block').fadeOut(7000);
+            return false
+        }
         checkboxSelectFunction()
     });
     checkboxSelectFunction()
