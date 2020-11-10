@@ -66,8 +66,6 @@
                                    value="{{ sessionmap.0.End_Date|date:'c' }}"
                                    max="9999-12-31" autocomplete="off" required>
                         </td>
-                        {#                        <td title="Copy Date in all selected fields" class="date_copybtn"><i class="fa fa-copy"></i>#}
-                        {#                        </td>#}
                     </tr>
                 {% endfor %}
 
@@ -169,11 +167,9 @@
         $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
 
         if ($(this).prop("checked") == true) {
-            $('#inning_dataTable input[type=text]').removeAttr('disabled');
-            $('.date_copybtn').css('display', 'block');
+            // $('#inning_dataTable input[type=text]').removeAttr('disabled');
         } else {
-            $('#inning_dataTable input[type=text]').prop('disabled', 'disabled');
-            $('.date_copybtn').css('display', 'none');
+            $('#inning_dataTable input[type=text]').removeAttr('readonly');
         }
         checkboxSelectFunction()
     });
@@ -186,25 +182,13 @@
         }
         if ($(this).prop("checked") == true) {
             $(this).closest('tr').removeClass('off');
-            // $(this).closest('tr').find('.date_copybtn').css('display', 'block');
         } else {
             $(this).closest('tr').addClass('off');
             $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
-            // $(this).closest('tr').find('.date_copybtn').css('display', 'none');
         }
         checkboxSelectFunction()
     });
 
-    $('.date_copybtn').on('click', function () {
-        let start_date = $(this).closest('tr').find('.session_start_date input').val();
-        let end_date = $(this).closest('tr').find('.session_end_date input').val();
-        $.each($('#inning_dataTable tr'), function (index, value) {
-            if ($(value).find('td').length > 0) {
-                $(value).find('.session_start_date input:not(:disabled)').val(start_date);
-                $(value).find('.session_end_date input:not(:disabled)').val(end_date);
-            }
-        });
-    });
 
     function checkboxSelectFunction() {
         let start_date = null;
@@ -213,7 +197,7 @@
         $('.checkedsessionCount').text($('.inningInfoCheckbox:checked').length);
 
         // for copying value of dates in all checked session after the first checked one.
-        $.each($('.inningInfoCheckbox'), function (e) {
+        $.each($('.inningInfoCheckbox:checked'), function (e) {
             if ($(this).prop("checked") == true) {
                 if (!start_date && !end_date) {
                     start_date = $(this).closest('tr').find('.session_start_date input').val();
