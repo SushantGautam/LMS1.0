@@ -199,7 +199,7 @@
         // for copying value of dates in all checked session after the first checked one.
         $.each($('.inningInfoCheckbox:checked'), function (e) {
             if ($(this).prop("checked") == true) {
-                if (!start_date && !end_date) {
+                if (start_date == null && end_date == null) {
                     start_date = $(this).closest('tr').find('.session_start_date input').val();
                     end_date = $(this).closest('tr').find('.session_end_date input').val();
                     $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
