@@ -186,13 +186,11 @@
         }
         if ($(this).prop("checked") == true) {
             $(this).closest('tr').removeClass('off');
-            $(this).closest('tr').find('input[type=text]').removeAttr('disabled');
-            $(this).closest('tr').find('.date_copybtn').css('display', 'block');
+            // $(this).closest('tr').find('.date_copybtn').css('display', 'block');
         } else {
             $(this).closest('tr').addClass('off');
             $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
-            $(this).closest('tr').find('.date_copybtn').css('display', 'none');
-
+            // $(this).closest('tr').find('.date_copybtn').css('display', 'none');
         }
         checkboxSelectFunction()
     });
@@ -211,12 +209,16 @@
     function checkboxSelectFunction() {
         let start_date = null;
         let end_date = null;
+        // for count of checked session
         $('.checkedsessionCount').text($('.inningInfoCheckbox:checked').length);
+
+        // for copying value of dates in all checked session after the first checked one.
         $.each($('.inningInfoCheckbox'), function (e) {
             if ($(this).prop("checked") == true) {
                 if (!start_date && !end_date) {
                     start_date = $(this).closest('tr').find('.session_start_date input').val();
                     end_date = $(this).closest('tr').find('.session_end_date input').val();
+                    $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
                 } else {
                     $(this).closest('tr').find('.session_start_date input').val(start_date);
                     $(this).closest('tr').find('.session_end_date input').val(end_date);
