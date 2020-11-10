@@ -557,7 +557,6 @@ class MemberInfoListViewInactive(ListView):
 class MemberInfoCreateView(CreateView):
     model = MemberInfo
     form_class = MemberInfoForm
-    template_name = "WebApp/memberinfo_form.html"
     success_url = reverse_lazy('memberinfo_list')
 
     def form_valid(self, form):
@@ -572,6 +571,15 @@ class MemberInfoCreateView(CreateView):
         else:
             messages.error(self.request, 'Error in creating member')
             print(form.errors)
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
 
 
 def validate_username(request):
@@ -1033,7 +1041,6 @@ class MemberInfoUpdateView(MemberAuthMxnCls, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
-
 
 
 class MemberInfoDeleteView(MemberAuthMxnCls, DeleteView):

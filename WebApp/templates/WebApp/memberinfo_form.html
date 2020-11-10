@@ -45,14 +45,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_ID">{% trans "Registration ID" %}</label>
+                                        <label for="id_Member_ID">{% trans "Registration ID" %} *</label>
                                         <input type="text" name="Member_ID" id="id_Member_ID" maxlength="20"
-                                            value="{{ object.Member_ID }}" class="form-control">
+                                            value="{{ object.Member_ID }}" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-4">
-                                        <label for="Member_Gender">{% trans "Gender" %}</label>
+                                        <label for="Member_Gender">{% trans "Gender" %} *</label>
                                         <select id="id_Member_Gender" name="Member_Gender" class="form-control">
                                             {% for x, y in form.fields.Member_Gender.choices %}
                                             <option value="{{ x }}" {% if form.initial.Member_Gender == x %}
@@ -65,14 +65,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_first_name">{% trans "First Name" %}</label>
+                                        <label for="id_first_name">{% trans "First Name" %} *</label>
                                         <input type="text" class="form-control" name="first_name" id="id_first_name"
                                             type="text" value="{{ object.first_name}}" required autofocus>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_last_name">{% trans "Last Name" %}</label>
+                                        <label for="id_last_name">{% trans "Last Name" %} *</label>
                                         <input type="text" class="form-control" name="last_name" id="id_last_name"
                                             type="text" value="{{ object.last_name}}" required autofocus>
                                     </div>
@@ -81,7 +81,31 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_username">{% trans "Username" %}</label>
+                                        <label for="Member_Department">{% trans "Member Department" %}</label>
+                                        <select id="id_Member_Department" name="Member_Department" class="form-control">
+                                            {% for x, y in form.fields.Member_Department.choices %}
+                                            <option value="{{ x }}" {% if form.initial.Member_Department == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Member_Position">{% trans "Member Position" %}</label>
+                                        <select id="id_Member_Position" name="Member_Position" class="form-control">
+                                            {% for x, y in form.fields.Member_Position.choices %}
+                                            <option value="{{ x }}" {% if form.initial.Member_Position == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="id_username">{% trans "Username" %} *</label>
                                         <input type="text" class="form-control" name="username" id="id_username"
                                             type="text" value="{{ object.username}}" required autofocus>
                                     </div>
@@ -89,7 +113,7 @@
                                 {% if 'create' in request.path %}
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_password">{% trans "Password" %}</label>
+                                        <label for="id_password">{% trans "Password" %} *</label>
                                         <input type="password" name="password" value="{{ object.password }}"
                                             id="id_password" required class="form-control">
                                     </div>
@@ -97,7 +121,7 @@
                                 {% endif %}
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_email">{% trans "Email" %}</label>
+                                        <label for="id_email">{% trans "Email" %} *</label>
                                         <input type="text" name="email" value="{{ object.email }}" id="id_email"
                                             required class="form-control">
                                     </div>
@@ -128,8 +152,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_Permanent_Address">{% trans "Member Permanent
-                                            Address" %}</label>
+                                        <label
+                                            for="id_Member_Permanent_Address">{% trans "Member Permanent Address" %}</label>
                                         <input type="text" name="Member_Permanent_Address"
                                             id="id_Member_Permanent_Address" maxlength="150"
                                             value="{{ object.Member_Permanent_Address }}" class="form-control">
@@ -137,8 +161,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_Member_Temporary_Address">{% trans "Member Temporary
-                                            Address" %}</label>
+                                        <label
+                                            for="id_Member_Temporary_Address">{% trans "Member Temporary Address" %}</label>
                                         <input type="text" name="Member_Temporary_Address"
                                             id="id_Member_Temporary_Address" maxlength="150"
                                             value="{{ object.Member_Temporary_Address }}" class="form-control">
@@ -151,14 +175,14 @@
                                         <label for="id_Member_BirthDate">{% trans "Date of Birth" %}</label>
                                         <input name="Member_BirthDate" type="date" class="form-control"
                                             id="id_Member_BirthDate" max="9999-12-31"
-                                            value="{{ object.Member_BirthDate|date:'Y-m-d' }}" required>
+                                            value="{{ object.Member_BirthDate|date:'Y-m-d' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="id_Member_Phone">{% trans "Phone Number" %}</label>
                                         <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone"
-                                            value="{{ object.Member_Phone }}" required>
+                                            value="{{ object.Member_Phone }}">
                                     </div>
                                 </div>
                             </div>
