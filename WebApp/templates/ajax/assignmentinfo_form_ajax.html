@@ -31,13 +31,18 @@
     </div>
     {% if assigned_session|length > 0 %}
         <div class="col-md-12 col-sm-12 col-xs-12">
+            <h6 style="color: #5a0934"> Note: All checked session will have same dates as the first checked
+                session. </h6>
+
+            <h6 class="text-info"><span class="checkedsessionCount"></span> of {{ assigned_session|length }} selected
+            </h6>
             <table class="table" id="inning_dataTable">
                 <tr>
                     <th><input type="checkbox" name="sessiondataAll" class="inningInfoCheckAll" checked></th>
                     <th>S.No</th>
                     <th>Session Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Start Date*</th>
+                    <th>End Date*</th>
                     {#                    <th></th>#}
                 </tr>
 
@@ -50,8 +55,7 @@
                             <input type="checkbox" name="sessiondata" class="inningInfoCheckbox" checked>
                         </td>
                         <td class="counter">{{ forloop.counter }}</td>
-                        <td class="session_id"><input type="text" class="form-control" value="{{ session.Inning_Name }}"
-                                                      data-value="{{ session.id }}" readonly required></td>
+                        <td class="session_id"><span data-value="{{ session.id }}">{{ session.Inning_Name }}</span></td>
                         <td class="session_start_date">
                             <input type="text" name="Start_Date" class="form-control"
                                    max="9999-12-31" autocomplete="off" value="{{ sessionmap.0.Start_Date|date:'c' }}"
@@ -126,7 +130,7 @@
                 }
                 {% endcomment %}
                 inputvalues = {
-                    'session_id': $(value).find('.session_id input').attr('data-value'),
+                    'session_id': $(value).find('.session_id span').attr('data-value'),
                     'start_date': $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '',
                     'end_date': $(value).find('.session_end_date input').val() != '' ? new Date($(value).find('.session_end_date input').val()).toISOString() : '',
                 };
@@ -167,11 +171,11 @@
         if ($(this).prop("checked") == true) {
             $('#inning_dataTable input[type=text]').removeAttr('disabled');
             $('.date_copybtn').css('display', 'block');
-            checkboxSelectFunction()
         } else {
             $('#inning_dataTable input[type=text]').prop('disabled', 'disabled');
             $('.date_copybtn').css('display', 'none');
         }
+        checkboxSelectFunction()
     });
 
     $('.inningInfoCheckbox').on('click', function () {
@@ -207,6 +211,7 @@
     function checkboxSelectFunction() {
         let start_date = null;
         let end_date = null;
+        $('.checkedsessionCount').text($('.inningInfoCheckbox:checked').length);
         $.each($('.inningInfoCheckbox'), function (e) {
             if ($(this).prop("checked") == true) {
                 if (!start_date && !end_date) {
@@ -225,5 +230,6 @@
     $('input[name=Start_Date], input[name=End_Date]').on('dp.change', function (event) {
         checkboxSelectFunction()
     });
+    checkboxSelectFunction()
 
 </script>
