@@ -7,7 +7,13 @@
 
 
 {% block main_contain %}
+ <style>
+     .forum-thread-image img{
+         width: 100%!important;
 
+
+     }
+ </style>
 
     <div class="x_panel">
         <div class="x_title">
@@ -140,7 +146,7 @@
                                 </span>
                             </div>
 
-                            <div>{{ thread.content_raw | safe }}</div>
+                            <div class="forum-thread-image">{{ thread.content_raw | safe }}</div>
 
 
                             <ul class="list-comment reply-lists">
