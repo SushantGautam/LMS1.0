@@ -478,7 +478,7 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
                                                                 Groups__in=student_groups,
                                                                 Course_Group__in=course_groups).distinct()
 
-        assignments = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'), Use_Flag=True)
+        assignments = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'), Use_Flag=True).order_by('pk')
         active_assignments = []
         for assignment in assignments:
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),

@@ -6,8 +6,8 @@ import shutil
 from datetime import datetime, timedelta
 from io import BytesIO
 from pathlib import Path
-import pandas as pd
 
+import pandas as pd
 from django.conf import settings
 # from django.core.checks import messages
 from django.contrib import messages
@@ -344,7 +344,7 @@ class ChapterInfoDetailView(TeacherAuthMxnCls, ChapterAuthMxnCls, TeacherChapter
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         datetime_now = timezone.now().replace(microsecond=0)
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
+        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')).order_by('pk')
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
