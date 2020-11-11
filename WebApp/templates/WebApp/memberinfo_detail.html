@@ -37,6 +37,19 @@
             <td>{{ object.email }}</td>
         </tr>
         <tr>
+            <td>{% trans "Department" %}</td>
+            <td>{{ object.Member_Department }}</td>
+        </tr>
+
+        {% if object.Is_Teacher %}
+        <tr>
+            <td>{% trans "Position" %}</td>
+            <td>{{ object.Member_Position }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+
+        <tr>
             <td>{% trans "Permanent Address" %}</td>
             <td>{{ object.Member_Permanent_Address }}</td>
         </tr>

@@ -56,15 +56,15 @@ class CenterInfoForm(forms.ModelForm):
 
 
 class MemberInfoForm(forms.ModelForm):
-    Use_Flag = forms.BooleanField(initial=True, required=False)
+    Use_Flag = forms.BooleanField(initial=True, required=False, label='Status')
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-        years=range(1985, datetime.date.today().year + 10)))
+        years=range(1985, datetime.date.today().year + 10)), required=False)
     password = forms.CharField(initial='00000')
     helper = FormHelper()
     helper.layout = Layout(
-
         Accordion(
             AccordionGroup('Basic Information',
+
                            Div(
                                Field(
                                    'Member_ID', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
@@ -84,6 +84,13 @@ class MemberInfoForm(forms.ModelForm):
                                    'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                Field(
                                    'password', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field(
+                                   'Member_Department', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Position', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
@@ -136,13 +143,24 @@ class MemberInfoForm(forms.ModelForm):
         model = MemberInfo
         Member_BirthDate = forms.DateField(widget=SelectDateWidget(
             years=range(1985, datetime.date.today().year + 10)))
-        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag'
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'password', 'email', \
+                 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
+                 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Use_Flag', 'Member_Department', \
+                 'Member_Position'
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
+                                                                                  Center_Code=self.request.user.Center_Code)
+
+
 
 
 class MemberUpdateForm(forms.ModelForm):
     helper = FormHelper()
     Member_BirthDate = forms.DateField(widget=SelectDateWidget(
-        years=range(1985, datetime.date.today().year + 10)))
+        years=range(1985, datetime.date.today().year + 10)), required=False)
     helper.layout = Layout(
 
         Accordion(
@@ -167,6 +185,13 @@ class MemberUpdateForm(forms.ModelForm):
                                    'username', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                Field(
                                    'email', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
+                               Field(
+                                   'Member_Department', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               Field(
+                                   'Member_Position', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
                                css_class='row'),
 
                            Div(
@@ -209,7 +234,16 @@ class MemberUpdateForm(forms.ModelForm):
 
     class Meta:
         model = MemberInfo
-        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student'
+        fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', \
+                 'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
+                 'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Member_Department', \
+                 'Member_Position'
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super().__init__(*args, **kwargs)
+        self.fields['Member_Department'].queryset = DepartmentInfo.objects.filter(Use_Flag=True,
+                                                                                  Center_Code=self.request.user.Center_Code)
 
 
 class CourseInfoForm(forms.ModelForm):
