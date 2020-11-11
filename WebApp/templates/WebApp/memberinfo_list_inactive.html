@@ -58,8 +58,8 @@
                     <th>{% trans "Department" %}</th>
                     <th>{% trans "Phone" %}</th>
                     <th>{% trans "Gender" %}</th>
-                    <!-- <th>{% trans "Student" %}</th>
-                    <th>{% trans "Teacher" %}</th> -->
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Teacher" %}</th>
                     <th>{% trans "Type" %}</th>
                     <th class="text-center">{% trans "Action" %}</th>
                 </tr>
@@ -80,8 +80,8 @@
                 <td style="vertical-align: middle;">
                     {{ object.get_Member_Gender_display }}
                 </td>
-                <!-- <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
-                <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td> -->
+                <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
+                <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
                 <td>
                     {% if object.Is_Teacher == True and object.Is_Student == True %}
                     {% trans "Teacher" %}, {% trans "Student" %}
@@ -170,13 +170,15 @@
                 }],
             "columnDefs": [
                 {
-                    "targets": [7, 8],
+                    "targets": [9, 10],
                     "visible": false,
                     "searchable": true
-                }
-
+                },
+                {
+                    "orderable": false,
+                    "targets": [0, 12]
+                },
             ]
-
         });
 
 
@@ -185,7 +187,7 @@
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
-            table_main.column(7).search("True").draw();
+            table_main.column(9).search("True").draw();
 
 
         });
@@ -193,9 +195,8 @@
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "white");
             $("#all_button").css("color", "black");
-
             table_main.columns().search('').draw();
-            table_main.column(8).search("True").draw();
+            table_main.column(10).search("True").draw();
 
         });
 
@@ -205,12 +206,9 @@
             $("#teacher_button").css("color", "black");
             table_main.columns().search('').draw();
         });
-
-
     });
-
-
 </script>
+
 <script>
     $(document).ready(function () {
         $(".editCheckedMembers").on('click', function () {

@@ -190,19 +190,25 @@
             <div class="row">
                 <div class="upload-btn-wrapper">
                     <form class="profile-pic-upload" enctype="multipart/form-data">
-                        <button class="btn btn-sm text-white">{% trans "Change Avatar" %}</button>
-                        <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
+                        <!-- <button class="btn btn-sm text-white">{% trans "Change Avatar" %}</button> -->
+                        <a href="javascript:void(0)" title="{% trans 'Change Avatar' %}" data-toggle="tooltip">
+                            <img src="{% static 'media/image/change_avatar.png'%}"
+                                style="filter: invert(10);width: 40px; height:40px;">
+                            <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
+                        </a>
                     </form>
                 </div>
                 <div>
-                    <a class="ml-3 mr-2" href="{% if 'teacher' in request.path %}
+                    <a class="ml-4 mr-2" href="{% if 'teacher' in request.path %}
                     {% url 'teacher_change_password' %}
                 {% elif 'student' in request.path %}
                     {% url 'student_change_password' %}
                 {% else %}
                     {% url 'centeradmin_change_password' %}
                 {% endif %}" title="{% trans 'Change Password' %}" data-toggle="tooltip">
-                        <i class="fa fa-lock fa-2x text-white"></i>
+                        <img src="{% static 'media/image/change_password.png'%}"
+                            style="filter: invert(10);width: 44px; height:40px;">
+                        <!-- <i class="fa fa-lock fa-2x text-white"></i> -->
                     </a>
                 </div>
             </div>

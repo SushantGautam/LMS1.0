@@ -26,101 +26,159 @@
         href="{{ object.get_update_url }}">{% trans "Edit Member" %}</a>
     <table class="table table-striped table-bordered pt-3">
         <tr>
-            <td>{% trans "Member ID" %}</td>
-            <td style="max-width:12rem">
-                {{ object.Member_ID }} <small class="float-right"> {% trans "Assigned by center" %}</small>
+            <td style="max-width: 10rem;">
+                <span class="font-weight-bold">{% trans "Member ID" %}</span>
+                <small> ({% trans "Assigned by center" %})</small>
+                <span class="pull-right">{{ object.Member_ID }}</span>
             </td>
-            <td>{% trans "Username" %}</td>
-            <td>{{ object.username }} <small class="float-right"> {% trans "Used for login" %}</small></td>
-        </tr>
-
-        <tr>
-            <td>{% trans "Full Name" %}</td>
-            <td>{{ object.first_name }} {{ object.last_name }}</td>
-            <td>{% trans "Email" %}</td>
-            <td>{{ object.email }}</td>
+            <td><span class="font-weight-bold">{% trans "Username" %}</span>
+                <small> ({% trans "Used for login" %})</small>
+                <span class="pull-right">
+                    {{ object.username }}
+                </span>
+            </td>
         </tr>
         <tr>
-            <td>{% trans "Department" %}</td>
-            <td>{{ object.Member_Department }}</td>
+            <td>
+                <span class="font-weight-bold">{% trans "Full Name" %}</span>
+                <span class="pull-right"> {{ object.first_name }} {{ object.last_name }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Email" %}</span>
+                <span class="pull-right">{{ object.email }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Department" %}</span>
+                <span class="pull-right"> {{ object.Member_Department }}</span>
+            </td>
             {% if object.Is_Teacher %}
-            <td>{% trans "Position" %}</td>
-            <td>{{ object.Member_Position }}</td>
+            <td>
+                <span class="font-weight-bold">{% trans "Position" %}</span>
+                <span class="pull-right"> {{ object.Member_Position }}</span>
+            </td>
             {% endif %}
         </tr>
         <tr>
-            <td>{% trans "Permanent Address" %}</td>
-            <td>{{ object.Member_Permanent_Address }}</td>
-            <td>{% trans "Temporary Address" %}</td>
-            <td>{{ object.Member_Temporary_Address }}</td>
-        </tr>
-        <tr>
-            <td>{% trans "BirthDate" %}</td>
-            <td>{{ object.Member_BirthDate|date:"F d, Y" }}</td>
-            <td>{% trans "Phone Number" %}</td>
-            <td>{{ object.Member_Phone }}</td>
-        </tr>
-        <tr>
-            <td>{% trans "Gender" %}</td>
-            <td>{% if object.Member_Gender == 'M' %}
-                {% trans "Male" %}
-                {% elif object.Member_Gender == 'F' %}
-                {% trans "Female" %}
-                {% endif %}
-            </td>
-            <td>{% trans "Status" %}</td>
-            <td>{% if  object.Use_Flag  == True %}
-                <span class="text-success">{% trans "Active" %}</span>
-                <a href="javascript:void(0)" class="confirm-deactivate float-right" id="{{object.id}}"><u>
-                        {% trans "Deactivate" %} </u></a>
-                <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}" id="deactivateForm">
-                    {% csrf_token %}
-                </form>
-                {% else %}
-                <span class="text-danger">{% trans "Blocked" %}</span>
-                <a href="javascript:void(0)" class="confirm-activate float-right" id="{{object.id}}"><u>
-                        {% trans "Activate" %} </u></a>
-                <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm">
-                    {% csrf_token %}
-                    <input type="hidden" value='' name='url'>
-                </form>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td>{% trans "Register DateTime" %}</td>
-            <td class="datecon">{{ object.date_joined|date:'M d, Y H:i' }}</td>
-            <td>{% trans "Member Type" %}</td>
             <td>
-                {% if object.Is_CenterAdmin %}
-                &nbsp;{% trans "Admin" %}
-                {% endif %}
-                {% if object.Is_Teacher %}
-                &nbsp;{% trans "Teacher" %}
-                {% endif %}
-                {% if object.Is_Student %}
-                &nbsp;{% trans "Student" %}
-                {% endif %}
+                <span class="font-weight-bold">{% trans "Permanent Address" %}</span>
+                <span class="pull-right"> {{ object.Member_Permanent_Address }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Temporary Address" %}</span>
+                <span class="pull-right"> {{ object.Member_Temporary_Address }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "BirthDate" %}</span>
+                <span class="pull-right">{{ object.Member_BirthDate|date:"F d, Y" }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Phone Number" %}</span>
+                <span class="pull-right"> {{ object.Member_Phone }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Gender" %}</span>
+                <span class="pull-right">
+                    {% if object.Member_Gender == 'M' %}
+                    {% trans "Male" %}
+                    {% elif object.Member_Gender == 'F' %}
+                    {% trans "Female" %}
+                    {% endif %}
+                </span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Status" %}</span>
+                <span class="pull-right">
+                    {% if  object.Use_Flag  == True %}
+                    <span class="text-success mr-4 font-weight-bold">{% trans "Active" %}</span>
+                    <a href="javascript:void(0)" class="confirm-deactivate float-right" id="{{object.id}}"><u>
+                            {% trans "Deactivate" %} </u></a>
+                    <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}" id="deactivateForm">
+                        {% csrf_token %}
+                    </form>
+                    {% else %}
+                    <span class="text-danger">{% trans "Blocked" %}</span>
+                    <a href="javascript:void(0)" class="confirm-activate float-right" id="{{object.id}}"><u>
+                            {% trans "Activate" %} </u></a>
+                    <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm">
+                        {% csrf_token %}
+                        <input type="hidden" value='' name='url'>
+                    </form>
+                    {% endif %}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Register DateTime" %}</span>
+                <span class="pull-right">{{ object.date_joined|date:'M d, Y H:i' }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Member Type" %}</span>
+                <span class="pull-right">
+                    {% if object.Is_CenterAdmin %}
+                    &nbsp;{% trans "Admin" %}
+                    {% endif %}
+                    {% if object.Is_Teacher %}
+                    &nbsp;{% trans "Teacher" %}
+                    {% endif %}
+                    {% if object.Is_Student %}
+                    &nbsp;{% trans "Student" %}
+                    {% endif %}
+                </span>
             </td>
         </tr>
         {% if object.password %}
         <tr>
-            <td>{% trans "Password" %}</td>
-            <td colspan="3">&nbsp;******** <a href="/change-password/{{ object.id }}/" class="float-right"><u>
-                        {% trans "Change Password" %} </u></a>
+            <td colspan="2" class="text-center font-weight-bold">
+                <span>
+                    <a href="/change-password/{{ object.id }}/">
+                        <u> {% trans "Change Password" %} </u>
+                    </a>
+                </span>
             </td>
         </tr>
         {% elif not object.password %}
         <tr>
-            <td>{% trans "Password" %}</td>
-            <td colspan="3">
-                <a href="/change-password/{{ object.id }}/" class="float-right">
-                    <u> {% trans "Add New Password" %} </u>
-                </a>
+            <td colspan="2" class="text-center">
+                <span>
+                    <a href="/change-password/{{ object.id }}/">
+                        <u> {% trans "Add New Password" %} </u>
+                    </a>
+                </span>
             </td>
         </tr>
         {% endif %}
+        <!-- {% if object.password %}
+        <tr>
+            <td colspan="2">
+                <span class="font-weight-bold">{% trans "Password" %}</span>
+                <span class="pull-right">
+                    <a href="/change-password/{{ object.id }}/" class="float-right"><u>
+                            {% trans "Change Password" %} </u></a>
+                </span>
+                <span class="pull-right mr-5">********</span>
+            </td>
+        </tr>
+        {% elif not object.password %}
+        <tr>
+            <td colspan="2">
+                <span class="font-weight-bold">{% trans "Password" %}</span>
+                <span class="pull-right">
+                    <a href="/change-password/{{ object.id }}/" class="float-right">
+                        <u> {% trans "Add New Password" %} </u>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {% endif %} -->
     </table>
+
     <div class="text-center">
         <a class="confirm-delete" style="color: #2A3F54;cursor:pointer">
             <b><u>{% trans "Delete Member" %}</u></b>
@@ -134,7 +192,7 @@
             <input type="hidden">
         </form>
     </div>
-
+    <hr />
     {% if object.Is_Student %}
     <div class="row mt-4">
         <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
