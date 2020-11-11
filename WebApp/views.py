@@ -506,7 +506,7 @@ class MemberInfoListViewAjax(BaseDatatableView):
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(pk=self.request.user.pk)
 
     def render_column(self, row, column):
         # We want to render user as a custom column

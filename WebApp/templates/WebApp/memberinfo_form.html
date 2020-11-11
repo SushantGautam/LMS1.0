@@ -78,30 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Member_Department">{% trans "Member Department" %}</label>
-                                        <select id="id_Member_Department" name="Member_Department" class="form-control">
-                                            {% for x, y in form.fields.Member_Department.choices %}
-                                            <option value="{{ x }}" {% if form.initial.Member_Department == x %}
-                                                selected{% endif %}>{{ y }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Member_Position">{% trans "Member Position" %}</label>
-                                        <select id="id_Member_Position" name="Member_Position" class="form-control">
-                                            {% for x, y in form.fields.Member_Position.choices %}
-                                            <option value="{{ x }}" {% if form.initial.Member_Position == x %}
-                                                selected{% endif %}>{{ y }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -126,13 +103,40 @@
                                             required class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-6 mt-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-1">
+                                        <label for="id_email">{% trans "Member Type" %} *</label>
+                                    </div>
                                     <input type="checkbox" name="Is_Student" id="id_Is_Student"
                                         {% if object.Is_Student %} checked {% endif %} class="checkboxinput">
-                                    <label for="id_Is_Student">{% trans "Is Student" %}</label>
+                                    <label for="id_Is_Student">{% trans "Student" %}</label>
                                     <input type="checkbox" name="Is_Teacher" id="id_Is_Teacher"
                                         {% if object.Is_Teacher %} checked {% endif %} class="ml-5">
-                                    <label for="id_Is_Teacher">{% trans "Is Teacher" %}</label>
+                                    <label for="id_Is_Teacher">{% trans "Teacher" %}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Member_Department">{% trans "Member Department" %}</label>
+                                        <select id="id_Member_Department" name="Member_Department" class="form-control">
+                                            {% for x, y in form.fields.Member_Department.choices %}
+                                            <option value="{{ x }}" {% if form.initial.Member_Department == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Member_Position">{% trans "Member Position" %}</label>
+                                        <select id="id_Member_Position" name="Member_Position" class="form-control">
+                                            {% for x, y in form.fields.Member_Position.choices %}
+                                            <option value="{{ x }}" {% if form.initial.Member_Position == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -216,6 +220,5 @@
             $('#id_username').val($('#id_Member_ID').val());
         }
     });
-
 </script>
 {% endblock %}
