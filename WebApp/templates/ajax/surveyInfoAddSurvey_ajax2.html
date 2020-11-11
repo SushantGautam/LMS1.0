@@ -45,6 +45,9 @@
         </ul>
         <div>
             <div id="step-1">
+                   <label class="control-label " style="display:block; text-align:center; font-size:1rem;" id="categoryTitle" for="first-name">Category :
+                <span class="text text-black "  >{{ category_name }}</span>
+                  </label>
                 <h4 class="text-center" style="padding: 0em 0 !important;
 
             ">Choose Type:</h4>
@@ -73,7 +76,7 @@
                                     {% for questioninfo_form in questioninfo_formset.forms %}
 
                                         <div class='qninfo_dynamic'>
-                                             {{ forloop.counter }}.{{ questioninfo_form|crispy }}
+                                            <p style="position:relative; top:40px;"> 1  </p>   {{ questioninfo_form|crispy }}
 
 
                                             {% if questioninfo_form.nested %}
@@ -84,11 +87,17 @@
                                                      class='opinfo_dynamic'
                                                      style="margin-left:40px;">
                                                     {% for option_form in questioninfo_form.nested.forms %}
-                                                        <div style="display:flex;">
-                                                            {{forloop.counter}}.&nbsp;
+
+                                                        <div class="op" style="display:flex;">
+
+
+
+
                                                             {{ option_form|crispy }}
 
+
                                                         </div>
+
                                                     {% endfor %}
                                                 </div>
 
@@ -148,14 +157,13 @@
     </a>
     <div class="accordion-body">
 
-        <label class="control-label " id="categoryTitle" for="first-name">Category :
-                <span class="text text-black">{{ category_name }}</span>
-            </label>
-            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;
-            ">Survey Information</h2>
+
+<!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
+<!--            ">Survey Information</h2>-->
             <div class="col-xs-12">
                 <div class="col-md-12">
                     {{ form|crispy }}
+
                 </div>
 
                 <div class="text-danger survey_error"></div>
@@ -188,7 +196,7 @@
         <hr>
         <div class="row">
             <div class="col-md-12 text-right">
-                <button id= "survey_submit_button" class="btn  btn-sm btn-primary" type="submit">Submit</button>
+                <button id= "survey_submit_button" class="btn  btn-md btn-primary" type="submit">Submit</button>
             </div>
         </div>
 
@@ -321,7 +329,7 @@
 
 
             $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3).replace(r4, str4));
-            $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-primary" >Add option</button>`);
+            $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-sm btn-dark" style="margin-left:50px;" >New Option</button>`);
 
             var newel_id = String(
                 '#div_id_questioninfo-' + questionId + '-Question_Name'
@@ -374,6 +382,7 @@
             $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
             console.log(optionId);
             $('#new_op_div' + questionId + optionId).prepend(counter_el);
+
             optionId++;
             $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
             $(newel_id).css({"margin-left": "10px", "width": "100%"});
@@ -406,9 +415,11 @@
         {#$('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});#}
 
         {#..............................................For MCQ ...........................................#}
-        $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
+      //  $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
        // $('#first_que_div').prepend(`<p>1</p>`);
-        $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+
+        $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "18px", "width": "96%"});
+
 
         {#..............................................For SAQ ...........................................#}
         $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
@@ -501,5 +512,16 @@
         $('#id_Survey_Title').val('Survey ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
     </script>
 
+
+<script>
+ {% for option_form in questioninfo_form.nested.forms %}
+    $('#div_id_questioninfo-{{forloop.counter}}-Question_Name').css({"display": "contents"});
+ {%endfor%}
+</script>
+
+<script>
+    $("#div_id_Use_Flag").css("text-align","left");
+    $("#div_id_Publish_Result").css("text-align","left");
+</script>
 
 {% endblock customjss %}
