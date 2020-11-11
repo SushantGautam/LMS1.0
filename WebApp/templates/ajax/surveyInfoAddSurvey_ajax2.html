@@ -1,4 +1,5 @@
 {% load static %}
+{% load counter %}
 
 <!--<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">-->
 <link href="{% static 'build/css/new.css' %}" rel="stylesheet">
@@ -76,7 +77,9 @@
                                     {% for questioninfo_form in questioninfo_formset.forms %}
 
                                         <div class='qninfo_dynamic'>
-                                            <p style="position:relative; top:40px;"> 1  </p>   {{ questioninfo_form|crispy }}
+
+                                            <p style="position:relative; top:40px;">{{ forloop.counter}}</p>
+                                            {{ questioninfo_form|crispy }}
 
 
                                             {% if questioninfo_form.nested %}
@@ -88,10 +91,11 @@
                                                      style="margin-left:40px;">
                                                     {% for option_form in questioninfo_form.nested.forms %}
 
-                                                        <div class="op" style="display:flex;">
+
+                                                        <div class="op " style="display:flex;  ">
 
 
-
+                                                             <p style="position:relative; margin-right:10px;"> {{forloop.counter|to_char }} </p>
 
                                                             {{ option_form|crispy }}
 
@@ -379,7 +383,7 @@
             // var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
             var counter_el = `<p>  ${to_a(parseInt(optionId)) } </p>`;
             {#$(newel_id).find('label').before(counter_el);#}
-            $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex;'></div>`);
+            $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex; '></div>`);
             console.log(optionId);
             $('#new_op_div' + questionId + optionId).prepend(counter_el);
 
@@ -418,7 +422,8 @@
       //  $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
        // $('#first_que_div').prepend(`<p>1</p>`);
 
-        $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "18px", "width": "96%"});
+     //   $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "8px", "width": "100%"});
+        $("div[id$='Question_Name']").css({"margin-left": "18px", "width": "96%"});
 
 
         {#..............................................For SAQ ...........................................#}
