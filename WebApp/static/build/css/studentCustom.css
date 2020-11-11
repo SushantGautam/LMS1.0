@@ -691,15 +691,8 @@ form {
 #progressResult h4 {
   margin-left: 20px;
 }
-#retakeSurveyBtn {
-  margin-top: 24px;
-  /*height: 5vh;*/
- 
-  background-color: #26b99a;
-}
-#retakeSurveyBtn:hover {
-  background-color: #31c4a5;
-}
+
+
 #surveyView .horizontalBar {
   width: 100%;
   height: 2px;

@@ -105,6 +105,52 @@
         </div>
          <div class="col-md-4 del_retake" >
             <div class="col-md-12">
+
+                 <div class="dropdown ml-3 ">
+                      <a href="#" class="btn btn-outline-light btn-floating btn-sm "
+                           data-toggle="dropdown" title="Options">
+                        <i class="ti-more-alt"></i>
+                        </a>
+                     <div class="dropdown-menu dropdown-menu-right  ">
+
+
+
+
+                        {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
+
+                             {% if object.check_expired %}
+                            <!-- ##################### survey expired so cannot edit  ##############################  -->
+                            {#              <a type="button" class="dropdown-item" disabled>#}
+                            {#                Survey Expired#}
+                            {#              </a>#}
+                        {% elif object.check_started %}
+                            <!-- ##################### survey started already so only update basic info  ######################  -->
+                           <button type="submit" class="dropdown-item" id="update_survey_button_limited"
+                                    data-toggle="modal"
+                                    data-target="#survey_form_modal" style="font-size:14px;">
+                                  Edit Basic Info
+                            </button>
+                         <div class="dropdown-divider" ></div>
+                        {% else %}
+                            <!-- ##################### else full update access  ##############################  -->
+                          <button type="button" class="dropdown-item" id="update_survey_button"
+                                    data-toggle="modal"
+                                    data-target="#survey_form_modal">
+                                Edit
+                            </button>
+                         <div class="dropdown-divider" ></div>
+                        {% endif %}
+
+                     {% else %}
+                        <!-- ##################### No Access  ##############################  -->
+                        <button type="submit" class="dropdown-item"  disabled>
+                            No Edit Permission
+                        </button>
+                         <div class="dropdown-divider" ></div>
+                    {% endif %}
+                    <button class="dropdown-item" type="submit" id="retakeSurveyBtn" data-toggle="modal"
+                            data-target="#survey_form_modal" style="font-size:14px;">Retake survey</button>
+                         <div class="dropdown-divider" ></div>
                      {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
                         <form method="POST" action="
                         {% if 'teachers' in request.get_full_path %}
@@ -116,43 +162,11 @@
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
                             <input type="hidden" value="{{ object.pk }}" name="objectpk">
-                            <button type="submit" class="btn btn-danger btn-md">
-                                <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete Survey
-                            </button>
-                        </form>
-                <br>
-                             {% if object.check_expired %}
-                            <!-- ##################### survey expired so cannot edit  ##############################  -->
-                            {#              <button type="button" class="btn btn-warning btn-md" disabled>#}
-                            {#                Survey Expired#}
-                            {#              </button>#}
-                        {% elif object.check_started %}
-                            <!-- ##################### survey started already so only update basic info  ######################  -->
-                            <button type="button" class="btn btn-warning btn-md text-white" id="update_survey_button_limited"
-                                    data-toggle="modal"
-                                    data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
-                                 &nbsp Edit Basic Info
-                            </button>
-                        {% else %}
-                            <!-- ##################### else full update access  ##############################  -->
-                            <button type="button" class="btn btn-warning btn-md" id="update_survey_button"
-                                    data-toggle="modal"
-                                    data-target="#survey_form_modal"><i class="fa fa-edit text-white" aria-hidden="true"></i>
-                                Edit
-                            </button>
-                        {% endif %}
-                     {% else %}
-                        <!-- ##################### No Access  ##############################  -->
-                        <button type="button" class="btn btn-warning btn-md" disabled>
-                            No Edit Permission
-                        </button>
-
-                    {% endif %}
-                <br>
-                    <button type="button" class="btn btn-info btn-md" id="retakeSurveyBtn" data-toggle="modal"
-                            data-target="#survey_form_modal">  <i class="fa fa-refresh" aria-hidden="true"></i> &nbsp;
-                        Retake survey
-                    </button>
+                            <button type="submit" class="dropdown-item" style="font-size:14px;">Delete Survey</button></form>
+                            {%endif%}
+                            <div class="dropdown-divider" ></div>
+                     </div>
+                     </div>
             </div>
         </div>
     </div>
@@ -453,8 +467,8 @@
 <!--                    <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">-->
                 </div>
             </div>
-            <div class="modal-footer">
-            </div>
+<!--            <div class="modal-footer">-->
+<!--            </div>-->
         </div>
     </div>
 </div>

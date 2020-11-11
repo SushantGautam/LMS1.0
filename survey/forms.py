@@ -31,6 +31,9 @@ class SurveyInfoForm(forms.ModelForm):
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Use_Flag'].label = 'Publish'
         self.fields['Use_Flag'].widget.attrs['style'] = "margin-top:30px"
+        # self.fields['Use_Flag'].widget.attrs['style'] = "text-align:left"
+        # self.fields['Publish_Result'].widget.attrs['style'] = "text-align:left"
+
         self.fields['Publish_Result'].label = 'Display Result'
         self.fields['Publish_Result'].label = 'Display Result'
 
