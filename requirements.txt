@@ -47,3 +47,4 @@ pandas~=1.1.0
 requests~=2.24.0
 fusionexport~=1.2.2.1
 django-rosetta==0.9.5
+django-pwa==1.0.10
