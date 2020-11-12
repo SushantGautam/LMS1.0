@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load pwa %}
 
 <!doctype html>
 <html lang="en">
@@ -31,7 +31,9 @@
     <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
 
     <!-- For PWA -->
-    <link rel="manifest" href="{% static 'PWA/manifest.json' %}">
+    <!-- <link rel="manifest" href="{% static 'PWA/manifest.json' %}"> -->
+    {% progressive_web_app_meta %}
+    
     {% block stylesheet %}{% endblock %}
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js' %}"></script>
@@ -134,7 +136,7 @@
             hideDuration: 200
         };
     </script>
-    <script>
+    <!-- <script>
         // This is the service worker with the Advanced caching
 
         // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
@@ -155,7 +157,7 @@
             }
         }
 
-    </script>
+    </script> -->
 
     {% include 'components/alerts.html' %}
     {% block javascript %}{% endblock %}
