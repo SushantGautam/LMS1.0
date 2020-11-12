@@ -134,7 +134,8 @@ urlpatterns += (
     # urls for Assignmentinfo
     path('assignmentinfo/create/ajax', views.AssignmentInfoCreateViewAjax.as_view(),
          name='assignmentinfo_create_ajax'),
-
+    path('chapter/<int:chapterpk>/assignmentinfo/create/ajax/', views.AssignmentInfoCreateViewAjax.as_view(),
+         name='assignmentinfo_create_ajax_chapter_id'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/', views.AssignmentInfoListView.as_view(),
          name='assignmentinfo_list'),
     path('courseinfo/<int:course>/chapterinfo/<int:chapter>/assignmentinfo/create/',
@@ -145,6 +146,8 @@ urlpatterns += (
          views.AssignmentInfoUpdateView.as_view(), name='assignmentinfo_update'),
     path('assignmentinfo/edit/<int:pk>/ajax/', views.AssignmentInfoEditViewAjax.as_view(),
          name='assignmentinfo_edit_ajax'),
+    path('chapter/<int:chapterpk>/assignmentinfo/edit/<int:pk>/ajax/', views.AssignmentInfoEditViewAjax.as_view(),
+         name='assignmentinfo_edit_ajax_chapter_id'),
     path('assignmentinfo/<int:pk>/',
          views.AssignmentInfoDeleteView.as_view(), name='assignmentinfo_delete'),
     path('assignment/inninginfomap/', views.AssignmentInningInfoMappingView, name='assignmentinninginfomap'),
@@ -413,5 +416,6 @@ urlpatterns += (
 
 urlpatterns += (
     path('teacher_report/', views.TeacherReport.as_view(), name='teacher_report'),
-    path('teacher_report/<int:teacherpk>/', views.TeacherIndividualReport.as_view(), name='teacher_individual_report'),
+    path('teacher_report/<int:teacherpk>/<int:coursepk>/', views.TeacherIndividualReport.as_view(),
+         name='teacher_individual_report'),
 )

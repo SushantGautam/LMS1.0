@@ -7,7 +7,7 @@ class CenterInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CenterInfo
         fields = (
-            'pk', 'Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent'
+            'pk', 'Center_Name', 'Center_Logo', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent'
         )
 
 
@@ -59,6 +59,12 @@ class SessionInfoSerializer(serializers.ModelSerializer):
         fields = (
             'pk', 'Session_Name', 'Description', 'Use_Flag', 'Center_Code'
         )
+
+
+class SessionMapInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SessionMapInfo
+        fields = '__all__'
 
 
 class InningGroupSerializer(serializers.ModelSerializer):

@@ -231,7 +231,7 @@ class Question(models.Model):
                                verbose_name=_('Question'))
 
     score = models.IntegerField(
-        null=True, blank=True, default=1,
+        default=1,
         help_text=_("Full score for the question"),
         verbose_name=_("Score"))
 
@@ -284,9 +284,10 @@ class MCQuestion(Question):
 
     def check_if_correct(self, guess):
         if guess:
-            answer = Answer.objects.get(id=int(guess))
-            if answer.correct is True:
-                return True
+            if Answer.objects.filter(id=int(guess)).exists():
+                answer = Answer.objects.get(id=int(guess))
+                if answer.correct is True:
+                    return True
         return False
 
     def order_answers(self, queryset):
@@ -387,8 +388,8 @@ class SA_Question(Question):
         return self.content
 
     class Meta:
-        verbose_name = _("Short Answer style question")
-        verbose_name_plural = _("Short Answer style questions")
+        verbose_name = _("Short Answer Question")
+        verbose_name_plural = _("Short Answer Questions")
 
     def get_absolute_url(self):
         return reverse('saquestion_detail', args=(self.pk,))
@@ -523,6 +524,10 @@ class Quiz(models.Model):
         null=True, blank=True, default=0,
         help_text=_("Percentage of total marks to use for negative marking"),
         verbose_name=_("Negative Marking Percentage"))
+
+    mcquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    saquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    tfquestion_order = models.CharField(max_length=1024, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('quiz_update', args=(self.pk,))
@@ -672,14 +677,28 @@ class SittingManager(models.Manager):
             mcquestion_set = quiz.mcquestion.all().order_by('?')
             tfquestion_set = quiz.tfquestion.all().order_by('?')
             saquestion_set = quiz.saquestion.all().order_by('?')
+            mcquestion_set = [item.id for item in mcquestion_set]
+            tfquestion_set = [item.id for item in tfquestion_set]
+            saquestion_set = [item.id for item in saquestion_set]
         else:
-            mcquestion_set = quiz.mcquestion.all()
-            tfquestion_set = quiz.tfquestion.all()
-            saquestion_set = quiz.saquestion.all()
+            if quiz.mcquestion_order:
+                mcquestion_set = [int(x) for x in quiz.mcquestion_order.split(",")]
+            else:
+                mcquestion_set = quiz.mcquestion.all()
+                mcquestion_set = [item.id for item in mcquestion_set]
 
-        mcquestion_set = [item.id for item in mcquestion_set]
-        tfquestion_set = [item.id for item in tfquestion_set]
-        saquestion_set = [item.id for item in saquestion_set]
+            if quiz.tfquestion_order:
+                tfquestion_set = [int(x) for x in quiz.tfquestion_order.split(",")]
+            else:
+                tfquestion_set = quiz.tfquestion.all()
+                tfquestion_set = [item.id for item in tfquestion_set]
+
+            if quiz.saquestion_order:
+                saquestion_set = [int(x) for x in quiz.saquestion_order.split(",")]
+            else:
+                saquestion_set = quiz.saquestion.all()
+                saquestion_set = [item.id for item in saquestion_set]
+            
 
         if (len(mcquestion_set) == 0 and len(tfquestion_set) == 0 and len(saquestion_set) == 0):
             raise ImproperlyConfigured('Question set of the quiz is empty. Please configure questions properly')
@@ -763,6 +782,7 @@ class Sitting(models.Model):
 
     score_list = models.CharField(
         max_length=1024,
+        null=True, blank=True,
         verbose_name=_("Score List"),
         validators=[])
 
@@ -841,9 +861,11 @@ class Sitting(models.Model):
                 totaltfq_score += j.score
         for k in self.quiz.saquestion.all():
             i = [int(n) for n in self.question_order.split(',') if n].index(k.id)
-            score_list = str(self.score_list).split(',')
-            if str(score_list[i]) and str(score_list[i]) != 'not_graded':
-                totalsaq_score += float(score_list[i])
+            if self.score_list:
+                score_list = str(self.score_list).split(',')
+                if i < len(score_list):
+                    if str(score_list[i]) and str(score_list[i]) != 'not_graded':
+                        totalsaq_score += float(score_list[i])
 
         return totalmcq_score + totaltfq_score + totalsaq_score
 

@@ -102,6 +102,8 @@ class QuizDetailView(AdminAuthMxnCls, QuizInfoAuthMxnCls, DetailView):
 
 def QuizDeleteView(request, pk):
     Quiz.objects.filter(pk=pk).delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'Quiz Deleted Successfully.')
     return redirect("quiz_list")
 
 
@@ -176,7 +178,10 @@ class QuizMarkingDetail(QuizMarkerMixin, DetailView):
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
-            score_list = [s for s in sitting.score_list.split(',') if s]
+            ssl = sitting.score_list
+            if not ssl:
+                ssl = ''
+            score_list = [s for s in ssl.split(',') if s]
             score_list[indx] = request.POST.get('new_score', 0)
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
@@ -292,7 +297,10 @@ class QuizTake(FormView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         guess = form.cleaned_data['answers']
         is_correct = self.question.check_if_correct(guess)
-        score_list = [s for s in self.sitting.score_list.split(',') if s]
+        ssl = self.sitting.score_list
+        if not ssl:
+            ssl = ''
+        score_list = [s for s in ssl.split(',') if s]
         score = self.question.score
 
         if is_correct is True:
@@ -502,22 +510,27 @@ def anon_session_score(session, to_add=0, possible=0):
 def UpdateQuizTime(request):
     if request.method == 'POST':
         quiz = Quiz.objects.get(pk=request.POST.get('quiz_id'))
-        sitting = Sitting.objects.get(pk=request.POST.get('sitting_id'))
-        elapsed_time = request.POST.get('time_elapsed')
-        sitting.time_elapsed = elapsed_time
-        if int(elapsed_time) >= quiz.duration:
-            sitting.complete = True
-        sitting.save()
+        if quiz.exam_paper:
+            sitting = Sitting.objects.get(pk=request.POST.get('sitting_id'))
+            elapsed_time = request.POST.get('time_elapsed')
+            sitting.time_elapsed = elapsed_time
+            if int(elapsed_time) >= quiz.duration:
+                sitting.end = timezone.now()
+                sitting.complete = True
+            sitting.save()
 
-        if request.GET.get('iframe'):
-            url = "/students/quiz/progress/" + str(sitting.id) + "/?iframe=" + request.GET.get('iframe')
-        else:
-            url = "/students/quiz/progress/" + str(sitting.id)
+            if request.GET.get('iframe'):
+                url = "/students/quiz/progress/" + str(sitting.id) + "/?iframe=" + request.GET.get('iframe')
+            else:
+                url = "/students/quiz/progress/" + str(sitting.id)
 
+            return JsonResponse({
+                'sitting_time_elapsed': sitting.time_elapsed,
+                'url': url if sitting.complete else 0
+            }, status=200)
         return JsonResponse({
-            'sitting_time_elapsed': sitting.time_elapsed,
-            'url': url if sitting.complete else 0
-        }, status=200)
+            'error_message': 'Only for exams',
+        }, status=500)
 
 
 class QuestionCreateView(CreateView):
@@ -750,13 +763,28 @@ class QuizCreateWizard(SessionWizardView):
         my_quiz.url = 'quiz' + str(my_quiz.id)
         my_quiz.cent_code = self.request.user.Center_Code
         my_quiz.save()
+        print("MCQ's: ", MCQuestion.objects.filter(pk__in=mcq).values_list("content"))
         my_quiz.mcquestion.add(*mcq)
         my_quiz.tfquestion.add(*tfq)
         my_quiz.saquestion.add(*saq)
-        if self.request.user.Is_Teacher and not self.request.user.Is_CenterAdmin:
+        # if self.request.user.Is_Teacher and not self.request.user.Is_CenterAdmin:
+        if '/teachers' in self.request.path:
             return redirect('teacher_quiz_list')
         else:
             return redirect('quiz_list')
+
+    def get_form_kwargs(self, step):
+        return_dict = {}
+        if step == 'form3':
+            step1_data = self.get_cleaned_data_for_step('form1')
+            mc_queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+            tf_queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
+            sa_queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
+
+            return_dict['mc_queryset'] = mc_queryset
+            return_dict['sa_queryset'] = sa_queryset
+            return_dict['tf_queryset'] = tf_queryset
+        return return_dict
 
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)
@@ -779,11 +807,12 @@ class QuizCreateWizard(SessionWizardView):
             form.fields["chapter_code"].queryset = ChapterInfo.objects.filter(Course_Code=step1_course)
 
         if step == 'form3':
-            step1_data = self.get_cleaned_data_for_step('form1')
-            form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
-            form.fields["tfquestion"].queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
-            form.fields["saquestion"].queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
-
+            # step1_data = self.get_cleaned_data_for_step('form1')
+            # mc_queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+            # tf_queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
+            # sa_queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
+            print("form media: ", form.media)
+        
         return form
 
     def get_context_data(self, form, **kwargs):
@@ -804,6 +833,7 @@ class CreateQuizAjax(CreateView):
         context = self.get_context_data()
         if form.is_valid():
             print("form valid")
+            print(form)
             self.object = form.save(commit=False)
             self.object.cent_code = self.request.user.Center_Code
             course_id = self.request.GET.get("course_id", None)

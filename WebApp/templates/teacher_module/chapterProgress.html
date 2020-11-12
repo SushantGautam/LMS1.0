@@ -60,11 +60,12 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="container">
 
-        <div style="font-size:18px; font-weight: 700; margin-bottom:20px"> 
+        <div style="font-size:18px; font-weight: 700; margin-bottom:20px">
             [Course Info]
-            {% if inning  %}
+            {% if inning %}
                 <a href="{% url 'progress_download' course.pk inning.pk %}" target="__blank">
-                    <button class="btn btn-info btn-sm pull-right" id="downloadProgress">Download All Student Progress</button>
+                    <button class="btn btn-info btn-sm pull-right" id="downloadProgress">Download All Student Progress
+                    </button>
                 </a>
             {% endif %}
         </div>
@@ -128,7 +129,7 @@
                     {{ chapter.Chapter_No }}
                 </button>
             {% endfor %}
-            <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn" value="all">All
+            <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn active" value="all">All
             </button>
         </div>
         <div class="col-md-12">
@@ -248,7 +249,7 @@
                         <tbody>
                         {% for a in student_progress_data %}
                             <tr data-chapterpk="{{ a.chapter.chapterObj.pk }}" style="background-color:
-                                {% if a.overall_progress == 100.00 %}#9fe890{% else %}#f5f590{% endif %}">
+                                    {% if a.overall_progress == 100.00 %}#9fe890{% else %}#f5f590{% endif %}">
                                 <td></td>
                                 <td>
                                     <div class="progressbar" data-animate="false">
@@ -264,7 +265,8 @@
                                     data-student_fullname="{{ a.student.get_full_name }}">  {{ a.student.get_full_name }} </td>
                                 <td>  {{ a.chapter.chapterObj.Chapter_No }}. {{ a.chapter.chapterObj.Chapter_Name }} </td>
                                 <td>  {{ a.chapter.chapterObj.getmustreadtimeinformat }} </td>
-                                <td class="laststudydate" style="float: none;" data-laststudydate="{{ a.chapter.laststudydate }}"
+                                <td class="laststudydate" style="float: none;"
+                                    data-laststudydate="{{ a.chapter.laststudydate }}"
                                     data-laststudydatewithutc="{{ a.chapter.laststudydate }} UTC">  {{ a.chapter.laststudydate }} </td>
                                 <td>
                                     {{ a.chapter.totalstudytime }}
@@ -275,6 +277,7 @@
                                                   data-chapterpk="{{ a.chapter.chapterObj.pk }}"
                                                   data-chaptername="{{ a.chapter.chapterObj }}"
                                                   data-chapterreadtime="{{ a.chapter.chapterObj.getmustreadtimeinformat }}"
+                                                  data-chapterreadtime_seconds="{{ a.chapter.chapterObj.mustreadtime }}"
                                                   data-studentpk="{{ a.student.pk }}"
                                                   data-student_name="{{ a.student }}"
                                                   data-totalstudytime="{{ a.chapter.totalstudytime }}">
@@ -283,20 +286,28 @@
                                         {% endif %}
                                     {% endif %}
                                 </td>
-                                <td><div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ a.chapter.progresspercent }}%;" aria-valuenow="{{ a.chapter.progresspercent }}" aria-valuemin="0" aria-valuemax="100">{{ a.chapter.progresspercent }}%</div>
-                                </div></td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: {{ a.chapter.progresspercent }}%;"
+                                             aria-valuenow="{{ a.chapter.progresspercent }}" aria-valuemin="0"
+                                             aria-valuemax="100">{{ a.chapter.progresspercent }}%
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="quiztd" data-quiz_completed="{{ a.quiz.completed_quiz }}"
                                     data-quiz_total="{{ a.quiz.quiz_count }}"
                                     data-score_obtained="{{ a.quiz.avg_percent_score }}">
-                                    <span style="font-weight: 600;">Score Obtained</span>:- {{ a.quiz.avg_percent_score }} %<br>
+                                    <span style="font-weight: 600;">Score Obtained</span>:- {{ a.quiz.avg_percent_score }}
+                                    %<br>
                                     <span style="font-weight: 600;">Completed/Total Quiz</span>:- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
                                 </td>
-                                <td class="attendance" data-attendance="{{ a.chapter.overall_progress }}">
+                                <td class="attendance"
+                                    data-attendance="{% if a.overall_progress == 100.00 %}True{% else %}None{% endif %}">
                                     {% if a.chapter.attendance == None %}
                                         No Chapter Running Time
                                     {% elif a.overall_progress == 100.00 %}
-                                        Completed 
+                                        Completed
                                     {% else %}
                                         {% if a.chapter.progresspercent == 100.00 %}
                                             <span class="text-success">Slide ✔</span><br>
@@ -304,9 +315,9 @@
                                             <span class="text-danger">Slide ✖</span><br>
                                         {% endif %}
                                         {% if a.chapter.studytimeprogresspercent == 100.00 %}
-                                            <span class="text-success">Read time ✔</span><br>
+                                            <span class="text-success">Study time ✔</span><br>
                                         {% else %}
-                                            <span class="text-danger">Read time ✖</span><br>
+                                            <span class="text-danger">Study time ✖</span><br>
                                         {% endif %}
                                         {% if a.quiz.quiz_count != 0 %}
                                             {% if a.quiz.progress == 100.00 %}
@@ -350,7 +361,11 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <h5>Chapter Read Time: <span class="text-success" id="chapter_read_time"></span></h5>
+                    <h5>Chapter Study Time: <span class="text-success" id="chapter_read_time"></span></h5>
+                    <h6>
+                        <a class="studymarkcomplete" id="studymarkcomplete" href="javascript:void(0)"
+                           style="float: right">Mark As Complete</a>
+                    </h6>
                     <form method="post" id="edit_progress_studytime_form">
                         <label>Study Time</label>
                         <input type="number" id="edit_progress_studytime_timeinputhh"
@@ -391,7 +406,7 @@
                     height: 300
                 },
                 title: {
-                    text: 'Total Achievement'
+                    text: 'Quiz Achievement'
                 },
                 subtitle: {
                     text: ''
@@ -407,8 +422,9 @@
                 yAxis: {
                     title: {
                         text: 'Score'
-                    }
-
+                    },
+                    min: 0,
+                    max: 100
                 },
                 credits: {
                     enabled: false
@@ -701,7 +717,9 @@
             }).draw();
 
             $('.chapterBtn').on('click', function () {
-                chapterpk = this.value
+                chapterpk = this.value;
+                $('.chapterBtn.active').removeClass('active');
+                $(this).addClass('active');
                 var vs = 0; // visited students
                 $('#chapter-details').css('display', 'block')
                 {% for x in student_progress_data %}
@@ -787,10 +805,6 @@
                     "name": "Quiz Progress",
                     colorByPoint: true,
                     "data": [
-                        {
-                            name: "Total",
-                            y: total * 100 / total
-                        },
                         {
                             name: "Completed",
                             y: completed * 100 / total
@@ -884,6 +898,7 @@
         });
 
         $('.edit_progress_studytime').on('click', function (e) {
+            displayMarkComplete($(this))
             $('#edit_progress_studytime_student_span').text($(this).attr('data-student_name'));
             $('#edit_progress_studytime_chapter_span').text($(this).attr('data-chaptername'));
             $('#edit_progress_studytime_studentinput').val($(this).attr('data-studentpk'));
@@ -894,6 +909,20 @@
             $('#edit_progress_studytime_timeinputmm').val(total_studytime[1]);
             $('#edit_progress_studytime_timeinputss').val(total_studytime[2]);
         });
+
+        $('#studymarkcomplete').on('click', function () {
+            total_studytime = $('#chapter_read_time').html().split(':')
+            $('#edit_progress_studytime_timeinputhh').val(total_studytime[0]);
+            $('#edit_progress_studytime_timeinputmm').val(total_studytime[1]);
+            $('#edit_progress_studytime_timeinputss').val(total_studytime[2]);
+        });
+
+        function displayMarkComplete($this) {
+            let mustreadtime = parseInt($this.attr('data-chapterreadtime_seconds'));
+            let total_studytime = $this.attr('data-totalstudytime').split(':');
+            let total_studytime_in_seconds = (parseInt(total_studytime[0]) * 60 * 60) + (parseInt(total_studytime[1]) * 60) + parseInt(total_studytime[2]);
+            parseInt(total_studytime_in_seconds) < mustreadtime ? $('#studymarkcomplete').css('display', 'block') : $('#studymarkcomplete').css('display', 'none');
+        }
 
         $('#edit_progress_studytime_form').on('submit', function (e) {
             e.preventDefault()

@@ -1,5 +1,11 @@
 {% load static %}
 {% load model_template_relation %}
+<style>
+    ul,ol{
+        list-style: none;
+    }
+</style>
+
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" id="create_chapter_modal" xmlns="http://www.w3.org/1999/html"
      xmlns="http://www.w3.org/1999/html">
@@ -512,6 +518,7 @@
                                 {% endif %}
                             </span>
 
+                                {% comment %}
                                 {% if '/students' in request.path %}
                                     {% for x in student_data %}
                                         {% if  o.pk == x.chapter.chapterObj.pk %}
@@ -524,6 +531,7 @@
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
+                                {% endcomment %}
                             </div>
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -564,7 +572,7 @@
                                                 <h4>
                                                 <span class="running-time"
                                                       style="font-weight:600;  font-style: italic;">
-                                                    Running Time: <b>{{ o.getmustreadtimeinformat }}</b>
+                                                    Running Time: <b>{{ o.display_mustreadtime }}</b>
                                                 </span>
                                                 </h4>
 
@@ -581,12 +589,12 @@
                                             <div class="col-md-6 col-sm-6 col-xs-12"
                                                  style="padding: 0px !important;">
                                                 <span style="font-weight: 600; font-style:italic">Status:</span>
-                                                {% if x.chapter.attendance %}
-                                                    <span> <strong
-                                                            style="color: #00A000;font-weight: 700;">Complete</strong></span>
+                                                {% if x.overall_progress == 100 %}
+                                                    <span> <strong class="text-success">Complete</strong></span>
+                                                            <!-- style="color: #00A000;font-weight: 700;"> -->
                                                 {% else %}
-                                                    <span>   <strong
-                                                            style="color: red;font-weight: 700;">In Progress</strong></span>
+                                                    <span>   <strong class="text-danger">In Progress</strong></span>
+                                                            <!-- style="color: red;font-weight: 700;" -->
                                                 {% endif %}
                                             </div>
                                             <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px !important;">
@@ -599,7 +607,7 @@
                                                                          background-color:green
                                                                      {% endif %}
                                                                      ">
-                                                            <span class="">Progress {{ x.chapter.progresspercent }}% ({{ x.chapter.currentpagenumber }}/{{ x.chapter.totalPage }})</span>
+                                                            <span class="">Slide {{ x.chapter.progresspercent }}% ({{ x.chapter.currentpagenumber }}/{{ x.chapter.totalPage }})</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -615,6 +623,14 @@
                                                             <span class="">Studied TIme {{ x.chapter.studytimeprogresspercent }}% ({{ x.chapter.totalstudytime }})</span>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                                    <span class="text-{% if x.quiz.completed_quiz == x.quiz.quiz_count %}success{% else %}danger{% endif %}"
+                                                        style="font-weight:600;  font-style: italic;">
+                                                        Quiz Completed/Total : {{ x.quiz.completed_quiz }} / {{ x.quiz.quiz_count }}
+                                                    </span>
                                                 </div>
                                             </div>
                                         {% endif %}

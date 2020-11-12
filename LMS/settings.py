@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'forum',
     'quiz',
     'survey',
+    'rosetta',
     'decorator_include',
     'django_summernote',
     'Notifications',
@@ -234,6 +235,10 @@ REST_FRAMEWORK = {
 #         'LOCATION': '.cache',
 #     }
 # }
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 # SERVER_NAME = 'Indonesian_Server'
 # SERVER_NAME = 'Korean_Server'

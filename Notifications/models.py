@@ -153,8 +153,9 @@ def notify_handler(verb, **kwargs):
     # Check if User or Group
 
     if not recipient and not target_audience:
-        raise ValueError
-
+        # This case is avoided because in case of new courses which are not assigned to session. It will generate error.
+        # raise ValueError
+        pass
     if recipient:
         if isinstance(recipient, Group):
             recipients = recipient.user_set.all()
