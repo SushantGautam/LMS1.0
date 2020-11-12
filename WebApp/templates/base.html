@@ -29,6 +29,9 @@
 
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
+
+    <!-- For PWA -->
+    <link rel="manifest" href="{% static 'PWA/manifest.json' %}">
     {% block stylesheet %}{% endblock %}
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js' %}"></script>
@@ -130,6 +133,28 @@
             showDuration: 200,
             hideDuration: 200
         };
+    </script>
+    <script>
+        // This is the service worker with the Advanced caching
+
+        // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+
+        // Check compatibility for the browser we're running this in
+        if ("serviceWorker" in navigator) {
+            if (navigator.serviceWorker.controller) {
+                console.log("[PWA Builder] active service worker found, no need to register");
+            } else {
+                // Register the service worker
+                navigator.serviceWorker
+                    .register("{% static 'PWA/sw.js' %}", {
+                        scope: "{% static 'PWA/' %}"
+                    })
+                    .then(function (reg) {
+                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                    });
+            }
+        }
+
     </script>
 
     {% include 'components/alerts.html' %}
