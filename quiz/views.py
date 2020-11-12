@@ -12,10 +12,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView, ListView, TemplateView, FormView, CreateView, UpdateView
 from django_addanother.views import CreatePopupMixin
-from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.translation import gettext as _
-
 
 from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth, AdminAuthMxnCls, StudentCourseAuth
 from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
@@ -106,6 +102,8 @@ class QuizDetailView(AdminAuthMxnCls, QuizInfoAuthMxnCls, DetailView):
 
 def QuizDeleteView(request, pk):
     Quiz.objects.filter(pk=pk).delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'Quiz Deleted Successfully.')
     return redirect("quiz_list")
 
 
