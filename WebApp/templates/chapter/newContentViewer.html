@@ -629,7 +629,13 @@
                                 startWithAudioMuted: audioMute,
                                 startWithVideoMuted: true,
                                 disableDeepLinking: true,
-                                etherpad_base: "https://pad.riseup.net/p/"
+                                etherpad_base: "https://pad.riseup.net/p/",
+                                {% if "students" in request.path %}
+                                   remoteVideoMenu: {
+                                       disableKick: true,
+                                   },
+                                   disableRemoteMute: true,
+                                {% endif %}
                             },
 
                             interfaceConfigOverwrite: {
