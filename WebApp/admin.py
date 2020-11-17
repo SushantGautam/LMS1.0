@@ -3,6 +3,7 @@ from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 from import_export.admin import ImportExportModelAdmin, ExportMixin
 from import_export.resources import ModelResource
+from django.forms.models import BaseInlineFormSet
 
 from Notifications.models import Notification
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
@@ -15,11 +16,40 @@ class CenterInfoAdminForm(forms.ModelForm):
         model = CenterInfo
         fields = '__all__'
 
+class MemberInfoInlineFormset(forms.ModelForm):
+    class Meta:
+        model = MemberInfo
+        fields = '__all__'
+
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super().save(commit=False)
+
+        user.Is_Student = False
+        user.Is_CenterAdmin = True
+        user.set_password(self.cleaned_data["password"])
+        user.save()
+
+        return user
+
+class MemberInfoInline(admin.StackedInline):
+    model = MemberInfo
+    fields = ('username', 'password','first_name', 'last_name', 'email', 'Member_Phone', 'Member_Gender')
+    verbose_name = ('Center Admin Account')
+    verbose_name_plural = ('Center Admin Accounts')  
+    extra = 1
+    form = MemberInfoInlineFormset
 
 class CenterInfoAdmin(admin.ModelAdmin):
     form = CenterInfoAdminForm
     list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent', 'UBLMeet_URL']
+    inlines = [MemberInfoInline,]
 
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return [inline(self.model, self.admin_site) for inline in self.inlines]
+        else:
+            return []
 
 admin.site.register(CenterInfo, CenterInfoAdmin)
 
