@@ -165,15 +165,15 @@
 
 <div class="profile-container bg-dark align-items-center" style="height: 12rem;">
     <div class="profile-bar" style="background: none;">
-        <div class="d-flex align-items-end justify-content-between w-100">
-            <div class="d-flex align-items-center">
-                <figure class="avatar mr-2" style="height: 8rem; width: 8rem;">
-                    {% if request.user.Avatar %}
-                    <img src="{{ request.user.Avatar }}" class="rounded-circle" alt="avatar">
-                    {% else %}
-                    <img src="{% static 'media/image/user/man_avatar3.jpg'%}" class="rounded-circle" alt="avatar">
-                    {% endif %}
-                </figure>
+        <div class="d-flex w-100">
+            <figure class="avatar mr-2" style="height: 8rem; width: 8rem;">
+                {% if request.user.Avatar %}
+                <img src="{{ request.user.Avatar }}" class="rounded-circle" alt="avatar">
+                {% else %}
+                <img src="{% static 'media/image/user/man_avatar3.jpg'%}" class="rounded-circle" alt="avatar">
+                {% endif %}
+            </figure>
+            <div class="w-100 pt-3">
                 <div class="ml-3">
                     <h3 class="mb-2">
                         {% if user.first_name %}
@@ -186,30 +186,28 @@
                     <i class="fa fa-user"></i>&nbsp; {{ user.get_user_type }}
                     <!-- </small> -->
                 </div>
-            </div>
-            <div class="row">
-                <div class="upload-btn-wrapper">
-                    <form class="profile-pic-upload" enctype="multipart/form-data">
-                        <!-- <button class="btn btn-sm text-white">{% trans "Change Avatar" %}</button> -->
-                        <a href="javascript:void(0)" title="{% trans 'Change Avatar' %}" data-toggle="tooltip">
-                            <img src="{% static 'media/image/change_avatar.png'%}"
-                                style="filter: invert(10);width: 40px; height:40px;">
-                            <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
-                        </a>
-                    </form>
-                </div>
-                <div>
-                    <a class="ml-4 mr-2" href="{% if 'teacher' in request.path %}
+                <div class="row edit_options pull-right">
+                    <div class="upload-btn-wrapper">
+                        <form class="profile-pic-upload" enctype="multipart/form-data">
+                            <!-- <button class="btn btn-sm text-white">{% trans "Change Avatar" %}</button> -->
+                            <a href="javascript:void(0)" title="{% trans 'Change Avatar' %}" data-toggle="tooltip">
+                                <img src="{% static 'media/image/change_avatar.png'%}">
+                                <input type="file" name="Member_Avatar" id="id_Member_Avatar" accept="image/*">
+                            </a>
+                        </form>
+                    </div>
+                    <div class="change_password_wrapper">
+                        <a class="ml-4 mr-2" href="{% if 'teacher' in request.path %}
                     {% url 'teacher_change_password' %}
                 {% elif 'student' in request.path %}
                     {% url 'student_change_password' %}
                 {% else %}
                     {% url 'centeradmin_change_password' %}
                 {% endif %}" title="{% trans 'Change Password' %}" data-toggle="tooltip">
-                        <img src="{% static 'media/image/change_password.png'%}"
-                            style="filter: invert(10);width: 44px; height:40px;">
-                        <!-- <i class="fa fa-lock fa-2x text-white"></i> -->
-                    </a>
+                            <img src="{% static 'media/image/change_password.png'%}">
+                            <!-- <i class="fa fa-lock fa-2x text-white"></i> -->
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -75,14 +75,23 @@
 }
 
 /* profile avatar change */
+
+.edit_options {
+  /* height: 60px; */
+  /* align-items: flex-end; */
+}
+
 .upload-btn-wrapper {
   position: relative;
   overflow: hidden;
   display: inline-block;
 }
 
-.upload-btn-wrapper img {
+.profile-pic-upload img {
   cursor: pointer !important;
+  filter: invert(10);
+  width: 30px;
+  height: 30px;
   /* border: 2px solid white; */
   /* color: white; */
 }
@@ -102,6 +111,17 @@
 }
 
 /* password change css */
+
+.change_password_wrapper img {
+  filter: invert(10);
+  width: 34px;
+  height: 30px;
+}
+
+/* .change_password_wrapper:hover img {
+  height: 44px;
+  width: 40px;
+} */
 
 .has-error .help-block {
   font-style: normal;
