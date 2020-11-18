@@ -42,7 +42,7 @@ class MemberInfoInline(admin.StackedInline):
 
 class CenterInfoAdmin(admin.ModelAdmin):
     form = CenterInfoAdminForm
-    list_display = ['Center_Name', 'Center_Address', 'Use_Flag', 'Register_DateTime', 'Register_Agent', 'UBLMeet_URL']
+    list_display = ['Center_Name', 'Center_Address', 'Register_DateTime', 'Register_Agent', 'UBLMeet_URL', 'center_admins', 'Use_Flag']
     inlines = [MemberInfoInline,]
 
     def get_inline_instances(self, request, obj=None):
@@ -50,6 +50,12 @@ class CenterInfoAdmin(admin.ModelAdmin):
             return [inline(self.model, self.admin_site) for inline in self.inlines]
         else:
             return []
+
+    def center_admins(self, obj):
+        if MemberInfo.objects.filter(Center_Code=obj, Is_CenterAdmin=True, Use_Flag=True).exists():
+            return list(MemberInfo.objects.filter(Center_Code=obj, Is_CenterAdmin=True, Use_Flag=True).values_list('username', flat=True))
+        else:
+            return '-'
 
 admin.site.register(CenterInfo, CenterInfoAdmin)
 
