@@ -836,6 +836,7 @@
                 answerdata.append("Question_Code", $(`#id_Question_Code${$(this).attr('data-id')}`).val());
                 answerdata.append("Student_Code", $(`#id_Student_Code${$(this).attr('data-id')}`).val());
 
+                var answerformdiv = $(this).closest('form');
                 $.ajax({
                     url: $(this).attr('data-url'),  // URL to your view that serves new info
                     data: answerdata,
@@ -843,10 +844,41 @@
                     type: 'post', // GET or POST
                     enctype: 'multipart/form-data',
                     processData: false,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var bar = $('.bar');
+                                var percent = $('.percent');
+                                var progress = $('.progress');
+                                var percentComplete = Math.round((evt.loaded * 100) / evt.total);
+                                var percentVal = percentComplete + '%';
+                                percent.width(percentVal);
+                                percent.html(percentVal);
+                                {#$('#status').html('<b> Uploading -> ' + (Math.round(percentComplete * 100)) + '% </b>');#}
+                            }
+                        }, false);
+                        return xhr;
+                    },
                     contentType: false,
                     success: function (response) {
-                        console.log('Success')
-                        location.reload()
+                        console.log('Success');
+                        location.reload();
+                    },
+                    beforeSend: function () {
+                        var html = `
+                            <div class="progress" style="max-height: 10px;">
+                                <div class="percent" style="max-width: 100%; background-color: limegreen;">0%</div >
+                            </div>
+                        `;
+                        $(html).insertAfter($(answerformdiv).find('input[type=file]'));
+                        var percent = $('.percent');
+                        var progress = $('.progress');
+                        var percentVal = '0%';
+                        percent.width(percentVal);
+                    },
+                    complete: function (xhr) {
+                        progress.remove();
                     },
                     error: function (e) {
                         submitted = false;
@@ -856,6 +888,10 @@
                 });
             }
         });
+
+        $('button[type=reset]').on('click', function () {
+            $(this).closest('form').find('.progress').remove();
+        })
     </script>
 
     <script>
