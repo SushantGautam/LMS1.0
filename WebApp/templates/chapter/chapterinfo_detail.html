@@ -737,7 +737,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{% url 'assignmentinfo_create_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'assignmentinfo_create_ajax_chapter_id' object.id %}",  // URL to your view that serves new info
                 success: function (response) {
                     let url = "{% url 'assignmentinfo_create_ajax' %}";  // URL to your view that serves new info
                     $('#create_assignment_modal_body').append(response);

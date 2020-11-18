@@ -102,6 +102,8 @@ class QuizDetailView(AdminAuthMxnCls, QuizInfoAuthMxnCls, DetailView):
 
 def QuizDeleteView(request, pk):
     Quiz.objects.filter(pk=pk).delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'Quiz Deleted Successfully.')
     return redirect("quiz_list")
 
 
@@ -761,13 +763,28 @@ class QuizCreateWizard(SessionWizardView):
         my_quiz.url = 'quiz' + str(my_quiz.id)
         my_quiz.cent_code = self.request.user.Center_Code
         my_quiz.save()
+        print("MCQ's: ", MCQuestion.objects.filter(pk__in=mcq).values_list("content"))
         my_quiz.mcquestion.add(*mcq)
         my_quiz.tfquestion.add(*tfq)
         my_quiz.saquestion.add(*saq)
-        if self.request.user.Is_Teacher and not self.request.user.Is_CenterAdmin:
+        # if self.request.user.Is_Teacher and not self.request.user.Is_CenterAdmin:
+        if '/teachers' in self.request.path:
             return redirect('teacher_quiz_list')
         else:
             return redirect('quiz_list')
+
+    def get_form_kwargs(self, step):
+        return_dict = {}
+        if step == 'form3':
+            step1_data = self.get_cleaned_data_for_step('form1')
+            mc_queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+            tf_queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
+            sa_queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
+
+            return_dict['mc_queryset'] = mc_queryset
+            return_dict['sa_queryset'] = sa_queryset
+            return_dict['tf_queryset'] = tf_queryset
+        return return_dict
 
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)
@@ -790,11 +807,12 @@ class QuizCreateWizard(SessionWizardView):
             form.fields["chapter_code"].queryset = ChapterInfo.objects.filter(Course_Code=step1_course)
 
         if step == 'form3':
-            step1_data = self.get_cleaned_data_for_step('form1')
-            form.fields["mcquestion"].queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
-            form.fields["tfquestion"].queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
-            form.fields["saquestion"].queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
-
+            # step1_data = self.get_cleaned_data_for_step('form1')
+            # mc_queryset = MCQuestion.objects.filter(course_code=step1_data['course_code'])
+            # tf_queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
+            # sa_queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
+            print("form media: ", form.media)
+        
         return form
 
     def get_context_data(self, form, **kwargs):
@@ -815,6 +833,7 @@ class CreateQuizAjax(CreateView):
         context = self.get_context_data()
         if form.is_valid():
             print("form valid")
+            print(form)
             self.object = form.save(commit=False)
             self.object.cent_code = self.request.user.Center_Code
             course_id = self.request.GET.get("course_id", None)

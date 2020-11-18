@@ -525,6 +525,10 @@ class Quiz(models.Model):
         help_text=_("Percentage of total marks to use for negative marking"),
         verbose_name=_("Negative Marking Percentage"))
 
+    mcquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    saquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    tfquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+
     def get_absolute_url(self):
         return reverse('quiz_update', args=(self.pk,))
 
@@ -673,14 +677,28 @@ class SittingManager(models.Manager):
             mcquestion_set = quiz.mcquestion.all().order_by('?')
             tfquestion_set = quiz.tfquestion.all().order_by('?')
             saquestion_set = quiz.saquestion.all().order_by('?')
+            mcquestion_set = [item.id for item in mcquestion_set]
+            tfquestion_set = [item.id for item in tfquestion_set]
+            saquestion_set = [item.id for item in saquestion_set]
         else:
-            mcquestion_set = quiz.mcquestion.all()
-            tfquestion_set = quiz.tfquestion.all()
-            saquestion_set = quiz.saquestion.all()
+            if quiz.mcquestion_order:
+                mcquestion_set = [int(x) for x in quiz.mcquestion_order.split(",")]
+            else:
+                mcquestion_set = quiz.mcquestion.all()
+                mcquestion_set = [item.id for item in mcquestion_set]
 
-        mcquestion_set = [item.id for item in mcquestion_set]
-        tfquestion_set = [item.id for item in tfquestion_set]
-        saquestion_set = [item.id for item in saquestion_set]
+            if quiz.tfquestion_order:
+                tfquestion_set = [int(x) for x in quiz.tfquestion_order.split(",")]
+            else:
+                tfquestion_set = quiz.tfquestion.all()
+                tfquestion_set = [item.id for item in tfquestion_set]
+
+            if quiz.saquestion_order:
+                saquestion_set = [int(x) for x in quiz.saquestion_order.split(",")]
+            else:
+                saquestion_set = quiz.saquestion.all()
+                saquestion_set = [item.id for item in saquestion_set]
+            
 
         if (len(mcquestion_set) == 0 and len(tfquestion_set) == 0 and len(saquestion_set) == 0):
             raise ImproperlyConfigured('Question set of the quiz is empty. Please configure questions properly')

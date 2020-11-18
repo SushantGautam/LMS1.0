@@ -107,7 +107,7 @@ class MemberInfo(AbstractUser):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
-        _('        Username for Login'),
+        _('Username'),
         max_length=150,
         unique=True,
         help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Unique in the system.'),
@@ -212,6 +212,7 @@ class MemberInfo(AbstractUser):
             return "Teacher"
         elif self.Is_Student:
             return "Student"
+    get_user_type.fget.short_description = _('User Type')
 
     @property
     def Avatar(self):

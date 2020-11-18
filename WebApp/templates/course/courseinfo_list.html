@@ -8,10 +8,10 @@
             vertical-align: middle;
             border-radius: 4px;
             padding: 1px 2px 4px 2px;
-            
+
             border-bottom: 1px solid #FFFFFF;
-            
-           
+
+
             margin-top: 20px;
         }
 
@@ -33,12 +33,12 @@
         #pagination a {
             margin: 0 2px 0 2px;
             border-radius: 4px;
-          
+
             cursor: pointer;
-          
-           
+
+
             background-color: #337ab7;
-  
+
         }
 
         #pagination i {
@@ -172,13 +172,13 @@
     <hr class="header_hr">
 
 
-    
+
 
     <div class="container" id="cardView">
         {% include 'WebApp/theme/alerts.html' %}
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="row">
-    
+
                 <div class="col-md-8 col-sm-6 col-xs-12">
                     <form method="get" id="searchCourseForm">
                         <div class="col-md-4">
@@ -231,7 +231,7 @@
                     </div>
                 {% endif %}
             {% endcomment %}
-    
+
                 <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
                     {% if 'students' not in request.path %}
                         <!-- {% if '/active' in request.path %}
@@ -258,133 +258,135 @@
                                data-target="#exampleModal1"
                                id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
                         {% endif %}
-    
+
                     {% endif %}
                     <div style="float: right; margin-right:10px">
-    
-    
+
+
                         <span> <b>Show</b> </span>
                         <label>
                             <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
                                     id="paginate_courses">
                                 <option value="6">6</option>
                                 <option value="12">12</option>
-    
+
                                 <option value="30">30</option>
                                 <option value="60">60</option>
                             </select>
                         </label>
                         <span> <b> entries </b> </span></div>
-    
+
                 </div>
-    
+
             </div>
         </div>
         <br/><br/><br/>
-        <div class="col-md-12" id="divID">
-           
-            {% for object in object_list %}
-                <div class=" col-md-4 col-sm-6 col-xs-12 listcard" id="listCard">
-                    <div class="gridContentsList">
-                        <div class="card-header">
+        {% if not request.GET.view or request.GET.view == 'card' %}
+            <div class="col-md-12" id="divID">
 
-                            <a href="{% if '/students' in request.path %}
-                                    {{ object.student_get_absolute_url }}
-                                {% elif '/teachers' in request.path %}
-                                    {{ object.teacher_get_absolute_url }}
-                                {% else %}
-                                {{ object.get_absolute_url }}
-                                {% endif %}">
-                                <img id="courseListImage" class="card-img-top" src="
-                                {% if object.Course_Cover_File %}
-                                    {{ object.Course_Cover_File.url }}
-                                {% else %}
-                                    {% static 'images/course.jpg' %}
-                                {% endif %}" alt="Card image cap" width="100%" height="180px"
-                                     style="object-fit: cover"/>
-                            </a>
-                        </div>
-                        <div class="card-body" id="cardInfo">
-                            <h2 class="card-title" style="height: 3.5em;">
-                                <strong><a href="{% if '/students' in request.path %}
-                                            {{ object.student_get_absolute_url }}
-                                        {% else %}
-                                            {{ object.get_absolute_url }}
-                                        {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong>
-                                {% if object.Use_Flag == False %}<i
-                                        style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
-                            </h2>
+                {% for object in object_list %}
+                    <div class=" col-md-4 col-sm-6 col-xs-12 listcard" id="listCard">
+                        <div class="gridContentsList">
+                            <div class="card-header">
 
-                            {% if object.get_teachers_of_this_course %}
-                                <p style="height: 30px; overflow:auto">
-                                    Teacher(s): &nbsp;
-                                    {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
-                                        {{ eachTeacher.getFullName }}
-                                    {% endfor %}
+                                <a href="{% if '/students' in request.path %}
+                                        {{ object.student_get_absolute_url }}
+                                    {% elif '/teachers' in request.path %}
+                                        {{ object.teacher_get_absolute_url }}
+                                    {% else %}
+                                    {{ object.get_absolute_url }}
+                                    {% endif %}">
+                                    <img id="courseListImage" class="card-img-top" src="
+                                    {% if object.Course_Cover_File %}
+                                        {{ object.Course_Cover_File.url }}
+                                    {% else %}
+                                        {% static 'images/course.jpg' %}
+                                    {% endif %}" alt="Card image cap" width="100%" height="180px"
+                                         style="object-fit: cover"/>
+                                </a>
+                            </div>
+                            <div class="card-body" id="cardInfo">
+                                <h2 class="card-title" style="height: 3.5em;">
+                                    <strong><a href="{% if '/students' in request.path %}
+                                                {{ object.student_get_absolute_url }}
+                                            {% else %}
+                                                {{ object.get_absolute_url }}
+                                            {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong>
+                                    {% if object.Use_Flag == False %}<i
+                                            style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
+                                </h2>
 
-                                </p>
-                            {% else %}
-                                <p style="height: 30px; overflow:auto"> No Teacher </p>
+                                {% if object.get_teachers_of_this_course %}
+                                    <p style="height: 30px; overflow:auto">
+                                        Teacher(s): &nbsp;
+                                        {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
+                                            {{ eachTeacher.getFullName }}
+                                        {% endfor %}
 
-
-
-                            {% endif %}
-
-
-
-
-
-
-
-                            <hr/>
-                            <h5 class="lectureDescription" style="padding-bottom: 5px;">
-                                {% if object.Course_Description %}
-                                    <p style="padding-left: 10px;
-                padding-right: 10px;
-                line-height: 1.5em;
-                height: 3.5em;
-                overflow-wrap:break-word;
-                overflow: auto;
-                white-space: normal;
-                text-overflow: ellipsis;">
-                                        {{ object.Course_Description }}
                                     </p>
                                 {% else %}
-                                    <p style="padding-left: 10px;
-                padding-right: 10px;
-                line-height: 1.5em;
-                height: 3.5em;
-                overflow-wrap:break-word;
-                overflow: auto;
-                white-space: normal;
-                text-overflow: ellipsis;">
-                                        No Description
-                                    </p>
+                                    <p style="height: 30px; overflow:auto"> No Teacher </p>
+
+
+
                                 {% endif %}
-                            </h5>
+
+
+
+
+
+
+
+                                <hr/>
+                                <h5 class="lectureDescription" style="padding-bottom: 5px;">
+                                    {% if object.Course_Description %}
+                                        <p style="padding-left: 10px;
+                    padding-right: 10px;
+                    line-height: 1.5em;
+                    height: 3.5em;
+                    overflow-wrap:break-word;
+                    overflow: auto;
+                    white-space: normal;
+                    text-overflow: ellipsis;">
+                                            {{ object.Course_Description }}
+                                        </p>
+                                    {% else %}
+                                        <p style="padding-left: 10px;
+                    padding-right: 10px;
+                    line-height: 1.5em;
+                    height: 3.5em;
+                    overflow-wrap:break-word;
+                    overflow: auto;
+                    white-space: normal;
+                    text-overflow: ellipsis;">
+                                            No Description
+                                        </p>
+                                    {% endif %}
+                                </h5>
+                            </div>
                         </div>
                     </div>
+                {% empty %}
+                    <b>NO COURSES ALLOCATED</b>
+                {% endfor %}
+            </div>
+            {% if object_list %}
+                <div class=" col-md-12 col-sm-12 col-xs-12 text-center" id="pagination">
+
                 </div>
-            {% empty %}
-                <b>NO COURSES ALLOCATED</b>
-            {% endfor %}
-        </div>
-        {% if object_list %}
-        <div class=" col-md-12 col-sm-12 col-xs-12 text-center" id="pagination">
-
-        </div>
+            {% endif %}
         {% endif %}
-    </div>  
-        <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
-            <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
+    </div>
+    <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
+        <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
 
-                <br>
-                <span class="checkboxCheckedLength"></span>
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="row">
-            
-                        <div class="col-md-8 col-sm-6 col-xs-12">
-                            <!-- <form method="get" id="searchCourseForm">
+            <br>
+            <span class="checkboxCheckedLength"></span>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <!-- <form method="get" id="searchCourseForm">
                                 <div class="col-md-4">
                                     <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
                                            class="form-control"/>
@@ -435,8 +437,8 @@
                             </div>
                         {% endif %}
                     {% endcomment %}
-            
-                        <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
+
+                    <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
                             {% if 'students' not in request.path %}
                                 <!-- {% if '/active' in request.path %}
                                         <a href="{% url 'courseinfo_list_inactive' %}">
@@ -462,31 +464,33 @@
                                        data-target="#exampleModal1"
                                        id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
                                 {% endif %}
-            
+
                             {% endif %}
-                            <!-- <div style="float: right; margin-right:10px">
-            
-            
-                                <span> <b>Show</b> </span>
-                                <label>
-                                    <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
-                                            id="paginate_courses">
-                                        <option value="6">6</option>
-                                        <option value="12">12</option>
-            
-                                        <option value="30">30</option>
-                                        <option value="60">60</option>
-                                    </select>
-                                </label>
-                                <span> <b> entries </b> </span></div> -->
-            
-                        </div>
-            
+                        <!-- <div style="float: right; margin-right:10px">
+
+
+                            <span> <b>Show</b> </span>
+                            <label>
+                                <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
+                                        id="paginate_courses">
+                                    <option value="6">6</option>
+                                    <option value="12">12</option>
+
+                                    <option value="30">30</option>
+                                    <option value="60">60</option>
+                                </select>
+                            </label>
+                            <span> <b> entries </b> </span></div> -->
+
                     </div>
+
                 </div>
-                <br/><br/><br/>
+            </div>
+            <br/><br/><br/>
+            {% if request.GET.view and request.GET.view == 'table' %}
                 {% if object_list %}
-                    <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable" style="width: 100%!important;">
+                    <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable"
+                           style="width: 100%!important;">
                         <thead class="thead-light bg-primary">
                         <tr class="tableTitleRow">
 
@@ -508,10 +512,10 @@
                                 <td style="vertical-align: middle;">{{ forloop.counter }}</td>
                                 <td style="vertical-align: middle;"><strong><a
                                         href="{% if '/students' in request.path %}
-                            {{ object.student_get_absolute_url }}
-                        {% else %}
-                            {{ object.get_absolute_url }}
-                        {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong></td>
+                                {{ object.student_get_absolute_url }}
+                            {% else %}
+                                {{ object.get_absolute_url }}
+                            {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong></td>
 
                                 <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
                                     <p style="height: 30px; overflow:auto">
@@ -539,8 +543,8 @@
 
                                 <td class="text-center"><a class="btn btn-sm btn-info"
                                                            href="
-                                    {{ object.get_update_url }}
-                               ">Edit</a>
+                                        {{ object.get_update_url }}
+                                   ">Edit</a>
                             </tr>
 
 
@@ -552,14 +556,15 @@
                 {% else %}
                     <p class="text-center"><b> NO COURSES HAS BEEN ALLOCATED </b></p>
                 {% endif %}
-
-            </div>
+            {% endif %}
 
         </div>
-    </div>
 
-    <!-- jQuery -->
-    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 
     <script>
         $(document).ready(function () {
@@ -653,31 +658,54 @@
 
 
     </script>
-    <script>
-        document.querySelector("#cardButton").addEventListener('click', cardView);
-        document.querySelector("#tableButton").addEventListener('click', tableView);
-
-        function cardView() {
-            $("#cardButton").css('color', 'black');
-            $("#tableButton").css('color', 'grey');
-            document.querySelector('#cardView').style.display = "inline-block";
-            document.querySelector('#tableView').style.display = "none";
-        }
-
-        function tableView() {
+<script>
+    $(document).ready(function () {
+        {% if request.GET.view and request.GET.view == "table" %}
             $("#cardButton").css('color', 'grey');
             $("#tableButton").css('color', 'black');
             document.querySelector('#tableView').style.display = "block";
             document.querySelector('#cardView').style.display = "none";
-        }
+        {% else %}
+            $("#cardButton").css('color', 'black');
+            $("#tableButton").css('color', 'grey');
+            document.querySelector('#tableView').style.display = "none";
+            document.querySelector('#cardView').style.display = "block";
+        {% endif %}
+    })
+    document.querySelector("#cardButton").addEventListener('click', cardView);
+    document.querySelector("#tableButton").addEventListener('click', tableView);
 
-        var Pagination = {
+    function cardView() {
+        $("#cardButton").css('color', 'black');
+        $("#tableButton").css('color', 'grey');
+        {#document.querySelector('#cardView').style.display = "inline-block";#}
+        {#document.querySelector('#tableView').style.display = "none";#}
+        {% if '/active' in request.path %}
+            window.location.href = '/courseinfo/active/?view=card';
+        {% else %}
+            window.location.href = '/courseinfo/inactive/?view=card';
+        {% endif %}
+    }
 
-            code: '',
+    function tableView() {
+        $("#cardButton").css('color', 'grey');
+        $("#tableButton").css('color', 'black');
+        {#document.querySelector('#tableView').style.display = "block";#}
+        {#document.querySelector('#cardView').style.display = "none";#}
+        {% if '/active' in request.path %}
+            window.location.href = '/courseinfo/active/?view=table';
+        {% else %}
+            window.location.href = '/courseinfo/inactive/?view=table';
+        {% endif %}
+    }
 
-            // --------------------
-            // Utility
-            // --------------------
+    var Pagination = {
+
+        code: '',
+
+        // --------------------
+        // Utility
+        // --------------------
 
             // converting initialize data
             Extend: function (data) {
@@ -818,19 +846,19 @@
         * * * * * * * * * * * * * * * * */
 
         // Run Script if at least one course is present.
-        {% if object_list %}
-            var init = function () {
-                let pagesize = Math.ceil(document.getElementsByClassName('listcard').length / parseInt(document.getElementById('paginate_courses').value))
+    {% if object_list and not request.GET.view or request.GET.view == "card" %}
+        var init = function () {
+            let pagesize = Math.ceil(document.getElementsByClassName('listcard').length / parseInt(document.getElementById('paginate_courses').value))
 
-                Pagination.Init(document.getElementById('pagination'), {
-                    size: pagesize, // pages size
-                    page: 1,  // selected page
-                    step: 3   // pages before and after current
-                });
-            };
+            Pagination.Init(document.getElementById('pagination'), {
+                size: pagesize, // pages size
+                page: 1,  // selected page
+                step: 3   // pages before and after current
+            });
+        };
 
         document.addEventListener('DOMContentLoaded', init, false);
-        {% endif %}
+    {% endif %}
 
         $('#searchCourseForm').on('submit', function (e) {
             e.preventDefault()

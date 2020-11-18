@@ -12,6 +12,9 @@ from django.utils.translation import gettext as _
 from WebApp.models import CourseInfo
 from quiz.models import Quiz, MCQuestion, TF_Question, SA_Question, Answer
 
+from django.forms.models import ModelChoiceIterator
+from functools import partial
+
 
 # from quiz import admin
 
@@ -54,7 +57,8 @@ class QuizForm(forms.ModelForm):
         model = Quiz
         fields = ['mcquestion', 'tfquestion', 'saquestion', 'title', 'description', 'duration', 'pass_mark',
                   'negative_marking',
-                  'negative_percentage', 'random_order', ]
+                  'negative_percentage', 'random_order', 
+                  'mcquestion_order', 'saquestion_order', 'tfquestion_order']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
         }
@@ -316,13 +320,36 @@ class QuizForm2(forms.ModelForm):
 class QuizForm3(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['mcquestion', 'tfquestion', 'saquestion']
+        fields = ['mcquestion', 'tfquestion', 'saquestion', 'mcquestion_order', 
+                    'saquestion_order', 'tfquestion_order']
+
 
     def __init__(self, *args, **kwargs):
+        mc_queryset = kwargs.pop('mc_queryset')
+        sa_queryset = kwargs.pop('sa_queryset')
+        tf_queryset = kwargs.pop('tf_queryset')
         super().__init__(*args, **kwargs)
-        self.fields['mcquestion'].required = False
-        self.fields['tfquestion'].required = False
-        self.fields['saquestion'].required = False
+        self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+            queryset=mc_queryset,
+            required=False,
+            label="Multiple Choice Questions",
+            widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+        )
+        self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+            queryset=sa_queryset,
+            required=False,
+            label="Short Answer Type Questions",
+            widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
+        )
+        self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+            queryset=tf_queryset,
+            required=False,
+            label="True/False Questions",
+            widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
+        )
+        # self.fields['mcquestion'].required = False
+        # self.fields['tfquestion'].required = False
+        # self.fields['saquestion'].required = False
 
     def clean(self):
         cleaned_data = super().clean()
@@ -335,6 +362,9 @@ class QuizForm3(forms.ModelForm):
             )
         return cleaned_data
 
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
 
 class QuizBasicInfoForm(forms.ModelForm):
     class Meta:
@@ -441,11 +471,51 @@ class QuizBasicInfoForm(forms.ModelForm):
             ),
         )
 
+### changing order of choices acc to order field ############# 
+
+class QuestionIterator(ModelChoiceIterator):
+    def __init__(self, field, qn_order):
+        self.qn_order = qn_order
+        super().__init__(field)
+
+    def __iter__(self):
+        if not self.qn_order:
+            if self.field.empty_label is not None:
+                yield ("", self.field.empty_label)
+            queryset = self.queryset
+            # Can't use iterator() when queryset uses prefetch_related()
+            if not queryset._prefetch_related_lookups:
+                queryset = queryset.iterator()
+            for obj in queryset:
+                yield self.choice(obj)
+        else:
+            qs = self.queryset
+            qn_order = self.qn_order
+            # if qn_order:
+            #     qn_order = [int(x) for x in qn_order.split(",")]
+            # else:
+            #     qn_order = []
+            qn_o_pk = [x.pk for x in qn_order]
+            qs_unselected = qs.exclude(pk__in=qn_o_pk)
+            tp_unselected_list = []
+            tp_selected_list = []
+            for q in qs_unselected:
+                tp_unselected_list.append((q.pk, q.content))
+            for q in qn_order:
+                # q = MCQuestion.objects.get(pk=q_pk)
+                tp_selected_list.append((q.pk, q.content))
+            for q_tp in tp_selected_list + tp_unselected_list:
+                yield q_tp 
+
+class QuestionField(forms.ModelMultipleChoiceField):
+    def __init__(self, *args, qn_order, **kwargs):
+        self.iterator = partial(QuestionIterator, qn_order=qn_order)
+        super().__init__(*args, **kwargs)
 
 class ChooseMCQForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['mcquestion']
+        fields = ['mcquestion', 'mcquestion_order']
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -453,12 +523,21 @@ class ChooseMCQForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
+        qn_pk_str = my_obj.mcquestion_order if my_obj else None
+        qn_order=[]
+        if qn_pk_str:
+            for x in qn_pk_str.split(","):
+                qn_order.append(MCQuestion.objects.get(pk=int(x)))
+        print("MCQ quiz object: ", my_obj)
         super().__init__(*args, **kwargs)
-        self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+        self.fields['mcquestion'] = QuestionField(
             queryset=MCQuestion.objects.filter(course_code=my_obj.course_code),
             required=False,
-            widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+            widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False),
+            qn_order=qn_order,
         )
+        self.fields['mcquestion_order'].widget = forms.HiddenInput()
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -473,7 +552,7 @@ class ChooseMCQForm(forms.ModelForm):
 class ChooseTFQForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['tfquestion']
+        fields = ['tfquestion', 'tfquestion_order']
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -481,13 +560,19 @@ class ChooseTFQForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
-        print(my_obj.id)
+        qn_pk_str = my_obj.tfquestion_order if my_obj else None
+        qn_order=[]
+        if qn_pk_str:
+            for x in qn_pk_str.split(","):
+                qn_order.append(TF_Question.objects.get(pk=int(x)))
         super().__init__(*args, **kwargs)
-        self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+        self.fields['tfquestion'] = QuestionField(
             queryset=TF_Question.objects.filter(course_code=my_obj.course_code),
             required=False,
-            widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
+            widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False),
+            qn_order=qn_order
         )
+        self.fields['tfquestion_order'].widget = forms.HiddenInput()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -502,7 +587,7 @@ class ChooseTFQForm(forms.ModelForm):
 class ChooseSAQForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['saquestion']
+        fields = ['saquestion', 'saquestion_order']
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -510,13 +595,19 @@ class ChooseSAQForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
-        print(my_obj.id)
+        qn_pk_str = my_obj.saquestion_order if my_obj else None
+        qn_order=[]
+        if qn_pk_str:
+            for x in qn_pk_str.split(","):
+                qn_order.append(SA_Question.objects.get(pk=int(x)))
         super().__init__(*args, **kwargs)
-        self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+        self.fields['saquestion'] = QuestionField(
             queryset=SA_Question.objects.filter(course_code=my_obj.course_code),
             required=False,
-            widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
+            widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False),
+            qn_order=qn_order
         )
+        self.fields['saquestion_order'].widget = forms.HiddenInput()
 
     def clean(self):
         cleaned_data = super().clean()

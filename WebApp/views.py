@@ -13,7 +13,6 @@ from json import JSONDecodeError
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
-import cx_Oracle
 import pandas as pd
 import requests
 from dateutil.parser import parse
@@ -144,26 +143,26 @@ class login(LoginView):
                 )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
                 # The following code is only for chinju university student account
-                center_obj = form.get_user().Center_Code
-                if center_obj.Center_Name == '진주교육대학교' and center_obj.pk == 2:
-                    dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
-                    conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
-                    c = conn.cursor()
-                    username = form.get_user().username.replace('cue', '')
-                    c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
-                    result = c.fetchall()
-                    msg = """[원격수업강의 평가]를 완료하지 않았습니다.
-
-                            [두류포털]-[종합정보]-[강의관리]-[원격수업강의평가]에서
-
-                            [원격수업 강의 평가]를 완료하셔야 사이트 접속이 승인됩니다.
-
-                            * [두류포털] 접속을 위해서는 Internet Explorer 이용해 주세요."""
-                    if not result:
-                        return JsonResponse({'type': 'submit_survey', 'msg': msg})
-                    for row in result:
-                        if row[0] == 'N':
-                            return JsonResponse({'type': 'submit_survey', 'msg': msg})
+                # center_obj = form.get_user().Center_Code
+                # if center_obj.Center_Name == '진주교육대학교' and center_obj.pk == 2:
+                #     dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
+                #     conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
+                #     c = conn.cursor()
+                #     username = form.get_user().username.replace('cue', '')
+                #     c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
+                #     result = c.fetchall()
+                #     msg = """[원격수업강의 평가]를 완료하지 않았습니다.
+                #
+                #             [두류포털]-[종합정보]-[강의관리]-[원격수업강의평가]에서
+                #
+                #             [원격수업 강의 평가]를 완료하셔야 사이트 접속이 승인됩니다.
+                #
+                #             * [두류포털] 접속을 위해서는 Internet Explorer 이용해 주세요."""
+                #     if not result:
+                #         return JsonResponse({'type': 'submit_survey', 'msg': msg})
+                #     for row in result:
+                #         if row[0] == 'N':
+                #             return JsonResponse({'type': 'submit_survey', 'msg': msg})
 
                 # It is for all students account
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
@@ -1403,7 +1402,7 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'),
                                               pk=self.kwargs.get('pk'))
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'))
+        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')).order_by('pk')
         context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
         context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
@@ -2065,12 +2064,31 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         form.save(commit=False)
         form.save()
+        if self.request.POST.get('sessiondata[]'):
+            for session in json.loads(self.request.POST.get('sessiondata[]')):
+                requestStatus = InningInfoMappingView(model_name='AssignmentInfo', start_date=session['start_date'],
+                                                      end_date=session['end_date'], session_id=session['session_id'],
+                                                      object_id=form.instance.id)
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentInfoCreateViewAjax, self).get_context_data()
+        if self.kwargs.get('chapterpk'):
+            datetime_now = timezone.now().replace(microsecond=0)
+            # student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(
+                Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapterpk')).Course_Code)
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    # Groups__in=student_groups,
+                                                                    Course_Group__in=course_groups).distinct()
+        return context
 
 
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
@@ -2082,12 +2100,31 @@ class AssignmentInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     def form_valid(self, form):
         form.save(commit=False)
         form.save()
+        if self.request.POST.get('sessiondata[]'):
+            for session in json.loads(self.request.POST.get('sessiondata[]')):
+                requestStatus = InningInfoMappingView(model_name='AssignmentInfo', start_date=session['start_date'],
+                                                      end_date=session['end_date'], session_id=session['session_id'],
+                                                      object_id=form.instance.id)
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentInfoEditViewAjax, self).get_context_data()
+        if self.kwargs.get('chapterpk'):
+            datetime_now = timezone.now().replace(microsecond=0)
+            # student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(
+                Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapterpk')).Course_Code)
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    # Groups__in=student_groups,
+                                                                    Course_Group__in=course_groups).distinct()
+        return context
 
 
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
@@ -4239,33 +4276,40 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.apps import apps
 
 
-def InningInfoMappingView(request, model_name):
-    inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
-    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+def InningInfoMappingView(model_name, request=None, **kwargs):
+    if request:
+        start_date, end_date, session_id, object_id = request.POST['Start_Date'], request.POST['End_Date'], \
+                                                      request.POST['sessionid'], request.POST['objectid']
+    else:
+        start_date, end_date, session_id, object_id = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
+            'session_id'), kwargs.get('object_id')
+
+    inninginfoObj = get_object_or_404(InningInfo, pk=session_id)
+    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=object_id)
 
     if model_name == "AssignmentInfo":
-        if request.POST['Start_Date'] == '' or request.POST['End_Date'] == '' or \
-                request.POST['Start_Date'] is None or request.POST['End_Date'] is None:
+        if start_date == '' or end_date == '' or \
+                start_date is None or end_date is None:
             return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
 
-    if (request.POST['Start_Date'] and request.POST['End_Date']):
-        if (request.POST['Start_Date'] > request.POST['End_Date']):
+    if (start_date and end_date):
+        if (start_date > end_date):
             return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
     if SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
                                      content_type=get_content_type_for_model(Obj), object_id=Obj.pk):
         sessionmap = SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
                                                    content_type=get_content_type_for_model(Obj), object_id=Obj.pk)
         sessionmap.update(
-            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
-            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            Start_Date=start_date if start_date != "" else None,
+            End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
             Session_Code=inninginfoObj
         )
     else:
         sessionmap = SessionMapInfo.objects.create(
-            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
-            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            Start_Date=start_date if start_date != "" else None,
+            End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
             Session_Code=inninginfoObj
@@ -4276,7 +4320,7 @@ def InningInfoMappingView(request, model_name):
 
 def ChapterInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request, 'ChapterInfo')
+        requestStatus = InningInfoMappingView(request=request, model_name='ChapterInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
@@ -4287,7 +4331,7 @@ def ChapterInningInfoMappingView(request):
 
 def AssignmentInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request, 'AssignmentInfo')
+        requestStatus = InningInfoMappingView(request=request, model_name='AssignmentInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
