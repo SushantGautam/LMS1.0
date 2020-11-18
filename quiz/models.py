@@ -399,7 +399,7 @@ class Quiz(models.Model):
     mcquestion = models.ManyToManyField(
         MCQuestion,
         verbose_name=_("Multiple Choice Question"),
-        help_text=_("You can select multiple questions by holding ctrl key on Windows and Command⌘ key on MAC.")
+        help_text=_("You can select multiple questions by holding  ctrl  key on Windows and Command⌘ key on MAC.")
     )
     tfquestion = models.ManyToManyField(
         TF_Question,
