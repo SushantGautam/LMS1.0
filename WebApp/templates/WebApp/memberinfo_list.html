@@ -78,13 +78,13 @@
     <nav id="navbar_parent" class="navbar-dark">
         <div class="btn-createnew">
             <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
-            <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
+            <button class="btn btn-info btn-floating editCheckedMembers" type="button" data-toggle="modal"
                 data-target="#edit_checked_details_modal">
                 <i class="fa fa-edit"></i>
             </button>
             <form method="post" action="{% url 'memberinfo_delete_checked' %}" style="display: inline">
                 {% csrf_token %}
-                <button class="btn btn-danger deleteCheckedMembers" type="submit"
+                <button class="btn btn-danger btn-floating deleteCheckedMembers" type="submit"
                     onclick="return confirm('Are you sure you want to delete ?')">
                     <i class="fa fa-trash"></i>
                 </button>
@@ -395,29 +395,35 @@
 
     $('#changedepartment-btn').on('click', function () {
         toggleInput('#id_Member_Department')
+        $("#changedepartment-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changememberposition-btn').on('click', function () {
         toggleInput('#id_Member_Position')
+        $("#changememberposition-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changemembergender-btn').on('click', function () {
         toggleInput('#id_Member_Gender')
+        $("#changemembergender-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeisteacher-btn').on('click', function () {
         toggleInput('#id_Is_Teacher')
         toggleInput('#id_Is_Teacher_hidden')
+        $("#changeisteacher-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeisstudent-btn').on('click', function () {
         toggleInput('#id_Is_Student')
         toggleInput('#id_Is_Student_hidden')
+        $("#changeisstudent-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeActive-btn').on('click', function () {
         toggleInput('#id_Use_Flag')
         toggleInput('#id_Use_Flag_hidden')
+        $("#changeActive-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     function toggleInput(inputID) {

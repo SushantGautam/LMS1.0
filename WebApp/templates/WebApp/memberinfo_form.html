@@ -218,7 +218,6 @@
 <script>
     function checkUsername() {
         let username = $('#id_username').val();
-        console.log(username)
         if (/[^a-zA-Z0-9\@\.\+\-_]/.test(username)) {
             $('#username-error-message').text("Username can have only alphanumeric character and symbols @ -  .  +  _");
         } else {
@@ -259,7 +258,7 @@
         checkUsername();
     });
 
-    $('#id_username').keyup(function () {
+    $('#id_username').change(function () {
         checkUsername();
     });
 
@@ -289,7 +288,12 @@
     });
 
     $(document).ready(function () {
-        $(".positionField").hide();
+        if ($('#id_Is_Teacher').is(':checked')) {
+            $(".positionField").show();
+        }
+        else if ($('#id_Is_Teacher').not(':checked')) {
+            $(".positionField").hide();
+        }
     });
 
 </script>
