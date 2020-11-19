@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'event_calendar',
     'decorator_include',
     'django_summernote',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -243,3 +244,35 @@ SERVER_NAME = 'Vietnam_Server'
 CORS_ORIGIN_ALLOW_ALL = True
 
 WHITENOISE_MAX_AGE = 43200
+
+
+# FOR PWA APP
+PWA_APP_NAME = 'LMS'
+PWA_APP_DESCRIPTION = "Learning Managment System"
+PWA_APP_THEME_COLOR = '#0A0302'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/media/image/favicon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/media/image/favicon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/media/image/LMS_background.jpg',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'

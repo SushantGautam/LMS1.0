@@ -73,6 +73,7 @@ class QuizForm(forms.ModelForm):
         mcqueryset = MCQuestion.objects.filter(course_code=course_id)
         tfqueryset = TF_Question.objects.filter(course_code=course_id)
         saqueryset = SA_Question.objects.filter(course_code=course_id)
+        
         super().__init__(*args, **kwargs)
         # self.fields['mcquestion'].required = False
         # self.fields['tfquestion'].required = False
@@ -80,9 +81,12 @@ class QuizForm(forms.ModelForm):
         # self.fields['mcquestion'].queryset = mcqueryset
         # self.fields['tfquestion'].queryset = tfqueryset
         # self.fields['saquestion'].queryset = saqueryset
+        self.fields[' negative_percentage'].initial = '1'
         self.fields['title'] = forms.CharField(
             initial=CourseInfo.objects.get(id=course_id).Course_Name + ": Quiz " + datetime.datetime.now().strftime(
                 '%D %H:%M'))
+        self.fields['negative_percentage'] = forms.IntegerField(
+            initial=1)        
 
         self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
             queryset=MCQuestion.objects.filter(course_code=course_id),
@@ -233,7 +237,7 @@ class QuizForm2(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.fields['negative_percentage'].initial = 1
         self.fields['exam_paper'].initial = False
         self.fields['success_text'].initial = "Congratulations. !!!"
         self.fields['fail_text'].initial = "Sorry. !!!"
@@ -295,18 +299,18 @@ class QuizForm2(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('negative_marking', css_class='form-group col-md-6 mb-0 '),
+                Column('negative_marking',  css_class='form-group col-md-6 mb-0  '),
                 Column('negative_percentage', css_class='form-group col-md-6 mb-0 '),
-                css_class='form-row text-primary'
+                css_class='form-row '
             ),
             Row(
                 Column(css_class='col-md-4 mb-0'),
                 Column(css_class='col-md-4 mb-0'),
                 Column(
-                    StrictButton('Previous', name='wizard_goto_step', value='form1', css_class='add-mcq',
+                    StrictButton('Previous', name='wizard_goto_step', value='form1', css_class='btn btn-light add-mcq',
                                  type='submit'),
-                    StrictButton('Next', css_class='add-mcq', type='submit'),
-                    css_class='col-md-4 mb-0 text-right'
+                    StrictButton('Next', css_class='add-mcq btn btn-primary', type='submit'),
+                    css_class='col-md-4 mb-0 text-right '
                 ),
                 css_class='form-row'
             ),
@@ -421,15 +425,15 @@ class QuizBasicInfoForm(forms.ModelForm):
             HTML('''<hr size="10">'''),
             HTML('''<label class= "quiz-add-label text-primary ">Quiz Features</label>'''),
             Row(
-                Column('negative_marking', css_class='form-group col-md-3 mb-0'),
+                Column('negative_marking',css_id='negate_per', css_class='form-group col-md-3 mb-0'),
                 Column('random_order', css_class='form-group col-md-3 mb-0'),
                 Column('single_attempt', css_class='form-group col-md-3 mb-0'),
                 Column('draft', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('negative_percentage', css_class='form-group col-md-12 mb-0'),
-                css_class='form-row'
+                Column('negative_percentage', css_class='form-group col-md-12 mb-0 '),
+                css_class='form-row '
             ),
             Row(
                 Column(css_class='col-md-4 mb-0'),

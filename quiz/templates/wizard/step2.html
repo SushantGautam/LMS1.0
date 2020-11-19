@@ -71,6 +71,9 @@
   width: 50%;
   left: auto;
 }
+#negate_per{
+  display: none;
+}
 </style>
 
   <div id="" class="form_wizard wizard_horizontal panel" style="padding-top:15px; margin-top:15px">
@@ -122,6 +125,7 @@
       //$('#div_id_form2-success_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
       //$('#div_id_form2-fail_text').wrap("<div class=\"col-md-12\"></div>").wrap("<div class=\"col-md-12\"></div>");
       //console.log($('#id_form2-duration').val());
+     
       $(document).ready(function () {
           if ($("#id_form2-exam_paper").is(':checked')) {
               $("#div_id_form2-duration").show();
@@ -132,16 +136,9 @@
           }
           $("#test_error").hide();
       });
-
-
-      $('#id_form2-duration').durationPicker({
-          showDays: false,
-          onChanged: function (newVal) {
-              console.log(newVal);
-              console.log($('#id_form2-duration').val());
-          }
-      });
-      $("#id_form2-exam_paper").change(function () {
+      $(document).ready(function () {
+        $("#div_id_form2-negative_percentage").hide();
+        $("#id_form2-exam_paper").change(function () {
           if (this.checked) {
               $("#div_id_form2-duration").show();
               $("#div_id_form2-pass_mark").show();
@@ -150,6 +147,35 @@
               $("#div_id_form2-pass_mark").hide();
           }
       });
+         
+      
+      });
+    
+
+
+
+      $('#id_form2-duration').durationPicker({
+      
+          showDays: false,
+          showSeconds: false,
+          onChanged: function (newVal) {
+              console.log(newVal);
+              console.log($('#id_form2-duration').val());
+          }
+      });
+  
+
+      $("#id_form2-negative_marking").change(function () {
+        if (this.checked) {
+          $("#div_id_form2-negative_percentage").show();
+        } else {
+          $("#div_id_form2-negative_percentage").hide();
+        }
+    });
+
+      
+      
+   
 
       function validateForm() {
           if ($("#id_form2-exam_paper").is(':checked')) {

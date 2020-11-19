@@ -22,8 +22,32 @@
             {% endif %}
         </figure>
     </div>
-    <a class="float-right font-weight-bold text-warning my-3"
-        href="{{ object.get_update_url }}">{% trans "Edit Member" %}</a>
+
+    <div class="dropup float-right mb-3">
+        <!-- <a href="#" class="btn btn-outline-light btn-floating btn-sm " data-toggle="dropdown" title="Options">
+            <i class="ti-more-alt"></i>
+        </a> -->
+        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
+            <i class="ti-more-alt"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="{{ object.get_update_url }}">{% trans "Edit Member" %}</a>
+            {% if object.password %}
+            <a class="dropdown-item" href="/change-password/{{ object.id }}/">{% trans "Change Password" %}</a>
+            {% elif not object.password %}
+            <a class="dropdown-item" href="/change-password/{{ object.id }}/">{% trans "Add New Password" %}</a>
+            {% endif %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item confirm-delete" href="javascript:void(0)" title="({% trans 'Note' %}: {% trans 'Instead of' %}
+            {% trans 'deleting a member' %} {% trans 'you can' %} {% trans 'deactivate' %}
+            {% trans 'him' %}/{% trans 'her' %}
+            {% trans 'instead' %})" data-toggle="tooltip" data-placement="bottom">{% trans "Delete Member" %}</a>
+            <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
+                {% csrf_token %}
+                <input type="hidden">
+            </form>
+        </div>
+    </div>
     <table class="table table-striped table-bordered pt-3">
         <tr>
             <td style="max-width: 10rem;">
@@ -96,15 +120,17 @@
                 <span class="pull-right">
                     {% if  object.Use_Flag  == True %}
                     <span class="text-success mr-4 font-weight-bold">{% trans "Active" %}</span>
-                    <a href="javascript:void(0)" class="confirm-deactivate float-right" id="{{object.id}}"><u>
-                            {% trans "Deactivate" %} </u></a>
+                    <a href="javascript:void(0)" class="confirm-deactivate float-right" id="{{object.id}}">
+                        <small><u> {% trans "Deactivate" %} </u></small>
+                    </a>
                     <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}" id="deactivateForm">
                         {% csrf_token %}
                     </form>
                     {% else %}
-                    <span class="text-danger">{% trans "Blocked" %}</span>
-                    <a href="javascript:void(0)" class="confirm-activate float-right" id="{{object.id}}"><u>
-                            {% trans "Activate" %} </u></a>
+                    <span class="text-danger mr-4 font-weight-bold">{% trans "Blocked" %}</span>
+                    <a href="javascript:void(0)" class="confirm-activate float-right" id="{{object.id}}">
+                        <small><u>{% trans "Activate" %} </u></small>
+                    </a>
                     <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm">
                         {% csrf_token %}
                         <input type="hidden" value='' name='url'>
@@ -133,7 +159,7 @@
                 </span>
             </td>
         </tr>
-        {% if object.password %}
+        <!-- {% if object.password %}
         <tr>
             <td colspan="2" class="text-center font-weight-bold">
                 <span>
@@ -153,7 +179,7 @@
                 </span>
             </td>
         </tr>
-        {% endif %}
+        {% endif %} -->
         <!-- {% if object.password %}
         <tr>
             <td colspan="2">
@@ -179,7 +205,7 @@
         {% endif %} -->
     </table>
 
-    <div class="text-center">
+    <!-- <div class="text-center">
         <a class="confirm-delete" style="color: #2A3F54;cursor:pointer">
             <b><u>{% trans "Delete Member" %}</u></b>
         </a><small style="color:#2A3F54"><u> ({% trans "Note" %}: {% trans "Instead of" %}
@@ -191,18 +217,18 @@
             {% csrf_token %}
             <input type="hidden">
         </form>
-    </div>
+    </div> -->
     <hr />
     {% if object.Is_Student %}
     <div class="row mt-4">
         <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
-            <h4 class="text-center text-primary pb-2"> Student Associated Sessions List </h4>
-            <table class="table table-bordered table-striped memberdatatable">
+            <h4 class="text-center text-primary pb-2">{% trans "Student Session List" %}</h4>
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Session Name</th>
-                        <th>Status</th>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Session Name" %}</th>
+                        <th>{% trans "Status" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -217,31 +243,31 @@
                         <td>
                             {% now "Y-m-d H:i" as todays_datewithtime %}
                             {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                            <span class="badge badge-success">Active</span>
+                            <span class="badge badge-success">{% trans "Active" %}</span>
                             {% elif session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                            <span class="badge badge-warning">Expired</span>
+                            <span class="badge badge-warning">{% trans "Expired" %}</span>
                             {% else %}
-                            <span class="badge badge-danger">Expired</span>
+                            <span class="badge badge-danger">{% trans "Expired" %}</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center">No Sessions Added</td>
+                        <td colspan="3" class="text-center">{% trans "No Sessions Assigned" %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
-            <h4 class="text-center text-primary pb-2"> Student Associated Groups List </h4>
-            <table class="table table-bordered table-striped memberdatatable">
+            <h4 class="text-center text-primary pb-2">{% trans "Student Group List" %}</h4>
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Group Name</th>
-                        <th>Student Count</th>
-                        <th>Status</th>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Group Name" %}</th>
+                        <th>{% trans "Student Count" %}</th>
+                        <th>{% trans "Status" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -252,15 +278,15 @@
                         <td>{{ group.Students.all.count }}</td>
                         <td>
                             {% if group.Use_Flag %}
-                            <span class="badge badge-success">Active</span>
+                            <span class="badge badge-success">{% trans "Active" %}</span>
                             {% else %}
-                            <span class="badge badge-danger">Inactive</span>
+                            <span class="badge badge-danger">{% trans "Inactive" %}</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center">No Groups Added</td>
+                        <td colspan="4" class="text-center">{% trans "No Groups Assigned" %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -271,13 +297,13 @@
     {% if object.Is_Teacher %}
     <div class="row mt-4">
         <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
-            <h4 class="text-center text-primary pb-2"> Teacher Associated Sessions List </h4>
-            <table class="table table-bordered table-striped memberdatatable">
+            <h4 class="text-center text-primary pb-2">{% trans "Teacher Session List" %}</h4>
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Session Name</th>
-                        <th>Status</th>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Session Name" %}</th>
+                        <th>{% trans "Status" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -292,29 +318,29 @@
                         <td>
                             {% now "Y-m-d H:i" as todays_datewithtime %}
                             {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
-                            <span class="badge badge-success">Active</span>
+                            <span class="badge badge-success">{% trans "Active" %}</span>
                             {% else %}
-                            <span class="badge badge-danger">Inactive</span>
+                            <span class="badge badge-danger">{% trans "Inactive" %}</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center">No Sessions Added</td>
+                        <td colspan="3" class="text-center">{% trans "No Sessions Assigned" %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
-            <h4 class="text-center text-primary pb-2"> Teacher Associated Groups List </h4>
-            <table class="table table-bordered table-striped memberdatatable">
+            <h4 class="text-center text-primary pb-2">{% trans "Teacher Course Group List" %}</h4>
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Group Name</th>
-                        <th>Course Name</th>
-                        <th>Teacher Count</th>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Group Name" %}</th>
+                        <th>{% trans "Course Name" %}</th>
+                        <th>{% trans "Teacher Count" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -331,7 +357,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center">No Groups Added</td>
+                        <td colspan="4" class="text-center">{% trans "No Course Assigned" %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -344,6 +370,7 @@
 {% endblock %}
 {% block javascript %}
 <script>
+
     $(document).on('click', '.confirm-deactivate', function (event) {
         ans = confirm('Are you sure you want to deactivate this Member?');
         if (ans == true) {
