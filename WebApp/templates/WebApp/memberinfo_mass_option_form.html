@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 <!-- Modal -->
 <div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog"
@@ -30,7 +31,7 @@
                     <input type="hidden" name="member_ids[]" id="member_ids">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <select class="select2" id="id_Member_Department" name="Member_Department">
                                     {% for x, y in partial_member_form.fields.Member_Department.choices %}
                                     <option value="{{ x }}"
@@ -39,17 +40,18 @@
                                     </option>
                                     {% endfor %}
                                 </select>
-                                {{ partial_member_form.Member_Department }}
+                                <!-- {{ partial_member_form.Member_Department }} -->
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changedepartment-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                    id="changedepartment-btn">Change</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <select class="select2" id="id_Member_Position" name="Member_Position">
                                     {% for x, y in partial_member_form.fields.Member_Position.choices %}
                                     <option value="{{ x }}"
@@ -58,10 +60,11 @@
                                     </option>
                                     {% endfor %}
                                 </select>
-                                {{ partial_member_form.Member_Position }}
+                                <!-- {{ partial_member_form.Member_Position }} -->
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changememberposition-btn">Change
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                    id="changememberposition-btn">Change
                                 </button>
                             </div>
                         </div>
@@ -69,7 +72,7 @@
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <select class="select2" id="id_Member_Gender" name="Member_Gender">
                                     {% for x, y in partial_member_form.fields.Member_Gender.choices %}
                                     <option value="{{ x }}"
@@ -80,48 +83,55 @@
                                 </select>
                                 <!-- {{ partial_member_form.Member_Gender }} -->
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changemembergender-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                    id="changemembergender-btn">Change</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <!--
                                 If the checkbox is selected then the checkbox value will be submitted else, hidden value is submitted
                                 This is because if checkbox is enabled but not checked, then the html won't submit off value.
                                  -->
                                 <input id='id_Is_Teacher_hidden' type='hidden' value='0' name='Is_Teacher'>
                                 {{ partial_member_form.Is_Teacher }}
+                                <label for="id_Is_Teacher" class="ml-3">{% trans "Is Teacher" %}</label>
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changeisteacher-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                    id="changeisteacher-btn">Change</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <input id='id_Is_Student_hidden' type='hidden' value='0' name='Is_Student'>
                                 {{ partial_member_form.Is_Student }}
+                                <label for="id_Is_Student" class="ml-3">{% trans "Is Student" %}</label>
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changeisstudent-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                    id="changeisstudent-btn">Change</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <input id='id_Use_Flag_hidden' type='hidden' value='0' name='Use_Flag'>
                                 {{ partial_member_form.Use_Flag }}
+                                <label for="id_Use_Flag" class="ml-3">{% trans "Use Flag" %}</label>
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changeActive-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                    id="changeActive-btn">Change</button>
                             </div>
                         </div>
                     </div>
