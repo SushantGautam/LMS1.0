@@ -81,10 +81,10 @@
   display: inline-block;
 }
 
-.upload-btn-wrapper button {
+.upload-btn-wrapper img {
   cursor: pointer !important;
-  border: 2px solid white;
-  color: white;
+  /* border: 2px solid white; */
+  /* color: white; */
 }
 
 .upload-btn-wrapper input[type="file"] {

@@ -32,16 +32,14 @@
     {% csrf_token %}
     <div class="text-right">
         <nav id="navbar_parent" class="navbar-dark">
-            <div class="btn-createnew">
-                <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
-                    data-target="#edit_checked_details_modal">
-                    <i class="fa fa-edit"></i>
-                </button>
-                <button class="btn btn-danger deleteCheckedMembers" type="submit"
-                    onclick="return confirm('Are you sure you want to delete ?')">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
+            <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
+                data-target="#edit_checked_details_modal">
+                <i class="fa fa-edit"></i>
+            </button>
+            <button class="btn btn-danger deleteCheckedMembers" type="submit"
+                onclick="return confirm('Are you sure you want to delete ?')">
+                <i class="fa fa-trash"></i>
+            </button>
         </nav>
     </div>
 
@@ -99,13 +97,13 @@
                     <button class="btn btn-sm btn-success confirm-activate" id="{{ object.pk }}">
                         {% trans "Activate" %}
                     </button>
+                    <button class="btn btn-sm btn-danger confirm-delete ml-2" id="{{ object.pk }}">{% trans "Delete" %}
+                    </button>
                     <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
                         id="activateForm-{{ object.pk }}">
                         {% csrf_token %}
                         <input type="hidden" value='memberinfo_list_inactive' name='url'>
                     </form>
-                    <button class="btn btn-sm btn-danger confirm-delete" id="{{ object.pk }}">{% trans "Delete" %}
-                    </button>
                     <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
                         id="delete_form-{{ object.pk }}">
                         {% csrf_token %}
@@ -124,17 +122,6 @@
 
 {% endblock %}
 {% block javascript%}
-
-<!-- <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-
-<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
-
-<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script> -->
 
 <script type="text/javascript">
     $(document).on('click', '.confirm-activate', function (event) {
@@ -183,13 +170,15 @@
                 }],
             "columnDefs": [
                 {
-                    "targets": [7, 8],
+                    "targets": [9, 10],
                     "visible": false,
                     "searchable": true
-                }
-
+                },
+                {
+                    "orderable": false,
+                    "targets": [0, 12]
+                },
             ]
-
         });
 
 
@@ -198,7 +187,7 @@
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
-            table_main.column(7).search("True").draw();
+            table_main.column(9).search("True").draw();
 
 
         });
@@ -206,9 +195,8 @@
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "white");
             $("#all_button").css("color", "black");
-
             table_main.columns().search('').draw();
-            table_main.column(8).search("True").draw();
+            table_main.column(10).search("True").draw();
 
         });
 
@@ -218,11 +206,141 @@
             $("#teacher_button").css("color", "black");
             table_main.columns().search('').draw();
         });
+    });
+</script>
 
+<script>
+    $(document).ready(function () {
+        $(".editCheckedMembers").on('click', function () {
+            let seleced_members = []
+            $.each($('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll'), function (index) {
+                seleced_members.push($(this).val())
+            })
+            $('#member_ids').val(seleced_members)
+        });
 
+        $('#id_Member_Department').select2({
+            placeholder: 'Select Department'
+        });
+        $('#id_Member_Position').select2({
+            placeholder: 'Select Position'
+        });
+        $('#id_Member_Gender').select2({
+            placeholder: 'Select Gender'
+        });
     });
 
+    $('.memberinfoCheckAll').on('click', function () {
+        $('#member_dataTable input:checkbox').not(this).prop('checked', this.checked);
+        checkboxChangeEvent()
+    });
 
+    $('#member_dataTable').on('click', '.memberinfoCheckbox', function () {
+        if ($('.memberinfoCheckbox').length === $('.memberinfoCheckbox:checked').length) {
+            $('.memberinfoCheckAll').prop('checked', 'checked');
+        } else {
+            $('.memberinfoCheckAll').prop('checked', false);
+        }
+        checkboxChangeEvent()
+    });
+
+    function checkboxChangeEvent() {
+        let checkBoxlength = $('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll').length
+        if (checkBoxlength > 0) {
+            $('.checkboxCheckedLength').text(checkBoxlength + ' of ' + $('.memberinfoCheckbox').length + ' selected')
+            $('.editCheckedMembers, .deleteCheckedMembers').removeAttr('disabled')
+        } else {
+            $('.checkboxCheckedLength').text('')
+            $('.editCheckedMembers, .deleteCheckedMembers').prop('disabled', 'disabled')
+        }
+    }
+
+    checkboxChangeEvent();
+
+    $('#changedepartment-btn').on('click', function () {
+        toggleInput('#id_Member_Department')
+    });
+
+    $('#changememberposition-btn').on('click', function () {
+        toggleInput('#id_Member_Position')
+    });
+
+    $('#changemembergender-btn').on('click', function () {
+        toggleInput('#id_Member_Gender')
+    });
+
+    $('#changeisteacher-btn').on('click', function () {
+        toggleInput('#id_Is_Teacher')
+        toggleInput('#id_Is_Teacher_hidden')
+    });
+
+    $('#changeisstudent-btn').on('click', function () {
+        toggleInput('#id_Is_Student')
+        toggleInput('#id_Is_Student_hidden')
+    });
+
+    $('#changeActive-btn').on('click', function () {
+        toggleInput('#id_Use_Flag')
+        toggleInput('#id_Use_Flag_hidden')
+    });
+
+    function toggleInput(inputID) {
+        if ($(inputID).is(':disabled')) {
+            $(inputID).removeAttr('disabled');
+        } else {
+            $(inputID).prop('disabled', 'disabled')
+        }
+    }
+
+    $('#editCheckedMembers input, select').not('input[name=csrfmiddlewaretoken], #member_ids').attr('disabled', true)
+
+    $(function () {
+        $('#editCheckedMembers :checkbox').on('change', function () {
+            if (this.checked == true) {
+                $(this).val("1");
+                $(this).parent().find('input[type=hidden]').val("1");
+            } else {
+                $(this).val("0");
+                $(this).parent().find('input[type=hidden]').val("0");
+            }
+        });
+    });
+
+    // Form Submission
+
+    $('#editCheckedMembers').on('submit', function (e) {
+        e.preventDefault()
+        if ($('#id_Member_Department').is(':disabled') && $('#id_Member_Position').is(':disabled') && $('#id_Member_Gender').is(':disabled')
+            && $('#id_Is_Teacher').is(':disabled') && $('#id_Is_Student').is(':disabled') && $('#id_Use_Flag').is(':disabled')
+        ) {
+            alert('Please input data and enable required fields to submit')
+            return false
+        }
+
+        var form = $(this);
+        var url = form.attr('action');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            success: function (data) {
+                location.reload(); // show response from the php script.
+            },
+            error: function (e) {
+                $('.error-div').empty()
+                $('.error-div').css('display', 'block')
+                $('.error-div').append(`
+                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
+                    `)
+                $.each(e.responseJSON.inning_list, function (index) {
+                    $('.error-div').append(`
+                            <p style="font-size: small">${e.responseJSON.inning_list[index]['Inning_Name']}</p>
+                        `)
+                })
+
+            }
+        });
+    });
 </script>
 
 {% endblock %}

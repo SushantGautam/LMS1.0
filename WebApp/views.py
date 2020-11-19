@@ -478,9 +478,14 @@ def CenterInfoDeleteView(request, pk):
     return redirect("centerinfo_list")
 
 
-class MemberInfoListView(ListView):
+class MemberInfoListView(TemplateView):
     template_name = "WebApp/memberinfo_list.html"
-    model = MemberInfo
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['partial_member_form'] = MemberInfoForm(request=self.request)
+        return context
+
     #
     # def get_queryset(self):
     #     return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
@@ -495,16 +500,16 @@ class MemberInfoListViewAjax(BaseDatatableView):
                'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', '', 'username', 'Member_ID', '', 'first_name', 'last_name', 'email', 'Member_Department',
+    order_columns = ['', 'id', 'username', 'Member_ID', 'first_name', 'first_name', 'last_name', 'email',
+                     'Member_Department',
                      'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(pk=self.request.user.id)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(pk=self.request.user.pk)
 
     def render_column(self, row, column):
         # We want to render user as a custom column
-        #print(row.id, self.request.user.id)
         if column == "checkbox":
             return '<input type="checkbox" class="memberinfoCheckbox" value="%s" name="memberinfo_id[]">' % (row.id)
         elif column == "counter":
@@ -513,12 +518,13 @@ class MemberInfoListViewAjax(BaseDatatableView):
         elif column == 'full_name':
             # escape HTML for security reasons
             return escape('{0} {1}'.format(row.first_name, row.last_name))
+        elif column == 'Member_BirthDate' and row.Member_BirthDate:
+            return row.Member_BirthDate.strftime('%b %d, %Y')
         elif column == 'type':
             return row.get_user_type
-        elif column == 'action':    
-            if row.id != self.request.user.id:
-                return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
-                        <a class="btn btn-sm btn-danger confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+        elif column == 'action':
+            return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
+                    <a class="btn btn-sm btn-danger text-white confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
         else:
             return super(MemberInfoListViewAjax, self).render_column(row, column)
 
@@ -540,6 +546,7 @@ class MemberInfoListViewAjax(BaseDatatableView):
         return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
+
 class MemberInfoListViewInactive(ListView):
     model = MemberInfo
     template_name = 'WebApp/memberinfo_list_inactive.html'
@@ -549,9 +556,9 @@ class MemberInfoListViewInactive(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['partial_member_form'] = MemberInfoForm()
-        # context['partial_member_form'] = MemberInfoForm(request=self.request)
+        context['partial_member_form'] = MemberInfoForm(request=self.request)
         return context
+
 
 
 class MemberInfoCreateView(CreateView):
