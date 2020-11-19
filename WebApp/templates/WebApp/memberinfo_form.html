@@ -29,7 +29,7 @@
     <div class="col-lg-10 col-md-12" style="margin:auto">
         <div id='form-errors'>{{ form_errors }}</div>
         <div id='form-errors'>{{ form.non_field_errors }}</div>
-        <form method="post" id="FormID" enctype="multipart/form-data">
+        <form method="post" id="user-create-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="accordion" id="member_create_accordion">
                 <div class="card">
@@ -47,7 +47,7 @@
                                     <div class="form-group">
                                         <label for="id_Member_ID">{% trans "Registration ID" %} *</label>
                                         <input type="text" name="Member_ID" id="id_Member_ID" maxlength="20"
-                                            value="{{ object.Member_ID }}" class="form-control" required>
+                                            value="{{ object.Member_ID }}" class="form-control" required autofocus>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -67,14 +67,14 @@
                                     <div class="form-group">
                                         <label for="id_first_name">{% trans "First Name" %} *</label>
                                         <input type="text" class="form-control" name="first_name" id="id_first_name"
-                                            type="text" value="{{ object.first_name}}" required autofocus>
+                                            type="text" value="{{ object.first_name}}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="id_last_name">{% trans "Last Name" %} *</label>
                                         <input type="text" class="form-control" name="last_name" id="id_last_name"
-                                            type="text" value="{{ object.last_name}}" required autofocus>
+                                            type="text" value="{{ object.last_name}}" required>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +84,8 @@
                                     <div class="form-group">
                                         <label for="id_username">{% trans "Username" %} *</label>
                                         <input type="text" class="form-control" name="username" id="id_username"
-                                            type="text" value="{{ object.username}}" required autofocus>
+                                            type="text" value="{{ object.username}}" required>
+                                        <small id="username-error-message" class="input-error text-danger"></small>
                                     </div>
                                 </div>
                                 {% if 'create' in request.path %}
@@ -111,8 +112,9 @@
                                         {% if object.Is_Student %} checked {% endif %} class="checkboxinput">
                                     <label for="id_Is_Student">{% trans "Student" %}</label>
                                     <input type="checkbox" name="Is_Teacher" id="id_Is_Teacher"
-                                        {% if object.Is_Teacher %} checked {% endif %} class="ml-5">
+                                        {% if object.Is_Teacher %} checked {% endif %} class="ml-5 checkboxinput">
                                     <label for="id_Is_Teacher">{% trans "Teacher" %}</label>
+                                    <small id="membertype-error-message" class="input-error text-danger ml-5"></small>
                                 </div>
                             </div>
                             <div class="row">
@@ -127,7 +129,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 positionField">
                                     <div class="form-group">
                                         <label for="Member_Position">{% trans "Member Position" %}</label>
                                         <select id="id_Member_Position" name="Member_Position" class="form-control">
@@ -214,11 +216,81 @@
 
 {% block javascript %}
 <script>
+    function checkUsername() {
+        let username = $('#id_username').val();
+        console.log(username)
+        if (/[^a-zA-Z0-9\@\.\+\-_]/.test(username)) {
+            $('#username-error-message').text("Username can have only alphanumeric character and symbols @ -  .  +  _");
+        } else {
+            $.ajax({
+                url: '{% url "validate_username" %}',
+                type: "GET",
+                data: {
+                    'username': username,
+                },
+                success: function (data) {
+                    if (data.is_taken == true) {
+                        $('#username-error-message').text(data.error_message);
+                        $('#id_username').focus();
+                    } else if (data.is_taken != true) {
+                        $('#username-error-message').text('');
+                    }
+                },
+            });
+        }
+    }
+
+    function checkType() {
+        var atLeastOneIsChecked = $('.checkboxinput').is(':checked');
+        if (atLeastOneIsChecked == true) {
+            $('#membertype-error-message').text('');
+        }
+        else if (atLeastOneIsChecked != true) {
+            submitOK = false
+            $('#membertype-error-message').text("Atleast one member type should be selected");
+        }
+    }
+
     $('#id_Member_ID').change(function () {
         //suggest username
         if (window.location.href.indexOf("create") >= -1) {
             $('#id_username').val($('#id_Member_ID').val());
         }
+        checkUsername();
     });
+
+    $('#id_username').keyup(function () {
+        checkUsername();
+    });
+
+    $('.checkboxinput').change(function () {
+        checkType()
+    });
+
+    $('#user-create-form').submit(function (e) {
+        let submitOK = true;
+        checkType()
+        $('.input-error').each(function () {
+            if ($(this).text() != "")
+                submitOK = false
+        });
+        if (!submitOK)
+            return false
+    });
+
+    $('#id_Is_Teacher').change(function () {
+        console.log('change')
+        if ($('#id_Is_Teacher').is(':checked')) {
+            $(".positionField").show();
+        }
+        else if ($('#id_Is_Teacher').not(':checked')) {
+            $(".positionField").hide();
+        }
+    });
+
+    $(document).ready(function () {
+        $(".positionField").hide();
+    });
+
 </script>
 {% endblock %}
