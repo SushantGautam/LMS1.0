@@ -121,12 +121,32 @@
                               {% if can_submit or not object.Publish_Result %}
 
                             <div class="x_content" style="width:500px; margin:20px; padding:10px">
+                                {% for option in question.options %}
+                                <div class="radio">
+
+                                  <label style="line-height: 14px">
+                                    {{forloop.counter|to_char}}
+                                    <input type="radio" name="{{ question.pk }}" id="pollsOptions"
+                                           value="{{ option.pk }}"
+                                        {% if option.was_chosen %}
+                                          checked
+                                      {% endif %}
+                                  >
+                                   &nbsp; {{ option.Option_Name }}
+                                 </label>
+                                  </div>
+                                {% endfor %}
+
+
+
+
+                                {% comment %}
                                {% for option in options %}
                               {% if option.Question_Code.pk == question.pk %}
                                <div class="radio">
 
                                   <label style="line-height: 14px">
-
+                                    {{forloop.counter|to_char}}
                                     <input type="radio" name="{{ question.pk }}" id="pollsOptions"
                                            value="{{ option.pk }}"
                                         {% if option.was_chosen %}
@@ -138,6 +158,11 @@
                                   </div>
                               {% endif %}
                                 {% endfor %}
+                                {% endcomment %}
+
+
+
+
                           </div>
                    {% elif object.Publish_Result %}
 

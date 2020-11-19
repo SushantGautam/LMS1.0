@@ -128,7 +128,7 @@
                                     {{ questionansinfo_formset.non_form_errors }}
                                     <div class='qnansinfo_dynamic_append'>
                                         {% for questionansinfo_form in questionansinfo_formset.forms %}
-                                            {{ questionansinfo_form|crispy }}
+                                          <p style="position:relative; top:40px;">{{ forloop.counter}}</p>{{ questionansinfo_form|crispy }}
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -428,9 +428,9 @@
 
 
         {#..............................................For SAQ ...........................................#}
-        $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
-        $('#first_sa_que_div').prepend(`<p>1</p>`);
-        $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+      //  $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
+      //  $('#first_sa_que_div').prepend(`<p>1</p>`);
+       // $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
         if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
             $('#id_End_Time').durationPicker({

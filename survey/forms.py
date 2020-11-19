@@ -198,10 +198,10 @@ class AnswerInfoForm(forms.ModelForm):
         model = AnswerInfo
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super(AnswerInfoForm, self).__init__(*args, **kwargs)
-        OptionInfoForm.fields['Option_Name'].label = ""
-        QuestionInfoForm.fields['Question_Name'].label = ""
+    # def __init__(self, *args, **kwargs):
+    #     super(AnswerInfoForm, self).__init__(*args, **kwargs)
+    #     OptionInfoForm.fields['Option_Name'].label = ""
+    #     QuestionInfoForm.fields['Question_Name'].label = ""
 
 
 # fields=('Question_Name', 'Question_Type', 'Survey_Code'))

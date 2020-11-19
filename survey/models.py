@@ -105,6 +105,15 @@ class SurveyInfo(models.Model):
         except SubmitSurvey.DoesNotExist:
             surveys = None
 
+        for x in questions:
+            x.options = x.optioninfo.all()
+            if surveys:
+                for o in x.options:
+                    if len(surveys.answerinfo.filter(Answer_Value=o.id)) > 0:
+                        o.was_chosen = True
+                    else:
+                        o.was_chosen = False
+
         if surveys:
             for x in options:
                 if len(surveys.answerinfo.filter(Answer_Value=x.id)) > 0:
@@ -113,12 +122,12 @@ class SurveyInfo(models.Model):
                     x.was_chosen = False
 
             for x in questions:
-                x.options = x.optioninfo.all()
-                for o in x.options:
-                    if len(surveys.answerinfo.filter(Answer_Value=o.id)) > 0:
-                        o.was_chosen = True
-                    else:
-                        o.was_chosen = False
+                # x.options = x.optioninfo.all()
+                # for o in x.options:
+                #     if len(surveys.answerinfo.filter(Answer_Value=o.id)) > 0:
+                #         o.was_chosen = True
+                #     else:
+                #         o.was_chosen = False
 
                 try:
                     x.answer = AnswerInfo.objects.get(
