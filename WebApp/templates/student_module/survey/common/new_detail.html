@@ -1,6 +1,7 @@
 {% load readmore %}
 {% load i18n %}
 {% load static %}
+{% load counter %}
 
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 
@@ -125,6 +126,7 @@
                                <div class="radio">
 
                                   <label style="line-height: 14px">
+
                                     <input type="radio" name="{{ question.pk }}" id="pollsOptions"
                                            value="{{ option.pk }}"
                                         {% if option.was_chosen %}
@@ -145,13 +147,16 @@
                            {% for option in question.options %}
 
 
-                                 <div class="progress">
-                                     {{forloop.counter}}. &nbsp;{{ option.Option_Name }} &nbsp;
 
+                                     {{forloop.counter|to_char}}. &nbsp;{{ option.Option_Name }} &nbsp;
 
-                                  <div class="progress-bar
+                          <div class="progress">
+                                  <div class="progress-bar progress-bar-striped progress-bar-animated
                                    {% if option.was_chosen %}
                                         bg-success
+                                        {%else%}
+                                        bg-light
+
                                    {% endif%}
     " role="progressbar" style="width:{{ option.get_option_percentage }}%;" aria-valuenow=" {{ option.get_option_percentage }}" aria-valuemin="0" aria-valuemax="100">
                                    {{ option.get_option_percentage }}%

@@ -8,10 +8,11 @@
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
+  <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
   <li class="breadcrumb-item active" aria-current="page">{% trans "Survey" %}</li>
   {% endblock %}
 {% block content %}
-   {% include 'survey/common/alerts.html' %}
+
   {% include 'student_module/survey/new_surveylist.html' %}
 {% endblock %}
 
