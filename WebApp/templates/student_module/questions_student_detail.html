@@ -1,4 +1,7 @@
-{% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
+{% extends "student_module/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
   <!-- iCheck -->
   <link href="{% static 'vendorsx/iCheck/skins/flat/green.css' %}" rel="stylesheet">
@@ -6,7 +9,7 @@
 
 {% block breadcrumb %}
   <li class="breadcrumb-item" aria-current="page">
-    <a href="{% url 'questions_student' %}">Survey</a>
+    <a href="{% url 'questions_student' %}">{% trans 'Survey' %}</a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %} {% block content %}
@@ -47,16 +50,16 @@
             <li>
               <div class="form-group">
                 <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                       for="first-name">Category :
+                       for="first-name">{% trans 'Category' %} :
                   <span class="category-label">{{ object.Category_Code }}</span>
                 </label>
               </div>
             </li>
             <li class="surveyViewDates">
-              <i class="fa fa-calendar"></i><label>Start date: {{ object.Start_Date }}</label>
+              <i class="fa fa-calendar"></i><label>{% trans 'Start date' %}: {{ object.Start_Date }}</label>
             </li>
             <li class="surveyViewDates">
-              <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
+              <i class="fa fa-calendar"></i><label>{% trans 'End date' %}: {{ object.End_Date }}</label>
             </li>
           </ul>
 
@@ -100,9 +103,9 @@
 
           <div class="text-danger" style="display: none;text-align: center;" id="survey_already_taken">
               {% if datetimeexpired %}
-                  Survey submission date has ended.
+                  {% trans 'Survey submission date has ended' %}.
               {% else %}
-                  You have already taken this survey.
+                 {% trans 'You have already taken this survey' %}.
               {% endif %}
           </div>
 
@@ -170,7 +173,7 @@
                         background-color: #f1f1f1; "></div>
 
                   <div class="x_content" style="margin-left: 40px;">
-                    <label class="SAQ_answer_label">Answers:</label>
+                    <label class="SAQ_answer_label">{% trans 'Answers' %}:</label>
                     <textarea class="form-control SAQ_answer" name="{{ question.pk }}" rows="5" id="comment"
                               form="surveyform"
                               value="{{ question.answer }}"
@@ -186,7 +189,7 @@
           <input type="hidden" name="userId" value="{{ request.user.id }}">
           {#                <!-- {{ request.user.id }} -->#}
           <div class="text-center">
-            <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">Submit</button>
+            <button id="survey_submit_button" class="btn btn-success" style="margin-top:4em">{% trans 'Submit' %}</button>
           </div>
         </form>
       </div>

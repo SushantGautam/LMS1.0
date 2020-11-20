@@ -11,7 +11,7 @@
 <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
-            Threads created by {{ username }}
+            {% trans 'Threads created by' %} {{ username }}
             {% endblocktrans %}</h2>
     </div>
     <!-- List group -->
@@ -54,7 +54,7 @@
                         <div class="topic_meta text-light text-caption">
                             <h5>
                                 <p class="topic-meta">
-                                    &nbsp; Topic:
+                                    &nbsp; {% trans 'Topic' %}:
                                     <a href="
                                     
                                     {% if '/teachers' in request.path %}
@@ -69,7 +69,7 @@
                                             {{ thread.topic.title }}
                                         </span>
                                     </a> |
-                                    <span class="meta meta-pub_date"> posted
+                                    <span class="meta meta-pub_date"> {% trans 'posted' %}
                                         {{ thread.pub_date | naturaltime }}
                                     </span> |
                                     <span class="meta meta-last_replied hidden-xs">
@@ -92,7 +92,7 @@
                             data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}"
                             aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                             <h4 class="panel-title">{{ thread.reply_count }}
-                                Replies </h4>
+                                {% trans 'Replies' %} </h4>
                         </a>
 
                     </ul>
@@ -177,7 +177,7 @@
 <div class="panel panel-default">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
-            Replies from {{ username }}
+            {% trans 'Replies from' %} {{ username }}
             {% endblocktrans %}</h2>
 
     </div>

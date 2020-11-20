@@ -4,12 +4,13 @@
 {% endblock %}
 
 {% load static %}
+{% load i18n %}
 {% block stylesheets %}
 <link href="{% static 'vendorsx/fullcalendar/dist/fullcalendar.min.css' %}" rel='stylesheet'>
 <link href="{% static 'vendorsx/fullcalendar/dist/fullcalendar.print.css' %}" rel="stylesheet" media="print">
 {% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Calendar</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Calendar' %}</li>
 {% endblock %}
 
 
@@ -19,7 +20,7 @@
 
     <div class="x_panel">
         <div class="x_title">
-            <h2>Calendar Events</h2>
+            <h2>{% trans 'Calendar' %} {% trans 'Events' %}</h2>
             <ul class="nav navbar-right panel_toolbox">
                 <!-- <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li> -->
@@ -64,16 +65,16 @@
             <div class="modal-body" style="
             height: auto;
         ">
-                <b> Title : </b><span id="Assignment_name"></span><br><br>
+                <b> {% trans 'Title' %} : </b><span id="Assignment_name"></span><br><br>
 
-                <b> Start Date: </b><span id="starts-at"></span><br><br>
+                <b> {% trans 'Start Date' %}: </b><span id="starts-at"></span><br><br>
 
 
-                <b> Submission Deadline: </b><span id="Assignment_end_date"></span><br><br>
+                <b> {% trans 'Submission Deadline' %}: </b><span id="Assignment_end_date"></span><br><br>
 
                 <a href="">
                     <button type="button" id="viewDetails" class="btn btn-primary"
-                        style="margin:auto;display:block">View Details</button></a>
+                        style="margin:auto;display:block">{% trans 'View Details' %}</button></a>
 
 
             </div>

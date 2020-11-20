@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!--content area start-->
 {% include 'WebApp/theme/alerts.html' %}
 <div id="content" class="pmd-content inner-page profile-page container-fluid">
@@ -25,19 +26,19 @@
                     <h1>{{ user.first_name }} {{ user.last_name }}</h1>
                     <p class="pmd-list-subtitle">
                         {% if request.user.Is_CenterAdmin %}
-                            <i class="fa fa-user"></i> Center Admin &nbsp;
+                            <i class="fa fa-user"></i> {% trans 'Center Admin'%}&nbsp;
                         {% endif %}
                         {% if request.user.Is_Teacher %}
-                            <i class="fa fa-user"></i> Teacher &nbsp;
+                            <i class="fa fa-user"></i> {% trans 'Teacher' %} &nbsp;
                         {% endif %}
                         {% if request.user.Is_Student %}
-                            <i class="fa fa-user"></i> Student &nbsp;
+                            <i class="fa fa-user"></i> {% trans 'Student' %} &nbsp;
                         {% endif %}
                     </p>
                     <p>{% if user.Member_Memo %}
                         {{ user.Member_Memo|truncatewords:80 }}
                     {% else %}
-                        No description ... <br><br>
+                        {% trans 'No description' %} ... <br><br>
                     {% endif %}</p>
                     {#                    <div class="pmd-social-icon">#}
                     {#                        <a class="btn btn-sm pmd-btn-fab pmd-ripple-effect btn-dark ml-0" href="javascript:void(0);" title="Facebook">#}
@@ -75,7 +76,7 @@
                     <div class="pmd-tab-active-bar" style="width: 97.9531px; left: 0px;"></div>
                     <ul class="nav nav-tabs" role="tablist" style="width: 343.813px;">
                         <li class="nav-item"><a class="nav-link active" href="#about" aria-controls="about" role="tab"
-                                                data-toggle="tab">About</a></li>
+                                                data-toggle="tab">{% trans 'About' %}</a></li>
                         {#                            <li class="nav-item"><a class="nav-link" href="#documents" aria-controls="documents" role="tab" data-toggle="tab">Documents</a></li>#}
                     </ul>
                 </div>
@@ -85,11 +86,10 @@
                     <div role="tabpanel" class="tab-pane active" id="about">
                         <div class="card pmd-card">
                             <div class="card-body">
-
                                 <!-- Basic Information -->
                                 <div class="details-tab">
                                     <div class="d-flex flex-row align-items-center mb-2">
-                                        <h3 class="card-title media-body no-padding">Basic Information</h3>
+                                        <h3 class="card-title media-body no-padding">{% trans 'Basic Information' %}</h3>
                                         <div class="dropdown pmd-dropdown pmd-user-info ml-auto">
                                             <a href="#" class="pmd-btn-fab btn-outline-dark pmd-btn-flat btn btn-sm"
                                                data-toggle="dropdown" aria-expanded="true">
@@ -99,30 +99,30 @@
                                                 <a class="dropdown-item d-flex flex-row" id="edit-basic-info"
                                                    href="javascript:void(0);">
                                                     <i class="material-icons md-dark pmd-icon-xs mr-3">edit</i>
-                                                    <span class="media-body">Edit</span>
+                                                    <span class="media-body">{% trans 'Edit' %}</span>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row view-basic-card">
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">User Name</label>
+                                            <label class="pmd-list-subtitle">{% trans 'User Name' %}</label>
                                             <p class="pmd-list-title">{{ user.username }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">First Name</label>
+                                            <label class="pmd-list-subtitle">{% trans 'First Name' %}</label>
                                             <p class="pmd-list-title">{{ user.first_name }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Last Name</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Last Name' %}</label>
                                             <p class="pmd-list-title">{{ user.last_name }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Date of Birth</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Date of Birth' %}</label>
                                             <p class="pmd-list-title">{{ user.Member_BirthDate|date }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Gender</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Gender' %}</label>
                                             <p class="pmd-list-title">{{ user.get_Member_Gender_display }}</p>
                                         </div>
                                     </div>
@@ -132,12 +132,11 @@
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label ">
                                                     {% if request.path == '/profile/' %}
-                                                        <label for="id_username" class="col-form-label control-label">User
-                                                            Name*</label>
+                                                        <label for="id_username" class="col-form-label control-label">{% trans 'User Name' %}*</label>
                                                         <input type="text" name="username" class="form-control"
                                                                value="{{ user.username }}" id="id_username" required>
                                                     {% else %}
-                                                        <label class="pmd-list-subtitle">User Name</label>
+                                                        <label class="pmd-list-subtitle">{% trans 'User Name' %}</label>
                                                         <p class="pmd-list-title" value=""
                                                            id="id_username">{{ user.username }}</p>
                                                     {% endif %}
@@ -145,16 +144,14 @@
                                             </div>
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                    <label for="id_first_name" class="col-form-label control-label">First
-                                                        Name*</label>
+                                                    <label for="id_first_name" class="col-form-label control-label">{% trans 'First Name' %}*</label>
                                                     <input type="text" name="first_name" class="form-control"
                                                            value="{{ user.first_name }}" id="id_first_name" required>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                    <label for="id_last_name" class="col-form-label control-label">Last
-                                                        Name*</label>
+                                                    <label for="id_last_name" class="col-form-label control-label">{% trans 'Last Name' %}*</label>
                                                     <input type="text" name="last_name" class="form-control"
                                                            value="{{ user.last_name }}" id="id_last_name" required>
                                                 </div>
@@ -162,37 +159,37 @@
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label">
                                                     <label for="id_Member_BirthDate"
-                                                           class="col-form-label control-label">Date of Birth*</label>
+                                                           class="col-form-label control-label">{% trans 'Date of Birth' %}*</label>
                                                     <input type="date" class="form-control" id="id_Member_BirthDate"
                                                            max="9999-12-31"
                                                            value="{{ user.Member_BirthDate|date:'Y-m-d' }}" required>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <label for="email" class="title-label d-block">Gender*</label>
+                                                <label for="email" class="title-label d-block">{% trans 'Gender' %}*</label>
                                                 <div class="custom-control custom-radio pmd-radio custom-control-inline">
                                                     <input type="radio" id="male" value="M" name="gender"
                                                            class="custom-control-input"
                                                            {% if user.Member_Gender == 'M' %}checked{% endif %}>
                                                     <label class="custom-control-label pmd-radio-ripple-effect"
-                                                           for="male">Male</label>
+                                                           for="male">{% trans 'Male' %}</label>
                                                 </div>
                                                 <div class="custom-control custom-radio pmd-radio custom-control-inline">
                                                     <input type="radio" id="female" value="F" name="gender"
                                                            class="custom-control-input"
-                                                           {% if user.Member_Gender == 'F' %}checked{% endif %}>
+                                                           {% if user.Member_Gender == 'F' %}{% trans 'checked' %}{% endif %}>
                                                     <label class="custom-control-label pmd-radio-ripple-effect"
-                                                           for="female">Female</label>
+                                                           for="female">{% trans 'Female' %}</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 mt-3">
                                                 <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised"
-                                                        type="submit">Submit
+                                                        type="submit">{% trans 'Submit' %}
                                                 </button>
                                                 <button class="btn btn-outline-secondary pmd-ripple-effect"
-                                                        type="button" id="reset-basic-info">Cancel
+                                                        type="button" id="reset-basic-info">{% trans 'Cancel' %}
                                                 </button>
                                             </div>
                                         </div>
@@ -203,7 +200,7 @@
                                 <div class="details-tab">
                                     <!-- View Card -->
                                     <div class="d-flex flex-row align-items-center mb-2">
-                                        <h3 class="card-title media-body no-padding">Contact Information</h3>
+                                        <h3 class="card-title media-body no-padding">{% trans 'Contact Information' %}</h3>
                                         <div class="dropdown pmd-dropdown pmd-user-info ml-auto">
                                             <a href="#" class="pmd-btn-fab btn-outline-dark pmd-btn-flat btn btn-sm"
                                                data-toggle="dropdown" aria-expanded="true">
@@ -213,30 +210,30 @@
                                                 <a class="dropdown-item d-flex flex-row" id="edit-contact-info"
                                                    href="javascript:void(0);">
                                                     <i class="material-icons md-dark pmd-icon-xs mr-3">edit</i>
-                                                    <span class="media-body">Edit</span>
+                                                    <span class="media-body">{% trans 'Edit' %}</span>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row view-contact-card">
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Personal Email</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Personal Email' %}</label>
                                             <p class="pmd-list-title"><a href="mailto:{{ user.email }}"
                                                                          title="{{ user.email }}">{{ user.email }}</a>
                                             </p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Phone Number</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Phone Number' %}</label>
                                             <p class="pmd-list-title"><a href="tel:{{ user.Member_Phone }}"
                                                                          title="{{ user.Member_Phone }}">{{ user.Member_Phone }}</a>
                                             </p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-6">
-                                            <label class="pmd-list-subtitle">Temporary Address</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Temporary Address' %}</label>
                                             <p class="pmd-list-title">{{ user.Member_Temporary_Address }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-6">
-                                            <label class="pmd-list-subtitle">Permanent Address</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Permanent Address' %}</label>
                                             <p class="pmd-list-title">{{ user.Member_Permanent_Address }}</p>
                                         </div>
                                     </div>
@@ -245,16 +242,14 @@
                                         <div class="row">
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                    <label for="id_email" class="col-form-label control-label">Personal
-                                                        Email*</label>
+                                                    <label for="id_email" class="col-form-label control-label">{% trans 'Personal Email' %}*</label>
                                                     <input type="email" name="email" class="form-control"
                                                            value="{{ user.email }}" id="id_email" required>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label ">
-                                                    <label for="id_Member_Phone" class="col-form-label control-label">Phone
-                                                        Number*</label>
+                                                    <label for="id_Member_Phone" class="col-form-label control-label">{% trans 'Phone Number' %}*</label>
                                                     <input type="tel" name="Member_Phone" class="form-control"
                                                            id="id_Member_Phone" value="{{ user.Member_Phone }}"
                                                            required>
@@ -263,8 +258,7 @@
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label">
                                                     <label for="id_Member_Temporary_Address"
-                                                           class="col-form-label control-label">Temporary
-                                                        Address</label>
+                                                           class="col-form-label control-label">{% trans 'Temporary Address' %}</label>
                                                     <input type="text" name="Member_Temporary_Address"
                                                            class="form-control"
                                                            value="{{ user.Member_Temporary_Address }}"
@@ -274,8 +268,7 @@
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <div class="form-group pmd-textfield pmd-textfield-floating-label">
                                                     <label for="id_Member_Permanent_Address"
-                                                           class="col-form-label control-label">Permanent
-                                                        Address</label>
+                                                           class="col-form-label control-label">{% trans 'Permanent Address' %}</label>
                                                     <input type="text" name="Member_Permanent_Address"
                                                            class="form-control"
                                                            value="{{ user.Member_Permanent_Address }}"
@@ -286,10 +279,10 @@
                                         <div class="row">
                                             <div class="col-12 mt-3">
                                                 <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised"
-                                                        type="submit">Submit
+                                                        type="submit">{% trans 'Submit' %}
                                                 </button>
                                                 <button class="btn btn-outline-secondary pmd-ripple-effect"
-                                                        type="button" id="reset-contact-info">Cancel
+                                                        type="button" id="reset-contact-info">{% trans 'Cancel' %}
                                                 </button>
                                             </div>
                                         </div>
@@ -299,43 +292,43 @@
                                 <!-- Additional Information -->
                                 <div class="details-tab">
                                     <div class="d-flex flex-row align-items-center mb-2">
-                                        <h3 class="card-title media-body no-padding">Additional Information</h3>
+                                        <h3 class="card-title media-body no-padding">{% trans 'Additional Information' %}</h3>
                                     </div>
                                     <!-- View Card -->
                                     <div class="row view-additional-card">
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Center Name</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Center Name' %}</label>
                                             <p class="pmd-list-title">{{ user.Center_Code.Center_Name }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Member Enrollment ID</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Member Enrollment ID' %}</label>
                                             <p class="pmd-list-title">{{ user.Member_ID }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Joined Date</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Joined Date' %}</label>
                                             <p class="pmd-list-title">{{ user.Register_DateTime|date }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Last Login</label>
-                                            <p class="pmd-list-title">{{ user.last_login|timesince }} ago</p>
+                                            <label class="pmd-list-subtitle">{% trans 'Last Login' %}</label>
+                                            <p class="pmd-list-title">{{ user.last_login|timesince }} {% trans 'ago' %}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">User Type</label>
+                                            <label class="pmd-list-subtitle">{% trans 'User Type' %}</label>
                                             <p class="pmd-list-title">{{ user.get_user_type }}</p>
                                         </div>
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Registered By</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Registered By' %}</label>
                                             <p class="pmd-list-title">{{ user.Register_Agent }}</p>
                                         </div>
 
                                         <div class="col-12 col-md-6 col-lg-3">
-                                            <label class="pmd-list-subtitle">Department</label>
+                                            <label class="pmd-list-subtitle">{% trans 'Department' %}</label>
                                             <p class="pmd-list-title">{{ user.Member_Department }}</p>
                                         </div>
 
                                         {% if user.Is_Teacher %}
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <label class="pmd-list-subtitle">Position</label>
+                                                <label class="pmd-list-subtitle">{% trans 'Position' %}</label>
                                                 <p class="pmd-list-title">{{ user.Member_Position }}</p>
                                             </div>
                                         {% endif %}
@@ -344,7 +337,7 @@
                                 <!-- Description -->
                                 <div class="details-tab mt-4">
                                     <div class="d-flex flex-row align-items-center mb-2">
-                                        <h3 class="card-title pt-2 pb-3 no-padding">Description</h3>
+                                        <h3 class="card-title pt-2 pb-3 no-padding">{% trans 'Description' %}</h3>
                                         <div class="dropdown pmd-dropdown pmd-user-info ml-auto">
                                             <a href="#" class="pmd-btn-fab btn-outline-dark pmd-btn-flat btn btn-sm"
                                                data-toggle="dropdown" aria-expanded="true">
@@ -355,7 +348,7 @@
                                                    href="javascript:void(0);">
                                                     <i class="material-icons md-dark pmd-icon-xs mr-3">edit</i>
                                                     <span class="media-body">
-                                                            {% if user.Member_Memo %}Edit{% else %}Add{% endif %}
+                                                            {% if user.Member_Memo %}Edit{% else %}{% trans 'Add' %}{% endif %}
                                                         </span>
                                                 </a>
                                             </div>
@@ -367,7 +360,7 @@
                                             {% if user.Member_Memo %}
                                                 {{ user.Member_Memo }}
                                             {% else %}
-                                                Please Add Description about you <br><br>
+                                                {% trans 'Please Add Description about you' %} <br><br>
                                             {% endif %}
                                         </p>
                                     </div>
@@ -375,8 +368,7 @@
                                         {% csrf_token %}
                                         <div class="row">
                                             <div class="form-group controls">
-                                                <label for="id_Member_Memo" class="col-form-label control-label">Info
-                                                    About You</label>
+                                                <label for="id_Member_Memo" class="col-form-label control-label">{% trans 'Info About You' %}</label>
                                                 <textarea class="textarea form-control" name="Member_Memo"
                                                           id="id_Member_Memo" cols="30"
                                                           rows="10">{{ user.Member_Memo }}</textarea>
@@ -385,10 +377,10 @@
                                         <div class="row">
                                             <div class="col-12 mt-3">
                                                 <button class="btn btn-primary pmd-ripple-effect pmd-btn-raised"
-                                                        type="submit">Submit
+                                                        type="submit">{% trans 'Submit' %}
                                                 </button>
                                                 <button class="btn btn-outline-secondary pmd-ripple-effect"
-                                                        type="button" id="reset-description-info">Cancel
+                                                        type="button" id="reset-description-info">{% trans 'Cancel' %}
                                                 </button>
                                             </div>
                                         </div>
@@ -396,7 +388,7 @@
 
                                 </div>
                                 <br><br>
-                                <h3>Password: </h3>
+                                <h3>{% trans 'Password' %}: </h3>
                                 <a href="
                                     {% if 'teacher' in request.path %}
                                         {% url 'teacher_change_password' %}
@@ -405,7 +397,7 @@
                                     {% else %}
                                         {% url 'centeradmin_change_password' %}
                                     {% endif %}">
-                                    <button class="btn btn-default">Change Password</button>
+                                    <button class="btn btn-default">{% trans 'Change Password' %}</button>
                                 </a>
 
                                 {#                                    <!-- Education Information -->#}

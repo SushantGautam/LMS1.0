@@ -3,10 +3,10 @@
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'student_forum' %}">{% trans 'Forum' %}</a></li>
 
 <li class="breadcrumb-item active">
-    <a href="{% url 'student_info' pk=user.pk %}">Profile</a>
+    <a href="{% url 'student_info' pk=user.pk %}">{% trans 'Profile' %}</a>
 </li>
 
 
