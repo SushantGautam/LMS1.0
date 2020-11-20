@@ -1,5 +1,6 @@
 {% extends "student_module/base.html"%}
 {% load static %}
+{% load i18n %}
 {% block title %}
 Polls
 {% endblock %}
@@ -8,8 +9,8 @@ Polls
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'questions_student' %}">Survey</a></li>
-<li class="breadcrumb-item active" aria-current="page">Polls</li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'questions_student' %}">{% trans 'Survey' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Polls' %}</li>
 {% endblock %}
 
 {% block content %}
@@ -21,16 +22,16 @@ Polls
 
         <div class="container">
 
-            <h2 class="pollTitle">Survey Title</h2>
+            <h2 class="pollTitle">{% trans 'Survey Title' %}</h2>
             <div class="horizontalBar"></div>
 
             <div class="viewSurveyTitle">
                 <ul class="card_labels">
                     <li>
                         <div class="form-group">
-                            <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1" for="first-name">Category
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1" for="first-name">{% trans 'Category' %}
                                 :
-                                <span class="generalLabel">General</span>
+                                <span class="generalLabel">{% trans 'General' %}</span>
                                 <!-- <span class="sessionLabel" style="display:none;">Session</span>
                                 <span class="courseLabel" style="display:none;">Course</span>
                                 <span class="systemLabel" style="display:none;">System</span> -->
@@ -38,10 +39,10 @@ Polls
                         </div>
                     </li>
                     <li class="surveyViewDates">
-                        <i class="fa fa-calendar"></i><label>Start date:</label>
+                        <i class="fa fa-calendar"></i><label>{% trans 'Start date' %}:</label>
                     </li>
                     <li class="surveyViewDates">
-                        <i class="fa fa-calendar"></i><label>End date:</label>
+                        <i class="fa fa-calendar"></i><label>{% trans 'End date' %}:</label>
                     </li>
                 </ul>
 

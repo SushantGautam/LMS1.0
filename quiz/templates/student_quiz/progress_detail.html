@@ -1,8 +1,11 @@
-{% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
+{% extends "student_module/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %} {% block breadcrumb %}
   <li class="breadcrumb-item" aria-current="page">
-    <a href="{% url 'student_progress' %}">Progress List</a>
+    <a href="{% url 'student_progress' %}">{% trans 'Progress List' %}</a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">{{ object.quiz.title }}</li>
   <style>
@@ -26,7 +29,7 @@
         Chapter: {{ object.quiz.chapter_code.Chapter_No }}</span> -->
         <button class="progress-chapter" type="button" style="float: right;width:155px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
         margin-bottom: 10px;"><i
-        class="fa fa-arrow-left"></i>&nbsp; Return to Chapter {{ object.quiz.chapter_code.Chapter_No }}
+        class="fa fa-arrow-left"></i>&nbsp; {% trans 'Return to Chapter' %} {{ object.quiz.chapter_code.Chapter_No }}
             </button>
       
       </a>
@@ -35,21 +38,21 @@
     </div>
     <div class="hr2"></div>
     <div class="row" style="margin-bottom: 10px;">
-      <div class="col-md-6 col-sm-6 col-xs-12 text-left"><span class="text-bold"> Taken Date:</span>
+      <div class="col-md-6 col-sm-6 col-xs-12 text-left"><span class="text-bold"> {% trans 'Taken Date' %}:</span>
         &nbsp; {{ object.start }}</div>
 
 
-      <div class="col-md-6 col-sm-6 col-xs-12 text-right"><span class="text-bold"> Finished Date:</span>
+      <div class="col-md-6 col-sm-6 col-xs-12 text-right"><span class="text-bold"> {% trans 'Finished Date' %}:</span>
         &nbsp;{{ object.end }}</div>
 
     </div>
     <div class="row" style="margin-bottom: 10px;">
-      <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> Full Marks:</span>
+      <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> {% trans 'Full Marks' %}:</span>
         &nbsp;{{ object.get_max_score }}</div>
-      <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span class="text-bold"> Marks Obtained:</span>
+      <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span class="text-bold"> {% trans 'Marks Obtained' %}:</span>
         &nbsp;{{ object.get_score_correct }}</div>
       <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span
-          class="text-bold"> Percentage:</span>&nbsp; {{ object.get_percent_correct }}</div>
+          class="text-bold"> {% trans 'Percentage' %}:</span>&nbsp; {{ object.get_percent_correct }}</div>
 
     </div>
 
@@ -57,7 +60,7 @@
   </div>
 
   {% if object.score_list == "" %}
-    Not attempted
+    {% trans 'Not attempted' %}
   {% endif %}
 
   <div class="panel-group row" id="accordion">
@@ -102,19 +105,19 @@
             {% if q.is_tfq %}
               <ul class="list-group">
                 {% if q.correct %}
-                  <li class="list-group-item list-group-item-success">1. True</li>
+                  <li class="list-group-item list-group-item-success">1. {% trans 'True' %}</li>
                   {% if q.correct|slugify == q.user_answer|slugify %}
-                    <li class="list-group-item">2. False</li>
+                    <li class="list-group-item">2. {% trans 'False' %}</li>
                   {% else %}
-                    <li class="list-group-item list-group-item-danger">2. False</li>
+                    <li class="list-group-item list-group-item-danger">2. {% trans 'False' %}</li>
                   {% endif %}
                 {% else %}
                   {% if q.correct|slugify == q.user_answer|slugify %}
-                    <li class="list-group-item">1. True</li>
+                    <li class="list-group-item">1. {% trans 'True' %}</li>
                   {% else %}
-                    <li class="list-group-item list-group-item-danger">1. True</li>
+                    <li class="list-group-item list-group-item-danger">1. {% trans 'True' %}</li>
                   {% endif %}
-                  <li class="list-group-item list-group-item-success">2. False</li>
+                  <li class="list-group-item list-group-item-success">2. {% trans 'False' %}</li>
                 {% endif %}
               </ul>
             {% endif %}
@@ -129,8 +132,8 @@
             
             {% endif %}
             <div class="panel-footer">
-              <span class="total-score-progress ">Total Score: {{ q.score }}</span> <span
-                class="score-obtained-progress "> Score Obtained: {{ q.score_obtained }}</span>
+              <span class="total-score-progress ">{% trans 'Total Score' %}: {{ q.score }}</span> <span
+                class="score-obtained-progress "> {% trans 'Score Obtained' %}: {{ q.score_obtained }}</span>
             </div>
           </div>
         </div>

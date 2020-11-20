@@ -1,14 +1,15 @@
 {% extends "student_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}
 Course
 {% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">My Courses</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'My Courses' %}</li>
 {% endblock %}
 {% block content %}
     <div class="courseInfoListClass">
-        <h2 class="tableHeader">List of Courses</h2>
+        <h2 class="tableHeader">{% trans 'List of Courses' %}</h2>
 
 
         <hr class="header_hr">
@@ -23,7 +24,7 @@ Course
 
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <span> <b>Show</b> </span>
+                    <span> <b>{% trans 'Show' %}</b> </span>
                     <label>
                         <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
                                 id="paginate_courses">
@@ -35,7 +36,7 @@ Course
                             <option value="36">36</option>
                         </select>
                     </label>
-                    <span> <b>Entries</b> </span>
+                    <span> <b>{% trans 'Entries' %}</b> </span>
 
                 </div>
                
@@ -47,7 +48,7 @@ Course
                     <input type="text" name="studentmycoursequery" placeholder="Search Course"
                            value="{{ request.GET.studentmycoursequery }}" class="form-control">
             </div>
-            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
+            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;{% trans 'Search' %}</button>
         </form>
     </div>
     <br><br><br>
@@ -91,17 +92,9 @@ Course
           </p>
           {% else %}
                         <p style="height:30px ; padding: 10px; ">
-                            No Teacher Assigned
-
-
+                            {% trans 'No Teacher Assigned' %}
                         </p>
-
-
-
                     {% endif %}
-
-
-
                     <hr>
                     <h5 class="courseDescription" style="padding-bottom: 10px;">
                         {% if courses.Course_Description %}
@@ -124,7 +117,7 @@ Course
                         overflow: hidden;
                         white-space: normal;
                         text-overflow: ellipsis;">
-                                No Description
+                                {% trans 'No Description' %}
                             </p>
                         {% endif %}
                     </h5>
@@ -148,7 +141,7 @@ Course
                     {% endif %}
                     {% for i in response.paginator.page_range %}
                         {% if response.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                            <li class="active"><span>{{ i }} <span class="sr-only">({% trans 'current' %})</span></span></li>
                         {% else %}
                             <li>
     <a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
@@ -177,14 +170,13 @@ Course
                 <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
                    
-                    <td>ID</td>
-                    <td>Course Name</td>
-                    <td>Teachers</td>
+                    <td>{% trans 'ID' %}</td>
+                    <td>{% trans 'Course Name' %}</td>
+                    <td>{% trans 'Teachers' %}</td>
                    
-                    <td>Course Provider</td>
-                    <td>Course Level</td>
-                  
-                  
+                    <td>{% trans 'Course Provider' %}</td>
+                    <td>{% trans 'Course Level' %}</td>
+
                 </tr>
                 </thead>
                 {% for object in object_list %}
@@ -206,15 +198,13 @@ Course
             
                             </p>
                             {% else %}
-                            <p style="height: 30px; overflow:auto"> No Teacher </p>
+                            <p style="height: 30px; overflow:auto"> {% trans 'No Teacher' %} </p>
             
             
                     
                         {% endif %}</td>
                         <td style="vertical-align: middle;">
                             {{ object.Course_Provider }}
-
-
 
                         </td>
                         <td style="vertical-align: middle;">

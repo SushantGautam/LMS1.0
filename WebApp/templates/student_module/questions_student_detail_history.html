@@ -1,12 +1,14 @@
-{% extends "student_module/base.html" %} {% load static %} {% block stylesheets %}
+{% extends "student_module/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block stylesheets %}
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet" />
 {% endblock stylesheets %} {% block breadcrumb %}
 <li class="breadcrumb-item" aria-current="page">
-    <a href="{% url 'questions_student' %}">Survey</a>
+    <a href="{% url 'questions_student' %}">{% trans 'Survey' %}</a>
 </li>
 <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %} {% block content %}
-
 
     <div class="clearfix"></div>
 
@@ -21,17 +23,17 @@
                     <li>
                         <div class="form-group">
                             <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                   for="first-name">Category
+                                   for="first-name">{% trans 'Category' %}
                                 :
                                 <span class="category-label">{{ object.Category_Code }}</span>
                             </label>
                         </div>
                     </li>
                     <li class="surveyViewDates">
-                        <i class="fa fa-calendar"></i><label>Start date: {{ object.Start_Date }}</label>
+                        <i class="fa fa-calendar"></i><label>{% trans 'Start date' %}: {{ object.Start_Date }}</label>
                     </li>
                     <li class="surveyViewDates">
-                        <i class="fa fa-calendar"></i><label>End date: {{ object.End_Date }}</label>
+                        <i class="fa fa-calendar"></i><label>{% trans 'End date' %}: {{ object.End_Date }}</label>
                     </li>
                 </ul>
 
@@ -97,7 +99,7 @@
                     </div>
 
                     <div class="bs-chart-container" id="progressResult" style="width: 80%;">
-                        <h4>Results:</h4>
+                        <h4>{% trans 'Results' %}:</h4>
                         {% for option in question.optioninfo.all %}
                             <div class="surveyResults">
                                 <strong>Option {{ forloop.counter }}</strong>
@@ -133,7 +135,7 @@
                         background-color: #f1f1f1; "></div>
 
                     <div class="x_content" style="margin-left: 40px;">
-                        <label class="SAQ_answer_label">Answers:</label>
+                        <label class="SAQ_answer_label">{% trans 'Answers' %}:</label>
                         <p class="SAQ_answer">
                             {% for answer in question.get_answers %}
                                 {{ answer.Answer_Value }}<br/>

@@ -2659,6 +2659,13 @@ def save_video(request):
                             headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                      'Content-Type': 'application/json',
                                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                    elif settings.SERVER_NAME == "Mongolia_Server":
+                        a = rs.put(
+                            url='https://api.vimeo.com/me/projects/2996902/videos/' + r_responseText['uri'].split('/')[
+                                -1],
+                            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                                     'Content-Type': 'application/json',
+                                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
 
                     tags = rs.put(
                         url='https://api.vimeo.com/' + r_responseText['uri'] + '/tags',
@@ -2899,6 +2906,12 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
     elif settings.SERVER_NAME == "Vietnam_Server":
         a = requests.get(
             url='https://api.vimeo.com/me/projects/1796938/videos/?per_page=' + str(max_items),
+            headers={
+                'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+            }, ),
+    elif settings.SERVER_NAME == "Mongolia_Server":
+        a = requests.get(
+            url='https://api.vimeo.com/me/projects/2996902/videos/?per_page=' + str(max_items),
             headers={
                 'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
             }, ),
