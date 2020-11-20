@@ -242,7 +242,8 @@ LOCALE_PATHS = (
 
 # SERVER_NAME = 'Indonesian_Server'
 # SERVER_NAME = 'Korean_Server'
-SERVER_NAME = 'Vietnam_Server'
+# SERVER_NAME = 'Vietnam_Server'
+SERVER_NAME = 'Mongolia_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
