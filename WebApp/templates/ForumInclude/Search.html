@@ -12,7 +12,7 @@
             <div class="media v-middle">
                 <div class="media-body">
                     <h2 class="text-headline margin-none" style="color:#368BC1">
-                        Search Results
+                        {% trans 'Search Results' %}
                     </h2>
 
 
@@ -52,7 +52,7 @@
 
 
                     <div class="text-light text-caption">
-                        Category:
+                        {% trans 'Category' %}:
                         <a href="{% if '/teachers' in request.path %}
                             {% url 'teacher_nodegroup' thread.topic.node_group.pk %}
                             {% elif '/students' in request.path %}
@@ -62,7 +62,7 @@
                             {% endif %}" class="link-text">{{ thread.topic.node_group.title }}</a>
                         |
 
-                        Sub Category:
+                        {% trans 'Sub Category' %}:
                         <a href="
                             {% if '/teachers' in request.path %}
                             {% url 'teacher_topic' pk=thread.topic.pk %}
@@ -74,7 +74,7 @@
 
 
                         <br>
-                        posted by
+                        {% trans 'posted by' %}
                         <a href="
                             {% if '/teachers' in request.path %}
                             {% url 'teacher_info' pk=thread.user.pk %}
@@ -96,7 +96,7 @@
                             {{ thread.user.username }}</a>
                         | <i class="fa fa-clock-o fa-fw"></i> {{ thread.pub_date }} |
                         &nbsp;
-                        |<i class="fa fa-clock-o fa-fw"></i> Last Replied: {{ thread.last_replied }}
+                        |<i class="fa fa-clock-o fa-fw"></i> {% trans 'Last Replied' %}: {{ thread.last_replied }}
 
 
                     </div>
@@ -140,7 +140,7 @@
                 <div class="media-body">
 
                     <h6 class="text-headline margin-none">
-                        No Results Found
+                        {% trans 'No Results Found' %}
                     </h6>
 
 

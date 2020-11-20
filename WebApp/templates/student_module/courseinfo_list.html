@@ -1,7 +1,8 @@
 {% extends "student_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Course</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Course' %}</li>
 {% endblock %}
 
 {% block content %}

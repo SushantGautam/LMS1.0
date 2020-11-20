@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 <style>
     .d-none {
@@ -32,7 +33,7 @@
     {% include 'WebApp/theme/alerts.html' %}
     <div class="row">
         <div class="col-md-5 col-sm-12 col-xs-12">
-            <h2 class="detailListHeader">Assignment Information</h2>
+            <h2 class="detailListHeader">{% trans 'Assignment Information' %}</h2>
             <hr class="header_hr">
             {% if '/students' not in request.path %}
                 <div class="col-md-12 col-sm-12 col-xs-12 text-center">
@@ -44,13 +45,13 @@
                             <b><u>Edit Assignment</u></b></a> -->
                     <button type="button" class="btn-sm btn-link" data-toggle="modal" data-target="#editAssignmentModal"
                             id="editAssignment-btn">
-                        Edit Assignment
+                        {% trans 'Edit Assignment' %}
                     </button>
                     {% if '/teachers' in request.path %}
 
                         <span style="float: right;">
                     <button type="button" class="btn btn-link"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                                                                  style="color: rgb(255, 0, 0);cursor:pointer">Delete</a></button>
+                                                                  style="color: rgb(255, 0, 0);cursor:pointer">{% trans 'Delete' %}</a></button>
                 </span>
                         <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
                               id="deleteAssignment{{ object.pk }}">
@@ -63,7 +64,7 @@
                     {% else %}
                         <span style="float: right;">
                     <button type="button" class="btn btn-link"><a id="{{ object.pk }}" class="assignment-confirm-delete"
-                                                                  style="color: rgb(255, 0, 0);cursor:pointer">Delete</a></button>
+                                                                  style="color: rgb(255, 0, 0);cursor:pointer">{% trans 'Delete' %}</a></button>
                 </span>
                         <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
                               id="deleteAssignment{{ object.pk }}">
@@ -80,7 +81,7 @@
                 <h5>
                     <table class="table">
                         <tr>
-                            <td>Assignment Topic</td>
+                            <td>{% trans 'Assignment Topic' %}</td>
                             <td>{{ object.Assignment_Topic }}</td>
                         </tr>
                         <!-- Start/End Date from different session -->
@@ -89,15 +90,15 @@
                         </tr>
 
                         <tr>
-                            <td>Course Code</td>
+                            <td>{% trans 'Course Code' %}</td>
                             <td>{{ object.Course_Code }}</td>
                         </tr>
                         <tr>
-                            <td>Chapter Code</td>
+                            <td>{% trans 'Chapter Code' %}</td>
                             <td>{{ object.Chapter_Code }}</td>
                         </tr>
                         <tr>
-                            <td>Register By</td>
+                            <td>{% trans 'Register By' %}</td>
                             {% if 'students' in request.path %}
                                 <td>{{ object.Register_Agent.get_full_name }}</td>
                             {% else %}
@@ -108,12 +109,12 @@
 
                         {% if '/students' not in request.path %}
                             <tr>
-                                <td>Status</td>
+                                <td>{% trans 'Status' %}</td>
                                 <td>
                                     {% if object.Use_Flag is True %}
-                                        <span class="badge badge-success">Published</span>
+                                        <span class="badge badge-success">{% trans 'Published' %}</span>
                                     {% elif object.Use_Flag is False %}
-                                        <span class="badge badge-danger">Not Published</span>
+                                        <span class="badge badge-danger">{% trans 'Not Published' %}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -122,12 +123,12 @@
                     <table class="table">
                         {% if assigned_session %}
                             <tr>
-                                <th class="custom-table-width">Session</th>
-                                <th class="date-width">Start Date</th>
-                                <th class="date-width">End Date</th>
-                                <th>Assignment Status</th>
+                                <th class="custom-table-width">{% trans 'Session' %}</th>
+                                <th class="date-width">{% trans 'Start Date' %}</th>
+                                <th class="date-width">{% trans 'End Date' %}</th>
+                                <th>{% trans 'Assignment Status' %}</th>
                                 {% if '/students' not in request.path %}
-                                    <th>Action</th>
+                                    <th>{% trans 'Action' %}</th>
                                 {% endif %}
                             </tr>
                         {% endif %}
@@ -139,10 +140,10 @@
                                     {% if '/students' not in request.path and '/teachers' not in request.path %}
                                         {% if sessions.is_active %}
                                             <span class=" text-success"> <b
-                                                    style="text-transform: uppercase; font-size:14px">[Active]</b>  </span>
+                                                    style="text-transform: uppercase; font-size:14px">[{% trans 'Active' %}]</b>  </span>
                                         {% else %}
                                             <span class=" text-danger"><b
-                                                    style="text-transform: uppercase; font-size:14px">[Inactive]</b></span>
+                                                    style="text-transform: uppercase; font-size:14px">[{% trans 'Inactive' %}]</b></span>
                                         {% endif %}
                                     {% endif %}
                                 </td>
@@ -155,19 +156,18 @@
                                 <td>
                                     {% now "Y-m-d H:i" as todays_datewithtime %}
                                     {% if not sessionmap or not sessionmap.0.Start_Date or not sessionmap.0.End_Date %}
-                                        <span class="badge badge-danger">Inactive</span>
+                                        <span class="badge badge-danger">{% trans 'Inactive' %}</span>
                                     {% elif sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
-                                        <span class="badge badge-info">Upcoming</span>
+                                        <span class="badge badge-info">{% trans 'Upcoming' %}</span>
                                     {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
-                                        <span class="badge badge-danger">Expired</span>
+                                        <span class="badge badge-danger">{% trans 'Expired' %}</span>
                                     {% else %}
-                                        <span class="badge badge-success">Active</span>
+                                        <span class="badge badge-success">{% trans 'Active' %}</span>
                                     {% endif %}
                                     {% for chaptersession in object.Chapter_Code.chapter_sessionmaps.all %}
                                         {% if sessionmap.0.Session_Code == chaptersession.Session_Code %}
                                             {% if sessionmap.0.End_Date > chaptersession.End_Date and sessionmap.0.End_Date and chaptersession.End_Date %}
-                                                <h6 class="text-danger">Assignment End Date is greater than
-                                                    Chapter.</h6>
+                                                <h6 class="text-danger">{% trans 'Assignment End Date is greater than Chapter' %}.</h6>
                                             {% endif %}
                                         {% endif %}
                                     {% endfor %}
@@ -180,7 +180,7 @@
                                                 data-toggle="modal"
                                                 data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
                                                 data-objectid="{{ object.id }}">
-                                            Change
+                                            {% trans 'Change' %}
                                         </button>
                                     </td>
                                 {% endif %}
@@ -195,8 +195,7 @@
             <br>
             {% if 'teacher' in request.path %}
                 <div class="text-center">
-                    <h4><a class="btn btn-sm btn-info" href="{% url 'teacher_assignment_answers' object.pk %}">View
-                        Assignment Submissions</a></h4>
+                    <h4><a class="btn btn-sm btn-info" href="{% url 'teacher_assignment_answers' object.pk %}">{% trans 'View Assignment Submissions' %}</a></h4>
                 </div>
             {% endif %}
 
@@ -204,7 +203,7 @@
         <div class=" col-md-7 col-sm-12 col-xs-12 ">
             <div class="row">
                 <div class=" col-md-8 col-sm-8 col-xs-12 text-center">
-                    <h2 class="subHeader">Questions</h2>
+                    <h2 class="subHeader">{% trans 'Questions' %}</h2>
                 </div>
 
                 {% if '/students' not in request.path %}
@@ -212,7 +211,7 @@
                         <button type="button" class="btn-sm btn-success" data-toggle="modal"
                                 data-target="#addQuestionModal"
                                 id="add-newquestion-btn">
-                            Add Question
+                            {% trans 'Add Question' %}
                         </button>
                     </div>
                 {% endif %}
@@ -224,7 +223,7 @@
 
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;padding-right: 0;">
                         <div class="col-md-8 col-sm-8 col-xs-12">
-                            <h5 style="padding-top: 3px; color: #000000"> Q: {{ forloop.counter }}
+                            <h5 style="padding-top: 3px; color: #000000"> {% trans 'Q' %}: {{ forloop.counter }}
 
                             </h5>
                             <h5>
@@ -234,7 +233,7 @@
                         <div class="col-md-4 col-sm-4 col-xs-12 no-padding">
                             {% if '/students' in request.path %}
                                 <button class="answerButton" type="button" id="{{ questions.pk }}" style="width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                                    margin-top: 25px;margin-left: 40px;">ANSWER <i
+                                                    margin-top: 25px;margin-left: 40px;">{% trans 'ANSWER' %} <i
                                         class="fa fa-arrow-right"></i>
                                 </button>
                             {% endif %}
@@ -247,12 +246,12 @@
                                         data-target="#editQuestionModal"
                                         data-questionpk="{{ questions.pk }}"
                                         id="editquestion-btn{{ questions.pk }}">
-                                    Edit Question
+                                    {% trans 'Edit Question' %}
                                 </button>
 
                                 {% if '/teachers' in request.path %}
                                     <button class="btn-link show-answer-btn" data-questionid="{{ questions.pk }}">
-                                        Show Answer
+                                        {% trans 'Show Answer' %}
                                     </button>
                                 {% endif %}
                                 <div class="modal fade" id="editQuestionModal" tabindex="-1"
@@ -262,8 +261,7 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header text-center">
-                                                <h4 class="modal-title" id="editQuestionModalLabel"><b>Edit
-                                                    Question </b>
+                                                <h4 class="modal-title" id="editQuestionModalLabel"><b>{% trans 'Edit Question' %} </b>
                                                     <button type="button" class="close" data-dismiss="modal"
                                                             aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
@@ -280,7 +278,7 @@
 
                                     <span style="float: right;"><a id="{{ questions.pk }}" class="confirm-delete"
                                                                    style="color: #2A3F54;cursor:pointer">
-                                Delete
+                                {% trans 'Delete' %}
                             </a></span>
 
                                     <form method="post"
@@ -295,7 +293,7 @@
                                 {% else %}
                                     <span style="float: right;"><a id="{{ questions.pk }}" class="confirm-delete"
                                                                    style="color: #2A3F54;cursor:pointer">
-                                Delete
+                                {% trans 'Delete' %}
                             </a></span>
 
                                     <form method="post"
@@ -314,7 +312,7 @@
                              style="display: none;">
                             {% if  questions.Question_Score %}
                                 <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
-                                    Question Score :
+                                    {% trans 'Question Score' %} :
                                 </div>
                                 <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
                                     <b style="color: #000000">{{ questions.Question_Score }}</b>
@@ -322,7 +320,7 @@
                             {% endif %}
                             {% if  questions.Question_Description %}
                                 <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
-                                    Question Description :
+                                    {% trans 'Question Description' %} :
                                 </div>
                                 <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
                                     <span style="color: #000000">{{ questions.Question_Description | safe }}</span>
@@ -330,20 +328,20 @@
                             {% endif %}
                             {% if questions.Answer_Type %}
                                 <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
-                                    Answer Type :
+                                    {% trans 'Answer Type' %} :
 
                                 </div>
                                 <div class=" col-md-8 col-sm-12 col-xs-12 no-padding">
                                     <b style="color: #000000">
                                         {% if questions.Answer_Type == 'S' %}
-                                            Short Answer
+                                            {% trans 'Short Answer' %}
                                         {% else %}
-                                            File Upload
+                                            {% trans 'File Upload' %}
                                         {% endif %}</b></div>
                             {% endif %}
                             {% if  questions.Question_Media_File %}
                                 <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
-                                    Question Media :
+                                    {% trans 'Question Media' %} :
                                 </div>
                                 <div class=" col-md-12 col-sm-12 col-xs-12 no-padding text-center">
                                     <!-- <b style="color: #000000">{{ questions.Question_Media_File }}</b> -->
@@ -352,8 +350,7 @@
                                              src="{{ questions.Question_Media_File.url }}">
                                     {% else %}
                                         <a href="{{ questions.Question_Media_File.url }}" target="_blank"><b
-                                                style="color:#017a9b">Click
-                                            to view attatched file</b></a>
+                                                style="color:#017a9b">{% trans 'Click to view attached file' %}</b></a>
                                     {% endif %}
                                 </div>
                             {% endif %}
@@ -397,10 +394,10 @@
                                                     <div class="form-group text-center">
                                                         <button class="btn btn-sm btn-primary cancelBtn" type="button"
                                                                 id="cancelButton{{ questions.pk }}">
-                                                            Cancel
+                                                            {% trans 'Cancel' %}
                                                         </button>
                                                         <button class="btn btn-sm btn-primary resetBtn" type="reset">
-                                                            Reset
+                                                            {% trans 'Reset' %}
                                                         </button>
 
                                                         <button type="button"
@@ -408,17 +405,16 @@
                                                                 id="answer{{ questions.id }}"
                                                                 data-id="{{ questions.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer={{ answer.pk }}">
-                                                            Submit
+                                                            {% trans 'Submit' %}
                                                         </button>
                                                     </div>
                                                 </form>
                                             </div>
                                         {% else %}
-                                            <p style="margin: 0;color:#000000;">File has been Submitted</p>
+                                            <p style="margin: 0;color:#000000;">{% trans 'File has been Submitted' %}</p>
 
                                             <a href="{{ answer.Assignment_File.url }}" target="_blank"><b
-                                                    style="color:#017a9b">Click
-                                                to view Submitted file</b></a>
+                                                    style="color:#017a9b">{% trans 'Click to view Submitted file' %}</b></a>
                                             {% if object.active %}
                                                 <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
                                                         style="float: right" title="Delete Answer"><i
@@ -455,7 +451,7 @@
                                                         <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
-                                                        <button class="btn btn-sm btn-primary" type="reset">Reset
+                                                        <button class="btn btn-sm btn-primary" type="reset">{% trans 'Reset' %}
                                                         </button>
 
                                                         <button type="button"
@@ -463,11 +459,10 @@
                                                                 id="answer{{ questions.id }}"
                                                                 data-id="{{ questions.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                                            Submit
+                                                            {% trans 'Submit' %}
                                                         </button>
                                                     {% else %}
-                                                        <p class="text-danger">Submission is prohibited. Please check
-                                                            assignment start and end date</p>
+                                                        <p class="text-danger">{% trans 'Submission is prohibited. Please check assignment start and end date' %}</p>
                                                     {% endif %}
                                                 </div>
 
@@ -476,7 +471,7 @@
                                                 <div class="form-group">
                                                     <label for="id_Assignment_File{{ questions.id }}" class="">
                                                         <span style="font-size: 10px; color: #721c24">
-                                                            Assignment File (Max: 10 MB) </span>
+                                                            {% trans 'Assignment File' %} ({% trans 'Max' %}: 10 MB) </span>
                                                     </label>
 
                                                     <input type="file" name="Assignment_File"
@@ -495,7 +490,7 @@
                                                     {% if object.active %}
                                                         <button class="btn btn-sm btn-primary" type="reset"
                                                                 id="cancelButton{{ questions.pk }}">
-                                                            Cancel
+                                                            {% trans 'Cancel' %}
                                                         </button>
 
                                                         <button type="button"
@@ -503,11 +498,10 @@
                                                                 id="answer{{ questions.id }}"
                                                                 data-id="{{ questions.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                                            Submit
+                                                            {% trans 'Submit' %}
                                                         </button>
                                                     {% else %}
-                                                        <p class="text-danger">Submission is prohibited. Please check
-                                                            assignment start and end date</p>
+                                                        <p class="text-danger">{% trans 'Submission is prohibited. Please check assignment start and end date' %}</p>
                                                     {% endif %}
                                                 </div>
                                             {% endif %}
@@ -548,7 +542,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="height: 80vh;">
             <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>Edit Assignment </b>
+                <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'Edit Assignment' %} </b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -562,7 +556,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Topic_edit" class="form-group">
                             <label for="id_Assignment_Topic_edit" class="control-label ">
-                                Assignment Topic *
+                                {% trans 'Assignment Topic' %} *
                             </label>
                             <div class="controls ">
                                 <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic_edit"
@@ -574,7 +568,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Start_edit" class="form-group">
                             <label for="id_Assignment_Start_edit" class="control-label ">
-                                Assignment Start *
+                                {% trans 'Assignment Start' %} *
                             </label>
                             <div class="controls ">
                                 <input type="text" name="Assignment_Start_edit"
@@ -588,7 +582,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                         <div id="div_id_Assignment_Deadline_edit" class="form-group">
                             <label for="id_Assignment_Deadline_edit" class="control-label ">
-                                Assignment Deadline *
+                                {% trans 'Assignment Deadline' %} *
                             </label>
                             <div class="controls ">
                                 <input type="text" name="Assignment_Deadline_edit"
@@ -600,9 +594,9 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <label>Publish</label><br>
+                        <label>{% trans 'Publish' %}</label><br>
                         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                                {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} checked
+                                {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} {% trans 'checked' %}
                                 {% endif %}><br> <br>
                     </div>
                     <div class="result text-center"></div>
@@ -619,7 +613,7 @@
                     </div>
 
                     <div class="submitButton text-center col-md-12">
-                        <button class="btn btn-success" type="submit">Submit</button>
+                        <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
                     </div>
                 </form>
             </div>
