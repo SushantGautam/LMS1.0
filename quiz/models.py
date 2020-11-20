@@ -313,6 +313,14 @@ class MCQuestion(Question):
     def answer_choice_to_string(self, guess):
         return Answer.objects.get(id=guess).content
 
+    def correct_option_limit_check(self):
+        correct_limit = 2
+        correct_answers = Answer.objects.filter(question=self, correct=True)
+        if correct_answers.count() < correct_limit:
+            return True
+        else:
+            return False
+
     class Meta:
         verbose_name = _("Multiple Choice Question")
         verbose_name_plural = _("Multiple Choice Questions")

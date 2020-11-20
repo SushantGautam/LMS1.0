@@ -193,6 +193,10 @@ class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['correct'].widget.attrs.update({'class': 'limit_check'})
 
 
 AnsFormset = inlineformset_factory(MCQuestion, Answer, form=AnswerForm, fields=['content', 'correct'], extra=2,
