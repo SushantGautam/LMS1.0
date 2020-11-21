@@ -1,7 +1,8 @@
 <div class="row app-block">
 
 
-    <div class="col-md-3 app-sidebar">
+<!--    <div class="col-md-3 col-sm-3 app-sidebar">-->
+    <div class="col-md-3 col-sm-3 " >
         <div class="card">
             <div class="card-body">
                 <a href="#" class="btn btn-outline-light dropdown-toggle bg-primary" data-toggle="dropdown">
@@ -64,6 +65,7 @@
 
                          {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
                                                 {% else %}
+
                         <button class=" {{ category.Category_Name }} btn add_survey_btn btn-sm
                         {% if category.Category_Name in request.get_full_path %}btn-light{%else%}btn-primary{%endif%}"
                                 id="category_Add_Button{{ category.Category_Name }}"
@@ -86,8 +88,9 @@
     <div class="modal-dialog">
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
+                <button type="button" class="close" data-dismiss="modal" style="position:relative; left:420px">&times;</button>
+
+                <h4 class="modal-title" style="position:relative; right:288px;">Create New Survey</h4>
             </div>
             <div class="modal-body" id="surveyForm">
 
@@ -112,7 +115,8 @@
     </div>
 
 
-    <div class="col-md-9 app-content">
+<!--    <div class="col-md-9 app-content">-->
+    <div class="col-md-9 col-sm-9">
         <div class="app-content-overlay"></div>
         <div class="app-action">
             <div class="action-left"></div>

@@ -386,6 +386,7 @@ def create_questioninfo_formset(obj_instance):
             OptionInfoFormset = inlineformset_factory(
                 QuestionInfo,
                 OptionInfo,
+                form=OptionInfoForm,
                 fields=('Option_Name',),
                 can_delete=False,
                 extra=len(my_op_initial) if my_op_initial is not None else 0,
@@ -456,12 +457,14 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
         SaqFormSet = inlineformset_factory(
             SurveyInfo,
             QuestionInfo,
+            form=QuestionInfoForm,
             extra=len(my_saq_initial),
             fields=('Question_Name', 'Question_Type'),
         )
         McqFormSet = inlineformset_factory(
             SurveyInfo,
             QuestionInfo,
+            form=QuestionInfoForm,
             formset=create_questioninfo_formset(obj_instance),
             extra=len(my_mcq_initial),
             fields=('Question_Name', 'Question_Type'),

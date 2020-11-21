@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block stylesheets %}
 
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
@@ -7,10 +8,11 @@
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active" aria-current="page">Survey</li>
+  <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Survey" %}</li>
   {% endblock %}
 {% block content %}
-   {% include 'survey/common/alerts.html' %}
+
   {% include 'survey/new_surveylist.html' %}
 {% endblock %}
 

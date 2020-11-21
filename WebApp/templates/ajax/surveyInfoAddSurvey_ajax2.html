@@ -46,12 +46,13 @@
         </ul>
         <div>
             <div id="step-1">
-                   <label class="control-label " style="display:block; text-align:center; font-size:1rem;" id="categoryTitle" for="first-name">Category :
+                   <label class="control-label " style="display:block; text-align:left; font-size:1.3rem; font-weight:bold;" id="categoryTitle" for="first-name">Category :
                 <span class="text text-black "  >{{ category_name }}</span>
                   </label>
-                <h4 class="text-center" style="padding: 0em 0 !important;
+                <br>
+                <h5 class="text-center" style="padding: 0em 0 !important;
 
-            ">Choose Type:</h4>
+            ">Choose Type:</h5>
                 <div class="col-xs-12">
                     <div class="col-md-12">
                         <div style="text-align: center">
@@ -127,7 +128,7 @@
                                     {{ questionansinfo_formset.non_form_errors }}
                                     <div class='qnansinfo_dynamic_append'>
                                         {% for questionansinfo_form in questionansinfo_formset.forms %}
-                                            {{ questionansinfo_form|crispy }}
+                                          <p style="position:relative; top:40px;">{{ forloop.counter}}</p>{{ questionansinfo_form|crispy }}
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -427,9 +428,9 @@
 
 
         {#..............................................For SAQ ...........................................#}
-        $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
-        $('#first_sa_que_div').prepend(`<p>1</p>`);
-        $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+      //  $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
+      //  $('#first_sa_que_div').prepend(`<p>1</p>`);
+       // $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
 
         if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
             $('#id_End_Time').durationPicker({

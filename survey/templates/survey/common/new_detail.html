@@ -127,7 +127,7 @@
                             <!-- ##################### survey started already so only update basic info  ######################  -->
                            <button type="submit" class="dropdown-item" id="update_survey_button_limited"
                                     data-toggle="modal"
-                                    data-target="#survey_form_modal" style="font-size:14px;">
+                                    data-target="#survey_form_modal" style="font-size:14px;"><i class="fa fa-edit text-warning" aria-hidden="true"></i> &nbsp;
                                   Edit Basic Info
                             </button>
                          <div class="dropdown-divider" ></div>
@@ -149,7 +149,7 @@
                          <div class="dropdown-divider" ></div>
                     {% endif %}
                     <button class="dropdown-item" type="submit" id="retakeSurveyBtn" data-toggle="modal"
-                            data-target="#survey_form_modal" style="font-size:14px;">Retake survey</button>
+                            data-target="#survey_form_modal" style="font-size:14px;"><i class="fa fa-refresh text-success" aria-hidden="true"></i> &nbsp;Retake survey</button>
                          <div class="dropdown-divider" ></div>
                      {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
                         <form method="POST" action="
@@ -162,9 +162,14 @@
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
                             <input type="hidden" value="{{ object.pk }}" name="objectpk">
-                            <button type="submit" class="dropdown-item" style="font-size:14px;">Delete Survey</button></form>
+                            <button type="submit" class="dropdown-item" style="font-size:14px;"><i class="fa fa-trash text-danger" aria-hidden="true"></i> &nbsp; Delete Survey</button></form>
                             {%endif%}
                             <div class="dropdown-divider" ></div>
+                          {% if 'teachers' in request.get_full_path %}
+                {%else%}
+                <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers" ><button type="submit" class="dropdown-item"><i class="fa fa-trash text-danger" aria-hidden="true"></i> &nbsp; Delete All Answers</button></a>
+
+                {%endif%}
                      </div>
                      </div>
             </div>
@@ -394,19 +399,7 @@
             </div>
 
             <div class="col-md-3">
-                {% if 'teachers' in request.get_full_path %}
-                {%else%}
-                <div class="col-md-12">
-                    <br>
-                     <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers" style="float: right;">
-                            <button type="submit" class="btn btn-danger btn-md">
-                                <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete All Answers
-                            </button>
 
-                     </a>
-                    <br><br>
-                </div>
-                {%endif%}
                 <div class="col-md-12">
 
                     <br><br><br>

@@ -1,9 +1,10 @@
-{% extends "base.html" %} {% load static %} {% block stylesheets %}
+{% extends "base.html" %} {% load static %} {% load i18n %}{% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 
 {% endblock stylesheets %} {% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">Survey</a>
+        <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">{% trans "Survey" %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
@@ -22,7 +23,7 @@
     <script src="{% static 'js/common.js' %}"></script>
     <script src="{% static 'worldcloud.js' %}"></script>
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
-    <script src="{% static 'jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
+    <script src="{% static 'vendors/jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
 
     <script>
        //  let checkbox = $("input[class=custom-control-input]");

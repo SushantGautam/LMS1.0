@@ -125,7 +125,7 @@ class SurveyInfoFormUpdateLimited(forms.ModelForm):
 
     class Meta:
         model = SurveyInfo
-        fields = ['Survey_Title', 'End_Date', 'Use_Flag', 'Publish_Result',]
+        fields = ['Survey_Title', 'End_Date', 'Use_Flag', 'Publish_Result', ]
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request", None)
@@ -187,7 +187,6 @@ class OptionInfoForm(forms.ModelForm):
         self.fields['Option_Name'].label = ""
 
 
-
 class SubmitSurveyForm(forms.ModelForm):
     class Meta:
         model = SubmitSurvey
@@ -198,6 +197,11 @@ class AnswerInfoForm(forms.ModelForm):
     class Meta:
         model = AnswerInfo
         fields = '__all__'
+
+    # def __init__(self, *args, **kwargs):
+    #     super(AnswerInfoForm, self).__init__(*args, **kwargs)
+    #     OptionInfoForm.fields['Option_Name'].label = ""
+    #     QuestionInfoForm.fields['Question_Name'].label = ""
 
 
 # fields=('Question_Name', 'Question_Type', 'Survey_Code'))
@@ -218,6 +222,8 @@ AnswerInfoFormset = inlineformset_factory(
     AnswerInfo,
     fields=('Answer_Value',),
     extra=1,
+    # form=AnswerInfoForm,
+
 )
 
 
@@ -239,7 +245,6 @@ class BaseQuestionInfoFormset(BaseInlineFormSet):
                 form.prefix,
                 OptionInfoFormset.get_default_prefix()),
         )
-
 
     def is_valid(self):
         result = super().is_valid()
