@@ -243,7 +243,10 @@ class QuizTake(FormView):
             messages.add_message(request, messages.ERROR,
                                  'You have already sat this exam and only one sitting is permitted')
             # return render(request, self.single_complete_template_name)
-            return HttpResponseRedirect(reverse('start'))
+            sittingObj = Sitting.objects.filter(user=self.request.user,
+                    quiz__pk=self.quiz.pk,
+                    complete=True).last()
+            return redirect('student_progress_detail', pk=sittingObj.id)
 
         return super(QuizTake, self).dispatch(request, *args, **kwargs)
 
