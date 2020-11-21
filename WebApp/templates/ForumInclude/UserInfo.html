@@ -1,7 +1,7 @@
-{% load i18n %}
 {% load humanize %}
 {% load forum_tags %}
 {% load static %}
+{% load i18n %}
 {% load markdown_extras %}
 
 {% block main_contain %}
@@ -11,7 +11,7 @@
 <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
-            {% trans 'Threads created by' %} {{ username }}
+            Threads created by {{ username }}
             {% endblocktrans %}</h2>
     </div>
     <!-- List group -->
@@ -177,7 +177,7 @@
 <div class="panel panel-default">
     <div class="panel panel-heading">
         <h2>{% blocktrans with username=user.username %}
-            {% trans 'Replies from' %} {{ username }}
+            Replies from {{ username }}
             {% endblocktrans %}</h2>
 
     </div>
