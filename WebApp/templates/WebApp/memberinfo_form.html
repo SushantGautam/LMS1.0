@@ -218,9 +218,15 @@
 <script>
     function checkUsername() {
         let username = $('#id_username').val();
+        let initName = '{{ object.username }}';
+        //console.log(username, initName)
         if (/[^a-zA-Z0-9\@\.\+\-_]/.test(username)) {
             $('#username-error-message').text("Username can have only alphanumeric character and symbols @ -  .  +  _");
-        } else {
+        }
+        else if (username == initName) {
+            $('#username-error-message').text("");
+        }
+        else if (username != initName) {
             $.ajax({
                 url: '{% url "validate_username" %}',
                 type: "GET",
@@ -278,7 +284,7 @@
     });
 
     $('#id_Is_Teacher').change(function () {
-        console.log('change')
+        //console.log('change')
         if ($('#id_Is_Teacher').is(':checked')) {
             $(".positionField").show();
         }
