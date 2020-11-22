@@ -62,7 +62,7 @@
                            data-target="#moderation-modal"
                            data-pk="{{ thread.pk }}" data-action="unhide-thread"
                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> {% trans 'UnHide' %} </span>
+                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> {% trans 'Unhide' %} </span>
                         </a>
                     {% else %}
                         <a href="#" class="moderate-action hide-thread" data-toggle="modal"
@@ -264,7 +264,7 @@
 
                                                         <span class="btn btn-danger btn-xs"><i
                                                                 class="fa fa-eye-slash"></i>
-                                                            {% trans 'UnHide' %} </span>
+                                                            {% trans 'Unhide' %} </span>
 
                                                                 </p>
                                                             </div>
@@ -572,7 +572,7 @@
                         };
                         break;
                     case 'unhide-thread':
-                        modalTitle = "{% trans 'UnHide thread' %}";
+                        modalTitle = "{% trans 'Unhide thread' %}";
                         modalBody = "{% trans 'Please confirm your action' %}";
                         modalCb = () => {
                             patchthread(button.data('api-url'), {hidden: false});

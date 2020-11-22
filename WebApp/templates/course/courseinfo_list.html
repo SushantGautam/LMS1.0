@@ -314,7 +314,7 @@
 
                                 {% if object.get_teachers_of_this_course %}
                                     <p style="height: 30px; overflow:auto">
-                                        {% trans 'Teacher' %}({% trans 's' %}): &nbsp;
+                                        {% trans 'Teacher(s)' %}: &nbsp;
                                         {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                                             {{ eachTeacher.getFullName }}
                                         {% endfor %}

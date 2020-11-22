@@ -25,7 +25,7 @@
                     {% if request.user.is_superuser %}
                     {% trans 'Super User' %}
                     {% elif request.user.Is_teacher %}
-                    , {% trans 'teacher' %}
+                    , {% trans 'Teacher' %}
                     {% elif request.user.Is_Student %}
                     , {% trans 'Student' %}
                     {% elif request.user.Is_CenterAdmin %}
