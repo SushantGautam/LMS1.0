@@ -141,7 +141,7 @@ Course
                     {% endif %}
                     {% for i in response.paginator.page_range %}
                         {% if response.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">({% trans 'current' %})</span></span></li>
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                         {% else %}
                             <li>
     <a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>

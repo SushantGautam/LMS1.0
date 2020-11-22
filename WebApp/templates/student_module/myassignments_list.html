@@ -70,7 +70,7 @@
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
                         <p>{% trans 'Submission Deadline' %} -
                             {% if a.active %}
-                                <span class="text-success">{{ a.deadline|timeuntil }} {% trans 'left' %} </span>
+                                <span class="text-success">{{ a.deadline|timeuntil }} left </span>
                             {% else %}
                                 <span class="text-danger">{% trans 'Expired' %}</span>
                             {% endif %}</p>
@@ -122,7 +122,7 @@
                         {% endif %}
                         <a href="{{ a.student_get_absolute_url }}">
                             <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                   margin-bottom: 10px;">{% trans 'CONTINUE' %} <i class="fa fa-arrow-right"></i>
+                                   margin-bottom: 10px;text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                             </button>
                         </a>
                     </div>
@@ -130,7 +130,7 @@
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
                         <p>{% trans 'Submission Deadline' %} - <span
-                                class="text-success">{{ a.deadline|timeuntil }} {% trans 'left' %} </span></p>
+                                class="text-success">{{ a.deadline|timeuntil }} left </span></p>
                     </div>
                 </div>
             {% endfor %}
