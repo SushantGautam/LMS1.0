@@ -296,6 +296,7 @@ class QuizTake(FormView):
     def form_valid_user(self, form):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         guess = form.cleaned_data['answers']
+        print("multiple selected values: ", guess)
         is_correct = self.question.check_if_correct(guess)
         ssl = self.sitting.score_list
         if not ssl:

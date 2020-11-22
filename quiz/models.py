@@ -861,7 +861,7 @@ class Sitting(models.Model):
         user_answers = json.loads(self.user_answers)
         for i in self.quiz.mcquestion.all():
             mcq_user_ans = user_answers.get(str(i.id))
-            if i.check_if_correct(mcq_user_ans):
+            if i.check_if_correct(mcq_user_ans):                # multi-ans-effect
                 totalmcq_score += i.score
         for j in self.quiz.tfquestion.all():
             tfq_user_ans = user_answers.get(str(j.id))
@@ -983,7 +983,7 @@ class Sitting(models.Model):
                 user_ans = user_answers.get(str(q.id), False)
                 if user_ans:
                     if isinstance(q, MCQuestion):
-                        q.user_answer = Answer.objects.get(id=int(user_ans)).content
+                        q.user_answer = Answer.objects.get(id=int(user_ans)).content    # multi-ans-effect
                     else:
                         q.user_answer = user_ans
                     
@@ -1021,7 +1021,7 @@ class Sitting(models.Model):
         return questions
 
     @property
-    def questions_with_user_answers(self):
+    def questions_with_user_answers(self):          # multi-ans-effect for child
         return {
             q: q.user_answer for q in self.get_questions(with_answers=True)
         }

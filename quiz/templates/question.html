@@ -79,14 +79,8 @@
         </style>
 
     {% endblock sidebar %}
-
-
-
-
-
-
-
 {% endblock %}
+
 {% block content %}
 
     {% if previous.answers %}
@@ -212,18 +206,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         <!-- <p class="lead">{{ question.content }}</p>
 
 {% if question.figure %}
@@ -253,7 +235,7 @@
 </form> -->
 
     {% endif %}
-
+{% endblock %}
     <hr>
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 
@@ -312,6 +294,7 @@
             let timerInterval = null;
             let remainingPathColor = COLOR_CODES.info.color;
 
+            {% if quiz.exam_paper %}
             document.getElementById("app").innerHTML = `
                 <div class="base-timer">
                   <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -335,10 +318,11 @@
             )}</span>
                 </div>
                 `;
+            
             setCircleDasharray()
 
             startTimer();
-
+            {% endif %}
             function onTimesUp() {
                 clearInterval(timerInterval);
             }
@@ -410,13 +394,32 @@
                     .setAttribute("stroke-dasharray", circleDasharray);
             }
         </script>
+        <script>
+            // FIFO queue to limit selected answers to 2.
+            var multi_ans_arr = [];         /////// The queue; contains id of selected elements
+            $("input[name='answers']").change(function(){
+                if($(this).prop("checked")){
+                    /////// if checked, see if queue(of length 2) is full, if its full, remove the oldest element
+                    /////// also uncheck the removed element  
+                    if (multi_ans_arr.length >= 2){
+                        $("#" + multi_ans_arr.shift()).prop('checked', false);
+                    }
+                    /////// push the new element(id) to the queue; id of the element is stored in the queue
+                    multi_ans_arr.push($(this).attr('id'));
+                } else {
+                    /////// if unchecked, must remove this element from the queue, no matter if its old or new.  
+                    if (multi_ans_arr.includes(($(this).attr('id')))){
+                        multi_ans_arr.splice(multi_ans_arr.indexOf($(this).attr('id')), 1);
+                    }
+                }
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                runQuizTimerInterval()
+            })
+        </script>
     {% endblock %}
-    <script>
-        $(document).ready(function () {
-            runQuizTimerInterval()
-        })
-    </script>
-{% endblock %}
 
 {% block footer %}
 
