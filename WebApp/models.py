@@ -42,6 +42,7 @@ class CenterInfo(models.Model):
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
     UBLMeet_URL = CharField(max_length=256, default="meet.jit.si", help_text="Assign UBL meet domain name")
+    language = CharField(max_length=5, choices=settings.LANGUAGES, default='en-us')
 
     class Meta:
         ordering = ('-pk',)
