@@ -1,10 +1,12 @@
 {% extends base_file %}
 {% load static %}
 {% load crispy_forms_tags %}
+
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
 {{ form.media }}
 {% endblock %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
@@ -18,25 +20,8 @@
     {% endif %}
 </li>
 {% endblock %}
+
 {% block content %}
-<!-- <style>
-    .selector {
-        width: auto !important;
-    }
-
-    .selector-available,
-    .selector-chosen {
-        width: 280px !important;
-    }
-
-    .selector select {
-        width: 280px !important;
-    }
-
-    .selector .selector-available input {
-        width: 210px !important;
-    }
-</style> -->
 <div class="page-header">
     <div class="page-title d-block text-center">
         <h2>{% if '/groupmapping/create/' == request.path %}
@@ -48,8 +33,9 @@
             {% endif %}</h2>
     </div>
 </div>
+
 <div class="row">
-    <div class="col-lg-6 col-md-12" style="margin:auto">
+    <div class="col-lg-6 col-md-12 m-auto">
         <div class="card p-4">
             <form method="post" id="FormID" enctype="multipart/form-data">
                 {% csrf_token %}

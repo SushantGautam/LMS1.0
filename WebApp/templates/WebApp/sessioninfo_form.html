@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block stylesheet %}
+{{ form.media }}
+{% endblock stylesheet %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
+<li class="breadcrumb-item active" aria-current="page">
+    {% if '/sessioninfo/create/' == request.path %}
+    Create New Session Name
+    {% else %}
+    Edit Session Name
+    {% endif %}
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title d-block text-center">
+        <h2>
+            {% if '/sessioninfo/create/' == request.path %}
+            Create New Session Name
+            {% else %}
+            Edit Session Name
+            {% endif %}
+        </h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-12 m-auto">
+        <div class="card p-4">
+            <form method="post" id="FormID">
+                {% csrf_token %}
+                {% if form.errors %}
+                {% for field in form %}
+                {% for error in field.errors %}
+                <div class="m-2 alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div class="m-2 alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {{ form.Session_Name|as_crispy_field }}
+                {{ form.Description|as_crispy_field }}
+
+
+                {% if '/sessioninfo/create/' == request.path %}
+                <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                {% else %}
+                <div class="form-group has-feedback">
+                    <label>
+                        Status
+                    </label><br>
+                    <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                        {% if object.Use_Flag == False %} &nbsp; {% else %} checked {% endif %}><br> <br></div>
+                {% endif %}
+                <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
+                    class="select form-control">
+
+                <div class="submitButton text-center">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

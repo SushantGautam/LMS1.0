@@ -16,29 +16,31 @@
             <div class="error-div" style="display: none">
 
             </div>
-            <form method="post" id="editCheckedInnings" action="
+            <div class="modal-body">
+                <form method="post" id="editCheckedInnings" action="
             {% if '/inactive' in request.path %}
                 {% url 'inninginfo_inactive_edit_checked' %}
             {% else %}
                 {% url 'inninginfo_edit_checked' %}
             {% endif %}
             ">
-                {% csrf_token %}
-                <input type="hidden" name="inning_ids[]" id="inning_ids">
-                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="inning_ids[]" id="inning_ids">
                     <div class="form-group">
                         <label for="Student_Group"> Select Student Group</label>
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <select class="form-control" id="Student_Group" name="Student_Group" disabled>
                                     <option value="">Select Student Group</option>
                                     {% for groupmapping in student_group_list %}
-                                    <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}</option>
+                                    <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}
+                                    </option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changestudentgroup-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changestudentgroup-btn">Change</button>
                             </div>
                         </div>
                     </div>
@@ -46,11 +48,12 @@
                     <div class="form-group">
                         <label for="start_Date">Start Date</label>
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <input type="date" class="form-control" id="start_Date" name="start_Date" disabled>
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changestartdate-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changestartdate-btn">Change</button>
                             </div>
                         </div>
                     </div>
@@ -58,133 +61,23 @@
                     <div class="form-group">
                         <label for="end_Date">End Date</label>
                         <div class="row">
-                            <div class="col col-md-9">
+                            <div class="col-9">
                                 <input type="date" class="form-control" id="end_Date" name="end_Date" disabled>
                             </div>
-                            <div class="col col-md-3">
-                                <button class="btn btn-block" type="button" id="changeenddate-btn">Change</button>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changeenddate-btn">Change</button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary ml-3" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
-
-<script>
-    $(document).ready(function () {
-        $(".editCheckedInnings").on('click', function () {
-            let seleced_innings = []
-            $.each($('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll'), function (index) {
-                seleced_innings.push($(this).val())
-            })
-            $('#inning_ids').val(seleced_innings)
-        });
-    });
-
-    $('#Student_Group').select2({
-        width: '100%',
-    });
-
-    $('.inningInfoCheckAll').on('click', function () {
-        $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
-        checkboxChangeEvent()
-    })
-
-    $('.inningInfoCheckbox').on('click', function () {
-        checkboxChangeEvent()
-
-        if ($('.inningInfoCheckbox').length === $('.inningInfoCheckbox:checked').length) {
-            $('.inningInfoCheckAll').prop('checked', 'checked');
-        } else {
-            $('.inningInfoCheckAll').prop('checked', false);
-        }
-    });
-
-    function checkboxChangeEvent() {
-        let checkBoxlength = $('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll').length
-
-        if (checkBoxlength > 0) {
-            $('.checkboxCheckedLength').text(checkBoxlength + ' of ' + $('.inningInfoCheckbox').length + ' selected')
-            $('.editCheckedInnings, .deleteCheckedInnings').removeAttr('disabled')
-        } else {
-            $('.checkboxCheckedLength').text('')
-            $('.editCheckedInnings, .deleteCheckedInnings').prop('disabled', 'disabled')
-        }
-    }
-
-    $('#editCheckedInnings').on('submit', function (e) {
-        e.preventDefault()
-        if (($('#start_Date').is(':disabled') && $('#end_Date').is(':disabled') && $('#Student_Group').is(':disabled'))
-            || ($('#start_Date').val() == '' && $('#end_Date').val() == '' && $('#Student_Group').val() == '')
-        ) {
-            alert('Please input data and enable required fields to submit')
-            return false
-        }
-
-        if ($('#start_Date').is(':disabled') || $('#end_Date').is(':disabled')) {
-            var form = $(this);
-            var url = form.attr('action');
-
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: form.serialize(), // serializes the form's elements.
-                success: function (data) {
-                    location.reload(); // show response from the php script.
-                },
-                error: function (e) {
-                    $('.error-div').empty()
-                    $('.error-div').css('display', 'block')
-                    $('.error-div').append(`
-                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
-                    `)
-                    $.each(e.responseJSON.inning_list, function (index) {
-                        $('.error-div').append(`
-                            <p style="font-size: small">${e.responseJSON.inning_list[index]['Inning_Name']}</p>
-                        `)
-                    })
-
-                }
-            });
-        } else {
-            start = new Date($('#start_Date').val()).getTime()
-            end = new Date($('#end_Date').val()).getTime()
-            if (end < start) {
-                alert('End Date must be greater than Start Date.')
-                return false
-            } else {
-                $(this).submit()
-            }
-        }
-    });
-
-    $('#changestudentgroup-btn').on('click', function () {
-        toggleInput('#Student_Group')
-    });
-
-    $('#changestartdate-btn').on('click', function () {
-        toggleInput('#start_Date')
-    });
-
-    $('#changeenddate-btn').on('click', function () {
-        toggleInput('#end_Date')
-    });
-
-    function toggleInput(inputID) {
-        if ($(inputID).is(':disabled')) {
-            $(inputID).removeAttr('disabled');
-        } else {
-            $(inputID).prop('disabled', 'disabled')
-        }
-    }
-
-    checkboxChangeEvent()
-</script>
