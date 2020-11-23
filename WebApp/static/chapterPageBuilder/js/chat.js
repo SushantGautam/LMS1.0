@@ -187,7 +187,7 @@ chatSocket.onmessage = function (e) {
 
 // Execute on chatsocket close
 chatSocket.onclose = function (e) {
-    console.error('Chat socket closed unexpectedly');
+    console.error('Chat socket closed unexpectedly', e);
 };
 
 // Focusing the message input box after sending message

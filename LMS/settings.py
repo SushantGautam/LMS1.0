@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.messages import constants as messages
+from django.utils.translation import gettext as _
 
 # # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import socket
@@ -172,6 +173,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = (
+    ('en-us', _('English')),
+    ('ko', _('Korean')),
+    ('np', _('Nepali')),
+    ('id', _('Indonesian')),
+    ('mn', _('Mongolian')),
+)
 
 TIME_ZONE = 'UTC'
 
