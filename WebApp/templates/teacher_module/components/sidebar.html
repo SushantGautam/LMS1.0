@@ -9,6 +9,8 @@
         <ul>
             <li>
                 <a href="#" data-menu-target="#dashboard">
+                   
+                        
                     <span class="menu-tab-icon">
                         <i data-feather="home"></i>
                     </span>
@@ -97,6 +99,13 @@
                     <span>{% trans "Quiz List" %}</span>
                 </a>
             </li>
+            <li>
+                <a href="{% url 'teacher_quiz_marking' %}">
+                    <span class="nav-link-icon" data-feather="help-circle"></span>
+                    <span>{% trans "Quiz Marking" %}</span>
+                </a>
+            </li>
+        
             <li>
                 <a href="{% url 'teacher_quiz_exam_list' %}">
                     <span class="nav-link-icon" data-feather="book-open"></span>
