@@ -66,16 +66,7 @@
 
 
 {% block javascript %}
-<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
-<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
-
-<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('.table').DataTable({
@@ -95,53 +86,53 @@
                     fieldSeparator: '\t'
                 }]
         });
+    });
 
-        $(".button-info").click(function () {
-            $("ul.info-text").toggle();
-        });
+    $(".button-info").click(function () {
+        $("ul.info-text").toggle();
+    });
 
-        $('#form_import_csv').submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData($('form').get(0));
-            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
-            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
-            formData.append("csrfmiddlewaretoken", csrf);
-            if ($('#id_import_csv').val()) {
-                $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
-                $('#submitcsv').attr('disabled', true);
-                $('.closeImportCSV').attr('disabled', true);
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'csv_import_inninginfo' %}",  // URL to your view that serves new info
-                    data: formData,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        $('.import-message').addClass(response.class);
-                        $('.import-message').removeClass(response.rmclass);
-                        $('.import-message').html(response.message);
-                    },
-                    error: function () {
-                        $('.import-message').addClass('text-danger');
-                        $('.import-message').removeClass('text-sucess');
-                        $('.import-message').html("Error while processing data please try again and verify the format.");
-                    },
-                    complete: function () {
-                        $('#submitspinner').html(``);
-                        $('#submitcsv').attr('disabled', false);
-                        $('.closeImportCSV').attr('disabled', false);
-                    }
-                });
-            } else {
-                $('.import-message').addClass('text-danger');
-                $('.import-message').html("Please upload a csv file with defined format.");
-            }
-        });
+    $('#form_import_csv').submit(function (e) {
+        e.preventDefault();
+        var formData = new FormData($('form').get(0));
+        // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+        csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+        formData.append("csrfmiddlewaretoken", csrf);
+        if ($('#id_import_csv').val()) {
+            $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
+            $('#submitcsv').attr('disabled', true);
+            $('.closeImportCSV').attr('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: "{% url 'csv_import_inninginfo' %}",  // URL to your view that serves new info
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('.import-message').addClass(response.class);
+                    $('.import-message').removeClass(response.rmclass);
+                    $('.import-message').html(response.message);
+                },
+                error: function () {
+                    $('.import-message').addClass('text-danger');
+                    $('.import-message').removeClass('text-sucess');
+                    $('.import-message').html("Error while processing data please try again and verify the format.");
+                },
+                complete: function () {
+                    $('#submitspinner').html(``);
+                    $('#submitcsv').attr('disabled', false);
+                    $('.closeImportCSV').attr('disabled', false);
+                }
+            });
+        } else {
+            $('.import-message').addClass('text-danger');
+            $('.import-message').html("Please upload a csv file with defined format.");
+        }
+    });
 
-        $('.closeImportCSV').click(function () {
-            window.location.reload();
-        });
+    $('.closeImportCSV').click(function () {
+        window.location.reload();
     });
 </script>
 <script>
