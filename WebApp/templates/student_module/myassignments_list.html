@@ -68,12 +68,14 @@
 
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
-                        <p>{% trans 'Submission Deadline' %} -
+                        <p>
+                         {% trans 'Submission Deadline' %} -
                             {% if a.active %}
-                                <span class="text-success">{{ a.deadline|timeuntil }} left </span>
+                                  <span class="text-success">{% blocktrans %}{{ a.deadline|timeuntil }} left {% endblocktrans %}</span>
                             {% else %}
                                 <span class="text-danger">{% trans 'Expired' %}</span>
-                            {% endif %}</p>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             {% endfor %}
@@ -129,8 +131,7 @@
 
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
-                        <p>{% trans 'Submission Deadline' %} - <span
-                                class="text-success">{{ a.deadline|timeuntil }} left </span></p>
+                        <p>{% blocktrans %} Submission Deadline - <span class="text-success">{{ a.deadline|timeuntil }} left </span> {% endblocktrans %}</p>
                     </div>
                 </div>
             {% endfor %}
