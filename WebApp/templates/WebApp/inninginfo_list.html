@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block stylesheet %}
-<link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
-{% endblock %}
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
@@ -135,6 +130,7 @@
         window.location.reload();
     });
 </script>
+
 <script>
     $(document).ready(function () {
         $("#listButton").addClass('active')
@@ -155,9 +151,8 @@
         $("#listButton").addClass('active')
         $("#cardButton").removeClass('active')
     }
-
-
 </script>
+
 <script>
     $(document).ready(function () {
         $(".editCheckedInnings").on('click', function () {

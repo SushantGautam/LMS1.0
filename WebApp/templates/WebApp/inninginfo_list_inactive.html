@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block stylesheet %}
-<link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
-{% endblock %}
-
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item active" aria-current="page">Session</li>
@@ -53,13 +47,10 @@
         </div>
     </div>
     <div class="table-responsive mt-3" id="listView">
-        <span class="checkboxCheckedLength"></span>
         <table class="table table-striped nowrap" id="inning_dataTable">
             <thead class="thead-light">
                 <tr class="tableTitleRow">
-                    <th>
-                        <input type="checkbox" class="inningInfoCheckAll">
-                    </th>
+                    <th> <input type="checkbox" class="inningInfoCheckAll"> </th>
                     <th>ID</th>
                     <th>Session Name</th>
                     <th>Student Group</th>
@@ -82,7 +73,11 @@
                     <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
                     <td style="vertical-align: middle;">{{ object.Start_Date }}</td>
                     <td style="vertical-align: middle;">{{ object.End_Date }}</td>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="{{ object.get_update_url }}">Edit</a>
+                    <td class="text-center">
+                        <a class="btn btn-info btn-floating" href="{{ object.get_update_url }}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -139,6 +134,7 @@
         });
     });
 </script>
+
 <script>
     $(document).ready(function () {
         $("#listButton").addClass('active')

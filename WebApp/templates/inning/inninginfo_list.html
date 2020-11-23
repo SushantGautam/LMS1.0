@@ -46,7 +46,7 @@
         </div>
     </div>
     <div class="table-responsive mt-3" id="listView">
-        <table class="table table-striped" id="inning_dataTable" cellspacing="0" width="100%">
+        <table class="table table-striped" id="inning_dataTable">
             <thead class="thead-light">
                 <tr class="tableTitleRow">
                     <th><input type="checkbox" class="inningInfoCheckAll"></th>
@@ -68,10 +68,9 @@
                     <td style="vertical-align: middle;">{{ forloop.counter }}</td>
                     <td style="vertical-align: middle;"><b>
                             <a
-                                href="
-
-
-                                        {% if '/mysessions' not in request.path %}{{ object.get_absolute_url }}{% elif 'mysessions' in request.path %}{% url 'teachers_mysession_detail' object.pk %}{% endif %}">{{ object.Inning_Name }}</a>
+                                href="{% if '/mysessions' not in request.path %}{{ object.get_absolute_url }}{% elif 'mysessions' in request.path %}{% url 'teachers_mysession_detail' object.pk %}{% endif %}">
+                                {{ object.Inning_Name }}
+                            </a>
                         </b></td>
                     <td style="vertical-align: middle;">{{ object.Groups }}</td>
                     <td style="vertical-align: middle;">{{ object.Course_Group.count }}</td>
@@ -85,6 +84,7 @@
                                     {% endif %}">
                             <i class="fa fa-edit"></i>
                         </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
