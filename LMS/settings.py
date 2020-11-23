@@ -1,7 +1,7 @@
 import os
 
 from django.contrib.messages import constants as messages
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 
 # # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import socket
