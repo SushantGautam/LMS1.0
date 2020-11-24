@@ -1,11 +1,8 @@
-
-
-
-
+{% load i18n %}
 
 <li class="row">
     <div class="col-md-7">
-        <h2> Notifications </h2>
+        <h2> {% trans 'Notifications' %} </h2>
     </div>
     <div class="col-md-5">
         {% if notifications %}
@@ -34,7 +31,7 @@
 
             </script>
             <a href="{% url 'Notifications:see_all' %}" id="seeallnotificationslink">
-                <strong>See All Notifications</strong>
+                <strong>{% trans 'See All Notifications' %}</strong>
                 <i class="fa fa-angle-right"></i>
             </a>
         </div>
@@ -42,7 +39,7 @@
 {% else %}
     <li>
         <div class="text-center">
-            <strong>No Notifications</strong>
+            <strong>{% trans 'No Notifications' %}</strong>
         </div>
     </li>
 

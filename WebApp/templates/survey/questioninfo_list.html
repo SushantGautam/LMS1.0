@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'questioninfo_list' %}">QuestionInfo Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'questioninfo_list' %}">{% trans 'Question Info Listing' %}</a></p>
 <table class="table">
     <tr>
-        <td>ID</td>
-        <td>Link</td>
-        <td>Question_Name</td>
+        <td>{% trans 'ID' %}</td>
+        <td>{% trans 'Link' %}</td>
+        <td>{% trans 'Question Name' %}</td>
     </tr>
     {% for object in object_list %}
     <tr>
@@ -15,5 +16,5 @@
         <td>{{ object.Question_Name }}</td>
     </tr>
     {% endfor %}
-</table><a class="btn btn-primary" href="{% url 'questioninfo_create' %}">Create new QuestionInfo</a>
+</table><a class="btn btn-primary" href="{% url 'questioninfo_create' %}">{% trans 'Create New Question Info' %}</a>
 {% endblock %}

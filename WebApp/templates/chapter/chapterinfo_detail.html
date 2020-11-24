@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 
 {% load comment_tags %}  {# Loading the template tag #}
@@ -35,7 +36,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="height: 80vh;   overflow-y: scroll;">
             <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>Create New Assignment</b>
+                <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'Create New Assignment' %}</b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -56,7 +57,7 @@
         <div class="col-md-6 col-sm-12 col xs-12">
 
             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                <h2 class="detailListHeader">Chapter {{ object.Chapter_No }}
+                <h2 class="detailListHeader">{% trans 'Chapter' %} {{ object.Chapter_No }}
                     : {{ object.Chapter_Name }} </h2>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
@@ -69,21 +70,19 @@
                 {% else %}
                     {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
                 {% endif %}" id="course-viewer" target="_self">
-                    <i class="fa fa-laptop"></i> Content Viewer &nbsp;
+                    <i class="fa fa-laptop"></i> {% trans 'Content Viewer' %} &nbsp;
                 </a>
 
                 {% if '/students' not in request.path %}
                     {% if '/teachers' in request.path %}
                         <a class="btn-sm btn-success"
                            href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}"> <i
-                                class="fa fa-pencil"></i> Content
-                            Builder
+                                class="fa fa-pencil"></i> {% trans 'Content Builder' %}
                             &nbsp;</a>
                     {% else %}
                         <a class="btn-sm btn-success"
                            href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}"> <i
-                                class="fa fa-pencil"></i> Content
-                            Builder &nbsp;</a>
+                                class="fa fa-pencil"></i> {% trans 'Content Builder' %} &nbsp;</a>
                     {% endif %}
                 {% endif %}
 
@@ -97,10 +96,10 @@
         /teachers{{ object.get_update_url }}
     {% else %}
         {{ object.get_update_url }}
-    {% endif %}"><b><u>Edit Chapter</u></b></a>
+    {% endif %}"><b><u>{% trans 'Edit Chapter' %}</u></b></a>
                     <span>
                     <a id="{{ object.pk }}" class="chapter-confirm-delete"
-                       style="color: rgb(255, 0, 0);cursor:pointer;float: right;margin-right: 60px;">Delete </a>
+                       style="color: rgb(255, 0, 0);cursor:pointer;float: right;margin-right: 60px;">{% trans 'Delete' %} </a>
                 </span>
                     <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
                           id="deleteChapter{{ object.pk }}">
@@ -115,18 +114,18 @@
 
                 <table class="table" style="margin-left: 0 ; margin-bottom:0px ">
                     <tr>
-                        <td>Summary</td>
+                        <td>{% trans 'Summary' %}</td>
                         <td>{{ object.Summary }}</td>
                     </tr>
 
                     {% if '/students' not in request.path %}
                         <tr>
-                            <td>Status</td>
+                            <td>{% trans 'Status' %}</td>
                             <td>
                                 {% if object.Use_Flag is True %}
-                                    <span class="badge badge-success">Published</span>
+                                    <span class="badge badge-success">{% trans 'Published' %}</span>
                                 {% elif object.Use_Flag is False %}
-                                    <span class="badge badge-danger">Not Published</span>
+                                    <span class="badge badge-danger">{% trans 'Not Published' %}</span>
                                 {% endif %}
 
                             </td>
@@ -197,7 +196,7 @@
 
 
                     <tr>
-                        <td>Register By</td>
+                        <td>{% trans 'Register By' %}</td>
                         {% if 'students' in request.path %}
                             <td>{% getUserFullName object.Register_Agent as register_agent %}{{ register_agent }}</td>
                         {% else %}
@@ -206,13 +205,13 @@
                     </tr>
 
                     <tr>
-                        <td>Course Code</td>
+                        <td>{% trans 'Course Code' %}</td>
                         <td>{{ object.Course_Code }}</td>
                     </tr>
 
                     <!-- Pre Quiz Start -->
                     <tr>
-                        <td>Pre Test Quiz</td>
+                        <td>{% trans 'Pre Test Quiz' %}</td>
                         {% if 'students' in request.path %}
                             <td>
                                 {% for pre_quiz in pre_quizes %}
@@ -224,13 +223,13 @@
 
                                         {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
                                             {% if pre_quiz.single_attempt %}
-                                                <span style="color: limegreen; font-weight: bold">Completed</span>
+                                                <span style="color: limegreen; font-weight: bold">{% trans 'Completed' %}</span>
                                             {% else %}
                                                 <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
                                                     <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
                                                             class=" qts-button " data-toggle="modal"
                                                             data-target="#quizmodal" style="background-color: #65f665">
-                                                        Play Again
+                                                        {% trans 'Play Again' %}
                                                     </button>
                                                 </a>
                                             {% endif %}
@@ -239,14 +238,14 @@
                                                 <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button"
                                                         class=" qts-button " data-toggle="modal"
                                                         data-target="#quizmodal">
-                                                    Play Quiz
+                                                    {% trans 'Play Quiz' %}
                                                 </button>
                                             </a>
                                         {% endif %}
 
                                     </div>
                                 {% empty %}
-                                    <p>No pre quiz</p>
+                                    <p>{% trans 'No Pre Quiz' %}</p>
                                 {% endfor %}
                             </td>
                         {% else %}
@@ -264,21 +263,21 @@
                         ">{{ pre_quiz.title }} </a><br>
                                         <div class="btn-group" id="status" data-toggle="buttons">
                                             <label class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
-                                                   id="ActiveButton">
+                                                   id="ActiveButton" style="text-transform: uppercase;">
                                                 <input type="radio" value="1" name="pre-test-radio"
                                                        id="id_pre-test-radio"
-                                                       {% if pre_quiz.draft == False %}checked{% endif %}>ON
+                                                       {% if pre_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
                                             </label>
                                             <label class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
-                                                   id="ExpireButton">
+                                                   id="ExpireButton" style="text-transform: uppercase;">
                                                 <input type="radio" value="0" name="pre-test-radio"
-                                                       {% if pre_quiz.draft == True %}checked{% endif %}>OFF
+                                                       {% if pre_quiz.draft == True %}checked{% endif %}>{% trans 'OFF' %}
                                             </label>
                                         </div>
                                         <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
                                     </form>
                                 {% empty %}
-                                    No pre quiz, Add new by clicking +
+                                    {% trans 'No pre quiz, Add new by clicking ' %}+
                                 {% endfor %}
                             </td>
                             <td width="20%">
@@ -294,7 +293,7 @@
 
                     <!-- Post Quiz Start -->
                     <tr>
-                        <td> Post Test Quiz</td>
+                        <td> {% trans 'Post Test Quiz' %}</td>
                         {% if 'students' in request.path %}
                             <td>
                                 {% for post_quiz in post_quizes %}
@@ -306,14 +305,13 @@
 
                                         {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
                                             {% if post_quiz.single_attempt %}
-                                                <span style="color: limegreen; font-weight: bold">Completed</span>
+                                                <span style="color: limegreen; font-weight: bold">{% trans 'Completed' %}</span>
                                             {% else %}
                                                 <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
                                                     <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
                                                             class=" qts-button " data-toggle="modal"
                                                             data-target="#quizmodal" style="background-color: #65f665">
-                                                        Play
-                                                        Again
+                                                        {% trans 'Play Again' %}
                                                     </button>
                                                 </a>
                                             {% endif %}
@@ -322,14 +320,14 @@
                                                 <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button"
                                                         class=" qts-button " data-toggle="modal"
                                                         data-target="#quizmodal">
-                                                    Play Quiz
+                                                    {% trans 'Play Quiz' %}
                                                 </button>
                                             </a>
                                         {% endif %}
 
                                     </div>
                                 {% empty %}
-                                    <p>No post quiz</p>
+                                    <p>{% trans 'No Post Quiz' %}</p>
                                 {% endfor %}
                             </td>
                         {% else %}
@@ -341,21 +339,21 @@
                                         <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a><br>
                                         <div class="btn-group" id="status2" data-toggle="buttons">
                                             <label class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
-                                                   id="ActiveButton">
+                                                   id="ActiveButton" style="text-transform: uppercase;">
                                                 <input type="radio" value="1" name="post-test-radio"
                                                        id="id_post-test-radio"
-                                                       {% if post_quiz.draft == False %}checked{% endif %}>ON
+                                                       {% if post_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
                                             </label>
                                             <label class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
-                                                   id="ExpireButton">
+                                                   id="ExpireButton" style="text-transform: uppercase;">
                                                 <input type="radio" value="0" name="post-test-radio"
-                                                       {% if post_quiz.draft == True %}checked{% endif %}>OFF
+                                                       {% if post_quiz.draft == True %}checked{% endif %}>{% trans 'Off' %}
                                             </label>
                                         </div>
                                         <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
                                     </form>
                                 {% empty %}
-                                    No post quiz, Add new by clicking +
+                                    {% trans 'No post quiz, Add new by clicking ' %} +
                                 {% endfor %}
                             </td>
                             <td width="20%">
@@ -389,12 +387,12 @@
                     {% if assigned_session %}
                         <tr>
 
-                            <th class="custom-table-width">Session</th>
-                            <th class="date-width">Start Date</th>
-                            <th class="date-width">End Date</th>
+                            <th class="custom-table-width">{% trans 'Session' %}</th>
+                            <th class="date-width">{% trans 'Start Date' %}</th>
+                            <th class="date-width">{% trans 'End Date' %}</th>
                             {% if '/students' not in request.path %}
-                                <th>Chapter Status</th>
-                                <th>Action</th>
+                                <th>{% trans 'Chapter Status' %}</th>
+                                <th>{% trans 'Action' %}</th>
                             {% endif %}
                         </tr>
                     {% endif %}
@@ -405,9 +403,9 @@
                                 {% if '/students' not in request.path and '/teachers' not in request.path %}
                                     {% if sessions.is_active %}
                                         <span class=" text-success"> <b
-                                                style="text-transform: uppercase; font-size:14px">[Active]</b>  </span>
+                                                style="text-transform: uppercase; font-size:14px">[{% trans 'Active' %}]</b>  </span>
                                     {% else %}
-                                        <span class=" text-danger"><b style="text-transform: uppercase; font-size:14px">[Inactive]</b></span>
+                                        <span class=" text-danger"><b style="text-transform: uppercase; font-size:14px">[{% trans 'Inactive' %}]</b></span>
                                     {% endif %}
                                 {% endif %}
                             </td>
@@ -420,11 +418,11 @@
                                 <td>
                                     {% now "Y-m-d H:i" as todays_datewithtime %}
                                     {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
-                                        <span class="badge badge-info">Upcoming</span>
+                                        <span class="badge badge-info">{% trans 'Upcoming' %}</span>
                                     {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
-                                        <span class="badge badge-danger">Expired</span>
+                                        <span class="badge badge-danger">{% trans 'Expired' %}</span>
                                     {% else %}
-                                        <span class="badge badge-success">Active</span>
+                                        <span class="badge badge-success">{% trans 'Active' %}</span>
                                     {% endif %}
                                 </td>
                             {% endif %}
@@ -436,7 +434,7 @@
                                             data-toggle="modal"
                                             data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
                                             data-objectid="{{ object.id }}">
-                                        Change
+                                        {% trans 'Change' %}
                                     </button>
                                 </td>
                             {% endif %}
@@ -445,13 +443,13 @@
                     <!-- End Of start/end date -->
                     <tr>
                         <td>
-                            Discussion
+                            {% trans 'Discussion' %}
                         </td>
                         <td>
                             {% if object.is_commentable %}
-                                <span class="badge badge-success">Active</span>
+                                <span class="badge badge-success">{% trans 'Active' %}</span>
                             {% else %}
-                                <span class="badge badge-danger">Inactive</span>
+                                <span class="badge badge-danger">{% trans 'Inactive' %}</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -466,7 +464,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12 ">
                 <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                    <h2 class="detailListHeader">Assignments</h2>
+                    <h2 class="detailListHeader">{% trans 'Assignments' %}</h2>
                 </div>
 
                 {% if '/students' not in request.path %}
@@ -474,7 +472,7 @@
                         <button type="button" class="btn-sm btn-success" data-toggle="modal"
                                 data-target="#exampleModal1"
                                 id="add-newassignment-btn">
-                            Create New Assignment
+                            {% trans 'Create New Assignment' %}
                         </button>
                     </div>
                 {% endif %}
@@ -482,20 +480,19 @@
             <div class="col-md-12">
                 <hr class="header_hr">
                 {% if object.Use_Flag is False %}
-                    <p style="color:red">Note: Chapter is inactive, therefore assignments are not assigned to
-                        students.</p>
+                    <p style="color:red">{% trans 'Note: Chapter is inactive, therefore assignments are not assigned to students.' %}</p>
                 {% endif %}
                 {% for o in assignments %}
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;">
                         <div class="col-md-8 col-sm-8 col-xs-8">
                             {#                            {% isAssignmentActive o as isanswerable %}#}
-                            <h5 style="padding-top: 3px; color: #000000"> Assignment No: {{ forloop.counter }}
+                            <h5 style="padding-top: 3px; color: #000000"> {% trans 'Assignment No' %}: {{ forloop.counter }}
                                 {% if o.Use_Flag == False %}
-                                    <span class="badge badge-danger"><b>Inactive</b></span>
+                                    <span class="badge badge-danger"><b>{% trans 'Inactive' %}</b></span>
                                 {% endif %}
 
                                 {% if 'students' in request.path and not o.active %}
-                                    <span class="badge badge-danger">Expired</span>
+                                    <span class="badge badge-danger">{% trans 'Expired' %}</span>
                                 {% endif %}
                             </h5>
                             <h5>
@@ -506,7 +503,7 @@
                                 {% for assgsession in o.assignment_sessionmaps.all %}
                                     {% if assgsession.Session_Code == chaptersession.Session_Code %}
                                         {% if assgsession.End_Date > chaptersession.End_Date  and sessionmap.0.End_Date and chaptersession.End_Date %}
-                                            <h6 class="text-danger">Assignment End Date is greater than Chapter
+                                            <h6 class="text-danger">{% trans 'Assignment End Date is greater than Chapter' %}
                                                 in {{ assgsession.Session_Code }}.</h6>
                                         {% endif %}
                                     {% endif %}
@@ -523,7 +520,7 @@
                                {{ o.get_absolute_url }}
                             {% endif %}">
                                 <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                margin-top: 20px;margin-bottom: 10px; text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                                 </button>
                             </a>
                         </div>
@@ -565,11 +562,11 @@
 
                 </div>
 
-                <h4 class="modal-title ">Quiz </h4>
+                <h4 class="modal-title ">{% trans 'Quiz' %} </h4>
 
             </div>
             <div class="modal-body" id="quizmodalbody">
-                <p>Some text in the modal.</p>
+                <p>{% trans 'Some text in the modal' %}.</p>
             </div>
             <div class="modal-footer">
 
@@ -586,7 +583,7 @@
         <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Quiz</h4>
+                <h4 class="modal-title">{% trans 'Create Quiz' %}</h4>
             </div>
             <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
@@ -603,7 +600,7 @@
         <div class="modal-content" style="height: 80vh;overflow: auto;">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="question_model_title">Add Question</h4>
+                <h4 class="modal-title" id="question_model_title">{% trans 'Add Question' %}</h4>
             </div>
             <div class="modal-body" id="question_form_ajax">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">

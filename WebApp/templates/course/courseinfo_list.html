@@ -73,7 +73,7 @@
             <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
                 <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                     {% csrf_token %} <br><br>
-                    <label for="id_import_csv">Choose the CSV file to Import Course Data</label>
+                    <label for="id_import_csv">{% trans 'Choose the CSV file to Import Course Data' %}</label>
                     <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                     <a target="_blank" class="text-center" href="{% static 'importCourse_sample.csv' %}"
                        style="padding-top: 2em;">

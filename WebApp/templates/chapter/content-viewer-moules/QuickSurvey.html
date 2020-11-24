@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <style>
     .selector {
         width: auto !important;
@@ -12,7 +14,7 @@
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
+                <h4 class="modal-title">{% trans 'Create Survey' %}</h4>
             </div>
             <div class="modal-body" id="survey_form_ajax">
                 <div>
@@ -32,7 +34,7 @@
              style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Quiz</h4>
+                <h4 class="modal-title">{% trans 'Create Quiz' %}</h4>
             </div>
             <div class="modal-body" id="quiz_form_ajax">
                 <div>
@@ -51,7 +53,7 @@
              style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
             <div class="modal-header">
                 <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="question_model_title">Add Question</h4>
+                <h4 class="modal-title" id="question_model_title">{% trans 'Add Question' %}</h4>
             </div>
             <div class="modal-body" id="question_form_ajax">
                 <div>

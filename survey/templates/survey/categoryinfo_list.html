@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'categoryinfo_list' %}">CategoryInfo Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'categoryinfo_list' %}">{% trans 'Category Info Listing' %}</a></p>
 <table class="table">
     <tr>
-        <td>ID</td>
-        <td>Link</td>
-        <td>Category_Name</td>
+        <td>{% trans 'ID' %}</td>
+        <td>{% trans 'Link' %}</td>
+        <td>{% trans 'Category Name' %}</td>
     </tr>
     {% for object in object_list %}
     <tr>
@@ -15,5 +16,5 @@
         <td>{{ object.Category_Name }}</td>
     </tr>
     {% endfor %}
-</table><a class="btn btn-primary" href="{% url 'categoryinfo_create' %}">Create new CategoryInfo</a>
+</table><a class="btn btn-primary" href="{% url 'categoryinfo_create' %}">{% trans 'Create New Category Info' %}</a>
 {% endblock %}

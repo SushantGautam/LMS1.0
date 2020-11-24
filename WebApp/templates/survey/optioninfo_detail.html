@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'optioninfo_list' %}">OptionInfo Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'optioninfo_list' %}">{% trans 'Option Info Listing' %}</a></p>
 <table class="table">
     <tr>
-        <td>Option_Name</td>
+        <td>{% trans 'Option Name' %}</td>
         <td>{{ object.Option_Name }}</td>
     </tr>
 </table>
-<a class="btn btn-primary" href="{{object.get_update_url}}">Edit OptionInfo</a>
+<a class="btn btn-primary" href="{{object.get_update_url}}">{% trans 'Edit Option Info' %}</a>
 
 {% endblock %}
