@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block stylesheet %}
-<link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'vendorsx/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
-{% endblock %}
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
@@ -66,16 +61,7 @@
 
 
 {% block javascript %}
-<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
-<script src="{% static 'vendorsx/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
-
-<script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('.table').DataTable({
@@ -95,73 +81,187 @@
                     fieldSeparator: '\t'
                 }]
         });
+    });
 
-        $(".button-info").click(function () {
-            $("ul.info-text").toggle();
-        });
+    $(".button-info").click(function () {
+        $("ul.info-text").toggle();
+    });
 
-        $('#form_import_csv').submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData($('form').get(0));
-            // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
-            csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
-            formData.append("csrfmiddlewaretoken", csrf);
-            if ($('#id_import_csv').val()) {
-                $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
-                $('#submitcsv').attr('disabled', true);
-                $('.closeImportCSV').attr('disabled', true);
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'csv_import_inninginfo' %}",  // URL to your view that serves new info
-                    data: formData,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        $('.import-message').addClass(response.class);
-                        $('.import-message').removeClass(response.rmclass);
-                        $('.import-message').html(response.message);
-                    },
-                    error: function () {
-                        $('.import-message').addClass('text-danger');
-                        $('.import-message').removeClass('text-sucess');
-                        $('.import-message').html("Error while processing data please try again and verify the format.");
-                    },
-                    complete: function () {
-                        $('#submitspinner').html(``);
-                        $('#submitcsv').attr('disabled', false);
-                        $('.closeImportCSV').attr('disabled', false);
-                    }
-                });
-            } else {
-                $('.import-message').addClass('text-danger');
-                $('.import-message').html("Please upload a csv file with defined format.");
-            }
-        });
+    $('#form_import_csv').submit(function (e) {
+        e.preventDefault();
+        var formData = new FormData($('form').get(0));
+        // csrf = $('#csrfmiddlewaretoken').get(0).files[0];
+        csrf = $('input[name="csrfmiddlewaretoken"]').attr('value');
+        formData.append("csrfmiddlewaretoken", csrf);
+        if ($('#id_import_csv').val()) {
+            $('#submitspinner').html(`<i class="fa fa-spinner fa-spin"></i> `);
+            $('#submitcsv').attr('disabled', true);
+            $('.closeImportCSV').attr('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: "{% url 'csv_import_inninginfo' %}",  // URL to your view that serves new info
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('.import-message').addClass(response.class);
+                    $('.import-message').removeClass(response.rmclass);
+                    $('.import-message').html(response.message);
+                },
+                error: function () {
+                    $('.import-message').addClass('text-danger');
+                    $('.import-message').removeClass('text-sucess');
+                    $('.import-message').html("Error while processing data please try again and verify the format.");
+                },
+                complete: function () {
+                    $('#submitspinner').html(``);
+                    $('#submitcsv').attr('disabled', false);
+                    $('.closeImportCSV').attr('disabled', false);
+                }
+            });
+        } else {
+            $('.import-message').addClass('text-danger');
+            $('.import-message').html("Please upload a csv file with defined format.");
+        }
+    });
 
-        $('.closeImportCSV').click(function () {
-            window.location.reload();
-        });
+    $('.closeImportCSV').click(function () {
+        window.location.reload();
     });
 </script>
+
 <script>
+    $(document).ready(function () {
+        $("#listButton").addClass('active')
+    });
+
     document.querySelector("#cardButton").addEventListener('click', cardView);
-    document.querySelector("#tableButton").addEventListener('click', tableView);
+    document.querySelector("#listButton").addEventListener('click', listView);
+
     function cardView() {
-        $("#cardButton").css('color', 'black');
-        $("#tableButton").css('color', 'grey');
-        document.querySelector('#cardView').style.display = "inline-block";
-        document.querySelector('#tableView').style.display = "none";
+        document.querySelector('#cardView').style.display = "block";
+        document.querySelector('#listView').style.display = "none";
+        $("#cardButton").addClass('active')
+        $("#listButton").removeClass('active')
     }
-    function tableView() {
-        $("#cardButton").css('color', 'grey');
-        $("#tableButton").css('color', 'black');
-        document.querySelector('#tableView').style.display = "inline-block";
+    function listView() {
+        document.querySelector('#listView').style.display = "block";
         document.querySelector('#cardView').style.display = "none";
-
+        $("#listButton").addClass('active')
+        $("#cardButton").removeClass('active')
     }
-
-
 </script>
 
+<script>
+    $(document).ready(function () {
+        $(".editCheckedInnings").on('click', function () {
+            let seleced_innings = []
+            $.each($('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll'), function (index) {
+                seleced_innings.push($(this).val())
+            })
+            $('#inning_ids').val(seleced_innings)
+        });
+    });
+
+    $('#Student_Group').select2({
+        width: '100%',
+    });
+
+    $('.inningInfoCheckAll').on('click', function () {
+        $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
+        checkboxChangeEvent()
+    })
+
+    $('.inningInfoCheckbox').on('click', function () {
+        checkboxChangeEvent()
+        if ($('.inningInfoCheckbox').length === $('.inningInfoCheckbox:checked').length) {
+            $('.inningInfoCheckAll').prop('checked', 'checked');
+        } else {
+            $('.inningInfoCheckAll').prop('checked', false);
+        }
+    });
+
+    function checkboxChangeEvent() {
+        let checkBoxlength = $('#inning_dataTable input[type="checkbox"]:checked').not('.inningInfoCheckAll').length
+
+        if (checkBoxlength > 0) {
+            $('.checkboxCheckedLength').text(checkBoxlength + ' of ' + $('.inningInfoCheckbox').length + ' selected')
+            $('.editCheckedInnings, .deleteCheckedInnings').removeAttr('disabled')
+        } else {
+            $('.checkboxCheckedLength').text('')
+            $('.editCheckedInnings, .deleteCheckedInnings').prop('disabled', 'disabled')
+        }
+    }
+
+    $('#editCheckedInnings').on('submit', function (e) {
+        e.preventDefault()
+        if (($('#start_Date').is(':disabled') && $('#end_Date').is(':disabled') && $('#Student_Group').is(':disabled'))
+            || ($('#start_Date').val() == '' && $('#end_Date').val() == '' && $('#Student_Group').val() == '')
+        ) {
+            alert('Please input data and enable required fields to submit')
+            return false
+        }
+
+        if ($('#start_Date').is(':disabled') || $('#end_Date').is(':disabled')) {
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function (data) {
+                    location.reload(); // show response from the php script.
+                },
+                error: function (e) {
+                    $('.error-div').empty()
+                    $('.error-div').css('display', 'block')
+                    $('.error-div').append(`
+                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
+                    `)
+                    $.each(e.responseJSON.inning_list, function (index) {
+                        $('.error-div').append(`
+                            <p style="font-size: small">${e.responseJSON.inning_list[index]['Inning_Name']}</p>
+                        `)
+                    })
+
+                }
+            });
+        } else {
+            start = new Date($('#start_Date').val()).getTime()
+            end = new Date($('#end_Date').val()).getTime()
+            if (end < start) {
+                alert('End Date must be greater than Start Date.')
+                return false
+            } else {
+                $(this).submit()
+            }
+        }
+    });
+
+    $('#changestudentgroup-btn').on('click', function () {
+        toggleInput('#Student_Group')
+        $("#changestudentgroup-btn").toggleClass('btn-outline-primary btn-primary')
+    });
+
+    $('#changestartdate-btn').on('click', function () {
+        toggleInput('#start_Date')
+        $("#changestartdate-btn").toggleClass('btn-outline-primary btn-primary')
+    });
+
+    $('#changeenddate-btn').on('click', function () {
+        toggleInput('#end_Date')
+        $("#changeenddate-btn").toggleClass('btn-outline-primary btn-primary')
+    });
+
+    function toggleInput(inputID) {
+        if ($(inputID).is(':disabled')) {
+            $(inputID).removeAttr('disabled');
+        } else {
+            $(inputID).prop('disabled', 'disabled')
+        }
+    }
+    checkboxChangeEvent()
+</script>
 {% endblock %}

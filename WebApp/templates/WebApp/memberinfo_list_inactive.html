@@ -32,18 +32,18 @@
     {% csrf_token %}
     <div class="text-right">
         <nav id="navbar_parent" class="navbar-dark">
-            <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
+            <button class="btn btn-info btn-floating editCheckedMembers" type="button" data-toggle="modal"
                 data-target="#edit_checked_details_modal">
                 <i class="fa fa-edit"></i>
             </button>
-            <button class="btn btn-danger deleteCheckedMembers" type="submit"
+            <button class="btn btn-danger btn-floating deleteCheckedMembers ml-2" type="submit"
                 onclick="return confirm('Are you sure you want to delete ?')">
                 <i class="fa fa-trash"></i>
             </button>
         </nav>
     </div>
 
-    <div class="membertable table-responsive" id="member_dataTable">
+    <div class="membertable table-responsive mt-3" id="member_dataTable">
         <table class="table table-striped no-wrap" cellspacing="0" width="100%" id="members_list_table">
             <thead class="thead-light">
                 <tr class="tableTitleRow">
@@ -114,6 +114,7 @@
             {% endif %}
             {% endfor %}
         </table>
+        <span class="checkboxCheckedLength"></span>
     </div>
 </form>
 

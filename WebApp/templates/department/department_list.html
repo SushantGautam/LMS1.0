@@ -1,13 +1,14 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-12">
-        <h2 class="text-primary">List of Department</h2>
+        <h2 class="text-primary">{% trans "List of Department" %}</h2>
     </div>
     <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
         <button class="btn btn-primary pull-right" id="create_department-btn" data-toggle="modal"
-            data-target="#department-modal">Create New Department</button>
+            data-target="#department-modal">{% trans "Create New Department" %}</button>
     </div>
 </div>
 
@@ -15,33 +16,33 @@
     <table class="table table-striped" cellspacing="0" width="100%">
         <thead class="thead-light bg-primary">
             <tr class="tableTitleRow">
-                <th>ID</th>
-                <th>Department Name</th>
-                <th>Register Agent</th>
-                <th>Register Date</th>
-                <th>Updated Date</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{% trans "ID" %}</th>
+                <th>{% trans "Department Name" %}</th>
+                <th>{% trans "Register Agent" %}</th>
+                <th>{% trans "Register Date" %}</th>
+                <th>{% trans "Updated Date" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Actions" %}</th>
             </tr>
         </thead>
         {% for object in object_list %}
         <tr>
             <td>{{ forloop.counter }}</td>
 
-          {#  <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td> #}
+            {#  <td><a href="{{ object.get_absolute_url }}">{{ object.Department_Name }}</a></td> #}
             <td>{{ object.Department_Name }}</a></td>
             <td>{{ object.Register_Agent }}</td>
             <td>{{ object.Register_DateTime }}</td>
             <td>{{ object.Updated_DateTime }}</td>
             <td>
                 {% if object.Use_Flag == True %}
-                <span class="text-success">Active</span>
+                <span class="text-success">{% trans "Active" %}</span>
                 {% else %}
-                <span class="text-danger">In-Active</span>
+                <span class="text-danger">{% trans "Inactive" %}</span>
                 {% endif %}
             </td>
             <td class="text-center">
-                <button class="btn btn-primary btn-floating edit_department-btn" data-toggle="modal"
+                <button class="btn btn-info btn-floating edit_department-btn" data-toggle="modal"
                     data-target="#department-modal" value="{{ object.pk }}">
                     <i class="fa fa-edit"></i>
                 </button>

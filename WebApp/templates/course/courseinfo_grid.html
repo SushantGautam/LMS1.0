@@ -4,7 +4,7 @@
     <div class="page-title">
         <h2>Courses</h2>
         <div>
-            <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary ml-2 active" title="Grid"
+            <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2 active" title="Grid"
                 data-toggle="tooltip">
                 <i class="fa fa-th-large"></i>
             </a>
@@ -84,16 +84,14 @@
                 <span class="fa fa-fw fa-star text-warning"></span>
                 {% else %}
                 <span class="fa fa-fw fa-star-o text-warning"></span>
-
                 {% endif %}
                 {% endfor %}
-                </p>
                 <hr>
                 <p class="card-text">
                     {% if object.Course_Description %}
                     {{ object.Course_Description }}
                     {% else %}
-                    No desciption
+                    No description
                     {% endif %}
                 </p>
             </div>

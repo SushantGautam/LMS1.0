@@ -46,6 +46,8 @@ urlpatterns = [
                   path('ajax/validate_username/', views.validate_username, name='validate_username'),
                   path('ajax/validate_password/', views.validate_password, name='validate_password'),
 
+                  url('', include('pwa.urls')),
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL,
                                                                                          document_root=settings.STATIC_ROOT)
 
@@ -90,11 +92,11 @@ handler403 = 'WebApp.views.error_403'
 handler404 = 'WebApp.views.error_404'
 handler500 = 'WebApp.views.error_500'
 
-urlpatterns += (
-    path('pwabuilder-sw.js', views.ServiceWorker),
-    path('offline.html', views.OfflineApp),
-    path('manifest.webmanifest', views.manifestwebmanifest),
-)
+# urlpatterns += (
+#     path('pwabuilder-sw.js', views.ServiceWorker),
+#     path('offline.html', views.OfflineApp),
+#     path('manifest.webmanifest', views.manifestwebmanifest),
+# )
 
 # For static files
 urlpatterns += (

@@ -36,6 +36,7 @@ background-size: cover;">
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Username" name="username" id="id_username" required
                     autofocus>
+                <small id="username-error-message" class="input-error text-danger"></small>
             </div>
             <div class="form-group">
                 <input type="email" class="form-control" placeholder="Email" name="email" id="id_email" required>
@@ -89,6 +90,7 @@ background-size: cover;">
             <div class="form-group">
                 <input type="password" class="form-control" placeholder="Confirm Password" id="id_password2"
                     name="password2" required>
+                <small id="confirm-password-error-message" class="input-error text-danger"></small>
             </div>
             <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False">
             <button class="btn btn-primary btn-block">Register</button>

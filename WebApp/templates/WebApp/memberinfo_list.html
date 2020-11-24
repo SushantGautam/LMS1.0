@@ -55,9 +55,6 @@
     <div class="col-12">
         <h2 class="text-primary">{% trans "List of Active Members" %}</h2>
     </div>
-    <!-- <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
-        <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">{% trans "Create new Member" %}</a>
-    </div> -->
 </div>
 
 <div class="card px-2 bg-primary-gradient mt-3">
@@ -76,24 +73,22 @@
 {% csrf_token %}
 <div class="text-right">
     <nav id="navbar_parent" class="navbar-dark">
-        <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
-            <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
-                data-target="#edit_checked_details_modal">
-                <i class="fa fa-edit"></i>
+        <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
+        <button class="btn btn-info btn-floating editCheckedMembers ml-2" type="button" data-toggle="modal"
+            data-target="#edit_checked_details_modal">
+            <i class="fa fa-edit"></i>
+        </button>
+        <form method="post" action="{% url 'memberinfo_delete_checked' %}" style="display: inline">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-floating deleteCheckedMembers ml-2" type="submit"
+                onclick="return confirm('Are you sure you want to delete ?')">
+                <i class="fa fa-trash"></i>
             </button>
-            <form method="post" action="{% url 'memberinfo_delete_checked' %}" style="display: inline">
-                {% csrf_token %}
-                <button class="btn btn-danger deleteCheckedMembers" type="submit"
-                    onclick="return confirm('Are you sure you want to delete ?')">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </form>
-        </div>
+        </form>
     </nav>
 </div>
 
-<div class="table-responsive groupmappingtable" id="member_dataTable">
+<div class="table-responsive groupmappingtable mt-3" id="member_dataTable">
     <table class="table table-striped" cellspacing="0" width="100%" id="members_list_table">
         <thead class="thead-light">
             <tr>
@@ -141,6 +136,7 @@
 
         </tbody>
     </table>
+    <span class="checkboxCheckedLength"></span>
 </div>
 
 {% include 'WebApp/memberinfo_mass_option_form.html' %}
@@ -395,29 +391,35 @@
 
     $('#changedepartment-btn').on('click', function () {
         toggleInput('#id_Member_Department')
+        $("#changedepartment-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changememberposition-btn').on('click', function () {
         toggleInput('#id_Member_Position')
+        $("#changememberposition-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changemembergender-btn').on('click', function () {
         toggleInput('#id_Member_Gender')
+        $("#changemembergender-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeisteacher-btn').on('click', function () {
         toggleInput('#id_Is_Teacher')
         toggleInput('#id_Is_Teacher_hidden')
+        $("#changeisteacher-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeisstudent-btn').on('click', function () {
         toggleInput('#id_Is_Student')
         toggleInput('#id_Is_Student_hidden')
+        $("#changeisstudent-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeActive-btn').on('click', function () {
         toggleInput('#id_Use_Flag')
         toggleInput('#id_Use_Flag_hidden')
+        $("#changeActive-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     function toggleInput(inputID) {
