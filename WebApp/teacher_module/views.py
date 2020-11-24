@@ -870,6 +870,8 @@ class QuizDetailView(QuizInfoAuthMxnCls, DetailView):
 
 def QuizDeleteView(request, pk):
     Quiz.objects.filter(pk=pk).delete()
+    messages.add_message(request, messages.SUCCESS,
+                         'Quiz Deleted Successfully.')
     return redirect("teacher_quiz_list")
 
 

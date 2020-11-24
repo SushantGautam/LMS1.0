@@ -15,7 +15,7 @@
 
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
   <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
@@ -26,4 +26,4 @@
       $('#div_id_form1-description').wrap("<div class=\"col-md-12\"></div>");
       $('#id_div_myform label').addClass("quiz-add-label");
   </script>
-{% endblock customjss %}
+{% endblock javascript %}

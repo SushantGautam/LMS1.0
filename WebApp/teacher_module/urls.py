@@ -178,6 +178,7 @@ urlpatterns += (
          name='teacher_quiz_exam_list'),
     path('detail/<slug>', views.QuizDetailView.as_view(),
          name='teacher_quiz_detail_s'),
+    path('delete/<int:pk>/', views.QuizDeleteView, name='teacher_quiz_delete'),    
 
     path('mcquestion/', views.MCQuestionListView.as_view(),
          name='teacher_mcquestion_list'),

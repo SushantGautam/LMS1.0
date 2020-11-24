@@ -3,7 +3,68 @@
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
 
+<style>
+  .wizard_horizontal ul.wizard_steps li a .step_no{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 100px;
+    display: block;
+    margin: 0 auto 5px;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+    .step_no, .wizard_verticle ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+    }
+    .wizard_horizontal ul.wizard_steps {
+      display: table;
+      list-style: none;
+      position: relative;
+      width: 100%;
+      margin: 0 0 20px;
+  } 
+  .wizard_horizontal ul.wizard_steps li {
+    display: table-cell;
+    text-align: center;
+  } 
+  .wizard_horizontal ul.wizard_steps li:first-child a:before {
+    left: 50%;
+}
+.step_no, .wizard_horizontal ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+}
+.wizard_horizontal ul.wizard_steps li a:before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    background: #ccc;
+    top: 20px;
+    width: 100%;
+    z-index: 4;
+    left: 0;
+}  
+.wizard_horizontal ul.wizard_steps li a, .wizard_horizontal ul.wizard_steps li:hover {
+  display: block;
+  position: relative;
+ 
 
+  opacity: 1;
+  color: #666;
+}
+.wizard_horizontal ul.wizard_steps li:last-child a:before {
+  right: 50%;
+  width: 50%;
+  left: auto;
+}
+#negate_per{
+  display: none;
+}
+</style>
 
   <div id="" class="form_wizard wizard_horizontal">
     <ul class="wizard_steps anchor">

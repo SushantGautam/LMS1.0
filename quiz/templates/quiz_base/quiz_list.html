@@ -1,9 +1,9 @@
 {% load i18n %}
 
 <div class=" ">
-    <div class="row exam-results1">
+    <div class="row exam-results1" style="margin: 15px 0;">
         <div class="col-md-6">
-            <h2>{% trans "List of quizzes" %}</h2>
+            <h2 class="text-primary">{% trans "List of quizzes" %}</h2>
         </div>
         <div class="col-md-6  icon-for-quiz text-right">
             {% if not '/teachers' in request.path %}
@@ -11,7 +11,7 @@
                     <i class="fa fa-plus fa-2x"></i>
                 </a>
             {% elif '/teachers' in request.path %}
-                <a class="icon-quiz-list" href="{% url 'teachers_quizfw' %}">
+                <a class="icon-quiz-list" href="{% url 'teacher_quizfw' %}">
                     <i class="fa fa-plus fa-2x"></i>
                 </a>
             {% endif %}
@@ -24,7 +24,7 @@
 <!-- <h2>{% trans "List of quizzes" %}</h2> -->
 {% if quiz_list %}
     <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
-        <thead>
+        <thead class="thead-dark">
         <tr>
             <th>{% trans "Title" %}</th>
             <th>{% trans "Course -> Chapter" %}</th>

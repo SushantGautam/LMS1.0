@@ -14,12 +14,12 @@
 {% load i18n %}
 
 <br>
-<h3>{% trans 'Quiz List played by the student' %}</h3>
+<h3 class="text-primary">{% trans 'Quiz List played by the student' %}</h3>
 <hr><br>
 {% if quiz_list %}
 
 <table id="MarkingList" class="table table-striped table-bordered bg-white nowrap">
-    <thead class="thead-light bg-primary">
+    <thead class="thead-dark bg-primary">
         <th>{% trans "Quiz" %}</th>
         <th>{% trans "Type" %}</th>
         <th>{% trans "Created Date" %}</th>
