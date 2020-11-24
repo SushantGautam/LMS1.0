@@ -32,7 +32,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q, Sum
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy, reverse, translate_url
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
@@ -135,8 +135,22 @@ class login(LoginView):
     template_name = 'registration/login.html'
     authentication_form = CustomAuthForm
 
+    # def get_success_url(self):
+    #     url = super().get_success_url()
+    #     available_languages = [lang_code for (lang_code, lang_name) in settings.LANGUAGES]
+    #     user = self.request.user
+    #     if user.is_authenticated:
+    #         language = user.Center_Code.language
+    #         if language in available_languages:
+    #             activate(language)
+    #             if hasattr(self.request, 'session'):
+    #                 self.request.session[LANGUAGE_SESSION_KEY] = language
+
     def form_valid(self, form):
         forcelogin = bool(self.request.POST['forcelogin'])
+        language = form.get_user().Center_Code.language
+        activate(language)
+        self.request.session[LANGUAGE_SESSION_KEY] = language
         if not forcelogin:
             if not form.get_user():
                 return JsonResponse({'error': _(
@@ -3909,9 +3923,9 @@ def checkForMediaFiles(request):
                                                     os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
                                                 chapter = ChapterInfo.objects.get(pk=int(chapterpk))
                                                 if request.GET.get('teachers') == '1':
-                                                    chapter_link = chapter.teacher_get_absolute_url() + 'newChapterBuilder'
+                                                    chapter_link = chapter.teacher_get_absolute_url() + 'ChapterBuilder'
                                                 else:
-                                                    chapter_link = chapter.get_absolute_url() + 'newChapterBuilder'
+                                                    chapter_link = chapter.get_absolute_url() + 'ChapterBuilder'
                                                 chapterhavingfilelink.append({
                                                     'chapter_no': chapter.Chapter_No,
                                                     'chapter_name': chapter.Chapter_Name,
