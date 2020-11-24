@@ -135,22 +135,20 @@ class login(LoginView):
     template_name = 'registration/login.html'
     authentication_form = CustomAuthForm
 
-    # def get_success_url(self):
-    #     url = super().get_success_url()
-    #     available_languages = [lang_code for (lang_code, lang_name) in settings.LANGUAGES]
-    #     user = self.request.user
-    #     if user.is_authenticated:
-    #         language = user.Center_Code.language
-    #         if language in available_languages:
-    #             activate(language)
-    #             if hasattr(self.request, 'session'):
-    #                 self.request.session[LANGUAGE_SESSION_KEY] = language
+    def get_success_url(self):
+        url = super().get_success_url()
+        available_languages = [lang_code for (lang_code, lang_name) in settings.LANGUAGES]
+        user = self.request.user
+        if user.is_authenticated:
+            language = user.Center_Code.language
+            if language in available_languages:
+                activate(language)
+                if hasattr(self.request, 'session'):
+                    self.request.session[LANGUAGE_SESSION_KEY] = language
+        return url
 
     def form_valid(self, form):
         forcelogin = bool(self.request.POST['forcelogin'])
-        language = form.get_user().Center_Code.language
-        activate(language)
-        self.request.session[LANGUAGE_SESSION_KEY] = language
         if not forcelogin:
             if not form.get_user():
                 return JsonResponse({'error': _(

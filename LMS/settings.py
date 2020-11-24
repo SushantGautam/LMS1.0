@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me']
+ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me', 'ubl.mn']
 
 # Application definition
 
@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'LMS.urls'
@@ -172,14 +173,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
-    ('en-us', _('English')),
+    ('en', _('English')),
     ('ko', _('Korean')),
-    ('np', _('Nepali')),
+    ('ne', _('Nepali')),
     ('id', _('Indonesian')),
     ('mn', _('Mongolian')),
+    ('vi', _('Vietnamese'))
 )
 
 TIME_ZONE = 'UTC'
