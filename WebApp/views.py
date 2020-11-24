@@ -26,7 +26,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -356,7 +356,6 @@ def edit_description_info_ajax(request):
         return JsonResponse({'status': 'Fail', 'msg': 'Not a valid request'})
 
 
-
 def edit_profile_image_ajax(request):
     if request.method == 'POST' and request.FILES['Member_Avatar']:
         try:
@@ -506,7 +505,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
 
     def get_initial_queryset(self):
-        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(pk=self.request.user.pk)
+        return MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True).exclude(
+            pk=self.request.user.pk)
 
     def render_column(self, row, column):
         # We want to render user as a custom column
@@ -524,7 +524,8 @@ class MemberInfoListViewAjax(BaseDatatableView):
             return row.get_user_type
         elif column == 'action':
             return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
-                    <a class="btn btn-sm btn-danger text-white confirm-delete" id="%s">Delete</a>' % (row.get_update_url(), row.id)
+                    <a class="btn btn-sm btn-danger text-white confirm-delete" id="%s">Delete</a>' % (
+                row.get_update_url(), row.id)
         else:
             return super(MemberInfoListViewAjax, self).render_column(row, column)
 
@@ -546,7 +547,6 @@ class MemberInfoListViewAjax(BaseDatatableView):
         return qs.filter(Center_Code=self.request.user.Center_Code, Use_Flag=True)
 
 
-
 class MemberInfoListViewInactive(ListView):
     model = MemberInfo
     template_name = 'WebApp/memberinfo_list_inactive.html'
@@ -558,7 +558,6 @@ class MemberInfoListViewInactive(ListView):
         context = super().get_context_data(**kwargs)
         context['partial_member_form'] = MemberInfoForm(request=self.request)
         return context
-
 
 
 class MemberInfoCreateView(CreateView):
@@ -588,7 +587,6 @@ class MemberInfoCreateView(CreateView):
         return kwargs
 
 
-
 def validate_username(request):
     username = request.GET.get('username', None)
     data = {
@@ -614,7 +612,7 @@ def validate_password(request):
 def MemberInfoActivate(request, pk):
     try:
         obj = MemberInfo.objects.get(pk=pk)
-        print(obj.username,'asdasdas')
+        print(obj.username, 'asdasdas')
         obj.Use_Flag = True
         obj.save()
         messages.success(request, 'Member is activated sucessfully')
@@ -625,7 +623,6 @@ def MemberInfoActivate(request, pk):
         return redirect(request.POST['url'])
     else:
         return redirect('memberinfo_detail', pk=pk)
-
 
 
 def MemberInfoDeactivate(request, pk):
@@ -1081,7 +1078,6 @@ def MemberInfoDeleteViewChecked(request):
             messages.error(request,
                            "Cannot delete Member")
             return JsonResponse({}, status=500)
-
 
 
 def MemberInfoEditViewChecked(request):
@@ -4140,15 +4136,42 @@ def MeetPublic(request, userid, meetcode):
                   {"meetcode": meetcode, "userobj": MemberInfo.objects.get(pk=userid)})
 
 
-# Teacher Report View
+def get_study_time(course_id, chapter, student):
+    jsondata = ''
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", str(course_id), str(chapter.id))
+    student_data_file = os.path.join(path, str(student.id) + '.txt')
+    progresspercent = 0
+    study_time = 0
+    progress = 'Incomplete'
+    try:
+        with open(student_data_file) as outfile:
+            jsondata = json.load(outfile)
+            study_time = int(jsondata['contents']['totalstudytime'])
+    except:
+        study_time = 0
+    if jsondata:
+        if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
+            if int(jsondata['contents']['totalPage']) > 0 and int(
+                    jsondata['contents']['currentpagenumber']) > 0:
+                progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
+                    jsondata['contents']['totalPage'])
+            if progresspercent > 100:
+                progresspercent = 100
+        if chapter.mustreadtime and jsondata['contents']['totalstudytime']:
+            if int(jsondata['contents']['totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100:
+                progress = 'Complete'
 
+    data = {'study_time': study_time, 'progress': progress}
+    return data
+
+
+# Teacher Report View
 class TeacherReport(TemplateView):
     template_name = 'WebApp/teacherReport.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
-        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']]
                                            ) if context['course_list'] else 0
 
@@ -4163,10 +4186,106 @@ class TeacherIndividualReport(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
-            'courses']
-        context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+        teacher = get_object_or_404(MemberInfo, Is_Teacher=True,
+                                    Center_Code=self.request.user.Center_Code, pk=self.kwargs.get('teacherpk'))
+        course = get_object_or_404(CourseInfo, Use_Flag=True, pk=self.kwargs.get('coursepk'))
+        course_groups = InningGroup.objects.filter(Teacher_Code=teacher, Course_Code=course, Use_Flag=True)
+        if not course_groups:
+            return HttpResponseNotFound("Teacher Course data doesn't match")
+
+        chapters = ChapterInfo.objects.filter(Course_Code=course)
+        teacher_course_session = teacher.get_teacher_courses()
+        # print("teacher Course", teacher_course_session)
+
+        assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups).distinct()
+
+        for chapter in chapters:
+            quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
+            assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
+            chapter.quiz_count = quiz.count()
+            datest = dict()
+            datend = dict()
+            progressc = dict()
+            quizc = dict()
+            assignmentc = dict()
+
+            for session in assigned_sessions:
+
+                datest[session.id] = ''
+                datend[session.id] = ''
+                progressc[session.id] = 0
+                quizc[session.id] = 0
+                assignmentc[session.id] = 0
+
+                if chapter.chapter_sessionmaps.filter(Session_Code=session).exists():
+                    d = chapter.chapter_sessionmaps.get(Session_Code=session)
+                    datest[session.id] = d.Start_Date
+                    datend[session.id] = d.End_Date
+
+                students = session.Groups.Students.all()
+                for student in students:
+                    p = get_study_time(course.id, chapter, student)['progress']
+                    if p == 'Complete':
+                        progressc[session.id] += 1
+                    if quiz:
+                        s = Sitting.objects.filter(quiz__in=quiz, user=student, complete=True).distinct('quiz').count()
+                        if s == quiz.count():
+                            quizc[session.id] += 1
+                    if assignments:
+                        a = True
+                        for assignment in assignments:
+                            if not assignment.get_student_assignment_status(student):
+                                a = False
+                                break
+                        if a:
+                            assignmentc[session.id] += 1
+
+                # session[str(chapter.pk) +'quiz'] = 0
+                # session.chapters = 0
+                # if quiz:
+                #     session[str(chapter.pk) +'quiz']
+
+            chapter.datest = datest
+            chapter.datend = datend
+            chapter.progressc = progressc
+            chapter.quizc = quizc
+            chapter.assignmentc = assignmentc
+
+        context['teacher'] = teacher
+        context['course'] = course
+        context['chapters'] = chapters
+        context['course_list'] = teacher_course_session['courses']
+        context['sessions'] = assigned_sessions
         return context
+
+
+# Teacher Report View
+#
+# class TeacherReport(TemplateView):
+#     template_name = 'WebApp/teacherReport.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+#         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+#         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']]
+#                                            ) if context['course_list'] else 0
+#
+#         context['teacher_list'] = MemberInfo.objects.filter(Is_Teacher=True, Center_Code=self.request.user.Center_Code,
+#                                                             Use_Flag=True)
+#
+#         return context
+#
+#
+# class TeacherIndividualReport(TemplateView):
+#     template_name = 'WebApp/teacherIndividualReport.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['course_list'] = get_object_or_404(MemberInfo, pk=self.kwargs.get('teacherpk')).get_teacher_courses()[
+#             'courses']
+#         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']])
+#         return context
 
 
 # ===================== DepartmentInfo Views =================
@@ -4178,7 +4297,6 @@ class DepartmentInfoListView(ListView):
 
     def get_queryset(self):
         return DepartmentInfo.objects.filter(Center_Code=self.request.user.Center_Code)
-
 
 
 # class DepartmentInfoForm(object):
@@ -4258,8 +4376,8 @@ def DepartmentInfoDeleteView(request, pk):
     DepartmentInfo.objects.filter(pk=pk).delete()
     return redirect("departmentinfo_list")
 
-# ==========================    End of Department Views =========================================
 
+# ==========================    End of Department Views =========================================
 
 
 from django.contrib.admin.options import get_content_type_for_model
