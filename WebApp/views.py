@@ -2627,8 +2627,12 @@ def save_video(request):
 
         # if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
         if settings.SERVER_NAME != 'Indonesian_Server':
+            if settings.SERVER_NAME == 'Mongolia_Server':
+                token = '9fcaa07e7d178cdb19cfb283b67f5cee'
+            else:
+                token = '3b42ecf73e2a1d0088dd677089d23e32'
             r = rs.post(url="https://api.vimeo.com/me/videos",
-                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                        headers={'Authorization': 'bearer ' + token,
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps(data))
@@ -2661,9 +2665,9 @@ def save_video(request):
                                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
                     elif settings.SERVER_NAME == "Mongolia_Server":
                         a = rs.put(
-                            url='https://api.vimeo.com/me/projects/2996902/videos/' + r_responseText['uri'].split('/')[
+                            url='https://api.vimeo.com/me/projects/3018373/videos/' + r_responseText['uri'].split('/')[
                                 -1],
-                            headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                            headers={'Authorization': 'bearer 9fcaa07e7d178cdb19cfb283b67f5cee',
                                      'Content-Type': 'application/json',
                                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
 
@@ -2911,9 +2915,9 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
             }, ),
     elif settings.SERVER_NAME == "Mongolia_Server":
         a = requests.get(
-            url='https://api.vimeo.com/me/projects/2996902/videos/?per_page=' + str(max_items),
+            url='https://api.vimeo.com/me/projects/3018373/videos/?per_page=' + str(max_items),
             headers={
-                'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                'Authorization': 'bearer 6dabd8fd76c4928ba80d3599dd120429',
             }, ),
     if a[0].status_code == 200:
         checkFlag = False
