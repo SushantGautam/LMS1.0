@@ -66,8 +66,10 @@
                         {% for course in teacher.get_teacher_courses.courses %}
                             <tr>
                                 <td></td>
-                                <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td>
-                                <td><a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td>
+                              {#  <td><a href="{{ teacher.get_absolute_url }}">{{ teacher }}</a></td> #}
+                                    <td><a href="{% url 'teacher_individual_report' teacher.pk course.pk %}">{{ teacher }}</a></td>
+                           {#       <td><a href="{{ course.get_absolute_url }}">{{ course.Course_Name }}</a></td> #}
+                                    <td>{{ course.Course_Name }}</td>
                                 <!-- Chapter has content or not -->
 
                                 {% if max_chapter_count > 0 %}
