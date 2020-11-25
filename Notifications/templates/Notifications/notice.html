@@ -52,7 +52,7 @@
     <p class="notification-buttons" id="notification-buttons hovereffect" style="display: none">
         {% if notice.unread %}
             <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread " data-id="{{ notice.id }}">
-                <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> {% trans 'Mark As Read' %}</b>
+                <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> {% trans 'Mark as Read' %}</b>
             </a>
         {% else %}
             <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread "

@@ -33,10 +33,9 @@
                         </span>
                         <span class="message">
                             {% blocktrans with username=notification.sender.username thread_title=notification.thread.title %}
-                            mentioned you in thread:
-                            <strong> {{ thread_title }}</strong>
-
-
+                                <strong> {{ username }} </strong>
+                                mentioned you in thread:
+                                <strong> {{ thread_title }} </strong>
                             {% endblocktrans %}
                         </span>
                     </a>
@@ -49,13 +48,11 @@
                             <span class="time">{{ notification.pub_date }}</span>
                         </span>
                         <span class="message">
-                            <strong>
-                                {% blocktrans with username=notification.sender.username thread_title=notification.post.thread.title %}
-                            </strong>
-                            mentioned you when replying to
 
-                            <strong> {{ thread_title }}</strong>
-
+                            {% blocktrans with username=notification.sender.username thread_title=notification.post.thread.title %}
+                                <strong> {{ username }} </strong>
+                                mentioned you when replying to
+                                <strong> {{ thread_title }} </strong>
                             {% endblocktrans %}
                         </span>
                     </a>

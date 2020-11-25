@@ -133,13 +133,18 @@
                                     {{ thread.pub_date|timesince }}
                                 {% endif %}
                                 |
-                                <span>{% blocktrans with view_count=thread.view_count %} <i class="fa fa-eye"></i>
-                                    viewed
-                                    {{ view_count }}
-                                    times{% endblocktrans %}</span> | <span> {% if thread.reply_count %}
+                                <span>
+                                    <i class="fa fa-eye"></i>
+                                    {% blocktrans with view_count=thread.view_count %}
+                                        viewed
+                                        {{ view_count }}
+                                        times
+                                    {% endblocktrans %}
+                                </span> | <span> {% if thread.reply_count %}
                                 <i class="fa fa-comments-o"></i>
                                 {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
-                                    {% plural %}{{ reply_count }} Replies{% endblocktrans %}
+                                    {% plural %}{{ reply_count }} Replies
+                                {% endblocktrans %}
                             {% else %}
                                 {% trans "No Replies" %}
                             {% endif %}
@@ -162,7 +167,8 @@
                                         <i class="fa fa-comments-o"></i>
                                         {% blocktrans count reply_count=thread.reply_count %}
                                             Reply ({{ reply_count }})
-                                        {% plural %} Replies ({{ reply_count }}) {% endblocktrans %}
+                                        {% plural %} Replies ({{ reply_count }})
+                                        {% endblocktrans %}
                                     {% else %}
                                         <i class="fa fa-comments-o"></i> {% trans "No Replies" %}
                                     {% endif %}

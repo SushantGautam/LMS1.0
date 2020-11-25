@@ -115,10 +115,10 @@
                         " class="btn btn-white text-light"><i class="fa fa-comments fa-fw"></i>
                         {{ thread.reply_count }}</a>
 
-                    <span class="btn btn-white text-light">{% blocktrans with view_count=thread.view_count %}
+                    <span class="btn btn-white text-light">
                         <i class="fa fa-eye"></i>
-                        {{ view_count }}
-                        {% endblocktrans %}</span>
+                        {{ thread.view_count }}
+                    </span>
 
                 </div>
 
