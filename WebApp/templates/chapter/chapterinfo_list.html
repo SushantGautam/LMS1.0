@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+
 <div class="chapterInfoListClass">
      <h2 class="tableHeader">List of Chapters</h2><br>
     <h2 class="tableHeader">{{ object.Course_Code }}</h2>
@@ -9,14 +11,14 @@
                 {% url 'teacher_chapterinfo_create' %}
             {% else %}
                 {% url 'chapterinfo_create' %}
-            {% endif %}">Create new Chapter</a>
+            {% endif %}">{% trans 'Create New Chapter' %}</a>
     </div>
     <br><br><br>
     <div class="col-md-12 col-sm-12 col-xs-12">
         {% for object in object_list %}
             <div class="col-md-12 col-sm-12 col-xs-12 boxShadow" style="box-shadow: gainsboro; margin: 10px;">
                 <div class="col-md-8">
-                    <h5 style="padding-top: 3px; color: #000000"> Chapter No: {{ object.Chapter_No }}</h5>
+                    <h5 style="padding-top: 3px; color: #000000"> {% trans 'Chapter No' %}: {{ object.Chapter_No }}</h5>
                     <h3>
                         <b style="color: #000000">{{ object.Chapter_Name }}</b>
                     </h3>
@@ -28,7 +30,7 @@
                                {{ object.get_absolute_url }}
                             {% endif %}">
                         <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                margin-top: 20px;margin-bottom: 10px;text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                         </button>
                     </a>
                 </div>

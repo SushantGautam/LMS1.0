@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <style>
     .notification-icon1 {
         background-color: white;
@@ -50,17 +52,17 @@
     <p class="notification-buttons" id="notification-buttons hovereffect" style="display: none">
         {% if notice.unread %}
             <a href="/inbox/notifications/mark-as-read/{{ notice.id }}/" class="markread " data-id="{{ notice.id }}">
-                <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> Mark As Read</b>
+                <b style="color:black"><i class="fa fa-check-circle" style="color: green;"></i> {% trans 'Mark as Read' %}</b>
             </a>
         {% else %}
             <a href="/inbox/notifications/mark-as-unread/{{ notice.id }}/" class="markunread "
                data-id="{{ notice.id }}">
-                <b style="color: black; "> Mark As Unread</b>
+                <b style="color: black; "> {% trans 'Mark As Unread' %}</b>
             </a>
         {% endif %}
         &nbsp;<a href="javascript:void(0)" class="delete-notification" data-id="{{ notice.id }}"
                  onclick="deleteNotification('{{ notice.id }}')">
-        <b style="color: black;"> <i style="color: rgb(170, 29, 29);" class="fa fa-trash"></i> Delete Notification</b>
+        <b style="color: black;"> <i style="color: rgb(170, 29, 29);" class="fa fa-trash"></i> {% trans 'Delete Notification' %}</b>
     </a>
     </p>
 

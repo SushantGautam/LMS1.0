@@ -1,5 +1,6 @@
 {% load readmore %}
 {% load static %}
+{% load i18n %}
 
 <div style="position: sticky; width: 100%; top: 0; z-index: 1">
 
@@ -12,7 +13,7 @@
     </div>
     <div class="custom-control custom-switch">
         <input type="checkbox" class="custom-control-input" id="chk" checked>
-        <label class="custom-control-label" for="customSwitch1">Live Survey</label>
+        <label class="custom-control-label" for="customSwitch1">{% trans 'Live Survey' %}</label>
     </div>
 </div>
 <div class="clearfix">
@@ -32,23 +33,22 @@
                             <li>
                                 <div class="form-group">
                                     <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                           for="first-name">Category
+                                           for="first-name">{% trans 'Category' %}
                                         :
                                         <span class="category-label">{{ object.Category_Code }}</span>
                                     </label>
                                 </div>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>Start date: <span
+                                <i class="fa fa-calendar"></i><label>{% trans 'Start date' %}: <span
                                     class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="fa fa-calendar"></i><label>End date: <span
+                                <i class="fa fa-calendar"></i><label>{% trans 'End date' %}: <span
                                     class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
                             </li>
                             <li class="surveyViewDates">
-                                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>Number of
-                                Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                                <i class="glyphicon glyphicon-user" style="padding-right: 10px;"></i><label>{% trans 'Number of Participants' %}: &nbsp;</label><label id="Participants"> {{ submit }}</label>
                             </li>
                         </ul>
 
@@ -62,13 +62,13 @@
                             {% csrf_token %}
                             <input type="hidden" value="{{ object.pk }}" name="objectpk">
                             <button type="submit" class="btn btn-danger btn-lg">
-                                <i class="fa fa-trash" aria-hidden="true"></i> Delete Survey
+                                <i class="fa fa-trash" aria-hidden="true"></i> {% trans 'Delete Survey' %}
                             </button>
                         </form>
                     {% endif %}
                     <button type="button" class="btn btn-info btn-lg" id="retakeSurveyBtn" data-toggle="modal"
                             data-target="#survey_form_modal">
-                        Retake survey
+                        {% trans 'Retake survey' %}
                     </button>
                 </div>
             </div>

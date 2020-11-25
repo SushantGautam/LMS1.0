@@ -87,12 +87,9 @@
         <hr>
 
       {% endif %}
-
-      <!-- <p class="quiz-review">{% trans "- Review the questions below and try the exam again in the future"%}.</p> -->
-
+        - {% trans "Review the questions below and try the exam again in the future"%}.
       {% if user.is_authenticated %}
-
-        <p class="quiz-review">{% trans "- The result of this exam will be stored in your  progress  section so you can review and monitor your progression" %}.</p>
+        <p class="quiz-review">- {% trans "The result of this exam will be stored in your  progress  section so you can review and monitor your progression" %}.</p>
 
       {% endif %}
     </div>
@@ -124,7 +121,7 @@
       {% correct_answer_for_all question %}
 
       {% if question.user_answer %}
-        <p class="quiz-ans-explain">{% trans "-Your answer" %}: {{ question|answer_choice_to_string:question.user_answer }}</p>
+        <p class="quiz-ans-explain">- {% trans "Your answer" %}: {{ question|answer_choice_to_string:question.user_answer }}</p>
       {% endif %}
 
       <p class="quiz-review"><strong>{% trans "Explanation" %}:</strong></p>
