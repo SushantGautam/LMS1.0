@@ -32,12 +32,12 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q, Sum
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse, translate_url
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
-from django.utils.translation import gettext as _
 from django.utils.translation import activate, LANGUAGE_SESSION_KEY
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_protect
@@ -2664,7 +2664,7 @@ def save_video(request):
 
                     tags = rs.put(
                         url='https://api.vimeo.com/' + r_responseText['uri'] + '/tags',
-                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                        headers={'Authorization': 'bearer ' + token,
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps([
