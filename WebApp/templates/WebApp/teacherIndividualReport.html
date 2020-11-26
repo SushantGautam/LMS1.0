@@ -104,12 +104,12 @@
                             {% for session in sessions %}
                                 <td><span class="dateconFullMonth">{{ chapter.datest|get_item:session.id|date:"d M, Y h:i A" }}</span><br></td>
                                 <td><span class="dateconFullMonth">{{ chapter.datend|get_item:session.id|date:"d M, Y h:i A" }}</span></td>
-                                <td {% if session.student_count == chapter.progressc|get_item:session.id %}
-                                style="background:#b3e6cc"{% endif %}>{{ chapter.progressc|get_item:session.id }}</td>
-                                <td {% if session.student_count == chapter.quizc|get_item:session.id %}
-                                style="background:#b3e6cc"{% endif %}>{{ chapter.quizc|get_item:session.id }}</td>
-                                <td {% if session.student_count == chapter.assignmentc|get_item:session.id %}
-                                style="background:#b3e6cc"{% endif %}>{{ chapter.assignmentc|get_item:session.id }}</td>
+                                <td {% if session.student_count == chapter.progressc|get_item:session.id %}style="background:#b3e6cc"{% endif %}>{{ chapter.progressc|get_item:session.id }}</td>
+
+                                <td {% if session.student_count == chapter.quizc|get_item:session.id %}style="background:#b3e6cc"{% endif %}>{{ chapter.quizc|get_item:session.id }}</td>
+
+                                <td {% if session.student_count == chapter.assignmentc|get_item:session.id %}style="background:#b3e6cc"{% endif %}>{{ chapter.assignmentc|get_item:session.id }}</td>
+
                             {% endfor %}
                         </tr>
                     {% endfor %}

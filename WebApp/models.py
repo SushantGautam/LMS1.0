@@ -175,6 +175,30 @@ class MemberInfo(AbstractUser):
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
+    def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
+        datetime_now = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True)
+        all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
+        if courseFromExpiredSession:
+            assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                         Start_Date__lte=datetime_now,
+                                                         Course_Group__in=course_groups).distinct()
+        else:
+            assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                         Start_Date__lte=datetime_now,
+                                                         End_Date__gte=datetime_now,
+                                                         Course_Group__in=course_groups).distinct()
+
+        course_groups = set(course_groups.values_list('pk', flat=True))
+        active_course_group = set(assigned_session.values_list('Course_Group', flat=True))
+        active_course_group = course_groups.intersection(active_course_group)
+        active_course_pk = InningGroup.objects.filter(pk__in=active_course_group).values_list('Course_Code', flat=True)
+        courses = CourseInfo.objects.filter(pk__in=active_course_pk, Use_Flag=True).distinct()
+        if inactiveCourse:
+            courses = all_courses.exclude(pk__in=courses)
+
+        return {'courses': courses, 'session': assigned_session}
+
     def get_student_inning(self):
         innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
                                             End_Date__gt=datetime.now()).values_list('pk', flat=True)
@@ -190,18 +214,18 @@ class MemberInfo(AbstractUser):
     def get_student_obj(self):
         return MemberInfo.objects.filter(pk__in=self.get_student())
 
-    def get_teacher_courses(self):
-        courses = []
-        session_list = []
-        ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
-        for i in ig:
-            inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
-                                                    Course_Group__pk=i.pk, Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
-            if inning_info.exists():
-                courses.append(i.Course_Code)
-                session_list.append(inning_info)
-        return {'courses': courses, 'session': session_list}
+    # def get_teacher_courses(self):
+    #     courses = []
+    #     session_list = []
+    #     ig = InningGroup.objects.filter(Teacher_Code__pk=self.pk)
+    #     for i in ig:
+    #         inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=self.pk,
+    #                                                 Course_Group__pk=i.pk, Use_Flag=True,
+    #                                                 End_Date__gt=datetime.now()).distinct()
+    #         if inning_info.exists():
+    #             courses.append(i.Course_Code)
+    #             session_list.append(inning_info)
+    #     return {'courses': courses, 'session': session_list}
 
     @property
     def get_user_type(self):
