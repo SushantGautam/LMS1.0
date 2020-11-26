@@ -2,7 +2,68 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
+<style>
+  .wizard_horizontal ul.wizard_steps li a .step_no{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 100px;
+    display: block;
+    margin: 0 auto 5px;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+    .step_no, .wizard_verticle ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+    }
+    .wizard_horizontal ul.wizard_steps {
+      display: table;
+      list-style: none;
+      position: relative;
+      width: 100%;
+      margin: 0 0 20px;
+  } 
+  .wizard_horizontal ul.wizard_steps li {
+    display: table-cell;
+    text-align: center;
+  } 
+  .wizard_horizontal ul.wizard_steps li:first-child a:before {
+    left: 50%;
+}
+.step_no, .wizard_horizontal ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+}
+.wizard_horizontal ul.wizard_steps li a:before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    background: #ccc;
+    top: 20px;
+    width: 100%;
+    z-index: 4;
+    left: 0;
+}  
+.wizard_horizontal ul.wizard_steps li a, .wizard_horizontal ul.wizard_steps li:hover {
+  display: block;
+  position: relative;
+ 
 
+  opacity: 1;
+  color: #666;
+}
+.wizard_horizontal ul.wizard_steps li:last-child a:before {
+  right: 50%;
+  width: 50%;
+  left: auto;
+}
+#id_form3-mcquestion, #id_form3-tfquestion, #id_form3-saquestion {
+  width: 100% !important;
+}
+</style>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
   <div id="" class="form_wizard wizard_horizontal">
     <ul class="wizard_steps anchor">
@@ -49,7 +110,7 @@
           </div>
           <div class="col-md-12">
             {{ wizard.form.mcquestion }}
-            {{ wizard.form.mcquestion.help_text }}
+            <span>You can select multiple questions by holding <kbd>ctrl</kbd>  key on Windows and Command <kbd>⌘</kbd> key on MAC.</span>
             {{ wizard.form.mcquestion.errors }}
           </div>
           <div class="col-md-12">
@@ -71,7 +132,7 @@
           </div>
           <div class="col-md-12">
             {{ wizard.form.tfquestion }}
-            {{ wizard.form.tfquestion.help_text }}
+            <span>You can select multiple questions by holding <kbd>ctrl</kbd>  key on Windows and Command <kbd>⌘</kbd> key on MAC.</span>
             {{ wizard.form.tfquestion.errors }}
           </div>
           <div class="col-md-12">
@@ -93,7 +154,7 @@
           </div>
           <div class="col-md-12">
             {{ wizard.form.saquestion }}
-            {{ wizard.form.saquestion.help_text }}
+            <span>You can select multiple questions by holding <kbd>ctrl</kbd>  key on Windows and Command <kbd>⌘</kbd> key on MAC.</span>
             {{ wizard.form.saquestion.errors }}
           </div>
           <div class="col-md-12">
@@ -114,8 +175,8 @@
           <button id="" class="btn btn-success " type="submit">Submit</button>
         </div>
       </div>
-      <div class="col-md-4 button-place">
-        <button id="step_3_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq">Previous
+      <div class="col-md-4 button-place text-right ">
+        <button id="step_3_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-primary add-mcq">Previous
         </button>
       </div>
     </div>
