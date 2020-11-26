@@ -1,4 +1,5 @@
 import datetime
+from functools import partial
 
 from crispy_forms.bootstrap import PrependedText, StrictButton
 from crispy_forms.helper import FormHelper
@@ -6,14 +7,12 @@ from crispy_forms.layout import Layout, Row, Column, Div, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms import inlineformset_factory
+from django.forms.models import ModelChoiceIterator
 from django.forms.widgets import RadioSelect, Textarea
 from django.utils.translation import gettext as _
 
 from WebApp.models import CourseInfo
 from quiz.models import Quiz, MCQuestion, TF_Question, SA_Question, Answer
-
-from django.forms.models import ModelChoiceIterator
-from functools import partial
 
 
 # from quiz import admin
@@ -23,18 +22,24 @@ from functools import partial
 #     model = Answer
 
 class QuestionForm(forms.Form):
-    def __init__(self, question, *args, **kwargs):
+    def __init__(self, question, answer=None, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
         choice_list = [x for x in question.get_answers_list()]
+        answerindex = None
+        if answer:
+            for index, x in enumerate(choice_list):
+                if str(x[0]) == answer:
+                    answerindex = index
+                    break
         self.fields["answers"] = forms.ChoiceField(choices=choice_list,
-                                                   widget=RadioSelect)
+                                                   widget=RadioSelect, initial=choice_list[int(answerindex)] if answerindex is not None else None)
 
 
 class SAForm(forms.Form):
-    def __init__(self, question, *args, **kwargs):
+    def __init__(self, question, answer=None, *args, **kwargs):
         super(SAForm, self).__init__(*args, **kwargs)
         self.fields["answers"] = forms.CharField(
-            widget=Textarea(attrs={'style': 'width:100%'}))
+            widget=Textarea(attrs={'style': 'width:100%'}), initial=answer)
 
 
 class QuizForm(forms.ModelForm):

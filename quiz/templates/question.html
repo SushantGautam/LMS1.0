@@ -129,6 +129,22 @@
             {% endif %}
         " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
     </div>
+    <div>
+        {% if has_previous %}
+            <div>
+                <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
+                    <button class="btn btn-secondary"><i class="fa fa-arrow-circle-left"></i></button>
+                </a>
+            </div>
+        {% endif %}
+        {% if has_next %}
+            <div style="float:right">
+                <a href="{{ request.path }}?q={{ question_number|add:1 }}">
+                    <button class="btn btn-secondary"><i class="fa fa-arrow-circle-right"></i></button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
     {% if question %}
         {% if quiz.exam_paper %}
             <div class="col-md-12 col-md-12 col-xs-12 ">
@@ -147,7 +163,7 @@
 
         {% if progress %}
             <div style="float: right;">
-                {% trans "Question" %} {{ progress.0|add:1 }} {% trans "of" %} {{ progress.2 }}
+                {% trans "Question" %} {{ question_number }} {% trans "of" %} {{ progress.2 }}
             </div>
         {% endif %}
 
@@ -174,7 +190,7 @@
             <div id="step-1">
                 <div class="privew1">
                     <div class="questionsBox">
-                        <div class="questions">{{ progress.0|add:1 }})&nbsp; {{ question.content }}</div>
+                        <div class="questions">{{ question_number }})&nbsp; {{ question.content }}</div>
 
 
                         {% if question.figure %}
@@ -272,14 +288,14 @@
                         },
                         success: function (data) {
                             if (data.url != 0 || data.url != '0') {
-                            clearInterval(cuentaAtras)
-                            window.location.href = data.url;
+                                clearInterval(cuentaAtras)
+                                window.location.href = data.url;
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e.responseText)
                         }
-                    },
-                    error: function (e) {
-                        console.log(e.responseText)
-                    }
-                })
+                    })
                 {% endif %}
             }
 
@@ -414,8 +430,40 @@
     <script>
         $(document).ready(function () {
             runQuizTimerInterval()
-        })
+
+            let url = window.location.href;
+            if (url.indexOf('?q') != -1) {
+                let newurl;
+                newurl = removeURLParameter(url, 'q');
+                window.history.replaceState(null, null, newurl); // removes query string i.e after '?'
+            }
+        });
+
+        function removeURLParameter(url, parameter) {
+            //prefer to use l.search if you have a location/link object
+            var urlparts = url.split('?');
+            if (urlparts.length >= 2) {
+
+                var prefix = encodeURIComponent(parameter) + '=';
+                var pars = urlparts[1].split(/[&;]/g);
+
+                //reverse iteration as may be destructive
+                for (var i = pars.length; i-- > 0;) {
+                    //idiom for string.startsWith
+                    if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                        pars.splice(i, 1);
+                    }
+                }
+
+                url = urlparts[0] + '?' + pars.join('&');
+                return url;
+            } else {
+                return url;
+            }
+        }
     </script>
+
+
 {% endblock %}
 
 {% block footer %}
