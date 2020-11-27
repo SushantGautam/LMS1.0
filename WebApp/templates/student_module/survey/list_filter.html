@@ -2,8 +2,8 @@
 <div class="row app-block">
 
 
-<!--    <div class="col-md-3 col-sm-3 app-sidebar">-->
-    <div class="col-md-3 col-sm-3 ">
+    <div class="col-md-3 col-sm-3 app-sidebar">
+<!--    <div class="col-md-3 col-sm-3 ">-->
         <div class="card">
             <div class="card-body">
                 <a href="#" class="btn btn-outline-light dropdown-toggle bg-primary" data-toggle="dropdown">
@@ -113,8 +113,8 @@
     </div>
 
 
-<!--    <div class="col-md-9 col-sm-9 app-content">-->
-    <div class="col-md-9 col-sm-9 ">
+    <div class="col-md-9 col-sm-9 app-content">
+<!--    <div class="col-md-9 col-sm-9 ">-->
         <div class="app-content-overlay"></div>
         <div class="app-action">
             <div class="action-left"></div>
@@ -124,7 +124,7 @@
 
                 <form class="d-flex mr-3 " name="search_survey" id="search_survey" method="GET" >
 
-                    <div class="input-group">
+                    <div class="input-group" style="width:50%">
                         <input type="hidden" class="form-control" name = "category_name" value="{{cat}}"
                             aria-describedby="button-addon1">
                         <input type="hidden" class="form-control" name = "date_filter" value="{{filter}}"
@@ -189,7 +189,7 @@
 
                     <div class="card-columns">
 
-
+                            {% if object_list %}
                         {% for object in object_list%}
                         <div class="card p-3">
                             <a href="
@@ -230,6 +230,9 @@
                                 </blockquote>
                         </div>
                         {%endfor%}
+                        {% else %}
+                        <p style="margin:35px;">No Any Surveys!</p>
+                        {%endif%}
 
 
                     </div>

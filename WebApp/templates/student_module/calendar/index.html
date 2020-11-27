@@ -12,11 +12,12 @@
 {% endblock %}
 
 {% block breadcrumb %}
- <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+ <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}" style="font-weight:normal;">{% trans "Home" %}</a></li>
  <li class="breadcrumb-item active" aria-current="page"><a href="#">{% trans "Calendar" %}</a></li>
 {% endblock %}
 
 {% block content %}
+
 {% include 'event_calendar/common/calendar.html' %}
 {% endblock %}
 
@@ -206,7 +207,41 @@
 
             var date = new Date();
 
+
             var events = [
+                    {% for c in activesurvey %}
+                    {
+                            title: "{{ c.Survey_Title }}",
+                            id: 'survey{{ c.pk }}',
+                            start: '{{ c.Start_Date|date:"Y-m-d" }}',
+                            end: '{{ c.End_Date|date:"Y-m-d" }}',
+                            part:"All Students",
+                            url: '{% url 'questions_student_detail' pk=c.pk  %}',
+                            type: 'Survey',
+
+                         icon: "diamond",
+                         className: 'btn btn-secondary',
+
+                    },
+                    {% endfor %}
+
+
+                 {% for i in activeassignments %}
+                    {
+                        title: "{{ i.Assignment_Topic}}",
+                        id: 'assignment{{ c.pk }}',
+                        start: '{{ i.Assignment_Start|date:"Y-m-d" }}',
+                        end: '{{ i.Assignment_Deadline|date:"Y-m-d" }}',
+                        part:"All Students",
+                        url: '{% url 'student_assignmentinfo_detail' course=i.Course_Code.pk chapter=i.Chapter_Code.pk pk=i.pk  %}',
+                        type: 'Assignment',
+                        icon: "calendar",
+                        className: 'btn btn-dark',
+
+                        },
+            {% endfor %}
+
+
                 {% for event in object_list %}
                  {% if event.register_agent.pk == request.user.pk or request.user in event.get_participants %}
                     {
@@ -268,6 +303,12 @@
                     },
                     {%endif%}
                 {% endfor %}
+
+
+
+
+
+
             ];
 
         //    $('#external-events .fc-event').each(function () {
@@ -354,36 +395,47 @@
 
 
                   eventClick: function (event, jsEvent, view) {
-
+                    jsEvent.preventDefault();
                     var modal = $('#viewEventModal');
 
 
                         if (event.type == "Program")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-success');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-secondary btn-dark btn-primary');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
                           if (event.type == "Holiday")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-secondary btn-dark btn-primary');
                             modal.find('.event-type').addClass('btn btn-success');
 
                             }
                           if (event.type == "Meeting")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info");
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-secondary btn-dark btn-primary");
                             modal.find('.event-type').addClass("btn btn-danger");
 
                             }
                            if (event.type == "Examination")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-secondary btn-dark");
                             modal.find('.event-type').addClass("btn btn-primary");
 
                             }
+                            if (event.type == "Assignment")
+                            {
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-secondary');
+                            modal.find('.event-type').addClass('btn btn-dark');
 
+                            }
+                            if (event.type == "Survey")
+                            {
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-dark');
+                            modal.find('.event-type').addClass('btn btn-secondary');
+
+                            }
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
@@ -493,13 +545,26 @@
 
 
                     }else{
-                  //   modal.find('.participant').append(event.part);
+                  // modal.find('.participant').append(event.part);
                      modal.find('.participant').html("Participants:&nbsp;"+ event.part);
                      modal.find('.part_custom').hide();
                     }
+                    if ( event.type == "Assignment"){
+                    modal.find('.dsp').html(" ");
+                    modal.find('.desc').html(" ");
+                    modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Details </a>');
+                    $(".dtlbtn").attr("href", event.url)
+
+                    }else if ( event.type == "Survey"){
+                    modal.find('.dsp').html(" ");
+                    modal.find('.desc').html(" ");
+                    modal.find('.dsp').html( '<a href="#" class="btn btn-primary dtlbtn"> Details </a>');
+                    $(".dtlbtn").attr("href", event.url)
+
+                    }else{
                     modal.find('.desc').html(" ");
                     modal.find('.desc').html(event.description);
-
+                    }
 
                     let event_id = event.id.replace("event_id_", "");
                     modal.find('.delete_event').attr('action', '{% url "student_event_calendar_delete" 12345 %}'.replace("12345", event_id));
@@ -510,6 +575,7 @@
                     modal.find(".close").click(function() {
                     //    location.reload();
                      })
+
 
 
                     modal.modal();

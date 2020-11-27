@@ -272,13 +272,13 @@ def calendar(request):
                                                    Session_Code__in=student_session, Use_Flag=True)
         course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
                                                   Course_Code__in=student_course, Use_Flag=True)
-        system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
+        system_survey = SurveyInfo.objects.filter( Category_Code__Category_Name__iexact="system", Use_Flag=True)
 
         my_queryset = None
         my_queryset = general_survey | session_survey | course_survey | system_survey
         my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
-
-        return render(request, 'student_module/calendar.html',
+        print("MY_QUERYSET", my_queryset)
+        return render(request, 'student_module/calendar/index.html',
                       {'activeassignments': activeassignments, 'activesurvey': my_queryset})
 
 

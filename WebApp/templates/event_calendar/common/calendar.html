@@ -6,6 +6,7 @@
         <div class="page-title">
             <div>
                 {% if 'students' in request.get_full_path %}
+
                 {%else%}
                 <button class="btn btn-primary create_event_button" data-toggle="modal"
                         data-target="#createEventModal">
@@ -37,7 +38,14 @@
                         <div class="list-group-item px-0 fc-event">
                             <i class="fa fa-circle text-info" data-icon="building"></i> {% trans "Program" %}
                         </div>
-
+                        {% if "students" in request.get_full_path %}
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-dark" data-icon="building"></i> {% trans "Assignment" %}
+                        </div>
+                        <div class="list-group-item px-0 fc-event">
+                            <i class="fa fa-circle text-secondary" data-icon="building"></i> {% trans "Survey" %}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -369,7 +377,7 @@
 
                     <div class="row">
                         <div class="col-md-12" style="text-align:left;">
-                            <h6> {% trans "Description" %}:&nbsp;&nbsp;</h6>
+                            <h6 class="dsp"> {% trans "Description" %}:&nbsp;&nbsp;</h6>
                             <div class="desc"></div>
                         </div>
                     </div>

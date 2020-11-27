@@ -30,7 +30,7 @@ urlpatterns += (
     # path('mycourse/', views.mycourse, name="students_mycourse"),
     path('quiz/', views.quiz, name="students_quiz"),
     path('quizzes/', views.quizzes, name="quiz_question"),
-    path('calendar/', views.calendar, name="students_calendar"),
+    # path('calendar/', views.calendar, name="students_calendar"),
 
 )
 urlpatterns += (
@@ -234,7 +234,7 @@ urlpatterns += (
     path('delete/<int:pk>', cal_views.EventDeleteView.as_view(template_name='student_module/calendar/index.html',
                                                               success_url=reverse_lazy('student_event_calendar')),
          name='student_event_calendar_delete'),
-    path('calendar', cal_views.EventListView.as_view(template_name='student_module/calendar/index.html'),
+    path('calendar/', cal_views.EventListView.as_view(template_name='student_module/calendar/index.html'),
          name='student_event_calendar'),
 )
 

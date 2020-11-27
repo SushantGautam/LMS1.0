@@ -123,7 +123,7 @@
 
                 <form class="d-flex mr-3 " name="search_survey" id="search_survey" method="GET" >
 
-                    <div class="input-group">
+                    <div class="input-group" style="width:50%;">
                         <input type="hidden" class="form-control" name = "category_name" value="{{cat}}"
                             aria-describedby="button-addon1">
                         <input type="hidden" class="form-control" name = "date_filter" value="{{filter}}"
@@ -188,7 +188,7 @@
 
                     <div class="card-columns">
 
-
+                             {% if object_list %}
                         {% for object in object_list%}
                         <div class="card p-3">
                             <a href=" {% url 'teacher_surveyinfo_detail' object.pk %} ">
@@ -220,6 +220,9 @@
                                 </blockquote>
                         </div>
                         {%endfor%}
+                         {% else %}
+                        <p style="margin:35px;">No Any Surveys!</p>
+                        {%endif%}
 
 
                     </div>
