@@ -429,38 +429,14 @@
     {% endblock %}
     <script>
         $(document).ready(function () {
-            runQuizTimerInterval()
-
-            let url = window.location.href;
-            if (url.indexOf('?q') != -1) {
-                let newurl;
-                newurl = removeURLParameter(url, 'q');
-                window.history.replaceState(null, null, newurl); // removes query string i.e after '?'
+            runQuizTimerInterval();
+            if (history.pushState) {
+                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q={{ question_number }}';
+                window.history.pushState({path:newurl},'',newurl);
             }
         });
 
-        function removeURLParameter(url, parameter) {
-            //prefer to use l.search if you have a location/link object
-            var urlparts = url.split('?');
-            if (urlparts.length >= 2) {
 
-                var prefix = encodeURIComponent(parameter) + '=';
-                var pars = urlparts[1].split(/[&;]/g);
-
-                //reverse iteration as may be destructive
-                for (var i = pars.length; i-- > 0;) {
-                    //idiom for string.startsWith
-                    if (pars[i].lastIndexOf(prefix, 0) !== -1) {
-                        pars.splice(i, 1);
-                    }
-                }
-
-                url = urlparts[0] + '?' + pars.join('&');
-                return url;
-            } else {
-                return url;
-            }
-        }
     </script>
 
 
