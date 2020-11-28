@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 <div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
     <div class="modal-dialog modal-dialog-centered">
@@ -20,20 +21,23 @@
     </div>
 </div>
 <div class="page-header">
-    <div class="page-title d-block text-center">
-        <h2>Session Detail</h2>
-    </div>
-</div>
-<div class="row mb-5">
-    <div class="col-lg-6 col-md-10" style="margin: auto;">
-        <div class="text-center mb-3">
-            {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
-            <div id="buttons">
-                <a class="btn btn-sm btn-outline-info mx-2" id="{{ object.pk }}"
+    <div class="page-title justify-content-center align-items-center">
+        <h2>Session Detail
+        </h2>
+        <div class="d-inline-block dropdown ml-5">
+            <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
+                <i class="ti-more-alt"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
+                <a class="dropdown-item text-info" id="{{ object.pk }}"
                     href="{% url 'inninginfo_saveasnew' object.pk %}" href="javascript:void(0)">Save as new
                     Session</a>
-                <a class="btn btn-sm btn-outline-primary mx-2" href="{{ object.get_update_url }}">Edit Session</a>
-                <a class="btn btn-sm btn-outline-danger inning-confirm-delete mx-2" id="{{ object.pk }}"
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">Edit
+                    Session</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-danger inning-confirm-delete" id="{{ object.pk }}"
                     href="javascript:void(0)">Delete
                     Session</a>
                 <form method="post" action="{% url 'inninginfo_delete' pk=object.pk %}"
@@ -42,14 +46,17 @@
                     <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
                     <input type="hidden" value="{{ object.pk }}" name="inning_id">
                 </form>
-            </div>
-            {% else %}
-            <div id="buttons">
-                <a class="btn btn-sm btn-outline-primary mx-2" href="{{ object.get_teacher_update_url }}">Edit
+                {% else %}
+                <a class="dropdown-item text-primary" href="{{ object.get_teacher_update_url }}">Edit
                     Session</a>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
+    </div>
+
+</div>
+<div class="row mb-5">
+    <div class="col-lg-6 col-md-12 px-5 mb-5">
         <table class="table table-bordered table-striped">
             <tr>
                 <td>Center Code</td>
@@ -107,9 +114,8 @@
             </tr>
         </table>
     </div>
-</div>
-<div class="row">
-    <div class="col-lg-8 col-md-10" style="margin: auto;">
+
+    <div class="col-lg-6 col-md-12 px-5">
         <div class="card">
             <div class="pt-3 px-4">
                 <div class="d-flex justify-content-between align-items-start">
@@ -173,8 +179,6 @@
                 </table>
             </div>
         </div>
-    </div>
-    <div class="col-lg-4 col-md-10" style="margin: auto;">
         <div class="card">
             <div class="pt-3 px-4">
                 <h4 class="text-primary">List of Students</h4>

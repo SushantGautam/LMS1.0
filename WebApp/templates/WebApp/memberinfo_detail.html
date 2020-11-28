@@ -31,14 +31,16 @@
             <i class="ti-more-alt"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="{{ object.get_update_url }}">{% trans "Edit Member" %}</a>
+            <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">{% trans "Edit Member" %}</a>
             {% if object.password %}
-            <a class="dropdown-item" href="/change-password/{{ object.id }}/">{% trans "Change Password" %}</a>
+            <a class="dropdown-item text-warning"
+                href="/change-password/{{ object.id }}/">{% trans "Change Password" %}</a>
             {% elif not object.password %}
-            <a class="dropdown-item" href="/change-password/{{ object.id }}/">{% trans "Add New Password" %}</a>
+            <a class="dropdown-item text-warning"
+                href="/change-password/{{ object.id }}/">{% trans "Add New Password" %}</a>
             {% endif %}
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item confirm-delete" href="javascript:void(0)" title="({% trans 'Note' %}: {% trans 'Instead of' %}
+            <a class="dropdown-item text-danger confirm-delete" href="javascript:void(0)" title="({% trans 'Note' %}: {% trans 'Instead of' %}
             {% trans 'deleting a member' %} {% trans 'you can' %} {% trans 'deactivate' %}
             {% trans 'him' %}/{% trans 'her' %}
             {% trans 'instead' %})" data-toggle="tooltip" data-placement="bottom">{% trans "Delete Member" %}</a>
