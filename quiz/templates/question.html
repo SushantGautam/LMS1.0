@@ -430,6 +430,8 @@
     <script>
         $(document).ready(function () {
             runQuizTimerInterval();
+
+            // update query parameter on page load.
             if (history.pushState) {
                 var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q={{ question_number }}';
                 window.history.pushState({path:newurl},'',newurl);

@@ -254,6 +254,7 @@ class QuizTake(FormView):
     def get_form(self, *args, **kwargs):
         if self.logged_in_user:
             question = None
+            # if query parameter is present, then fetch the form of the question.
             if self.request.GET.get('q'):
                 question = int(self.request.GET.get('q'))
             self.question = self.sitting.get_first_question(question_pk=question)
@@ -271,8 +272,11 @@ class QuizTake(FormView):
 
     def get_form_kwargs(self):
         kwargs = super(QuizTake, self).get_form_kwargs()
+
+        # if answer is already submitted. Fetch the answer and initialize the form answer
         answer = None
         if self.request.GET.get('q'):
+            # if sitting is available and answer is present in "user_answer" dict in sitting model, then fetch the answer.
             if self.sitting and len(json.loads(self.sitting.user_answers).keys()) > 0 and str(
                     self.question.pk) in json.loads(self.sitting.user_answers):
                 answer = json.loads(self.sitting.user_answers)[str(self.question.pk)]
@@ -304,11 +308,17 @@ class QuizTake(FormView):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
             context['progress'] = self.progress
+
+        # get current question number from question_order list.
+        # since list index starts from 0, add 1 for question number.
         context['question_number'] = int(self.sitting.question_order.split(',').index(str(self.question.pk))) + 1
+        # check if question has previous/next question or not for button.
         context['has_previous'] = True
         context['has_next'] = True
+        # if list index of question is 0, then this is first question, therefore there cannot be previous
         if int(self.sitting.question_order.split(',').index(str(self.question.pk))) == 0:
             context['has_previous'] = False
+        # if question is to be attempted for first time, then assumption is all following questions after current is not taken, hence no next.
         if str(self.question.id) in self.sitting.question_list.split(','):
             context['has_next'] = False
 
@@ -337,13 +347,15 @@ class QuizTake(FormView):
                     score_list.append(str(score))
                 else:
                     current_score_list = self.sitting.score_list.split(',')
+                    # update score for T/F question and MCQ. Since the score is not graded for SAQ while taking quiz, update score on SAQ is not necessary
                     for idx, value in enumerate(current_score_list):
                         if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
                             prev_score = current_score_list[idx]
                             # self.sitting.add_to_score(-prev_score)
                             # deduct previous score and add new score
                             self.sitting.add_to_score((-int(prev_score) + int(score)))
-                            progress.update_score(self.question, (-int(prev_score) + int(score)), -(int(prev_score) + int(score)))
+                            progress.update_score(self.question, (-int(prev_score) + int(score)),
+                                                  -(int(prev_score) + int(score)))
                             score_list[idx] = (str(score))
 
         else:
@@ -359,6 +371,7 @@ class QuizTake(FormView):
                 score_list.append(str(negative_score))
             else:
                 current_score_list = self.sitting.score_list.split(',')
+                # same as the correct score.
                 for idx, value in enumerate(current_score_list):
                     if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
                         prev_score = current_score_list[idx]
@@ -384,6 +397,8 @@ class QuizTake(FormView):
         self.previous = {}
 
         self.sitting.add_user_answer(self.question, guess)
+        # if question is in question_list, then only remove the question.
+        # In case of answer update, question is already removed. Therefore, no need if previously attempted
         if str(self.question.id) in self.sitting.question_list.split(','):
             self.sitting.remove_first_question()
 
