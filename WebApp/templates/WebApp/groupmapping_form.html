@@ -39,6 +39,10 @@
     .selector .selector-available input {
         width: 210px !important;
     }
+
+    .selector .selector-chosen input {
+        width: 210px !important;
+    }
 </style>
 
 <div class="page-header">
@@ -114,6 +118,8 @@
 {% endblock %}
 {% block javascript %}
 <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'build/js/CustomSelectFilter2.js' %}"></script>
+
 
 <script>
     $('.select2').select2({
