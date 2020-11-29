@@ -347,6 +347,7 @@ class QuizTake(FormView):
                     score_list.append(str(score))
                 else:
                     current_score_list = self.sitting.score_list.split(',')
+                    current_incorrect_list = self.sitting.incorrect_questions.split(',')
                     # update score for T/F question and MCQ. Since the score is not graded for SAQ while taking quiz, update score on SAQ is not necessary
                     for idx, value in enumerate(current_score_list):
                         if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
@@ -358,8 +359,23 @@ class QuizTake(FormView):
                                                   -(int(prev_score) + int(score)))
                             score_list[idx] = (str(score))
 
+                            # remove from incorrect list
+                            current_incorrect_list.remove(str(self.question.pk))
+                            self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+
         else:
-            self.sitting.add_incorrect_question(self.question)
+            if str(self.question.id) in self.sitting.question_list.split(','):
+                self.sitting.add_incorrect_question(self.question)
+            else:
+                current_incorrect_list = self.sitting.incorrect_questions.split(',')
+                for idx, value in enumerate(current_incorrect_list):
+                    if str(self.question.pk) not in current_incorrect_list:
+                        self.sitting.add_incorrect_question(self.question)
+                    else:
+                        if idx == int(self.sitting.incorrect_questions.split(',').index(str(self.question.pk))):
+                            current_incorrect_list[idx] = (str(self.question.pk))
+                            self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+
             if self.sitting.quiz.negative_marking:
                 negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
             else:
