@@ -44,7 +44,7 @@
                     </form>
                 </div>
 
-                <div class="card text-center">
+                <div class="card text-center  border-0 bg-light">
                    <div class="card-body">
                        {% block widget_before %}{% endblock %}
                        {% if request.user.is_authenticated %}
@@ -86,7 +86,7 @@
     </div>
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
     <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
     <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
     <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script>
@@ -110,5 +110,5 @@
     </script>
     {% block footer_ext %}
 
-    {% endblock %}
-{% endblock %}
+    {% endblock  %}
+{% endblock javascript %}
