@@ -38,7 +38,15 @@
     {% for sitting in sittings %}
 
       <tr>
-        <td><a href="{% url 'student_progress_detail' pk=sitting.pk %}">{{ sitting.quiz.title }}</a></td>
+        <td>
+            {% if sitting.complete %}
+            <a href="{% url 'student_progress_detail' pk=sitting.pk %}">
+                {{ sitting.quiz.title }}
+            </a>
+            {% else %}
+                {{ sitting.quiz.title }}
+            {% endif %}
+        </td>
         <td>
           {% if sitting.quiz.exam_paper %}
             {% trans 'Exam Paper' %}
