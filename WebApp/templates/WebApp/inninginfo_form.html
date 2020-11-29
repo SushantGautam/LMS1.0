@@ -41,6 +41,25 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .selector {
+        width: auto !important;
+    }
+
+    .selector-available,
+    .selector-chosen {
+        width: 280px !important;
+    }
+
+    .selector select {
+        width: 280px !important;
+    }
+
+    .selector .selector-available input {
+        width: 210px !important;
+    }
+</style>
+
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="create_session_modal">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -230,16 +249,21 @@
                             <div id="step3">
                                 <div class="form-group wd-xs-300">
                                     <div class="row">
-                                        <div class="col-md-6 col-sm-8" style="margin: auto;">
-                                            <select class="select2" id="id_Course_Group" name="Course_Group"
+                                        <div class="col-md-6 col-sm-12" style="margin: auto;">
+                                            <!-- <select class="select2" id="id_Course_Group" name="Course_Group"
                                                 multiple="multiple">
                                                 {% for x, y in form.fields.Course_Group.choices %}
                                                 <option value="{{ x }}"
                                                     {% if form.initial.Course_Group == x %}selected{% endif %}> {{ y }}
                                                 </option>
                                                 {% endfor %}
-                                            </select>
-                                            <span id="step3Validate" class="text-danger"></span>
+                                            </select> -->
+                                            <div class="mt-4">
+                                                {{ form.Course_Group }}
+                                            </div>
+                                            <div class="col-12 d-inline-block text-center">
+                                                <span id="step3Validate" class="text-danger"></span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="text-center mt-4">
@@ -294,9 +318,9 @@
         $('#id_Groups').select2({
             placeholder: 'Select Group'
         });
-        $('#id_Course_Group').select2({
-            placeholder: 'Select Courses'
-        });
+        // $('#id_Course_Group').select2({
+        //     placeholder: 'Select Courses'
+        // });
     })
 
     $('#wizard-example').steps({
@@ -306,14 +330,15 @@
         titleTemplate: '<span class="wizard-index">#index#</span> #title#',
         onStepChanging: function (event, currentIndex, newIndex) {
             if (currentIndex < newIndex) {
-                var form = document.getElementById('step0'),
-                    form2 = document.getElementById('step1');
+                //var form = document.getElementById('step0'),
+                //    form2 = document.getElementById('step1');
 
                 if (currentIndex === 0) {
+                    console.log('zero', event, currentIndex, newIndex)
                     if ($("#id_Inning_Name").val() == "") {
                         event.preventDefault();
                         event.stopPropagation();
-                        form.classList.add('was-validated');
+                        //form.classList.add('was-validated');
                         $("#step0Validate").html("Select a Session Name")
                     }
                     else {
@@ -322,6 +347,7 @@
                     }
 
                 } else if (currentIndex === 1) {
+                    console.log('1', event, currentIndex, newIndex)
                     var startDate = document.getElementById("id_Start_Date").value;
                     var endDate = document.getElementById("id_End_Date").value;
                     if ($("#id_Start_Date").val() == "") {
@@ -348,6 +374,9 @@
                     }
 
                 } else if (currentIndex === 2) {
+                    console.log('2', event, currentIndex, newIndex)
+                    console.log('test', ($("#id_Course_Group_to").has('option').length == '0'))
+
                     if ($("#id_Groups").val() == "") {
                         event.preventDefault();
                         event.stopPropagation();
@@ -357,29 +386,27 @@
                         $("#step2Validate").html("");
                         return true;
                     }
-                } else if (currentIndex === 3) {
-                    if ($("#id_Course_Group").has('option').length == '0') {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        $("#step3Validate").html("Select a Course")
-                    }
-                    else {
-                        $("#step3Validate").html("");
-                        return true;
-                    }
                 }
-                else {
-                    return true;
-                }
+
             } else {
                 return true;
             }
         },
         onFinished: function (event, currentIndex) {
             var form = document.getElementById("FormID");
-            console.log('finished')
+            if ($("#id_Course_Group_to").has('option').length == '0') {
+                event.preventDefault();
+                event.stopPropagation();
+                $("#step3Validate").html("Select a Course")
+            }
+            else {
+                $("#step3Validate").html("");
+                $('#id_Course_Group_to option').prop('selected', true);
+                console.log('finished')
+                form.submit();
+            }
             // Submit form input
-            form.submit();
+
         },
     });
 </script>
