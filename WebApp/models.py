@@ -845,6 +845,18 @@ class InningInfo(models.Model):
     def get_teacher_update_url(self):
         return reverse('teachers_inninginfo_update', args=(self.pk,))
 
+    @property
+    def is_active(self):
+        datetime_now = timezone.now().replace(microsecond=0)
+        if self.Use_Flag == True and self.Start_Date <= datetime_now and self.End_Date >= datetime_now:
+            return True
+        else:
+            return False
+
+    def student_count(self):
+        return self.Groups.Students.all().count()
+
+
     def __str__(self):
         return self.Inning_Name.Session_Name
 

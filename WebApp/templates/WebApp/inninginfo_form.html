@@ -6,24 +6,7 @@
 {{ form.media }}
 <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
 <link rel="stylesheet" href="{% static 'vendors/form-wizard/jquery.steps.css' %}" type=" text/css">
-<!-- <link href="{% static 'vendorsx/nprogress/nprogress.css' %}" rel="stylesheet" />
-<link href="{% static '/build/css/custom.min.css' %}" rel="stylesheet" />
-<link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard.css' %}" rel="stylesheet" />
-<link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet" /> -->
-<!-- <style>
-    .selector-available,
-    .selector-chosen {
-        width: 280px !important;
-    }
-
-    .selector select {
-        width: 280px !important;
-    }
-
-    .selector .selector-available input {
-        width: 210px !important;
-    }
-</style> -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
 {% endblock %}
 
 {% block breadcrumb %}
@@ -79,7 +62,7 @@
     </div>
 </div>
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="create_groupmapping_modal">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content box2">
             <div class="modal-header">
                 <h5 class="modal-title text-primary font-weight-bold" id="create_groupmapping_modal_title">Create
@@ -93,8 +76,9 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="create_inninggroup_modal">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content box3">
             <div class="modal-header">
                 <h5 class="modal-title text-primary font-weight-bold" id="create_inninggroup_modal_title">Assign Course
@@ -182,6 +166,7 @@
                             <div id="step1">
                                 <div class="col-md-6 col-sm-12 text-center" style="margin:auto">
                                     <div class="form-group">
+                                        <!-- {{ form.Start_Date|as_crispy_field }} -->
                                         <label for="id_Start_Date" class="control-label">
                                             Start Date*
                                         </label>
@@ -193,11 +178,13 @@
                                         <span id="step1aValidate" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
+                                        <!-- {{ form.End_Date|as_crispy_field }} -->
+
                                         <label for="id_End_Date" class="control-label  requiredField">
                                             End Date*
                                         </label>
                                         <div class="controls">
-                                            <input value="{{ object.End_Date | date:'Y-m-d' }}" type="date"
+                                            <input value="{{ object.End_Date|date:'Y-m-d' }}" type="date"
                                                 name="End_Date" required="" id="id_End_Date"
                                                 class="datetimeinput form-control" min="{{datetime|date:'Y-m-d'}}"
                                                 max="9999-12-31" />
@@ -314,6 +301,7 @@
 <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
 <script src="{% static 'vendors/form-wizard/jquery.steps.min.js' %}"></script>
 <script src="{% static 'build/js/CustomSelectFilter2.js' %}"></script>
+<!-- <script    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script> -->
 
 
 <script>
@@ -416,6 +404,31 @@
         },
     });
 </script>
+<!-- <script>
+    if (document.getElementById('id_Start_Date').value != '') {
+        document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
+    } else {
+        document.getElementById('id_Start_Date').value = new Date().toLocaleString("en-US");
+    }
+    if (document.getElementById('id_End_Date').value != '') {
+        document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
+    } else {
+        document.getElementById('id_End_Date').value = new Date(new Date().setMonth(new Date().getMonth() + 3)).toLocaleString("en-US");
+    }
+
+    $('#id_Start_Date').datetimepicker();
+    $('#id_End_Date').datetimepicker();
+
+    $('#FormID').on('submit', function (e) {
+        if ($('#id_Start_Date').val() != "") {
+            $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
+        }
+        if ($('#id_End_Date').val() != "") {
+            $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
+        }
+    })
+</script> -->
+
 <script type="text/javascript">
     $(document).ready(function () {
         $("p.info-text").hide();

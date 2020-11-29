@@ -12,31 +12,26 @@
         <input type="text" class="form-control" name="GroupMapping_Name" maxlength="250" id="id_GroupMapping_Name"
             required>
     </div>
-    <div class="form-group">
-        <label for="id_Students">Select Students *</label>
-        <select class="select2" id="id_Students" name="Students" multiple>
-            {% for x, y in form.fields.Students.choices %}
-            <option value="{{ x }}" {% if form.initial.Students == x %}selected{% endif %}>
-                {{ y }}
-            </option>
-            {% endfor %}
-        </select>
+    <div class="mt-4">
+        {{ form.Students }}
     </div>
-    <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+    <div class="d-inline-block col-12 text-center">
         *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
         MAC.
-    </div> -->
+    </div>
     <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
     <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
         class="select form-control">
     <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
         class="select form-control">
-    <div class="submitButton text-center pt-3">
+    <div class="d-inline-block col-12 submitButton text-center pt-3">
         <button class="btn btn-primary" type="submit" id="submit_ajax">Submit</button>
         <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
     </div>
 </form>
 <!-- <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script> -->
+
+<script src="{% static 'build/js/CustomSelectFilter2.js' %}"></script>
 <script>
     $(document).ready(function () {
         $('#id_Students').select2({
