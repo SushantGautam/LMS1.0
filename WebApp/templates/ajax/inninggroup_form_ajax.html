@@ -19,7 +19,7 @@
     </div>
     <div class="form-group">
         <label for="id_Teacher_Code">Select Teachers</label>
-        <select class="select2" id="id_Teacher_Code" name="Teacher_Code">
+        <select class="select2" id="id_Teacher_Code" name="Teacher_Code" multiple>
             {% for x, y in form.fields.Teacher_Code.choices %}
             <option value="{{ x }}" {% if form.initial.Teacher_Code == x %}selected{% endif %}>
                 {{ y }}

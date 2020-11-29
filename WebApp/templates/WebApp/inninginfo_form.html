@@ -29,6 +29,11 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
+{% if '/inninginfo/update/' in request.path %}
+<li class="breadcrumb-item">
+    <a href="{{ object.get_absolute_url }}"> {{object}} </a>
+</li>
+{% endif %}
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/inninginfo/create/' == request.path %} Register New Session {% else %}
     Edit Session {% endif %}
@@ -82,7 +87,7 @@
 <div class="page-header">
     <div class="page-title d-block text-center">
         <h2> {% if '/inninginfo/create/' == request.path %}
-            Register New Sessions
+            Register New Session
             {% else %}
             Edit Session
             {% endif %}</h2>
@@ -132,7 +137,7 @@
                                         New.</span>
                                 </div>
                                 <div class="text-center mt-3">
-                                    <button class="btn btn-link button-info">Read More Info...</button>
+                                    <button class="btn btn-link button-info" type="button">Read More Info...</button>
                                     <p class="info-text col-md-6 col-sm-12 col-xs-12" style="margin:auto">
                                         INFO: Session is the interval for which the particular
                                         Course are taught and finished within it. It is the
@@ -206,7 +211,7 @@
                                     </div>
                                 </div>
                                 <div class="text-center mt-2">
-                                    <button class="btn btn-link button-info">Read More Info...</button>
+                                    <button class="btn btn-link button-info" type="button">Read More Info...</button>
                                     <p class="info-text col-md-6 col-sm-12 col-xs-12" style="margin:auto">
                                         INFO: Please select the student group you have created for this
                                         session. The student group will consists all the students enrolled
@@ -226,11 +231,11 @@
                                 <div class="form-group wd-xs-300">
                                     <div class="row">
                                         <div class="col-md-6 col-sm-8" style="margin: auto;">
-                                            <select class="select2" id="id_Course_Group" name="Course_Group" multiple>
+                                            <select class="select2" id="id_Course_Group" name="Course_Group"
+                                                multiple="multiple">
                                                 {% for x, y in form.fields.Course_Group.choices %}
                                                 <option value="{{ x }}"
-                                                    {% if form.initial.Course_Group == x %}selected{% endif %}>
-                                                    {{ y }}
+                                                    {% if form.initial.Course_Group == x %}selected{% endif %}> {{ y }}
                                                 </option>
                                                 {% endfor %}
                                             </select>
@@ -245,7 +250,7 @@
                                     </div>
                                 </div>
                                 <div class="text-center mt-2">
-                                    <button class="btn btn-link button-info">Read More Info...</button>
+                                    <button class="btn btn-link button-info" type="button">Read More Info...</button>
                                     <p class="info-text col-md-6 col-sm-12 col-xs-12" style="margin:auto">
                                         INFO: Please select the courses that are included in this session.
                                         You can assign multiple courses, here the courses are mapped with
@@ -292,7 +297,6 @@
         $('#id_Course_Group').select2({
             placeholder: 'Select Courses'
         });
-
     })
 
     $('#wizard-example').steps({
@@ -380,8 +384,12 @@
     });
 </script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $("p.info-text").hide();
+    })
     // toggle read more info display
     $(".button-info").click(function () {
+        //console.log('click')
         $("p.info-text").toggle();
     });
     // Display Add new session name popup modal
