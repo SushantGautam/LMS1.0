@@ -321,6 +321,9 @@ class MCQuestion(Question):
         else:
             return False
 
+    def get_num_correct_options(self):
+        return Answer.objects.filter(question=self, correct=True).count()
+
     class Meta:
         verbose_name = _("Multiple Choice Question")
         verbose_name_plural = _("Multiple Choice Questions")
@@ -861,12 +864,17 @@ class Sitting(models.Model):
         user_answers = json.loads(self.user_answers)
         for i in self.quiz.mcquestion.all():
             mcq_user_ans = user_answers.get(str(i.id))
-            if i.check_if_correct(mcq_user_ans):                # multi-ans-effect
-                totalmcq_score += i.score
+            for ans in mcq_user_ans:
+                if i.check_if_correct(ans):                # multi-ans-effect
+                    totalmcq_score += i.score
+                elif self.quiz.negative_marking:
+                    totalmcq_score -= float(i.score * self.quiz.negative_percentage) / 100
         for j in self.quiz.tfquestion.all():
             tfq_user_ans = user_answers.get(str(j.id))
             if j.check_if_correct(tfq_user_ans):
                 totaltfq_score += j.score
+            elif self.quiz.negative_marking:
+                totaltfq_score -= float(j.score * self.quiz.negative_percentage) / 100
         for k in self.quiz.saquestion.all():
             i = [int(n) for n in self.question_order.split(',') if n].index(k.id)
             if self.score_list:
@@ -983,7 +991,9 @@ class Sitting(models.Model):
                 user_ans = user_answers.get(str(q.id), False)
                 if user_ans:
                     if isinstance(q, MCQuestion):
-                        q.user_answer = Answer.objects.get(id=int(user_ans)).content    # multi-ans-effect
+                        # q.user_answer = Answer.objects.get(id=int(user_ans)).content    # multi-ans-effect
+                        q.user_answer = Answer.objects.filter(
+                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True)    # multi-ans-effect
                     else:
                         q.user_answer = user_ans
                     
@@ -998,12 +1008,32 @@ class Sitting(models.Model):
                         else:
                             q.score_obtained = "not_graded"
                             q.ans_correct = True
+                    elif isinstance(q, MCQuestion):
+                        score = q.score
+                        num_correct_options = q.get_num_correct_options() # get number of correct options
+                        num_options = q.get_answers().count()
+                        guess = user_ans
+                        num_correct_guess = sum([q.check_if_correct(g) for g in guess])
+                        per_score = score / num_correct_options
+                        score = per_score * num_correct_guess
+                        incorrect_score = per_score * (num_correct_options - num_correct_guess)
+                        is_correct = num_correct_options == num_correct_guess
+                        q.ans_correct = is_correct
+
+                        if self.quiz.negative_marking:
+                            q.score_obtained = score - float(incorrect_score * self.quiz.negative_percentage) / 100
+                        else:
+                            q.score_obtained = score
+                                        
                     else:
                         if q.check_if_correct(user_ans):
                             q.score_obtained = q.score
                             q.ans_correct = True
                         else:
-                            q.score_obtained  = 0
+                            if self.quiz.negative_marking:
+                                q.score_obtained = -float(q.score * self.quiz.negative_percentage) / 100
+                            else:
+                                q.score_obtained = 0
                             q.ans_correct = False
                 else:
                     q.user_answer = ' '

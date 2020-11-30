@@ -296,13 +296,25 @@ class QuizTake(FormView):
     def form_valid_user(self, form):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         guess = form.cleaned_data['answers']
-        print("multiple selected values: ", guess)
-        is_correct = self.question.check_if_correct(guess)
+        print("multiple selected values: ", guess) 
+        
         ssl = self.sitting.score_list
         if not ssl:
             ssl = ''
         score_list = [s for s in ssl.split(',') if s]
         score = self.question.score
+
+        if type(self.question) is MCQuestion:
+            num_correct_options = self.question.get_num_correct_options() # get number of correct options
+            num_options = self.question.get_answers().count()
+            # guess = guess.split(',')
+            num_correct_guess = sum([self.question.check_if_correct(g) for g in guess])
+            per_score = score / num_correct_options
+            score = per_score * num_correct_guess
+            incorrect_score = per_score * (num_correct_options - num_correct_guess)
+            is_correct = num_correct_options == num_correct_guess
+        else:
+            is_correct = self.question.check_if_correct(guess)
 
         if is_correct is True:
             if type(self.question) is SA_Question:
@@ -317,7 +329,10 @@ class QuizTake(FormView):
         else:
             self.sitting.add_incorrect_question(self.question)
             if self.sitting.quiz.negative_marking:
-                negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
+                if type(self.question) is MCQuestion:
+                    negative_score = -(float(self.sitting.quiz.negative_percentage * incorrect_score) / 100)
+                else:       # no need to worry about SAQ as its always correct.
+                    negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
             else:
                 negative_score = 0
             progress.update_score(self.question, negative_score, score)
