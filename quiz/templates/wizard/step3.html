@@ -48,15 +48,15 @@
         {{ wizard.form.non_field_errors }}
         <div class="row questions-wrapper">
           <div class="col-md-2"></div>
-          <div class="col-md-7">
+          <div class="col-md-8">
           {{ wizard.form.mcquestion|as_crispy_field }}
           {{ wizard.form.mcquestion.help_text }}
           {{ wizard.form.mcquestion.errors }}
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
             <button type="button" class="btn btn-primary" id="mcq_create_button" data-toggle="modal"
-              data-target="#question_form_popup">Add MCQ question
+              data-target="#question_form_popup">Add MCQ
             </button>
           </div>
         </div>
@@ -64,15 +64,15 @@
       <div class="form-group">
         <div class="row questions-wrapper">
           <div class="col-md-2"></div>
-          <div class="col-md-7">
+          <div class="col-md-8">
             {{ wizard.form.tfquestion|as_crispy_field }}
             {{ wizard.form.tfquestion.help_text }}
             {{ wizard.form.tfquestion.errors }}
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <!-- <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a> -->
             <button type="button" class="btn btn-primary" id="tfq_create_button" data-toggle="modal"
-              data-target="#question_form_popup">Add T/F question
+              data-target="#question_form_popup">Add T/FQ
             </button>
           </div>
         </div>
@@ -80,15 +80,15 @@
       <div class="form-group">
         <div class="col-md-12 questions-wrapper">
           <div class="col-md-2"></div>
-          <div class="col-md-7">
+          <div class="col-md-8">
             {{ wizard.form.saquestion|as_crispy_field }}
             {{ wizard.form.saquestion.help_text }}
             {{ wizard.form.saquestion.errors }}
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
             <button type="button" class="btn btn-primary" id="saq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup">Add SA question
+                    data-target="#question_form_popup">Add SAQ
             </button>
           </div>
         </div>
