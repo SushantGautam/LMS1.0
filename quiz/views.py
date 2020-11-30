@@ -295,7 +295,10 @@ class QuizTake(FormView):
 
     def form_valid_user(self, form):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
-        guess = form.cleaned_data['answers']
+        if type(self.question) is TF_Question:
+            guess = form.cleaned_data['answers'][0]        # because saq and mcq share same form
+        else:                                              # so for tfq, need to remove list '[]'                     
+            guess = form.cleaned_data['answers']
         print("multiple selected values: ", guess) 
         
         ssl = self.sitting.score_list

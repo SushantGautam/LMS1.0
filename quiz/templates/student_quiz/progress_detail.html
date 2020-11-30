@@ -85,9 +85,13 @@
               <ul class="list-group">
                 {% for option in q.get_answers %}
                   {% if option.correct %}
-                    <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}</li>
+                    {% if option|slugify not in q.user_answer|slugify %}
+                      <li class="list-group-item list-group-item-warning">{{ forloop.counter }}. {{ option.content }}</li>
+                    {% else %}
+                      <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}</li>
+                    {% endif %}
                   {% else %}
-                    {% if option|slugify == q.user_answer|slugify %}
+                    {% if option|slugify in q.user_answer|slugify %}
                       <li class="list-group-item list-group-item-danger">
                         {#                      <i class="fa fa-times fa-2x text-danger"></i>#}
                         {{ forloop.counter }}. {{ option.content }}
