@@ -31,7 +31,7 @@
         margin-bottom: 10px;"><i
         class="fa fa-arrow-left"></i>&nbsp; {% trans 'Return to Chapter' %} {{ object.quiz.chapter_code.Chapter_No }}
             </button>
-      
+
       </a>
         {% endif %}
       </div>
@@ -72,13 +72,15 @@
               <h4 class="panel-title">
                 <i class="fa fa-chevron-down fa-2x text-info" style="margin-right: 10px"></i>
                 {{ q.content }}
-                {#              <span style="float: right">{{ q.score_obtained }} / {{ q.score }}</span>#}
-                {% if not q.ans_correct %}
-                  <i class="fa fa-times fa-2x text-danger" style="float: right"></i>
-                {% elif q.is_saq %}
-                  <i class="fa fa-ellipsis-h fa-2x text-info" style="float: right"></i>
-                {% else %}
-                  <i class="fa fa-check fa-2x text-success" style="float: right"></i>
+                {% if not object.quiz.exam_paper %}
+                    {#              <span style="float: right">{{ q.score_obtained }} / {{ q.score }}</span>#}
+                    {% if not q.ans_correct %}
+                      <i class="fa fa-times fa-2x text-danger" style="float: right"></i>
+                    {% elif q.is_saq %}
+                      <i class="fa fa-ellipsis-h fa-2x text-info" style="float: right"></i>
+                    {% else %}
+                      <i class="fa fa-check fa-2x text-success" style="float: right"></i>
+                    {% endif %}
                 {% endif %}
               </h4>
             </a>
@@ -87,10 +89,10 @@
             {% if q.is_mcq %}
               <ul class="list-group">
                 {% for option in q.get_answers %}
-                  {% if option.correct %}
+                  {% if option.correct and not object.quiz.exam_paper %}
                     <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}</li>
                   {% else %}
-                    {% if option|slugify == q.user_answer|slugify %}
+                    {% if option|slugify == q.user_answer|slugify and not object.quiz.exam_paper %}
                       <li class="list-group-item list-group-item-danger">
                         {#                      <i class="fa fa-times fa-2x text-danger"></i>#}
                         {{ forloop.counter }}. {{ option.content }}
@@ -104,20 +106,25 @@
             {% endif %}
             {% if q.is_tfq %}
               <ul class="list-group">
-                {% if q.correct %}
-                  <li class="list-group-item list-group-item-success">1. {% trans 'True' %}</li>
-                  {% if q.correct|slugify == q.user_answer|slugify %}
-                    <li class="list-group-item">2. {% trans 'False' %}</li>
-                  {% else %}
-                    <li class="list-group-item list-group-item-danger">2. {% trans 'False' %}</li>
-                  {% endif %}
+                {% if not object.quiz.exam_paper %}
+                    {% if q.correct %}
+                      <li class="list-group-item list-group-item-success">1. {% trans 'True' %}</li>
+                      {% if q.correct|slugify == q.user_answer|slugify %}
+                        <li class="list-group-item">2. {% trans 'False' %}</li>
+                      {% else %}
+                        <li class="list-group-item list-group-item-danger">2. {% trans 'False' %}</li>
+                      {% endif %}
+                    {% else %}
+                      {% if q.correct|slugify == q.user_answer|slugify %}
+                        <li class="list-group-item">1. {% trans 'True' %}</li>
+                      {% else %}
+                        <li class="list-group-item list-group-item-danger">1. {% trans 'True' %}</li>
+                      {% endif %}
+                      <li class="list-group-item list-group-item-success">2. {% trans 'False' %}</li>
+                    {% endif %}
                 {% else %}
-                  {% if q.correct|slugify == q.user_answer|slugify %}
                     <li class="list-group-item">1. {% trans 'True' %}</li>
-                  {% else %}
-                    <li class="list-group-item list-group-item-danger">1. {% trans 'True' %}</li>
-                  {% endif %}
-                  <li class="list-group-item list-group-item-success">2. {% trans 'False' %}</li>
+                    <li class="list-group-item">1. {% trans 'False' %}</li>
                 {% endif %}
               </ul>
             {% endif %}
@@ -129,11 +136,13 @@
 
 
               </div>
-            
+
             {% endif %}
             <div class="panel-footer">
-              <span class="total-score-progress ">{% trans 'Total Score' %}: {{ q.score }}</span> <span
+                {% if not object.quiz.exam_paper %}
+                    <span class="total-score-progress ">{% trans 'Total Score' %}: {{ q.score }}</span> <span
                 class="score-obtained-progress "> {% trans 'Score Obtained' %}: {{ q.score_obtained }}</span>
+                {% endif %}
             </div>
           </div>
         </div>
