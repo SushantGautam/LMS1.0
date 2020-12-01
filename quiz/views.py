@@ -218,9 +218,11 @@ class QuizTake(FormView):
     template_name = 'question.html'
     result_template_name = 'result.html'
     single_complete_template_name = 'single_complete.html'
+    current_question_number = 0
 
     def dispatch(self, request, *args, **kwargs):
         self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'])
+        self.current_question_number = self.request.GET.get('q') if self.request.GET.get('q') else 0
         if QuizInfoAuth(request, self.quiz.pk) != 1:  # check if quiz belongs to the same center as user
             return redirect('login')
         if StudentCourseAuth(request,
@@ -256,7 +258,7 @@ class QuizTake(FormView):
             question = None
             # if query parameter is present, then fetch the form of the question.
             if self.request.GET.get('q'):
-                question = int(self.request.GET.get('q'))
+                question = int(self.current_question_number)
             self.question = self.sitting.get_first_question(question_pk=question)
             self.progress = self.sitting.progress()
         else:
@@ -293,8 +295,8 @@ class QuizTake(FormView):
                 return self.final_result_anon()
 
         self.request.POST = {}
-        self.request.GET = {}
-
+        self.request.GET = {'q': str(int(self.current_question_number) + 1)}
+        self.current_question_number = str(int(self.current_question_number) + 1)
         return super(QuizTake, self).get(self, self.request)
 
     def get_context_data(self, **kwargs):
@@ -360,8 +362,9 @@ class QuizTake(FormView):
                             score_list[idx] = (str(score))
 
                             # remove from incorrect list
-                            current_incorrect_list.remove(str(self.question.pk))
-                            self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+                            if str(self.question.pk) in current_incorrect_list:
+                                current_incorrect_list.remove(str(self.question.pk))
+                                self.sitting.incorrect_questions = ','.join(current_incorrect_list)
 
         else:
             if str(self.question.id) in self.sitting.question_list.split(','):
