@@ -866,11 +866,12 @@ class Sitting(models.Model):
             mcq_user_ans = user_answers.get(str(i.id))
             num_correct_options = i.get_num_correct_options()
             per_score = i.score / num_correct_options
-            for ans in mcq_user_ans:
-                if i.check_if_correct(ans):                # multi-ans-effect
-                    totalmcq_score += per_score
-                elif self.quiz.negative_marking:
-                    totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
+            if mcq_user_ans:                                    # if no answer, just add 0, so just ignore
+                for ans in mcq_user_ans:
+                    if i.check_if_correct(ans):                # multi-ans-effect
+                        totalmcq_score += per_score
+                    elif self.quiz.negative_marking:
+                        totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
         for j in self.quiz.tfquestion.all():
             tfq_user_ans = user_answers.get(str(j.id))
             if j.check_if_correct(tfq_user_ans):
