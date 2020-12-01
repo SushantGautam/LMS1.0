@@ -259,10 +259,10 @@
                             className: 'btn btn-info',
                         {% elif event.event_type == "ME" %}
                             icon: "user-o",
-                            className: 'btn btn-danger',
+                            className: 'btn btn-success',
                         {% elif event.event_type == "HO" %}
                             icon: "car",
-                            className: 'btn btn-success',
+                            className: 'btn btn-danger',
                         {% elif event.event_type == "EX" %}
                             icon: "newspaper-o",
                             className: 'btn btn-primary',
@@ -396,14 +396,14 @@
                             }
                           if (event.type == "Holiday")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info');
-                            modal.find('.event-type').addClass('btn btn-success');
+                            modal.find('.event-type').removeClass('btn btn-success btn-info');
+                            modal.find('.event-type').addClass('btn btn-danger');
 
                             }
                           if (event.type == "Meeting")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info");
-                            modal.find('.event-type').addClass("btn btn-danger");
+                            modal.find('.event-type').removeClass("btn btn-danger btn-info");
+                            modal.find('.event-type').addClass("btn btn-success");
 
                             }
                           if (event.type == "Examination")

@@ -215,7 +215,39 @@
                             id: 'survey{{ c.pk }}',
                             start: '{{ c.Start_Date|date:"Y-m-d" }}',
                             end: '{{ c.End_Date|date:"Y-m-d" }}',
-                            part:"All Students",
+                            version: '{{c.Version_No}}',
+                            view_result : '{{c.Publish_Result}}',
+
+                            category: '{{c.Category_Code}}',
+
+                            part_list: '{% for p in c.get_participant_for_calendar %}{{p.username}},{% endfor %}',
+                            {% if c.get_participant_for_calendar == "All Students" %}
+                            part: 'All Students',
+                            {% else %}
+                            event_part_list: [
+                            {% for part in c.get_participant_for_calendar %}
+                                {   id: '{{ part.pk }}',
+                                    username: '{{ part.username }}',
+                                    fullname: '{{ part.getFullName }}',
+                                    avatar: '{{ part.Avatar }}',
+
+
+                                },
+                            {% endfor %}
+                            ],
+                            {% endif %}
+
+
+
+
+
+                            {% if c.id in submittedSurvey %}
+                            can_submit: 'False',
+                            {% else %}
+                            can_submit: 'True',
+                            {% endif %}
+
+
                             url: '{% url 'questions_student_detail' pk=c.pk  %}',
                             type: 'Survey',
 
@@ -232,6 +264,24 @@
                         id: 'assignment{{ c.pk }}',
                         start: '{{ i.Assignment_Start|date:"Y-m-d" }}',
                         end: '{{ i.Assignment_Deadline|date:"Y-m-d" }}',
+                            {% for c in i.get_course %}
+                        course:'{{c}}',
+                            {% endfor %}
+
+                        chapter:'{{i.get_chapter}}',
+
+                        event_part_list: [
+                            {% for part in i.get_participant_for_calendar %}
+                                {   id: '{{ part.pk }}',
+                                    username: '{{ part.username }}',
+                                    fullname: '{{ part.getFullName }}',
+                                    avatar: '{{ part.Avatar }}',
+
+
+                                },
+                            {% endfor %}
+                            ],
+
                         part:"All Students",
                         url: '{% url 'student_assignmentinfo_detail' course=i.Course_Code.pk chapter=i.Chapter_Code.pk pk=i.pk  %}',
                         type: 'Assignment',
@@ -287,10 +337,10 @@
                             className: 'btn btn-info',
                         {% elif event.event_type == "ME" %}
                             icon: "user-o",
-                            className: 'btn btn-danger',
+                            className: 'btn btn-success',
                         {% elif event.event_type == "HO" %}
                             icon: "car",
-                            className: 'btn btn-success',
+                            className: 'btn btn-danger',
                         {% elif event.event_type == "EX" %}
                             icon: "newspaper-o",
                             className: 'btn btn-primary',
@@ -408,14 +458,14 @@
                             }
                           if (event.type == "Holiday")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-secondary btn-dark btn-primary');
-                            modal.find('.event-type').addClass('btn btn-success');
+                            modal.find('.event-type').removeClass('btn btn-success btn-info btn-secondary btn-dark btn-primary');
+                            modal.find('.event-type').addClass('btn btn-danger');
 
                             }
                           if (event.type == "Meeting")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-secondary btn-dark btn-primary");
-                            modal.find('.event-type').addClass("btn btn-danger");
+                            modal.find('.event-type').removeClass("btn btn-danger btn-info btn-secondary btn-dark btn-primary");
+                            modal.find('.event-type').addClass("btn btn-success");
 
                             }
                            if (event.type == "Examination")
@@ -434,8 +484,11 @@
                             {
                             modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-dark');
                             modal.find('.event-type').addClass('btn btn-secondary');
+                            // modal.find('.survey-category').text("Category:" + event.category);
+                            modal.find('.srv-cat').html(`<span style='margin-left:18px;font-size:14px;'>Category: &nbsp;</span><span class='survey-category btn btn-sm btn-dark' style='font-weight:normal; <fon></fon>t-size:14px; margin-left:15px;'> ${event.category}</span> <br><br>` );
 
                             }
+
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
@@ -519,6 +572,7 @@
 
                     if (event.part == 'Choose User')
                     {
+
                         console.log(event.event_part_list);
                          modal.find('.participant').html("Participants:&nbsp;"+event.event_part_list.length);
                          $('.part_list').empty();
@@ -535,6 +589,7 @@
                                     <h6 class='mb-1 participant_name '> ${event.event_part_list[i].fullname} </h6>
                                 </div>
                              </a>`);
+
                         }
 
 
@@ -545,26 +600,102 @@
 
 
                     }else{
+                    if (event.part)
+                    {
                   // modal.find('.participant').append(event.part);
+                     console.log(event.part);
                      modal.find('.participant').html("Participants:&nbsp;"+ event.part);
                      modal.find('.part_custom').hide();
+                     }
                     }
-                    if ( event.type == "Assignment"){
-                    modal.find('.dsp').html(" ");
-                    modal.find('.desc').html(" ");
-                    modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Details </a>');
-                    $(".dtlbtn").attr("href", event.url)
 
-                    }else if ( event.type == "Survey"){
-                    modal.find('.dsp').html(" ");
-                    modal.find('.desc').html(" ");
-                    modal.find('.dsp').html( '<a href="#" class="btn btn-primary dtlbtn"> Details </a>');
-                    $(".dtlbtn").attr("href", event.url)
+
+                    if ( event.type == "Assignment"){
+                            modal.find('.dsp').html(" ");
+                            modal.find('.desc').html(" ");
+                                if (event.can_submit == "True"){
+                                modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Participate </a>');
+                                }else{
+                                modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Details </a>');
+                                }
+
+                            $(".dtlbtn").attr("href", event.url)
+                            $('.version_info').html(`<h5 style="text-align:left; font-size:14px">Course: ${event.course}  </h5>   `);
+                            $('.view_result').html(`<h5 style="text-align:left; font-size:14px">Chapter: ${event.chapter} </h5>   `);
+
+                            modal.find('.participant').html(`Participants:&nbsp;  ${event.event_part_list.length}`);
+
+                                    $('.part_list').empty();
+                                    for (i = 0; i < event.event_part_list.length; i++){
+                                         $('.part_list').append(` <a href='#' class='list-group-item d-flex align-items-center'>
+                                            <div class='pr-3'>
+                                                <div class='avatar'>
+                                                    <img src="${event.event_part_list[i].avatar}"
+                                                         class='rounded-circle'
+                                                         alt='image'>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 class='mb-1 participant_name '> ${event.event_part_list[i].fullname} </h6>
+                                            </div>
+                                         </a>`);
+                                         }
+
+                                modal.find('.part_custom').show();
+
+                    }
+
+                    else if ( event.type == "Survey"){
+
+
+                        $('.version_info').html(`<h5 style="text-align:left; font-size:14px">Version: ${event.version} </h5>   `);
+                        $('.view_result').html(`<h5 style="text-align:left; font-size:14px">View Result: ${event.view_result} </h5>   `);
+                            if ( event.category == "Session" || event.category == "Course")
+                            {
+                                modal.find('.participant').html(`Participants:&nbsp;  ${event.event_part_list.length}`);
+
+                                    $('.part_list').empty();
+                                    for (i = 0; i < event.event_part_list.length; i++){
+                                         $('.part_list').append(` <a href='#' class='list-group-item d-flex align-items-center'>
+                                            <div class='pr-3'>
+                                                <div class='avatar'>
+                                                    <img src="${event.event_part_list[i].avatar}"
+                                                         class='rounded-circle'
+                                                         alt='image'>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 class='mb-1 participant_name '> ${event.event_part_list[i].fullname} </h6>
+                                            </div>
+                                         </a>`);
+                                         }
+
+                                modal.find('.part_custom').show();
+
+                             }
+
+
+
+
+                        modal.find('.dsp').html(" ");
+                        modal.find('.desc').html(" ");
+
+                        if (event.can_submit == "True"){
+                            modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Participate </a>');
+                        }else{
+                             modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Details </a>');
+                        }
+
+
+                        $(".dtlbtn").attr("href", event.url)
 
                     }else{
                     modal.find('.desc').html(" ");
                     modal.find('.desc').html(event.description);
+                    $(".survey_event").hide();
                     }
+
+
 
                     let event_id = event.id.replace("event_id_", "");
                     modal.find('.delete_event').attr('action', '{% url "student_event_calendar_delete" 12345 %}'.replace("12345", event_id));

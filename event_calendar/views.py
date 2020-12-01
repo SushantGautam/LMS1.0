@@ -11,11 +11,7 @@ from django.views.generic import TemplateView, CreateView, ListView, UpdateView,
 from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup, AssignmentInfo
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
-from survey.models import SurveyInfo
-
-
-
-
+from survey.models import SurveyInfo, SubmitSurvey
 
 
 class EventCreateView(CreateView):
@@ -112,11 +108,18 @@ class EventListView(ListView):
                                                       Course_Code__in=student_course, Use_Flag=True)
             system_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="system", Use_Flag=True)
 
+
             my_queryset = None
             my_queryset = general_survey | session_survey | course_survey | system_survey
             my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
             context['activeassignments'] = activeassignments
             context['activesurvey'] = my_queryset
+            submitSurveyQuerySet = SubmitSurvey.objects.filter(
+                Student_Code=self.request.user.id)
+            context['submittedSurvey'] = [
+                el.Survey_Code.id for el in submitSurveyQuerySet]
+            # context['is_submitted'] = SubmitSurvey.objects.filter(Survey_Code=self.object.id,
+            #                                                       Student_Code=self.request.user.id).exists()
             print("ActiveAssignment",activeassignments)
         return context
 

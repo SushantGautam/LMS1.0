@@ -5,7 +5,7 @@ from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField,
     ImageField
 from django.urls import reverse
 
-from WebApp.models import MemberInfo, InningInfo, CourseInfo, CenterInfo
+from WebApp.models import MemberInfo, InningInfo, CourseInfo, CenterInfo, InningGroup, GroupMapping
 
 
 class CategoryInfo(models.Model):
@@ -89,6 +89,26 @@ class SurveyInfo(models.Model):
 
     def get_create_url(self):
         return reverse('surveyinfo_ajax', args=(self.pk,))
+
+
+
+    def get_participant_for_calendar(self):
+        if self.Category_Code.Category_Name == "Session":
+            group = self.Session_Code.Groups
+            return group.Students.all().distinct()
+
+        elif self.Category_Code.Category_Name == "Course":
+            inning_groups = InningGroup.objects.filter(Course_Code=self.Course_Code)
+            inning_infos = InningInfo.objects.filter(Course_Group__in=inning_groups)
+            groups = GroupMapping.objects.filter(inninginfos__in=inning_infos)
+            students = MemberInfo.objects.filter(groupmapping__in = groups)
+            return students.distinct()
+
+        else:
+            return "All Students"
+
+        # SurveyInfo.objects.filter(Category_Code__Category_Name="Session").first().get_participant_for_calendar()
+
 
     def can_submit(self, student_code):
         datetimeexpired = 0

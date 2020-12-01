@@ -274,6 +274,7 @@ def calendar(request):
                                                   Course_Code__in=student_course, Use_Flag=True)
         system_survey = SurveyInfo.objects.filter( Category_Code__Category_Name__iexact="system", Use_Flag=True)
 
+
         my_queryset = None
         my_queryset = general_survey | session_survey | course_survey | system_survey
         my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
