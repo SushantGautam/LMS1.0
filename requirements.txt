@@ -7,7 +7,7 @@ psycopg2-binary==2.8.5
 channels==2.4.0
 channels-redis==2.4.2
 #gunicorn
-whitenoise~=5.1.0
+whitenoise==5.1.0
 #django-heroku
 coverage
 django-coverage
@@ -19,17 +19,17 @@ django-rest-auth==0.9.5
 djangorestframework==3.7.7
 django-filter==2.2.0
 django-addanother==2.0.0
-textblob~=0.15.3
+textblob==0.15.3
 django-formtools
 #selenium
-pytest~=6.0.0
+pytest==6.0.0
 pytest-django
 pytest-cov
 django-model-utils==3.2.0
 django-import-export
 #pyvimeo
 #pandas==0.24.2
-markdown~=3.2.2
+markdown==3.2.2
 django-decorator-include
 #sentry-sdk==0.13.1
 django-url-filter
@@ -40,11 +40,11 @@ django-datatables-view==1.19.1
 #cloudinary==1.20.0
 django-summernote==0.8.11.6
 
-six~=1.15.0
-Pillow~=7.2.0
-# cloudinary~=1.22.0
-pandas~=1.1.0
-requests~=2.24.0
-fusionexport~=1.2.2.1
+six==1.15.0
+Pillow==7.2.0
+# cloudinary==1.22.0
+pandas==1.1.0
+requests==2.24.0
+fusionexport==1.2.2.1
 django-rosetta==0.9.5
 django-pwa==1.0.10
