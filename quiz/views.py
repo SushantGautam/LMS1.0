@@ -16,7 +16,7 @@ from django_addanother.views import CreatePopupMixin
 from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth, AdminAuthMxnCls, StudentCourseAuth
 from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
-    QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
+    QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm, MCForm, TFForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question
 
 
@@ -257,8 +257,11 @@ class QuizTake(FormView):
 
         if self.question.__class__ is SA_Question:
             form_class = SAForm
+        elif self.question.__class__ is MCQuestion:
+            form_class = MCForm
         else:
-            form_class = self.form_class
+            # form_class = self.form_class
+            form_class = TFForm
         return form_class(**self.get_form_kwargs())
 
     def get_form_kwargs(self):
@@ -295,10 +298,11 @@ class QuizTake(FormView):
 
     def form_valid_user(self, form):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
-        if type(self.question) is TF_Question:
-            guess = form.cleaned_data['answers'][0]        # because saq and mcq share same form
-        else:                                              # so for tfq, need to remove list '[]'                     
-            guess = form.cleaned_data['answers']
+        # if type(self.question) is TF_Question:
+        #     guess = form.cleaned_data['answers'][0]        # because saq and mcq share same form
+        # else:                                              # so for tfq, need to remove list '[]'                     
+        #     guess = form.cleaned_data['answers']
+        guess = form.cleaned_data['answers']
         print("multiple selected values: ", guess) 
         
         ssl = self.sitting.score_list
@@ -310,12 +314,34 @@ class QuizTake(FormView):
         if type(self.question) is MCQuestion:
             num_correct_options = self.question.get_num_correct_options() # get number of correct options
             num_options = self.question.get_answers().count()
-            # guess = guess.split(',')
+            per_score = self.question.score / num_correct_options
+            score = 0
+            is_correct = True
+
+            ##############################################################
+            ##### loop for all user chosen:                           ####
+            ##### chosen - 1; correct - 1 => +score                   ####
+            ##### chosen - 1; correct - 0 => -score * negative_factor ####
+            ##### chosen - 0; correct - 1 => 0                        ####
+            ##### chosen - 0; correct - 0 => 0                        ####
+            ##### so we only care about chosen values                 ####
+            ##############################################################
+
+            for g in guess:
+                if self.question.check_if_correct(g):
+                    score += per_score
+                else:
+                    is_correct = False          ###### user selected wrong answer
+                    if self.sitting.quiz.negative_marking:
+                        score -= float(per_score * self.sitting.quiz.negative_percentage) / 100.0
+                    else:
+                        score += 0
+            
             num_correct_guess = sum([self.question.check_if_correct(g) for g in guess])
-            per_score = score / num_correct_options
-            score = per_score * num_correct_guess
-            incorrect_score = per_score * (num_correct_options - num_correct_guess)
-            is_correct = num_correct_options == num_correct_guess
+            # score = per_score * num_correct_guess
+            # incorrect_score = per_score * (num_correct_options - num_correct_guess)
+            if not (num_correct_options == num_correct_guess):
+                is_correct = False              ####### user didn't select all answers    
         else:
             is_correct = self.question.check_if_correct(guess)
 
@@ -331,11 +357,10 @@ class QuizTake(FormView):
 
         else:
             self.sitting.add_incorrect_question(self.question)
-            if self.sitting.quiz.negative_marking:
-                if type(self.question) is MCQuestion:
-                    negative_score = -(float(self.sitting.quiz.negative_percentage * incorrect_score) / 100)
-                else:       # no need to worry about SAQ as its always correct.
-                    negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
+            if type(self.question) is MCQuestion:
+                negative_score = score
+            elif self.sitting.quiz.negative_marking:
+                negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
             else:
                 negative_score = 0
             progress.update_score(self.question, negative_score, score)

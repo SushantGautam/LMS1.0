@@ -864,11 +864,13 @@ class Sitting(models.Model):
         user_answers = json.loads(self.user_answers)
         for i in self.quiz.mcquestion.all():
             mcq_user_ans = user_answers.get(str(i.id))
+            num_correct_options = i.get_num_correct_options()
+            per_score = i.score / num_correct_options
             for ans in mcq_user_ans:
                 if i.check_if_correct(ans):                # multi-ans-effect
-                    totalmcq_score += i.score
+                    totalmcq_score += per_score
                 elif self.quiz.negative_marking:
-                    totalmcq_score -= float(i.score * self.quiz.negative_percentage) / 100
+                    totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
         for j in self.quiz.tfquestion.all():
             tfq_user_ans = user_answers.get(str(j.id))
             if j.check_if_correct(tfq_user_ans):
@@ -1009,21 +1011,38 @@ class Sitting(models.Model):
                             q.score_obtained = "not_graded"
                             q.ans_correct = True
                     elif isinstance(q, MCQuestion):
-                        score = q.score
                         num_correct_options = q.get_num_correct_options() # get number of correct options
                         num_options = q.get_answers().count()
+                        per_score = q.score / num_correct_options
                         guess = user_ans
-                        num_correct_guess = sum([q.check_if_correct(g) for g in guess])
-                        per_score = score / num_correct_options
-                        score = per_score * num_correct_guess
-                        incorrect_score = per_score * (num_correct_options - num_correct_guess)
-                        is_correct = num_correct_options == num_correct_guess
-                        q.ans_correct = is_correct
+                        score = 0
+                        is_correct = True   
 
-                        if self.quiz.negative_marking:
-                            q.score_obtained = score - float(incorrect_score * self.quiz.negative_percentage) / 100
-                        else:
-                            q.score_obtained = score
+                        ##############################################################
+                        ##### loop for all user chosen:                           ####
+                        ##### chosen - 1; correct - 1 => +score                   ####
+                        ##### chosen - 1; correct - 0 => -score * negative_factor ####
+                        ##### chosen - 0; correct - 1 => 0                        ####
+                        ##### chosen - 0; correct - 0 => 0                        ####
+                        ##### so we only care about chosen values                 ####
+                        ##############################################################
+
+                        for g in guess:
+                            if q.check_if_correct(g):
+                                score += per_score
+                            else:
+                                is_correct = False          ###### user selected wrong answer
+                                if self.quiz.negative_marking:
+                                    score -= float(per_score * self.quiz.negative_percentage) / 100.0
+                                else:
+                                    score += 0
+
+                        num_correct_guess = sum([q.check_if_correct(g) for g in guess])
+                        if not (num_correct_options == num_correct_guess):
+                            is_correct = False
+                                    
+                        q.score_obtained = score
+                        q.ans_correct = is_correct
                                         
                     else:
                         if q.check_if_correct(user_ans):
