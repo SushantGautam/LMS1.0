@@ -91,7 +91,7 @@
                 {% for option in q.get_answers %}
 
                   {% if object.quiz.exam_paper %} <!-- when quiz is exam type -->
-                    {% if option|slugify == q.user_answer|slugify %}
+                    {% if option|slugify in q.user_answer|slugify %}
                       <li class="list-group-item list-group-item-secondary">{{ forloop.counter }}. {{ option.content }}</li>
                     {% else %}
                       <li class="list-group-item">{{ forloop.counter }}. {{ option.content }}</li>
@@ -99,19 +99,21 @@
                   {% else %} <!-- when quiz is not exam type -->
                     {% if option.correct %}  <!-- when option is correct case -->
                       <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}
-                      {% if option|slugify == q.user_answer|slugify %}
-                        <i class="fa fa-check fa-2x text-success" style="padding-left: 1em;"></i>
+                      {% if option|slugify in q.user_answer|slugify %}
+                        <i class="fa fa-circle-o fa-2x" style="padding-left: 1em;color:gray;"></i>
                       {% endif %}
                       </li>
                     {% else %} <!-- when option is incorrect case -->
-                      {% if option|slugify == q.user_answer|slugify %}
-                        <li class="list-group-item list-group-item-warning">{{ forloop.counter }}. {{ option.content }}</li>
+                      {% if option|slugify in q.user_answer|slugify %}
+                        <li class="list-group-item list-group-item-danger">{{ forloop.counter }}. {{ option.content }}
+                          <i class="fa fa-circle-o fa-2x" style="padding-left: 1em;color:gray;"></i>
+                        </li>
                       {% else %}
                         <li class="list-group-item">{{ forloop.counter }}. {{ option.content }}</li>
                       {% endif %}
                     {% endif %}
                   {% endif %}
-                  
+
                 {% endfor %}
               </ul>
             {% endif %}

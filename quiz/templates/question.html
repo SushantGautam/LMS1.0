@@ -253,9 +253,10 @@
     {% endif %}
 {% endblock %}
     <hr>
-    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+    
 
     {% block customjss %}
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
         <script>
             function updateFunctionTimeElapsed(count) {
                 {% if quiz.exam_paper %}
@@ -440,21 +441,18 @@
                 runQuizTimerInterval()
             })
         </script>
+        <script>
+            $(document).ready(function () {
+                runQuizTimerInterval();
+    
+                // update query parameter on page load.
+                if (history.pushState) {
+                    var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q={{ question_number }}';
+                    window.history.pushState({path:newurl},'',newurl);
+                }
+            });
+        </script>
     {% endblock %}
-    <script>
-        $(document).ready(function () {
-            runQuizTimerInterval();
-
-            // update query parameter on page load.
-            if (history.pushState) {
-                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q={{ question_number }}';
-                window.history.pushState({path:newurl},'',newurl);
-            }
-        });
-    </script>
-
-
-{% endblock %}
 
 {% block footer %}
 

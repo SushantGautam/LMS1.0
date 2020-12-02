@@ -392,20 +392,20 @@ class QuizTake(FormView):
                     current_score_list = self.sitting.score_list.split(',')
                     current_incorrect_list = self.sitting.incorrect_questions.split(',')
                     # update score for T/F question and MCQ. Since the score is not graded for SAQ while taking quiz, update score on SAQ is not necessary
-                    for idx, value in enumerate(current_score_list):
-                        if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
-                            prev_score = current_score_list[idx]
-                            # self.sitting.add_to_score(-prev_score)
-                            # deduct previous score and add new score
-                            self.sitting.add_to_score((-int(prev_score) + int(score)))
-                            progress.update_score(self.question, (-int(prev_score) + int(score)),
-                                                  -(int(prev_score) + int(score)))
-                            score_list[idx] = (str(score))
+                    # for idx, value in enumerate(current_score_list):
+                    #     if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
+                            # prev_score = current_score_list[idx]
+                            # # self.sitting.add_to_score(-prev_score)
+                            # # deduct previous score and add new score
+                            # self.sitting.add_to_score((-int(prev_score) + int(score)))
+                            # progress.update_score(self.question, (-int(prev_score) + int(score)),
+                            #                       -(int(prev_score) + int(score)))
+                            # score_list[idx] = (str(score))
 
                             # remove from incorrect list
-                            if str(self.question.pk) in current_incorrect_list:
-                                current_incorrect_list.remove(str(self.question.pk))
-                                self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+                            # if str(self.question.pk) in current_incorrect_list:
+                            #     current_incorrect_list.remove(str(self.question.pk))
+                            #     self.sitting.incorrect_questions = ','.join(current_incorrect_list)
 
         else:
             if str(self.question.id) in self.sitting.question_list.split(','):
