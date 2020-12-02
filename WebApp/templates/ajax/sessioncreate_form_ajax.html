@@ -5,7 +5,7 @@
 <form method="post" id="ajaxsessionform">
     {% csrf_token %}
     <div class="form-group">
-        <label for="id_Session_Name">Session Name</label>
+        <label for="id_Session_Name">Session Name *</label>
         <input type="text" class="form-control" name="Session_Name" maxlength="150" id="id_Session_Name" required>
     </div>
     <span id="error-msg-span" class="text-danger"></span>

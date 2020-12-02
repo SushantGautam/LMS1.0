@@ -419,7 +419,8 @@ class CoursesMultipleChoiceField(forms.ModelMultipleChoiceField):
     """
 
     def label_from_instance(self, obj):
-        return "%s (%s)" % (obj, obj.Teacher_Code.count())
+        return "%s (%s)" % (obj.InningGroup_Name, obj.Teacher_Code.count())
+
 
 
 class InningInfoForm(forms.ModelForm):

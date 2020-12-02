@@ -30,11 +30,11 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
-                <a class="dropdown-item text-info" id="{{ object.pk }}"
-                    href="{% url 'inninginfo_saveasnew' object.pk %}" href="javascript:void(0)">Save as new
+                <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">Edit
                     Session</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">Edit
+                <a class="dropdown-item text-info" id="{{ object.pk }}"
+                    href="{% url 'inninginfo_saveasnew' object.pk %}" href="javascript:void(0)">Save as new
                     Session</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-danger inning-confirm-delete" id="{{ object.pk }}"

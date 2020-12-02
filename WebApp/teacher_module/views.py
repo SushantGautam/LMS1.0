@@ -73,6 +73,7 @@ def start(request):
     """Start page with a documentation.
     """
     # return render(request,"start.html")
+    datetime_now = timezone.now().replace(microsecond=0)
 
     if request.user.Is_Teacher:
         wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
@@ -81,20 +82,20 @@ def start(request):
 
         x = request.user.get_teacher_courses()
         mycourse = x['courses']
-        sessions_list = x['session']
-        x = [x for x in sessions_list]
-        for y in x:
-            for z in y:
-                if z not in sessions:
-                    sessions.append(z)
-        activeassignments = []
-        for course in mycourse:
-            activeassignments += AssignmentInfo.objects.filter(Course_Code=course,
-                                                               Assignment_Deadline__gte=datetime_now,
-                                                               Chapter_Code__Use_Flag=True)
-        if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
-                                 status=True).exists():
-            notice = Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+        sessions = x['session']
+        # x = [x for x in sessions_list]
+        # for y in x:
+        #     for z in y:
+        #         if z not in sessions:
+        #             sessions.append(z)
+
+        # here assignment of only active chapters can be filtered later
+        activeassignments = AssignmentInfo.objects.filter(Course_Code__in=mycourse, Use_Flag=True,
+                                                          Chapter_Code__Use_Flag=True).order_by('-pk')[:5]
+        notices = Notice.objects.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now, status=True).filter(
+            Q(Center_Code=None) | Q(Center_Code=request.user.Center_Code))
+        if notices.exists():
+            notice = notices[0]
             if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                 notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[0].dont_show
                 if notice_view_flag:
