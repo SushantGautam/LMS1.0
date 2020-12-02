@@ -230,20 +230,25 @@
         $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
         $('.modal-dialog').css("width", "80%").css("height", "90vh").css("overflow", "auto");
 
-        $("input[name$='correct']").change(function(){
-            if (this.checked){
-                console.log("checked");
-                // count no of checked options
-                // if no of checked options is gt 2, uncheck this.
-                let check_count = $("input[name$='correct']:checked").length;
-                console.log("checked count", check_count);
-                if (check_count > 2){
-                    alert("Can't have more than 2 correct answers.!!");
-                    $(this).attr('checked', false);
-                }
-            } else {
-                console.log("unchecked");
-            }
-        });
+        ///////////////////////////////////////////////////////////////////////////////////
+        //////  Code to limit number of correct options; uncomment to enable limit ////////
+        ///////////////////////////////////////////////////////////////////////////////////    
+        // $("input[name$='correct']").change(function(){                           ///////
+        //     if (this.checked){                                                   ///////
+        //         console.log("checked");                                          ///////
+        //         // count no of checked options                                   ///////
+        //         // if no of checked options is gt 2, uncheck this.               ///////
+        //         let check_count = $("input[name$='correct']:checked").length;    ///////
+        //         console.log("checked count", check_count);                       ///////
+        //         if (check_count > 2){                                            ///////
+        //             alert("Can't have more than 2 correct answers.!!");          ///////
+        //             $(this).attr('checked', false);                              ///////
+        //         }                                                                ///////
+        //     } else {                                                             ///////
+        //         console.log("unchecked");                                        ///////
+        //     }                                                                    /////// 
+        // });                                                                      ///////
+        ///////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
     </script>
 {% endblock customjss %}
