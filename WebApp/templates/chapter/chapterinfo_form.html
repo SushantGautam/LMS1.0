@@ -1,13 +1,14 @@
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if '/create/' in request.path %}
-            Create New Chapter
+            {% trans 'Create New Chapter' %}
         {% else %}
-            Edit Chapter
+            {% trans 'Edit Chapter' %}
         {% endif %}
     </h2>
     <hr class="header_hr">
@@ -39,7 +40,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div id="div_id_Summary" class="form-group">
                 <label for="id_Summary" class="control-label ">
-                    Summary
+                    {% trans 'Summary' %}
                 </label>
                 <div class="controls ">
                     <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
@@ -62,7 +63,7 @@
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
             <label>
-                Publish
+                {% trans 'Publish' %}
             </label><br>
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
                    &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br> <br>
@@ -70,7 +71,7 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <label>
-                Discussion
+                {% trans 'Discussion' %}
             </label><br>
             <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable"
                     {% if object.is_commentable == False %}
@@ -88,7 +89,7 @@
         </div>
 
         <div class="col-md-12" align="center">
-            <button class="btn btn-success" type="submit">Submit</button>
+            <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
         </div>
     </form>
 </div>

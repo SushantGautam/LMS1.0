@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 <style>
@@ -14,9 +15,9 @@
 <div class="headerDiv">
     <h2 class="infoFormHeader">
         {% if 'create' in request.path %}
-        Create New Course
+        {% trans 'Create New Course' %}
         {% else %}
-            Edit Course Info
+            {% trans 'Edit Course Info' %}
         {% endif %}
     </h2>
     <hr class="header_hr">
@@ -42,7 +43,7 @@
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         <div id="div_id_Course_Name" class="form-group">
             <label for="id_Course_Name" class="control-label ">
-                Course Name *
+                {% trans 'Course Name' %} *
             </label>
             <div class="controls ">
                 <input type="text" name="Course_Name" value="{{ object.Course_Name }}"
@@ -55,7 +56,7 @@
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         <div id="div_id_Course_Provider" class="form-group">
             <label for="id_Course_Provider" class="control-label ">
-                Course Provider *
+                {% trans 'Course Provider' %} *
             </label>
             <div class="controls ">
                 <input type="text" name="Course_Provider" value="{{ form.Course_Provider.value }}"
@@ -68,7 +69,7 @@
     <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
         <div id="div_id_Lecture_Description" class="form-group">
             <label for="id_Lecture_Description" class="control-label ">
-                Course Description
+                {% trans 'Course Description' %}
             </label>
             <div class="controls ">
                 <textarea name="Course_Description" cols="40" rows="5" id="id_Course_Description"
@@ -84,7 +85,7 @@
 
         <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
             <label for="id_Course_Level" class="control-label ">
-                Course Level
+                {% trans 'Course Level' %}
             </label>
             <input class="rating" id="id_Course_Level" type="hidden" name="Course_Level"
                 value="{{ object.Course_Level }}">
@@ -98,7 +99,7 @@
         
         {% if not '/teachers' in request.path %}
             <label>
-                Status
+                {% trans 'Status' %}
             </label><br>
             <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" {% if object.Use_Flag == False %}
                 &nbsp; {% else %} checked {% endif %}><br> <br>
@@ -125,7 +126,7 @@
     </div>
 
     <div class="submitButton  col-md-12 text-center">
-        <button class="btn btn-success" type="submit">Submit</button>
+        <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
     </div>
 
 

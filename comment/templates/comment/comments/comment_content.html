@@ -73,8 +73,11 @@
                 | <span class="js-reply-number text-dark">{{ reply_count }}</span>
                 <a class="js-reply-link {% block reply_link_cls %}btn btn-link ml-1{% endblock reply_link_cls %}"
                    href="#">
-                    {% blocktrans with plural_str=reply_count|pluralize:"y,ies" %} Repl{{ plural_str }}
-                    {% endblocktrans %}
+                    {% if reply_count > 1 %}
+                        {% trans 'Replies' %}
+                    {% endif %}
+                        {% trans 'Reply' %}
+
                 </a>
             {% endif %}
         </small>

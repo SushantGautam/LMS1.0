@@ -824,7 +824,7 @@ class Sitting(models.Model):
     class Meta:
         permissions = (("view_sittings", _("Can see completed exams.")),)
 
-    def get_first_question(self):
+    def get_first_question(self, question_pk=None):
         """
         Returns the next question.
         If no question is found, returns False
@@ -832,8 +832,10 @@ class Sitting(models.Model):
         """
         if not self.question_list:
             return False
-
-        first, _ = self.question_list.split(',', 1)
+        if not question_pk:
+            first, _ = self.question_list.split(',', 1)
+        else:
+            first = self.question_order.split(',')[question_pk-1]
         question_id = int(first)
 
         return Question.objects.get_subclass(id=question_id)
@@ -971,7 +973,7 @@ class Sitting(models.Model):
 
     def add_user_answer(self, question, guess):
         current = json.loads(self.user_answers)
-        current[question.id] = guess
+        current[str(question.id)] = guess
         self.user_answers = json.dumps(current)
         self.save()
 

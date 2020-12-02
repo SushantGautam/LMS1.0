@@ -1,9 +1,9 @@
 {% extends "forum/Student_Base.html" %}
 
-
+{% load i18n %}
 {% block breadcrumb %}
 
-<li class="active"><a href="{% url 'student_forum' %}">Forum</a></li>
+<li class="active"><a href="{% url 'student_forum' %}">{% trans 'Forum' %}</a></li>
 
 {% endblock %}
 

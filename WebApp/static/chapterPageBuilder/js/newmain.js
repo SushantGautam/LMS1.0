@@ -613,6 +613,7 @@ class video {
         if (link != null) {
             if (link.includes('.com')) {
                 if (link.includes('vimeo.com')) {
+                    link = link + '&transparent=0';
                     getVimeoThumbnail(link, 'video-div-' + id)
                 } else if (link.includes('cincopa.com/media-platform')) {
                     getCincopaThumbnail(link, 'video-div-' + id)

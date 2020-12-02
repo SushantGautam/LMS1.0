@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+  <style>
+    ul,ol{
+        list-style: none;
+    }
+  </style>
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active" aria-current="page">Survey</li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans 'Survey' %}</li>
 {% endblock %}
 {% block content %}
   {% include 'survey/surveyinfo_list.html' %}

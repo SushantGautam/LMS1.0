@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'optioninfo_list' %}">OptionInfo Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'optioninfo_list' %}">{% trans 'Option Info Listing' %}</a></p>
 <table class="table">
     <tr>
-        <td>ID</td>
-        <td>Link</td>
-        <td>Option_Name</td>
+        <td>{% trans 'ID' %}</td>
+        <td>{% trans 'Link' %}</td>
+        <td>{% trans 'Option Name' %}</td>
     </tr>
     {% for object in object_list %}
     <tr>
@@ -15,5 +16,5 @@
         <td>{{ object.Option_Name }}</td>
     </tr>
     {% endfor %}
-</table><a class="btn btn-primary" href="{% url 'optioninfo_create' %}">Create new OptionInfo</a>
+</table><a class="btn btn-primary" href="{% url 'optioninfo_create' %}">{% trans 'Create New Option Info' %}</a>
 {% endblock %}

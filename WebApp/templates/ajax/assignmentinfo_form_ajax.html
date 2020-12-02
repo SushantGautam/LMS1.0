@@ -116,7 +116,12 @@
     $('input[name="Start_Date"]').datetimepicker();
     $('input[name="End_Date"]').datetimepicker();
 
+    var submitted = false;
     $("#ajaxassignmentinfoform").submit(function (e) {
+        if (submitted) {
+            return false
+        }
+        submitted = true;
         e.preventDefault(); // avoid to execute the actual submit of the form.
         sessiondata = [];
         let submitCheck = true;
@@ -160,10 +165,11 @@
                 // get the form data
                 type: $(this).attr('method'), // GET or POST
                 success: function (response) {
-                    console.log('Success')
+                    console.log('Success');
                     location.reload()
                 },
                 error: function (err) {
+                    submitted = false;
                     console.log('Error in posting assignment create form', err.responseJSON.errors.__all__[0]);
                     $('.form-errors').empty().append(err.responseJSON.errors.__all__[0]).css('display', 'block');
                 }

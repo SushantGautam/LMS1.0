@@ -1,15 +1,21 @@
 {% extends "student_module/base.html" %}
 
 {% load static %}
+{% load i18n %}
 {% block title %}
   Polls
 {% endblock %}
 {% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
+  <style>
+    ul,ol{
+        list-style: none;
+    }
+  </style>
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active" aria-current="page">Survey</li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans 'Survey' %}</li>
 {% endblock %}
 
 {% block content %}
@@ -22,9 +28,9 @@
         <div class="btn-group" id="status" data-toggle="buttons">
           <label class="btn btn-default btn-on-3 btn-sm active" id="ActiveButton">
             <input type="radio" value="active" name="survey_filter_radio"
-                   checked="checked">Active</label>
+                   checked="checked">{% trans 'Active' %}</label>
           <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-            <input type="radio" value="expire" name="survey_filter_radio">Expired</label>
+            <input type="radio" value="expire" name="survey_filter_radio">{% trans 'Expired' %}</label>
 {#          <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">#}
 {#            <input type="radio" value="live" name="survey_filter_radio">Live Survey</label>#}
         </div>
@@ -50,13 +56,13 @@
         <div class="categoryContainer">
           <div class="card">
             <div class="card-body">
-              <h2 class="card-title "><strong>Category</strong></h2>
+              <h2 class="card-title "><strong>{% trans 'Category' %}</strong></h2>
               <hr>
               <div id="card_category">
 
                 <h5 class="card-text active">
                   <a href="#" class="category-name" id="all_survey"><i
-                      class="fa fa-bar-chart" id="categoryIcons"></i>All survey</a>
+                      class="fa fa-bar-chart" id="categoryIcons"></i>{% trans 'All survey' %}</a>
                 </h5>
                 {% for category in categories %}
                   <h5 class="card-text">

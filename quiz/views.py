@@ -1,3 +1,4 @@
+import json
 import random
 
 from django.contrib import messages
@@ -217,9 +218,11 @@ class QuizTake(FormView):
     template_name = 'question.html'
     result_template_name = 'result.html'
     single_complete_template_name = 'single_complete.html'
+    current_question_number = 0
 
     def dispatch(self, request, *args, **kwargs):
         self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'])
+        self.current_question_number = self.request.GET.get('q') if self.request.GET.get('q') else 0
         if QuizInfoAuth(request, self.quiz.pk) != 1:  # check if quiz belongs to the same center as user
             return redirect('login')
         if StudentCourseAuth(request,
@@ -243,13 +246,20 @@ class QuizTake(FormView):
             messages.add_message(request, messages.ERROR,
                                  'You have already sat this exam and only one sitting is permitted')
             # return render(request, self.single_complete_template_name)
-            return HttpResponseRedirect(reverse('start'))
+            sittingObj = Sitting.objects.filter(user=self.request.user,
+                                                quiz__pk=self.quiz.pk,
+                                                complete=True).last()
+            return redirect('student_progress_detail', pk=sittingObj.id)
 
         return super(QuizTake, self).dispatch(request, *args, **kwargs)
 
     def get_form(self, *args, **kwargs):
         if self.logged_in_user:
-            self.question = self.sitting.get_first_question()
+            question = None
+            # if query parameter is present, then fetch the form of the question.
+            if self.request.GET.get('q'):
+                question = int(self.current_question_number)
+            self.question = self.sitting.get_first_question(question_pk=question)
             self.progress = self.sitting.progress()
         else:
             self.question = self.anon_next_question()
@@ -267,7 +277,14 @@ class QuizTake(FormView):
     def get_form_kwargs(self):
         kwargs = super(QuizTake, self).get_form_kwargs()
 
-        return dict(kwargs, question=self.question)
+        # if answer is already submitted. Fetch the answer and initialize the form answer
+        answer = None
+        if self.request.GET.get('q'):
+            # if sitting is available and answer is present in "user_answer" dict in sitting model, then fetch the answer.
+            if self.sitting and len(json.loads(self.sitting.user_answers).keys()) > 0 and str(
+                    self.question.pk) in json.loads(self.sitting.user_answers):
+                answer = json.loads(self.sitting.user_answers)[str(self.question.pk)]
+        return dict(kwargs, question=self.question, answer=answer)
 
     def form_valid(self, form):
         if self.logged_in_user:
@@ -280,7 +297,8 @@ class QuizTake(FormView):
                 return self.final_result_anon()
 
         self.request.POST = {}
-
+        self.request.GET = {'q': str(int(self.current_question_number) + 1)}
+        self.current_question_number = str(int(self.current_question_number) + 1)
         return super(QuizTake, self).get(self, self.request)
 
     def get_context_data(self, **kwargs):
@@ -294,6 +312,20 @@ class QuizTake(FormView):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
             context['progress'] = self.progress
+
+        # get current question number from question_order list.
+        # since list index starts from 0, add 1 for question number.
+        context['question_number'] = int(self.sitting.question_order.split(',').index(str(self.question.pk))) + 1
+        # check if question has previous/next question or not for button.
+        context['has_previous'] = True
+        context['has_next'] = True
+        # if list index of question is 0, then this is first question, therefore there cannot be previous
+        if int(self.sitting.question_order.split(',').index(str(self.question.pk))) == 0:
+            context['has_previous'] = False
+        # if question is to be attempted for first time, then assumption is all following questions after current is not taken, hence no next.
+        if str(self.question.id) in self.sitting.question_list.split(','):
+            context['has_next'] = False
+
         return context
 
     def form_valid_user(self, form):
@@ -347,25 +379,70 @@ class QuizTake(FormView):
 
         if is_correct is True:
             if type(self.question) is SA_Question:
-                score = 'not_graded'
-                self.sitting.add_to_score(0)
-                progress.update_score(self.question, 0, 1)
+                if str(self.question.id) in self.sitting.question_list.split(','):
+                    score = 'not_graded'
+                    self.sitting.add_to_score(0)
+                    progress.update_score(self.question, 0, 1)
             else:
-                self.sitting.add_to_score(score)
-                progress.update_score(self.question, score, score)
-            score_list.append(str(score))
+                if str(self.question.id) in self.sitting.question_list.split(','):
+                    self.sitting.add_to_score(score)
+                    progress.update_score(self.question, score, score)
+                    score_list.append(str(score))
+                else:
+                    current_score_list = self.sitting.score_list.split(',')
+                    current_incorrect_list = self.sitting.incorrect_questions.split(',')
+                    # update score for T/F question and MCQ. Since the score is not graded for SAQ while taking quiz, update score on SAQ is not necessary
+                    for idx, value in enumerate(current_score_list):
+                        if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
+                            prev_score = current_score_list[idx]
+                            # self.sitting.add_to_score(-prev_score)
+                            # deduct previous score and add new score
+                            self.sitting.add_to_score((-int(prev_score) + int(score)))
+                            progress.update_score(self.question, (-int(prev_score) + int(score)),
+                                                  -(int(prev_score) + int(score)))
+                            score_list[idx] = (str(score))
+
+                            # remove from incorrect list
+                            if str(self.question.pk) in current_incorrect_list:
+                                current_incorrect_list.remove(str(self.question.pk))
+                                self.sitting.incorrect_questions = ','.join(current_incorrect_list)
 
         else:
-            self.sitting.add_incorrect_question(self.question)
+            if str(self.question.id) in self.sitting.question_list.split(','):
+                self.sitting.add_incorrect_question(self.question)
+            else:
+                current_incorrect_list = self.sitting.incorrect_questions.split(',')
+                for idx, value in enumerate(current_incorrect_list):
+                    if str(self.question.pk) not in current_incorrect_list:
+                        self.sitting.add_incorrect_question(self.question)
+                    else:
+                        if idx == int(self.sitting.incorrect_questions.split(',').index(str(self.question.pk))):
+                            current_incorrect_list[idx] = (str(self.question.pk))
+                            self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+
             if type(self.question) is MCQuestion:
                 negative_score = score
             elif self.sitting.quiz.negative_marking:
                 negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
             else:
                 negative_score = 0
-            progress.update_score(self.question, negative_score, score)
-            self.sitting.add_to_score(negative_score)
-            score_list.append(str(negative_score))
+
+            if str(self.question.id) in self.sitting.question_list.split(','):
+                self.sitting.add_to_score(negative_score)
+                progress.update_score(self.question, negative_score, score)
+                score_list.append(str(negative_score))
+            else:
+                current_score_list = self.sitting.score_list.split(',')
+                # same as the correct score.
+                for idx, value in enumerate(current_score_list):
+                    if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
+                        prev_score = current_score_list[idx]
+                        # self.sitting.add_to_score(-prev_score)
+                        # deduct previous score and add new score
+                        self.sitting.add_to_score((-int(prev_score) + int(negative_score)))
+                        progress.update_score(self.question, (-int(prev_score) + int(negative_score)),
+                                              (-int(prev_score) + int(score)))
+                        score_list[idx] = (str(negative_score))
 
         self.sitting.score_list = ','.join(score_list)
 
@@ -382,7 +459,10 @@ class QuizTake(FormView):
         self.previous = {}
 
         self.sitting.add_user_answer(self.question, guess)
-        self.sitting.remove_first_question()
+        # if question is in question_list, then only remove the question.
+        # In case of answer update, question is already removed. Therefore, no need if previously attempted
+        if str(self.question.id) in self.sitting.question_list.split(','):
+            self.sitting.remove_first_question()
 
     def final_result_user(self):
         results = {
@@ -856,7 +936,7 @@ class QuizCreateWizard(SessionWizardView):
             # tf_queryset = TF_Question.objects.filter(course_code=step1_data['course_code'])
             # sa_queryset = SA_Question.objects.filter(course_code=step1_data['course_code'])
             print("form media: ", form.media)
-        
+
         return form
 
     def get_context_data(self, form, **kwargs):

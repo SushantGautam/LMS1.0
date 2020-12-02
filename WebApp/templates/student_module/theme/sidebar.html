@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <div class="left_col scroll-view">
     <!-- menu profile quick info -->
 
@@ -20,7 +21,7 @@
 
             <div class="profile_info">
 
-                <span>Welcome,</span>
+                <span>{% trans 'Welcome' %},</span>
                 <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
                 <h2>{{ request.user.username }}</h2>
             </div>
@@ -32,34 +33,34 @@
     <!-- sidebar menu -->
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
         <div class="menu_section">
-            <h3>Student Portal Home</h3>
+            <h3>{% trans 'Student Portal Home' %}</h3>
             <hr/>
             <ul class="nav side-menu">
-                <li><a href=" {% url 'student_home' %}"><i class="fa fa-home"></i> Dashboard </a>
+                <li><a href=" {% url 'student_home' %}"><i class="fa fa-home"></i> {% trans 'Dashboard' %} </a>
                 </li>
-                <li><a href=" {% url 'students_calendar' %}"><i class="fa fa-calendar"></i> Calendar </a>
+                <li><a href=" {% url 'students_calendar' %}"><i class="fa fa-calendar"></i> {% trans 'Calendar' %} </a>
                 </li>
-                <li><a><i class="fa fa-edit"></i> Course <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-edit"></i> {% trans 'Course' %} <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                         {% comment %} <li><a href="{% url 'student_courseinfo_list' %}">Courses list</a></li> {% endcomment %}
-                        <li><a href="{% url 'student_mycourses_list' %}">My Courses</a></li>
-                        <li><a href="{% url 'student_myassignmentinfo_list' %}">My Assignments</a></li>
+                        <li><a href="{% url 'student_mycourses_list' %}">{% trans 'My Courses' %}</a></li>
+                        <li><a href="{% url 'student_myassignmentinfo_list' %}">{% trans 'My Assignments' %}</a></li>
                     </ul>
                 </li>
-                <li><a><i class="fa fa-question-circle"></i> Quiz <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-question-circle"></i> {% trans 'Quiz' %} <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{% url 'student_quiz_exam_list' %}">Take Exam</a></li>
-                        <li><a href="{% url 'student_progress' %}">Quiz Progress</a></li>
+                        <li><a href="{% url 'student_quiz_exam_list' %}">{% trans 'Take Exam' %}</a></li>
+                        <li><a href="{% url 'student_progress' %}">{% trans 'Quiz Progress' %}</a></li>
                     </ul>
                 </li>
-                <li><a><i class="fa fa-desktop"></i> Forum <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-desktop"></i> {% trans 'Forum' %} <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{% url 'student_forum' %}">Home</a></li>
+                        <li><a href="{% url 'student_forum' %}">{% trans 'Home' %}</a></li>
 
                     </ul>
                 </li>
 
-                <li><a href=" {% url 'questions_student' %}"><i class="fa fa-bar-chart"></i>Survey</a></li>
+                <li><a href=" {% url 'questions_student' %}"><i class="fa fa-bar-chart"></i>{% trans 'Survey' %}</a></li>
             </ul>
 
             <hr>

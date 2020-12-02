@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="clearfix">
 
     <div id="mainSurveyPage">
@@ -11,7 +13,7 @@
                                 <input type="radio" value="active" name="survey_filter_radio"
                                        checked="checked">Active</label>
                             <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                                <input type="radio" value="expire" name="survey_filter_radio">Expired</label>
+                                <input type="radio" value="expire" name="survey_filter_radio">{% trans 'Expired' %}</label>
 {#                            <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">#}
 {#                                <input type="radio" value="live" name="survey_filter_radio">Live Survey</label>#}
                         </div>
@@ -37,13 +39,12 @@
                         <div class="categoryContainer">
                             <div class="card">
                                 <div class="card-body">
-                                    <h2 class="card-title "><strong>Category</strong></h2>
+                                    <h2 class="card-title "><strong>{% trans 'Category' %}</strong></h2>
                                     <hr>
                                     <div id="card_category">
                                         <h5 class="card-text active">
                                             <a href="#" class="category-name" id="all_survey"><i
-                                                    class="fa fa-bar-chart" id="categoryIcons"></i>All
-                                                survey</a>
+                                                    class="fa fa-bar-chart" id="categoryIcons"></i>{% trans 'All Survey' %}</a>
                                         </h5>
                                         {% for category in categories %}
                                             <div class="row card-text">
@@ -60,7 +61,7 @@
                                                             id="category_Add_Button{{ category.Category_Name }}"
                                                             style="margin: 0;"
                                                             data-toggle="modal"
-                                                            data-target="#survey_form_modal">Add
+                                                            data-target="#survey_form_modal">{% trans 'Add' %}
                                                     </button>
                                                 {% endif %}
                                             </div>
@@ -88,7 +89,7 @@
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
+                <h4 class="modal-title">{% trans 'Create Survey' %}</h4>
             </div>
             <div class="modal-body" id="surveyForm">
                 <div>

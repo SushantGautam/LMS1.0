@@ -55,8 +55,8 @@
                         <p class="entry-meta">
                             {% if thread.order <= 3 %}
                             <span class="meta">
-                                <span class="label label-info meta-top">
-                                    TOP
+                                <span class="label label-info meta-top" style="text-transform: uppercase;">
+                                    {% trans 'Top' %}
                                 </span>
                             </span>
                             {% endif %}
@@ -67,7 +67,7 @@
                                 <h5>
 
                                     <span class="meta">
-                                        SubCategory:
+                                        {% trans 'Sub Category' %}:
                                         <a href="{% url 'forum:topic' thread.topic.pk %}">
                                             <span class="topic-meta link-text">
                                                 {{ thread.topic.title }}
@@ -95,6 +95,7 @@
 
 
                     </div>
+                </h2>
             </div>
         </li>
 

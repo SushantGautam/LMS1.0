@@ -1307,6 +1307,14 @@ class QuizUserProgressDetailView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        if self.get_object().complete:
+            return super().get(request, *args, **kwargs)
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'Quiz must be completed to view the progress!')
+            return redirect(reverse('student_progress'))
+
 
 def PageUpdateAjax(request, course, chapter):
     if request.method == 'POST':

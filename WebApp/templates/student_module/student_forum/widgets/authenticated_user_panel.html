@@ -14,8 +14,7 @@
         </a>
         <ul class="list-unstyled user_data">
             <li><a class="btn-white btn-flat" href="{% url 'student_threads' request.user.pk %}"><i
-                        class="fa fa-question-circle fa-lg"></i> Questions
-                    Asked: {{ request.user.threads.visible.count }}</a>
+                        class="fa fa-question-circle fa-lg"></i> {% trans 'Questions Asked' %}: {{ request.user.threads.visible.count }}</a>
             </li>
             <li><a class="btn-white btn-flat reply_count" href="{% url 'student_posts' request.user.pk %}">
                     <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.visible.count }}</a>
@@ -24,22 +23,22 @@
             <li>
                 <p class="user_type"><i class="fa fa-user fa-lg"></i>
                     {% if request.user.is_superuser %}
-                    Super User
+                    {% trans 'Super User' %}
                     {% elif request.user.Is_teacher %}
-                    , teacher
+                    , {% trans 'Teacher' %}
                     {% elif request.user.Is_Student %}
-                    , Student
+                    , {% trans 'Student' %}
                     {% elif request.user.Is_CenterAdmin %}
-                    , Center Admin
+                    , {% trans 'Center Admin' %}
                     {% elif request.user.Is_Parent %}
-                    , Parent
+                    , {% trans 'Parent' %}
                     {% endif %}
                 </p>
             </li>
 
         </ul>
         <a class="btn btn-primary" href="{% url 'student_info' request.user.pk %}">
-            <i class="fa fa-user-md m-right-xs"></i> View Profile</a>
+            <i class="fa fa-user-md m-right-xs"></i> {% trans 'View Profile' %}</a>
         <br>
 
     </div>

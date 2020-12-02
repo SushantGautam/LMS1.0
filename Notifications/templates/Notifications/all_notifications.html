@@ -1,5 +1,6 @@
 {% extends base_html %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
@@ -7,7 +8,7 @@
     <div class="notification_menu1">
         <li class="row" style="list-style:none">
             <div class="col-md-7">
-                <h2><b>Notifications</b>
+                <h2><b>{% trans 'Notifications' %}</b>
 
                 </h2>
             </div>
@@ -27,7 +28,7 @@
         {% else %}
             <li style="list-style:none">
                 <div class="text-center">
-                    <strong>No Notifications</strong>
+                    <strong>{% trans 'No Notifications' %}</strong>
                 </div>
             </li>
 

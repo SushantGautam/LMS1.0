@@ -46,7 +46,7 @@
                            data-target="#moderation-modal"
                            data-pk="{{ thread.pk }}" data-action="open-thread"
                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                            <span class="btn btn-info btn-xs"><i class="fa fa-close"></i> Open </span>
+                            <span class="btn btn-info btn-xs"><i class="fa fa-close"></i> {% trans 'Open' %} </span>
                         </a>
                     {% else %}
                         <a href="#" class="moderate-action close-thread" data-toggle="modal"
@@ -54,7 +54,7 @@
                            data-pk="{{ thread.pk }}" data-action="close-thread"
                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
                     <span class="btn btn-info btn-xs">
-                        <i class="fa fa-folder-open-o"></i> Close </span>
+                        <i class="fa fa-folder-open-o"></i> {% trans 'Close' %} </span>
                         </a>
                     {% endif %}
                     {% if thread.hidden %}
@@ -62,14 +62,14 @@
                            data-target="#moderation-modal"
                            data-pk="{{ thread.pk }}" data-action="unhide-thread"
                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> UnHide </span>
+                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> {% trans 'Unhide' %} </span>
                         </a>
                     {% else %}
                         <a href="#" class="moderate-action hide-thread" data-toggle="modal"
                            data-target="#moderation-modal"
                            data-pk="{{ thread.pk }}" data-action="hide-thread"
                            data-api-url="{% url 'forum:thread-detail' thread.pk %}">
-                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> Hide </span>
+                            <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i> {% trans 'Hide' %} </span>
                         </a>
                     {% endif %}
 
@@ -133,13 +133,18 @@
                                     {{ thread.pub_date|timesince }}
                                 {% endif %}
                                 |
-                                <span>{% blocktrans with view_count=thread.view_count %} <i class="fa fa-eye"></i>
-                                    viewed
-                                    {{ view_count }}
-                                    times{% endblocktrans %}</span> | <span> {% if thread.reply_count %}
+                                <span>
+                                    <i class="fa fa-eye"></i>
+                                    {% blocktrans with view_count=thread.view_count %}
+                                        viewed
+                                        {{ view_count }}
+                                        times
+                                    {% endblocktrans %}
+                                </span> | <span> {% if thread.reply_count %}
                                 <i class="fa fa-comments-o"></i>
                                 {% blocktrans count reply_count=thread.reply_count %}{{ reply_count }} Reply
-                                    {% plural %}{{ reply_count }} Replies{% endblocktrans %}
+                                    {% plural %}{{ reply_count }} Replies
+                                {% endblocktrans %}
                             {% else %}
                                 {% trans "No Replies" %}
                             {% endif %}
@@ -152,7 +157,7 @@
                             <ul class="list-comment reply-lists">
                                 {% if thread.reply_count > 3 %}
                                     <div class="reply_header">
-                                        <a href="#Goto_Reply">Post a Reply</a>
+                                        <a href="#Goto_Reply">{% trans 'Post a Reply' %}</a>
                                     </div>
                                 {% endif %}
                                 <hr>
@@ -162,7 +167,8 @@
                                         <i class="fa fa-comments-o"></i>
                                         {% blocktrans count reply_count=thread.reply_count %}
                                             Reply ({{ reply_count }})
-                                        {% plural %} Replies ({{ reply_count }}) {% endblocktrans %}
+                                        {% plural %} Replies ({{ reply_count }})
+                                        {% endblocktrans %}
                                     {% else %}
                                         <i class="fa fa-comments-o"></i> {% trans "No Replies" %}
                                     {% endif %}
@@ -246,7 +252,7 @@
                                                             <p class="moderation-links">
 
                                                     <span class="btn btn-danger btn-xs"><i class="fa fa-eye-slash"></i>
-                                                        Hide </span>
+                                                        {% trans 'Hide' %} </span>
 
                                                             </p>
 
@@ -264,7 +270,7 @@
 
                                                         <span class="btn btn-danger btn-xs"><i
                                                                 class="fa fa-eye-slash"></i>
-                                                            UnHide </span>
+                                                            {% trans 'Unhide' %} </span>
 
                                                                 </p>
                                                             </div>
@@ -286,9 +292,9 @@
                                 <div class="LoadButton">
                                     {% if total_reply_count > 5 %}
                                         <button id="ShowLess" style="display: none;" class="btn btn-info"><i
-                                                class="fa fa-angle-left"></i> Show Less
+                                                class="fa fa-angle-left"></i> {% trans 'Show Less' %}
                                         </button>
-                                        <button id="LoadMore" class="btn btn-info">Show More</button>
+                                        <button id="LoadMore" class="btn btn-info">{% trans 'Show More' %}</button>
                                     {% endif %}
                                 </div>
 
@@ -299,7 +305,7 @@
                             {% if not thread.closed %}
                                 <div class="x_panel" id="Goto_Reply">
                                     <div class="x_title">
-                                        <h2 style="font-weight: bold">Post Reply
+                                        <h2 style="font-weight: bold">{% trans 'Post Reply' %}
 
                                         </h2>
 
@@ -322,17 +328,17 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a data-edit="fontSize 5">
-                                                            <p style="font-size:17px">Huge</p>
+                                                            <p style="font-size:17px">{% trans 'Huge' %}</p>
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a data-edit="fontSize 3">
-                                                            <p style="font-size:14px">Normal</p>
+                                                            <p style="font-size:14px">{% trans 'Normal' %}</p>
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a data-edit="fontSize 1">
-                                                            <p style="font-size:11px">Small</p>
+                                                            <p style="font-size:11px">{%  trans 'Small' %}</p>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -572,7 +578,7 @@
                         };
                         break;
                     case 'unhide-thread':
-                        modalTitle = "{% trans 'UnHide thread' %}";
+                        modalTitle = "{% trans 'Unhide thread' %}";
                         modalBody = "{% trans 'Please confirm your action' %}";
                         modalCb = () => {
                             patchthread(button.data('api-url'), {hidden: false});

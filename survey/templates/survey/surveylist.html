@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block stylesheets %}
   <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active" aria-current="page">Survey</li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans 'Survey' %}</li>
 {% endblock %}
 {% block content %}
   {% include 'survey/surveyinfo_list.html' %}
@@ -88,7 +89,7 @@
           });
       });
 
-      // -----------------------------ACTIVE AND EPIRE -------------------------------------
+      // -----------------------------ACTIVE AND EXPIRE -------------------------------------
       $("#ActiveButton").on("click", function () {
           var category_name = $(".card-text.active .category-name").attr('id');
           $.ajax({

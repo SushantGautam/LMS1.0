@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.messages import constants as messages
+from django.utils.translation import ugettext_lazy as _
 
 # # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import socket
@@ -24,7 +25,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me']
+ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me', 'ubl.mn']
 
 # Application definition
 
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'LMS.urls'
@@ -171,7 +173,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('ko', _('Korean')),
+    ('ne', _('Nepali')),
+    ('id', _('Indonesian')),
+    ('mn', _('Mongolian')),
+    ('vi', _('Vietnamese'))
+)
 
 TIME_ZONE = 'UTC'
 
@@ -243,6 +254,7 @@ LOCALE_PATHS = (
 # SERVER_NAME = 'Indonesian_Server'
 # SERVER_NAME = 'Korean_Server'
 SERVER_NAME = 'Vietnam_Server'
+# SERVER_NAME = 'Mongolia_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

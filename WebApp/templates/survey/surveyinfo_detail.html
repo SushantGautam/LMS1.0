@@ -1,8 +1,16 @@
-{% extends "base.html" %} {% load static %} {% block stylesheets %}
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+    <style>
+        ul,ol{
+            list-style: none;
+        }
+    </style>
 {% endblock stylesheets %} {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}">Survey</a>
+        <a href="{% url 'surveyinfo_list' %}">{% trans 'Survey' %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
@@ -12,15 +20,12 @@
 {% block content %}
     {% include 'WebApp/theme/alerts.html' %}
 
-
-
     {% include 'survey/common/details.html' %}
-
 
     <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers btn btn-danger btn-2x" style="
     float: left;
 ">
-        <span class="glyphicon glyphicon-remove"></span> Delete All Submitted Answers
+        <span class="glyphicon glyphicon-remove"></span> {% trans 'Delete All Submitted Answers' %}
 
     </a>
     <img id="test_image"/>

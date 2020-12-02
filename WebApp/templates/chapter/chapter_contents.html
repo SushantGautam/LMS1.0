@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load define_action %}
+{% load i18n %}
 
 
 {% if  "teachers" in request.path %}
@@ -109,7 +110,7 @@
 
             <div class="profile_info">
 
-                <span>Welcome,</span>
+                <span>{% trans 'Welcome' %},</span>
                 <h2>{{ request.user }}</h2>
             </div>
 
@@ -119,7 +120,7 @@
 
         <div style="
     overflow-x: auto;min-height: 100%;">
-            <h4 style=" color:white ;text-align:center">Chapter Lists</h4>
+            <h4 style=" color:white ;text-align:center">{% trans 'Chapter List' %}</h4>
             {% for chapterobj in chapterList %}
 
 
@@ -310,36 +311,33 @@
                     <div class="col-md-6 col-sm-6 col-xs-6" style="padding-left: 0px!important;">
                         <ul class="chat-nav " style="padding-left: 0px;">
                             {% if ifteacher %}
-                                <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> Quick Quiz
+                                <li id="QuickQuiz" data-toggle="modal" data-target="#quiz_create_popup"> {% trans 'Quick Quiz' %}
                                     <i
                                             class="fa fa-pencil"></i></li>
 
-                                <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">Quick
-                                    Survey
-
+                                <li id="QuickSurvey" data-toggle="modal" data-target="#survey_content_modal">{% trans 'Quick Survey' %}
                                     <i class="fa fa-pencil"></i></li>
                                 <li>Force Screen Sync <input id="forceScreen" type="checkbox"></li>
                             {% else %}
-                                <li id="followteacher" class="offline-followteacher">Teacher
-                                    Offline<i class="fa fa-book"> </i></li>
+                                <li id="followteacher" class="offline-followteacher">{% trans 'Teacher Offline' %}<i class="fa fa-book"> </i></li>
                             {% endif %}
                             <li> Notify <input id="notificationOnChat" type="checkbox" checked></li>
                             <li id="chatsoundArea">Sound <input id="chatsound" type="checkbox" checked></li>
                             <li id="speakContent">
-                                <div onClick="speakContent()"><i class="fa fa-music"> </i> Speak</div>
+                                <div onClick="speakContent()"><i class="fa fa-music"> </i> {% trans 'Speak' %}</div>
                             </li>
                             {% if '/teachers' in request.path %}
                                 <li id="chapterProgressView">
                                     <a href="{% url 'chapter_student_progress' course.pk chapter.pk %}?iframe=1">
                                         <div>
-                                            <i class="fa fa-tasks"> </i> Progress
+                                            <i class="fa fa-tasks"> </i> {% trans 'Progress' %}
                                         </div>
                                     </a>
                                 </li>
                                 <li id="attendanceView">
                                     <a href="{% url 'teacher_courseinfo_detail_attendance' course.pk %}?iframe=1">
                                         <div>
-                                            <i class="fa fa-tasks"> </i> Attendance
+                                            <i class="fa fa-tasks"> </i> {% trans 'Attendance' %}
                                         </div>
                                     </a>
                                 </li>
@@ -350,7 +348,7 @@
                          style="padding-right: 9px!important; padding-left:0px!important">
                         <div class="col-md-8 col-sm-8 col-xs-9">
                         <span id="reloadcontent" class="text-center" style="margin-bottom: 5px;"> <i
-                                class="fa fa-refresh"> Reload Content  </i></span>
+                                class="fa fa-refresh"> {% trans 'Reload Content' %}  </i></span>
                             <div style=" margin-top:5px">
                                 <span id="google_translate_element"></span>
                             </div>
@@ -389,13 +387,11 @@
                                   </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font">UBL BOT</strong>
-                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12
-                                                mins
-                                                ago</small>
+                                            <strong class="primary-font" style="text-transform: uppercase;">{% trans 'UBL Bot' %}</strong>
+                                            <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
                                         </div>
                                         <p>
-                                            Hello! Try sending a message to everyone online now.
+                                            {% trans 'Hello! Try sending a message to everyone online now.' %}
                                         </p>
                                     </div>
                                 </li>
@@ -406,13 +402,13 @@
                                   </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font">UBL BOT</strong>
+                                            <strong class="primary-font" style="text-transform: uppercase;">{% trans 'UBL Bot' %}</strong>
                                             <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13
                                                 mins
                                                 ago</small>
                                         </div>
                                         <p>
-                                            Your messages history are cleared on page reload for now.
+                                            {% trans 'Your messages history are cleared on page reload for now.' %}
                                         </p>
                                     </div>
                                 </li>
@@ -515,7 +511,7 @@
                             <span class="input-group-btn">
                                 <button style="padding: 17px;margin:0px" class="btn btn-success no-rounded"
                                         type="button"
-                                        onclick="sendMessageWritten()">Send</button>
+                                        onclick="sendMessageWritten()">{% trans 'Send' %}</button>
                             </span>
                         </div><!-- /input-group -->
                     </div>

@@ -1,7 +1,9 @@
+{% load i18n %}
+
 <footer>
     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <hr class="header-hr">
-        <p id="footerText"><b> Copyright (C) {% now "Y" %} NSDevil ALL RIGHTS RESERVED </b></p>
+        <p id="footerText"><b> {% trans 'Copyright ©'%} {% now "Y" %} {% trans 'NSDevil ALL RIGHTS RESERVED' %} </b></p>
     </div>
     <div class="clearfix"></div>
 </footer>

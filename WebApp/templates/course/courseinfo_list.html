@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block stylesheets %}
@@ -63,7 +64,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+                <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'CSV File Import' %}</b>
                     <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -72,29 +73,28 @@
             <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
                 <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                     {% csrf_token %} <br><br>
-                    <label for="id_import_csv">Choose the CSV file to Import Course Data</label>
+                    <label for="id_import_csv">{% trans 'Choose the CSV file to Import Course Data' %}</label>
                     <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                     <a target="_blank" class="text-center" href="{% static 'importCourse_sample.csv' %}"
                        style="padding-top: 2em;">
-                        <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                        <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
                     </a><br>
 
-                    <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
-                   Info...</b></span>
+                    <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>{% trans 'Read Detail Info' %}...</b></span>
                     <ul class="info-text" style="display:none;background:azure;">
-                        <li>- Course Name (required)</li>
-                        <li>- Course Name should be unique within the center</li>
-                        <li>- Course Provider (required)</li>
-                        <li>- Course Level should be between 1 and 5</li>
+                        <li>- {% trans 'Course Name' %} ({% trans 'required' %})</li>
+                        <li>- {% trans 'Course Name should be unique within the center' %}</li>
+                        <li>- {% trans 'Course Provider' %} ({% trans 'required' %})</li>
+                        <li>- {% trans 'Course Level should be between 1 and 5' %}</li>
                     </ul>
 
                     <div class="import-message"></div>
                     <div class="text-center">
                         <button class="btn btn-success" id="submitcsv" type="submit" style="margin:3em auto 2em auto">
-                            <span id="submitspinner"></span>Submit File
+                            <span id="submitspinner"></span>{% trans 'Submit File' %}
                         </button>
                         <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
-                                style="margin:3em auto 2em auto">Close
+                                style="margin:3em auto 2em auto">{% trans 'Close' %}
                         </button>
                     </div>
                 </form>
@@ -107,9 +107,9 @@
 <div class="courseInfoListClass">
     <h2 class="tableHeader">
         {% if '/active' in request.path %}
-            List of Courses
+            {% trans 'List of Courses' %}
         {% else %}
-            List of Inactive Courses
+            {% trans 'List of Inactive Courses' %}
         {% endif %}
     </h2>
 
@@ -137,13 +137,13 @@
                         {% if '/active' in request.path %}
                             <a href="{% url 'courseinfo_list_inactive' %}">
                                         <span class="text-right " style="float:right;color:#5A738E">
-                                        <b>View Inactive Courses</b> 
+                                        <b>{% trans 'View Inactive Courses' %}</b>
                                         </span>
                             </a>
                         {% else %}
                             <a href="{% url 'courseinfo_list_active' %}">
                                         <span class="text-right " style="float:right;color:#5A738E">
-                                        <b>  View Active Courses</b>
+                                        <b> {% trans 'View Active Courses' %}</b>
                                         </span>
                             </a>
                         {% endif %}
@@ -171,14 +171,10 @@
     </div>
     <hr class="header_hr">
 
-
-
-
     <div class="container" id="cardView">
         {% include 'WebApp/theme/alerts.html' %}
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="row">
-
                 <div class="col-md-8 col-sm-6 col-xs-12">
                     <form method="get" id="searchCourseForm">
                         <div class="col-md-4">
@@ -186,7 +182,7 @@
                                    class="form-control"/>
                         </div>
                         <button class="btn btn-default" type="submit">
-                            <i class="fa fa-search"></i>&nbsp;Search
+                            <i class="fa fa-search"></i>&nbsp;{% trans 'Search'%}
                         </button>
                     </form>
                 </div>
@@ -256,7 +252,7 @@
                         {% endif %}">Create new Course</a>
                             <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal"
                                data-target="#exampleModal1"
-                               id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+                               id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> {% trans 'Import' %}</a>
                         {% endif %}
 
                     {% endif %}
@@ -274,7 +270,7 @@
                                 <option value="60">60</option>
                             </select>
                         </label>
-                        <span> <b> entries </b> </span></div>
+                        <span> <b> {% trans 'entries' %} </b> </span></div>
 
                 </div>
 
@@ -313,19 +309,19 @@
                                                 {{ object.get_absolute_url }}
                                             {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong>
                                     {% if object.Use_Flag == False %}<i
-                                            style="float: right;color: red;font-size: 10px;margin-top: 5px;">Deactivated</i>{% endif %}
+                                            style="float: right;color: red;font-size: 10px;margin-top: 5px;">{% trans 'Deactivated' %}</i>{% endif %}
                                 </h2>
 
                                 {% if object.get_teachers_of_this_course %}
                                     <p style="height: 30px; overflow:auto">
-                                        Teacher(s): &nbsp;
+                                        {% trans 'Teacher(s)' %}: &nbsp;
                                         {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
                                             {{ eachTeacher.getFullName }}
                                         {% endfor %}
 
                                     </p>
                                 {% else %}
-                                    <p style="height: 30px; overflow:auto"> No Teacher </p>
+                                    <p style="height: 30px; overflow:auto"> {% trans 'No Teacher' %} </p>
 
 
 
@@ -359,7 +355,7 @@
                     overflow: auto;
                     white-space: normal;
                     text-overflow: ellipsis;">
-                                            No Description
+                                            {% trans 'No Description' %}
                                         </p>
                                     {% endif %}
                                 </h5>
@@ -367,7 +363,7 @@
                         </div>
                     </div>
                 {% empty %}
-                    <b>NO COURSES ALLOCATED</b>
+                    <b style="text-transform: uppercase;">{% trans 'No Courses Allocated' %}</b>
                 {% endfor %}
             </div>
             {% if object_list %}
@@ -459,10 +455,10 @@
                                     {% url 'teacher_courseinfo_create' %}
                                 {% else %}
                                     {% url 'courseinfo_create' %}
-                                {% endif %}">Create new Course</a>
+                                {% endif %}">{% trans 'Create new Course' %}</a>
                                     <a class="btn btn-primary btn-sm" style="float: right;" data-toggle="modal"
                                        data-target="#exampleModal1"
-                                       id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> Import</a>
+                                       id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> {% trans 'Import' %}</a>
                                 {% endif %}
 
                             {% endif %}
@@ -494,14 +490,14 @@
                         <thead class="thead-light bg-primary">
                         <tr class="tableTitleRow">
 
-                            <td>ID</td>
-                            <td>Course Name</td>
-                            <td>Teachers</td>
+                            <td>{% trans 'ID' %}</td>
+                            <td>{% trans 'Course Name' %}</td>
+                            <td>{% trans 'Teachers' %}</td>
 
-                            <td>Course Provider</td>
-                            <td>Level</td>
+                            <td>{% trans 'Course Provider' %}</td>
+                            <td>{% trans 'Level' %}</td>
 
-                            <td>Action</td>
+                            <td>{% trans 'Action' %}</td>
                         </tr>
                         </thead>
 
@@ -526,15 +522,10 @@
 
                                     </p>
                                 {% else %}
-                                    <p style="height: 30px; overflow:auto"> No Teacher </p>
-
-
-
+                                    <p style="height: 30px; overflow:auto"> {% trans 'No Teacher' %} </p>
                                 {% endif %}</td>
                                 <td style="vertical-align: middle;">
                                     {{ object.Course_Provider }}
-
-
                                 </td>
                                 <td style="vertical-align: middle;">
                                     {{ object.Course_Level }}
@@ -544,17 +535,15 @@
                                 <td class="text-center"><a class="btn btn-sm btn-info"
                                                            href="
                                         {{ object.get_update_url }}
-                                   ">Edit</a>
+                                   ">{% trans 'Edit' %}</a>
                             </tr>
-
-
 
                         {% endfor %}
 
 
                     </table>
                 {% else %}
-                    <p class="text-center"><b> NO COURSES HAS BEEN ALLOCATED </b></p>
+                    <p class="text-center"><b style="text-transform: uppercase;"> {% trans 'No Courses has been Allocated' %} </b></p>
                 {% endif %}
             {% endif %}
 
@@ -566,7 +555,7 @@
 <!-- jQuery -->
 <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 
-    <script>
+<script>
         $(document).ready(function () {
             var table_main = $('#course_dataTable').DataTable({
                 responsive: true,

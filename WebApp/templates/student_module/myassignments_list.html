@@ -1,17 +1,18 @@
 {% extends "student_module/base.html" %}
 {% load model_template_relation %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">My Assignments</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'My Assignments' %}</li>
 {% endblock %}
 
 {% block content %}
 
-    <h2 class="tableHeader">List of My Assignments</h2>
+    <h2 class="tableHeader">{% trans 'List of My Assignments' %}</h2>
     <h4 class="text-center"><b>
-        <button class="tablinks tabButton active" onclick="openTab(event, 'activeAssignments')">Active</button>
-        <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">All</button>
-        <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">Expired</button>
+        <button class="tablinks tabButton active" onclick="openTab(event, 'activeAssignments')">{% trans 'Active' %}</button>
+        <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">{% trans 'All' %}</button>
+        <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">{% trans 'Expired' %}</button>
     </b>
     </h4>
 
@@ -21,7 +22,7 @@
 
             {% for a in Assignment %}
                 {% ifchanged a.Course_Code %}
-                    <h3 align="center">Course -
+                    <h3 align="center">{% trans 'Course' %} -
                         <a href="{{ a.Course_Code.student_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
                     </h3>
                 {% endifchanged %}
@@ -41,7 +42,7 @@
                                 {% if Assignment_Score.total_score_obtained %}
                                     {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
                                 {% else %}
-                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                    <span class="text-danger" style="font-weight: bold"> {% trans 'Not Graded' %} </span>
                                 {% endif %}
                                 <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
                                         data-toggle="modal"
@@ -67,12 +68,16 @@
 
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
-                        <p>Submission Deadline -
+                        <p>
+                         {% trans 'Submission Deadline' %} -
                             {% if a.active %}
-                                <span class="text-success">{{ a.deadline|timeuntil }} left </span>
+                                <span class="text-success">
+                                    {% blocktrans %} {{a.deadline|timeuntil}} left {% endblocktrans %}
+                                </span>
                             {% else %}
-                                <span class="text-danger">Expired</span>
-                            {% endif %}</p>
+                                <span class="text-danger">{% trans 'Expired' %}</span>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             {% endfor %}
@@ -80,10 +85,9 @@
     </div>
     <div class="tabcontent" id="activeAssignments">
         {% if activeAssignment %}
-
             {% for a in activeAssignment %}
                 {% ifchanged a.Course_Code %}
-                    <h3 align="center">Course -
+                    <h3 align="center">{% trans 'Course' %} -
                         <a href="{{ a.Course_Code.student_get_absolute_url }}"><b>{{ a.Course_Code }}</b> </a>
                     </h3>
                 {% endifchanged %}
@@ -103,7 +107,7 @@
                                 {% if Assignment_Score.total_score_obtained %}
                                     {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
                                 {% else %}
-                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                    <span class="text-danger" style="font-weight: bold"> {% trans 'Not Graded' %} </span>
                                 {% endif %}
                                 <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
                                         data-toggle="modal"
@@ -122,15 +126,19 @@
                         {% endif %}
                         <a href="{{ a.student_get_absolute_url }}">
                             <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                   margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                   margin-bottom: 10px;text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                             </button>
                         </a>
                     </div>
 
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
-                        <p>Submission Deadline - <span
-                                class="text-success">{{ a.deadline|timeuntil }} left </span></p>
+                        <p>
+                            {% trans 'Submission Deadline' %} -
+                            <span class="text-success">
+                                {% blocktrans %} {{a.deadline|timeuntil}} left {% endblocktrans %}
+                            </span>
+                        </p>
                     </div>
                 </div>
             {% endfor %}
@@ -161,7 +169,7 @@
                                 {% if Assignment_Score.total_score_obtained %}
                                     {{ Assignment_Score.total_score_obtained }} / {{ Assignment_Score.total_score }}
                                 {% else %}
-                                    <span class="text-danger" style="font-weight: bold"> Not Graded </span>
+                                    <span class="text-danger" style="font-weight: bold"> {% trans 'Not Graded' %} </span>
                                 {% endif %}
                                 <button type="button" class="btn btn-primary btn-xs assignmentDetailsBtn "
                                         data-toggle="modal"
@@ -180,15 +188,15 @@
                         {% endif %}
                         <a href="{{ a.student_get_absolute_url }}">
                             <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                    margin-bottom: 10px;">{% trans 'CONTINUE' %} <i class="fa fa-arrow-right"></i>
                             </button>
                         </a>
                     </div>
 
                     <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                         <hr style="margin-top: 1px; margin-bottom: 10px;">
-                        <p>Submission Deadline -
-                            <span class="text-danger">Expired</span>
+                        <p>{% trans 'Submission Deadline' %} -
+                            <span class="text-danger">{% trans 'Expired' %}</span>
                         </p>
                     </div>
                 </div>
@@ -213,7 +221,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
                 </div>
             </div>
         </div>

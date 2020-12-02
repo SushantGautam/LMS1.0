@@ -36,6 +36,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import escape
+from django.utils.translation import activate, LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -134,6 +135,18 @@ class login(LoginView):
     template_name = 'registration/login.html'
     authentication_form = CustomAuthForm
 
+    def get_success_url(self):
+        url = super().get_success_url()
+        available_languages = [lang_code for (lang_code, lang_name) in settings.LANGUAGES]
+        user = self.request.user
+        if user.is_authenticated:
+            language = user.Center_Code.language
+            if language in available_languages:
+                activate(language)
+                if hasattr(self.request, 'session'):
+                    self.request.session[LANGUAGE_SESSION_KEY] = language
+        return url
+
     def form_valid(self, form):
         forcelogin = bool(self.request.POST['forcelogin'])
         if not forcelogin:
@@ -142,28 +155,6 @@ class login(LoginView):
                     "Please enter a correct username and password. Note that both fields may be case-sensitive."
                 )})
             if not form.get_user().Is_Teacher and not form.get_user().Is_CenterAdmin:
-                # The following code is only for chinju university student account
-                # center_obj = form.get_user().Center_Code
-                # if center_obj.Center_Name == '진주교육대학교' and center_obj.pk == 2:
-                #     dsn_tns = cx_Oracle.makedsn('203.246.120.110', 1521, service_name='CUEDB')
-                #     conn = cx_Oracle.connect(user='nsdevil', password='nsdevil03', dsn=dsn_tns)
-                #     c = conn.cursor()
-                #     username = form.get_user().username.replace('cue', '')
-                #     c.execute("SELECT LEEV_YUMU FROM nesys.v_online WHERE STNT_NUMB = '%s'" % username)
-                #     result = c.fetchall()
-                #     msg = """[원격수업강의 평가]를 완료하지 않았습니다.
-                #
-                #             [두류포털]-[종합정보]-[강의관리]-[원격수업강의평가]에서
-                #
-                #             [원격수업 강의 평가]를 완료하셔야 사이트 접속이 승인됩니다.
-                #
-                #             * [두류포털] 접속을 위해서는 Internet Explorer 이용해 주세요."""
-                #     if not result:
-                #         return JsonResponse({'type': 'submit_survey', 'msg': msg})
-                #     for row in result:
-                #         if row[0] == 'N':
-                #             return JsonResponse({'type': 'submit_survey', 'msg': msg})
-
                 # It is for all students account
                 if (Session.objects.filter(usersession__user=form.get_user()).exists()):
                     return JsonResponse({'type': 'multiple_login', 'msg': 'Account already login in another place'})
@@ -2627,8 +2618,12 @@ def save_video(request):
 
         # if getServerIP() != '103.41.247.44':  # 103.41.247.44 is ip of ublcloud.me (indonesian). If request if for ublcloud, then it will save to server else to vimeo
         if settings.SERVER_NAME != 'Indonesian_Server':
+            if settings.SERVER_NAME == 'Mongolia_Server':
+                token = '9fcaa07e7d178cdb19cfb283b67f5cee'
+            else:
+                token = '3b42ecf73e2a1d0088dd677089d23e32'
             r = rs.post(url="https://api.vimeo.com/me/videos",
-                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                        headers={'Authorization': 'bearer ' + token,
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps(data))
@@ -2659,10 +2654,17 @@ def save_video(request):
                             headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                      'Content-Type': 'application/json',
                                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
+                    elif settings.SERVER_NAME == "Mongolia_Server":
+                        a = rs.put(
+                            url='https://api.vimeo.com/me/projects/3018373/videos/' + r_responseText['uri'].split('/')[
+                                -1],
+                            headers={'Authorization': 'bearer 9fcaa07e7d178cdb19cfb283b67f5cee',
+                                     'Content-Type': 'application/json',
+                                     'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
 
                     tags = rs.put(
                         url='https://api.vimeo.com/' + r_responseText['uri'] + '/tags',
-                        headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+                        headers={'Authorization': 'bearer ' + token,
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps([
@@ -2901,6 +2903,12 @@ def getVimeoMedias(chapterID, courseID, userObj, max_items):
             url='https://api.vimeo.com/me/projects/1796938/videos/?per_page=' + str(max_items),
             headers={
                 'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
+            }, ),
+    elif settings.SERVER_NAME == "Mongolia_Server":
+        a = requests.get(
+            url='https://api.vimeo.com/me/projects/3018373/videos/?per_page=' + str(max_items),
+            headers={
+                'Authorization': 'bearer 6dabd8fd76c4928ba80d3599dd120429',
             }, ),
     if a[0].status_code == 200:
         checkFlag = False
@@ -3895,9 +3903,9 @@ def checkForMediaFiles(request):
                                                     os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
                                                 chapter = ChapterInfo.objects.get(pk=int(chapterpk))
                                                 if request.GET.get('teachers') == '1':
-                                                    chapter_link = chapter.teacher_get_absolute_url() + 'newChapterBuilder'
+                                                    chapter_link = chapter.teacher_get_absolute_url() + 'ChapterBuilder'
                                                 else:
-                                                    chapter_link = chapter.get_absolute_url() + 'newChapterBuilder'
+                                                    chapter_link = chapter.get_absolute_url() + 'ChapterBuilder'
                                                 chapterhavingfilelink.append({
                                                     'chapter_no': chapter.Chapter_No,
                                                     'chapter_name': chapter.Chapter_Name,
