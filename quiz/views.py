@@ -220,10 +220,6 @@ class QuizTake(FormView):
     single_complete_template_name = 'single_complete.html'
     current_question_number = 0
 
-    def get(self, request, *args, **kwargs):
-        print(self.request)
-        return super(QuizTake, self).get(request, *args, **kwargs)
-
     def dispatch(self, request, *args, **kwargs):
         self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'])
         self.current_question_number = self.request.GET.get('q') if self.request.GET.get('q') else 0
