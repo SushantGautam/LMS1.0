@@ -253,7 +253,7 @@
     {% endif %}
 {% endblock %}
     <hr>
-    
+
 
     {% block customjss %}
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
@@ -335,7 +335,7 @@
             )}</span>
                 </div>
                 `;
-            
+
             setCircleDasharray()
 
             startTimer();
@@ -417,22 +417,22 @@
             $.each($("input[name='answers']:checked"), function () {
                 multi_ans_arr.push(this.id)
             });
+            let op_limit = 1;
             {% if question %}
-                let op_limit = parseInt("{{ question.get_num_correct_options }}");
-            {% else %}
-                let op_limit = 1;
+                op_limit = parseInt("{{ question.get_num_correct_options }}");
             {% endif %}
+
             $("input[name='answers']").change(function(){
                 if($(this).prop("checked")){
                     /////// if checked, see if queue(of length 2) is full, if its full, remove the oldest element
-                    /////// also uncheck the removed element  
+                    /////// also uncheck the removed element
                     if (multi_ans_arr.length >= op_limit){
                         $("#" + multi_ans_arr.shift()).prop('checked', false);
                     }
                     /////// push the new element(id) to the queue; id of the element is stored in the queue
                     multi_ans_arr.push($(this).attr('id'));
                 } else {
-                    /////// if unchecked, must remove this element from the queue, no matter if its old or new.  
+                    /////// if unchecked, must remove this element from the queue, no matter if its old or new.
                     if (multi_ans_arr.includes(($(this).attr('id')))){
                         multi_ans_arr.splice(multi_ans_arr.indexOf($(this).attr('id')), 1);
                     }
@@ -447,7 +447,7 @@
         <script>
             $(document).ready(function () {
                 runQuizTimerInterval();
-    
+
                 // update query parameter on page load.
                 if (history.pushState) {
                     var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q={{ question_number }}';
