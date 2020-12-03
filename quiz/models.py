@@ -824,7 +824,7 @@ class Sitting(models.Model):
     class Meta:
         permissions = (("view_sittings", _("Can see completed exams.")),)
 
-    def get_first_question(self, question_pk=None):
+    def get_first_question(self, question_index=None):
         """
         Returns the next question.
         If no question is found, returns False
@@ -832,19 +832,26 @@ class Sitting(models.Model):
         """
         if not self.question_list:
             return False
-        if not question_pk:
+        if not question_index:
             first, _ = self.question_list.split(',', 1)
         else:
-            first = self.question_order.split(',')[question_pk-1]
+            first = self.question_order.split(',')[question_index-1]
         question_id = int(first)
 
         return Question.objects.get_subclass(id=question_id)
 
-    def remove_first_question(self):
+    def remove_first_question(self, question_id=None):
         if not self.question_list:
             return
-        _, others = self.question_list.split(',', 1)
-        self.question_list = others
+        if question_id:
+            x = self.question_list.split(',')
+            x.remove(question_id)
+            x = ','.join(x)
+            self.question_list = x
+
+        else:
+            _, others = self.question_list.split(',', 1)
+            self.question_list = others
         self.save()
 
     def add_to_score(self, points):
