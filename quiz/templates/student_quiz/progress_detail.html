@@ -50,11 +50,14 @@
         <div class="row" style="margin-bottom: 10px;">
             <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> {% trans 'Full Marks' %}:</span>
                 &nbsp;{{ object.get_max_score }}</div>
-            <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span
-                    class="text-bold"> {% trans 'Marks Obtained' %}:</span>
-                &nbsp;{{ object.get_score_correct }}</div>
-            <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span
-                    class="text-bold"> {% trans 'Percentage' %}:</span>&nbsp; {{ object.get_percent_correct }}</div>
+
+            {% if not object.quiz.exam_paper %}
+              <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span
+                      class="text-bold"> {% trans 'Marks Obtained' %}:</span>
+                  &nbsp;{{ object.get_score_correct }}</div>
+              <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span
+                      class="text-bold"> {% trans 'Percentage' %}:</span>&nbsp; {{ object.get_percent_correct }}</div>
+            {% endif %}
 
         </div>
 
