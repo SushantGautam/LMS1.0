@@ -257,9 +257,9 @@ class QuizTake(FormView):
         if self.logged_in_user:
             question = None
             # if query parameter is present, then fetch the form of the question.
-            if self.request.GET.get('q'):
+            if self.current_question_number:
                 question = int(self.current_question_number)
-            self.question = self.sitting.get_first_question(question_pk=question)
+            self.question = self.sitting.get_first_question(question_index=question)
             self.progress = self.sitting.progress()
         else:
             self.question = self.anon_next_question()
@@ -297,8 +297,17 @@ class QuizTake(FormView):
                 return self.final_result_anon()
 
         self.request.POST = {}
-        self.request.GET = {'q': str(int(self.current_question_number) + 1)}
-        self.current_question_number = str(int(self.current_question_number) + 1)
+        if len(self.sitting.question_order.split(',')) <= int(self.current_question_number):
+            self.request.GET = {}
+            self.current_question_number = None
+        else:
+            if self.sitting.question_order.split(',')[int(self.current_question_number)] == '':
+                self.request.GET = {}
+                self.current_question_number = None
+            else:
+                self.request.method = "GET"
+                self.request.GET = {'q': str(int(self.current_question_number) + 1)}
+                self.current_question_number = str(int(self.current_question_number) + 1)
         return super(QuizTake, self).get(self, self.request)
 
     def get_context_data(self, **kwargs):
@@ -335,8 +344,8 @@ class QuizTake(FormView):
         # else:                                              # so for tfq, need to remove list '[]'                     
         #     guess = form.cleaned_data['answers']
         guess = form.cleaned_data['answers']
-        print("multiple selected values: ", guess) 
-        
+        print("multiple selected values: ", guess)
+
         ssl = self.sitting.score_list
         if not ssl:
             ssl = ''
@@ -344,7 +353,7 @@ class QuizTake(FormView):
         score = self.question.score
 
         if type(self.question) is MCQuestion:
-            num_correct_options = self.question.get_num_correct_options() # get number of correct options
+            num_correct_options = self.question.get_num_correct_options()  # get number of correct options
             num_options = self.question.get_answers().count()
             per_score = self.question.score / num_correct_options
             score = 0
@@ -363,17 +372,17 @@ class QuizTake(FormView):
                 if self.question.check_if_correct(g):
                     score += per_score
                 else:
-                    is_correct = False          ###### user selected wrong answer
+                    is_correct = False  ###### user selected wrong answer
                     if self.sitting.quiz.negative_marking:
                         score -= float(per_score * self.sitting.quiz.negative_percentage) / 100.0
                     else:
                         score += 0
-            
+
             num_correct_guess = sum([self.question.check_if_correct(g) for g in guess])
             # score = per_score * num_correct_guess
             # incorrect_score = per_score * (num_correct_options - num_correct_guess)
             if not (num_correct_options == num_correct_guess):
-                is_correct = False              ####### user didn't select all answers    
+                is_correct = False  ####### user didn't select all answers
         else:
             is_correct = self.question.check_if_correct(guess)
 
@@ -392,20 +401,20 @@ class QuizTake(FormView):
                     current_score_list = self.sitting.score_list.split(',')
                     current_incorrect_list = self.sitting.incorrect_questions.split(',')
                     # update score for T/F question and MCQ. Since the score is not graded for SAQ while taking quiz, update score on SAQ is not necessary
-                    # for idx, value in enumerate(current_score_list):
-                    #     if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
-                            # prev_score = current_score_list[idx]
-                            # # self.sitting.add_to_score(-prev_score)
-                            # # deduct previous score and add new score
-                            # self.sitting.add_to_score((-int(prev_score) + int(score)))
-                            # progress.update_score(self.question, (-int(prev_score) + int(score)),
-                            #                       -(int(prev_score) + int(score)))
-                            # score_list[idx] = (str(score))
+                    for idx, value in enumerate(current_score_list):
+                        if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
+                            prev_score = current_score_list[idx]
+                            # self.sitting.add_to_score(-prev_score)
+                            # deduct previous score and add new score
+                            self.sitting.add_to_score((-float(prev_score) + float(score)))
+                            progress.update_score(self.question, (-float(prev_score) + float(score)),
+                                                  -(float(prev_score) + float(score)))
+                            score_list[idx] = (str(score))
 
                             # remove from incorrect list
-                            # if str(self.question.pk) in current_incorrect_list:
-                            #     current_incorrect_list.remove(str(self.question.pk))
-                            #     self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+                            if str(self.question.pk) in current_incorrect_list:
+                                current_incorrect_list.remove(str(self.question.pk))
+                                self.sitting.incorrect_questions = ','.join(current_incorrect_list)
 
         else:
             if str(self.question.id) in self.sitting.question_list.split(','):
@@ -462,7 +471,8 @@ class QuizTake(FormView):
         # if question is in question_list, then only remove the question.
         # In case of answer update, question is already removed. Therefore, no need if previously attempted
         if str(self.question.id) in self.sitting.question_list.split(','):
-            self.sitting.remove_first_question()
+            self.sitting.remove_first_question(question_id=str(self.question.id)) if self.request.GET.get(
+                'q') else self.sitting.remove_first_question()
 
     def final_result_user(self):
         results = {

@@ -2,167 +2,180 @@
 {% load static %}
 {% load i18n %}
 {% block stylesheets %}
-  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
 {% endblock stylesheets %} {% block breadcrumb %}
-  <li class="breadcrumb-item" aria-current="page">
-    <a href="{% url 'student_progress' %}">{% trans 'Progress List' %}</a>
-  </li>
-  <li class="breadcrumb-item active" aria-current="page">{{ object.quiz.title }}</li>
-  <style>
-    .hover_me:hover {
-      cursor: pointer;
-    }
-  </style>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'student_progress' %}">{% trans 'Progress List' %}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.quiz.title }}</li>
+    <style>
+        .hover_me:hover {
+            cursor: pointer;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-  <div class="row well">
-    <div class="row">
-      <div class="col-md-9">
+    <div class="row well">
+        <div class="row">
+            <div class="col-md-9">
        <span class="" style="text-transform: uppercase; font-weight: 600; font-size: 20px; ">
         {{ object.quiz.title }}</span>
-      </div>
-      <div class="col-md-3">
-        {% if object.quiz.chapter_code %}
-        <a href="{% url 'student_chapterinfo_detail' pk=object.quiz.chapter_code.pk course=object.quiz.chapter_code.Course_Code.pk %}">
-       <!-- <span class="" style="font-weight: 600; font-size: 20px; text-align:right">
+            </div>
+            <div class="col-md-3">
+                {% if object.quiz.chapter_code %}
+                    <a href="{% url 'student_chapterinfo_detail' pk=object.quiz.chapter_code.pk course=object.quiz.chapter_code.Course_Code.pk %}">
+                        <!-- <span class="" style="font-weight: 600; font-size: 20px; text-align:right">
         Chapter: {{ object.quiz.chapter_code.Chapter_No }}</span> -->
-        <button class="progress-chapter" type="button" style="float: right;width:155px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
+                        <button class="progress-chapter" type="button" style="float: right;width:155px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
         margin-bottom: 10px;"><i
-        class="fa fa-arrow-left"></i>&nbsp; {% trans 'Return to Chapter' %} {{ object.quiz.chapter_code.Chapter_No }}
-            </button>
+                                class="fa fa-arrow-left"></i>&nbsp; {% trans 'Return to Chapter' %} {{ object.quiz.chapter_code.Chapter_No }}
+                        </button>
 
-      </a>
-        {% endif %}
-      </div>
-    </div>
-    <div class="hr2"></div>
-    <div class="row" style="margin-bottom: 10px;">
-      <div class="col-md-6 col-sm-6 col-xs-12 text-left"><span class="text-bold"> {% trans 'Taken Date' %}:</span>
-        &nbsp; {{ object.start }}</div>
-
-
-      <div class="col-md-6 col-sm-6 col-xs-12 text-right"><span class="text-bold"> {% trans 'Finished Date' %}:</span>
-        &nbsp;{{ object.end }}</div>
-
-    </div>
-    <div class="row" style="margin-bottom: 10px;">
-      <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> {% trans 'Full Marks' %}:</span>
-        &nbsp;{{ object.get_max_score }}</div>
-      <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span class="text-bold"> {% trans 'Marks Obtained' %}:</span>
-        &nbsp;{{ object.get_score_correct }}</div>
-      <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span
-          class="text-bold"> {% trans 'Percentage' %}:</span>&nbsp; {{ object.get_percent_correct }}</div>
-
-    </div>
-
-
-  </div>
-
-  {% if object.score_list == "" %}
-    {% trans 'Not attempted' %}
-  {% endif %}
-
-  <div class="panel-group row" id="accordion">
-    {% for q in object.questions_with_user_answers %}
-      {% if q.user_answer %}
-        <div class="panel panel-default" style="margin-bottom: 10px; margin-top: 10px;">
-          <div class="panel-heading">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}" class="hover_me">
-              <h4 class="panel-title">
-                <i class="fa fa-chevron-down fa-2x text-info" style="margin-right: 10px"></i>
-                {{ q.content }}
-                {% if not object.quiz.exam_paper %}
-                    {#              <span style="float: right">{{ q.score_obtained }} / {{ q.score }}</span>#}
-                    {% if not q.ans_correct %}
-                      <i class="fa fa-times fa-2x text-danger" style="float: right"></i>
-                    {% elif q.is_saq %}
-                      <i class="fa fa-ellipsis-h fa-2x text-info" style="float: right"></i>
-                    {% else %}
-                      <i class="fa fa-check fa-2x text-success" style="float: right"></i>
-                    {% endif %}
-                {% endif %}
-              </h4>
-            </a>
-          </div>
-          <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
-            {% if q.is_mcq %}
-              <ul class="list-group">
-                {% for option in q.get_answers %}
-
-                  {% if object.quiz.exam_paper %} <!-- when quiz is exam type -->
-                    {% if option|slugify in q.user_answer|slugify %}
-                      <li class="list-group-item list-group-item-secondary">{{ forloop.counter }}. {{ option.content }}</li>
-                    {% else %}
-                      <li class="list-group-item">{{ forloop.counter }}. {{ option.content }}</li>
-                    {% endif %}
-                  {% else %} <!-- when quiz is not exam type -->
-                    {% if option.correct %}  <!-- when option is correct case -->
-                      <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}
-                      {% if option|slugify in q.user_answer|slugify %}
-                        <i class="fa fa-circle-o fa-2x" style="padding-left: 1em;color:gray;"></i>
-                      {% endif %}
-                      </li>
-                    {% else %} <!-- when option is incorrect case -->
-                      {% if option|slugify in q.user_answer|slugify %}
-                        <li class="list-group-item list-group-item-danger">{{ forloop.counter }}. {{ option.content }}
-                          <i class="fa fa-circle-o fa-2x" style="padding-left: 1em;color:gray;"></i>
-                        </li>
-                      {% else %}
-                        <li class="list-group-item">{{ forloop.counter }}. {{ option.content }}</li>
-                      {% endif %}
-                    {% endif %}
-                  {% endif %}
-
-                {% endfor %}
-              </ul>
-            {% endif %}
-            {% if q.is_tfq %}
-              <ul class="list-group">
-                {% if not object.quiz.exam_paper %}
-                    {% if q.correct %}
-                      <li class="list-group-item list-group-item-success">1. {% trans 'True' %}</li>
-                      {% if q.correct|slugify == q.user_answer|slugify %}
-                        <li class="list-group-item">2. {% trans 'False' %}</li>
-                      {% else %}
-                        <li class="list-group-item list-group-item-danger">2. {% trans 'False' %}</li>
-                      {% endif %}
-                    {% else %}
-                      {% if q.correct|slugify == q.user_answer|slugify %}
-                        <li class="list-group-item">1. {% trans 'True' %}</li>
-                      {% else %}
-                        <li class="list-group-item list-group-item-danger">1. {% trans 'True' %}</li>
-                      {% endif %}
-                      <li class="list-group-item list-group-item-success">2. {% trans 'False' %}</li>
-                    {% endif %}
-                {% else %}
-                    <li class="list-group-item">1. {% trans 'True' %}</li>
-                    <li class="list-group-item">2. {% trans 'False' %}</li>
-                {% endif %}
-              </ul>
-            {% endif %}
-            {% if q.is_saq %}
-              <div class="col-md-12" style="margin-bottom: 10px;  ">
-                <div class="sa-ans-only" style="background-color: white; padding: 5px 2px;">
-                  {{ q.user_answer }}
-                </div>
-
-
-              </div>
-
-            {% endif %}
-            <div class="panel-footer">
-                {% if not object.quiz.exam_paper %}
-                    <span class="total-score-progress ">{% trans 'Total Score' %}: {{ q.score }}</span> <span
-                class="score-obtained-progress "> {% trans 'Score Obtained' %}: {{ q.score_obtained }}</span>
+                    </a>
                 {% endif %}
             </div>
-          </div>
         </div>
-      {% endif %}
-    {% endfor %}
+        <div class="hr2"></div>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-md-6 col-sm-6 col-xs-12 text-left"><span class="text-bold"> {% trans 'Taken Date' %}:</span>
+                &nbsp; {{ object.start }}</div>
 
-  </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12 text-right"><span
+                    class="text-bold"> {% trans 'Finished Date' %}:</span>
+                &nbsp;{{ object.end }}</div>
+
+        </div>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-md-4 col-sm-4 col-xs-12 text-left"><span class="text-bold"> {% trans 'Full Marks' %}:</span>
+                &nbsp;{{ object.get_max_score }}</div>
+
+            {% if not object.quiz.exam_paper %}
+              <div class="col-md-4 col-sm-4 col-xs-12 text-center"><span
+                      class="text-bold"> {% trans 'Marks Obtained' %}:</span>
+                  &nbsp;{{ object.get_score_correct }}</div>
+              <div class="col-md-4 col-sm-4 col-xs-12  text-right"><span
+                      class="text-bold"> {% trans 'Percentage' %}:</span>&nbsp; {{ object.get_percent_correct }}</div>
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+    {% if object.score_list == "" %}
+        {% trans 'Not attempted' %}
+    {% endif %}
+
+    <div class="panel-group row" id="accordion">
+        {% for q in object.questions_with_user_answers %}
+            {% if q.user_answer %}
+                <div class="panel panel-default" style="margin-bottom: 10px; margin-top: 10px;">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}"
+                           class="hover_me">
+                            <h4 class="panel-title">
+                                <i class="fa fa-chevron-down fa-2x text-info" style="margin-right: 10px"></i>
+                                {{ q.content }}
+                                {% if not object.quiz.exam_paper %}
+                                    {#              <span style="float: right">{{ q.score_obtained }} / {{ q.score }}</span>#}
+                                    {% if not q.ans_correct %}
+                                        <i class="fa fa-times fa-2x text-danger" style="float: right"></i>
+                                    {% elif q.is_saq %}
+                                        <i class="fa fa-ellipsis-h fa-2x text-info" style="float: right"></i>
+                                    {% else %}
+                                        <i class="fa fa-check fa-2x text-success" style="float: right"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </h4>
+                        </a>
+                    </div>
+                    <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
+                        {% if q.is_mcq %}
+                            <ul class="list-group">
+                                {% for option in q.get_answers %}
+                                    {% if not object.quiz.exam_paper %}
+                                        {% if option.correct and not object.quiz.exam_paper %}
+                                            <li class="list-group-item list-group-item-success">{{ forloop.counter }}. {{ option.content }}</li>
+                                        {% else %}
+                                            {% if option|slugify == q.user_answer|slugify and not object.quiz.exam_paper %}
+                                                <li class="list-group-item list-group-item-danger">
+                                                    {#                      <i class="fa fa-times fa-2x text-danger"></i>#}
+                                                    {{ forloop.counter }}. {{ option.content }}
+                                                </li>
+                                            {% else %}
+                                                <li class="list-group-item">{{ forloop.counter }}. {{ option.content }}</li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if option|slugify in q.user_answer|slugify %}
+                                            <li class="list-group-item" style="background-color: lightgrey">
+                                                {#                      <i class="fa fa-times fa-2x text-danger"></i>#}
+                                                {{ forloop.counter }}. {{ option.content }}
+                                            </li>
+                                        {% else %}
+                                            <li class="list-group-item">{{ forloop.counter }}. {{ option.content }}</li>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if q.is_tfq %}
+                            <ul class="list-group">
+                                {% if not object.quiz.exam_paper %}
+                                    {% if q.correct %}
+                                        <li class="list-group-item list-group-item-success">1. {% trans 'True' %}</li>
+                                        {% if q.correct|slugify == q.user_answer|slugify %}
+                                            <li class="list-group-item">2. {% trans 'False' %}</li>
+                                        {% else %}
+                                            <li class="list-group-item list-group-item-danger">
+                                                2. {% trans 'False' %}</li>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if q.correct|slugify == q.user_answer|slugify %}
+                                            <li class="list-group-item">1. {% trans 'True' %}</li>
+                                        {% else %}
+                                            <li class="list-group-item list-group-item-danger">
+                                                1. {% trans 'True' %}</li>
+                                        {% endif %}
+                                        <li class="list-group-item list-group-item-success">2. {% trans 'False' %}</li>
+                                    {% endif %}
+                                {% else %}
+                                    {% if q.user_answer|slugify == "True" %}
+                                        <li class="list-group-item" style="background-color: lightgrey">
+                                            1. {% trans 'True' %}</li>
+                                        <li class="list-group-item">2. {% trans 'False' %}</li>
+                                    {% else %}
+                                        <li class="list-group-item">1. {% trans 'True' %}</li>
+                                        <li class="list-group-item" style="background-color: lightgrey">
+                                            2. {% trans 'False' %}</li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                        {% if q.is_saq %}
+                            <div class="col-md-12" style="margin-bottom: 10px;  ">
+                                <div class="sa-ans-only" style="background-color: white; padding: 5px 2px;">
+                                    {{ q.user_answer }}
+                                </div>
+
+
+                            </div>
+
+                        {% endif %}
+                        <div class="panel-footer">
+                            <span class="total-score-progress ">{% trans 'Total Score' %}: {{ q.score }}</span>
+                            {% if not object.quiz.exam_paper %}
+                                <span class="score-obtained-progress "> {% trans 'Score Obtained' %}: {{ q.score_obtained }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
 {% endblock %}
 
 {% block customjss %}
