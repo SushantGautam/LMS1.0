@@ -17,7 +17,7 @@ from django_addanother.views import CreatePopupMixin
 from LMS.auth_views import QuizInfoAuthMxnCls, QuizInfoAuth, AdminAuthMxnCls, StudentCourseAuth
 from WebApp.models import CourseInfo, ChapterInfo, InningGroup, InningInfo
 from .forms import QuestionForm, SAForm, QuizForm, TFQuestionForm, SAQuestionForm, MCQuestionForm, AnsFormset, \
-    QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm
+    QuizBasicInfoForm, QuestionQuizForm, ChooseMCQForm, ChooseSAQForm, ChooseTFQForm, MCForm, TFForm
 from .models import Quiz, Progress, Sitting, MCQuestion, TF_Question, Question, SA_Question
 
 
@@ -267,9 +267,11 @@ class QuizTake(FormView):
 
         if self.question.__class__ is SA_Question:
             form_class = SAForm
+        elif self.question.__class__ is MCQuestion:
+            form_class = MCForm
         else:
-            form_class = self.form_class
-
+            # form_class = self.form_class
+            form_class = TFForm
         return form_class(**self.get_form_kwargs())
 
     def get_form_kwargs(self):
@@ -328,13 +330,52 @@ class QuizTake(FormView):
 
     def form_valid_user(self, form):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
+        # if type(self.question) is TF_Question:
+        #     guess = form.cleaned_data['answers'][0]        # because saq and mcq share same form
+        # else:                                              # so for tfq, need to remove list '[]'                     
+        #     guess = form.cleaned_data['answers']
         guess = form.cleaned_data['answers']
-        is_correct = self.question.check_if_correct(guess)
+        print("multiple selected values: ", guess) 
+        
         ssl = self.sitting.score_list
         if not ssl:
             ssl = ''
         score_list = [s for s in ssl.split(',') if s]
         score = self.question.score
+
+        if type(self.question) is MCQuestion:
+            num_correct_options = self.question.get_num_correct_options() # get number of correct options
+            num_options = self.question.get_answers().count()
+            per_score = self.question.score / num_correct_options
+            score = 0
+            is_correct = True
+
+            ##############################################################
+            ##### loop for all user chosen:                           ####
+            ##### chosen - 1; correct - 1 => +score                   ####
+            ##### chosen - 1; correct - 0 => -score * negative_factor ####
+            ##### chosen - 0; correct - 1 => 0                        ####
+            ##### chosen - 0; correct - 0 => 0                        ####
+            ##### so we only care about chosen values                 ####
+            ##############################################################
+
+            for g in guess:
+                if self.question.check_if_correct(g):
+                    score += per_score
+                else:
+                    is_correct = False          ###### user selected wrong answer
+                    if self.sitting.quiz.negative_marking:
+                        score -= float(per_score * self.sitting.quiz.negative_percentage) / 100.0
+                    else:
+                        score += 0
+            
+            num_correct_guess = sum([self.question.check_if_correct(g) for g in guess])
+            # score = per_score * num_correct_guess
+            # incorrect_score = per_score * (num_correct_options - num_correct_guess)
+            if not (num_correct_options == num_correct_guess):
+                is_correct = False              ####### user didn't select all answers    
+        else:
+            is_correct = self.question.check_if_correct(guess)
 
         if is_correct is True:
             if type(self.question) is SA_Question:
@@ -351,20 +392,20 @@ class QuizTake(FormView):
                     current_score_list = self.sitting.score_list.split(',')
                     current_incorrect_list = self.sitting.incorrect_questions.split(',')
                     # update score for T/F question and MCQ. Since the score is not graded for SAQ while taking quiz, update score on SAQ is not necessary
-                    for idx, value in enumerate(current_score_list):
-                        if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
-                            prev_score = current_score_list[idx]
-                            # self.sitting.add_to_score(-prev_score)
-                            # deduct previous score and add new score
-                            self.sitting.add_to_score((-int(prev_score) + int(score)))
-                            progress.update_score(self.question, (-int(prev_score) + int(score)),
-                                                  -(int(prev_score) + int(score)))
-                            score_list[idx] = (str(score))
+                    # for idx, value in enumerate(current_score_list):
+                    #     if idx == int(self.sitting.question_order.split(',').index(str(self.question.pk))):
+                            # prev_score = current_score_list[idx]
+                            # # self.sitting.add_to_score(-prev_score)
+                            # # deduct previous score and add new score
+                            # self.sitting.add_to_score((-int(prev_score) + int(score)))
+                            # progress.update_score(self.question, (-int(prev_score) + int(score)),
+                            #                       -(int(prev_score) + int(score)))
+                            # score_list[idx] = (str(score))
 
                             # remove from incorrect list
-                            if str(self.question.pk) in current_incorrect_list:
-                                current_incorrect_list.remove(str(self.question.pk))
-                                self.sitting.incorrect_questions = ','.join(current_incorrect_list)
+                            # if str(self.question.pk) in current_incorrect_list:
+                            #     current_incorrect_list.remove(str(self.question.pk))
+                            #     self.sitting.incorrect_questions = ','.join(current_incorrect_list)
 
         else:
             if str(self.question.id) in self.sitting.question_list.split(','):
@@ -379,7 +420,9 @@ class QuizTake(FormView):
                             current_incorrect_list[idx] = (str(self.question.pk))
                             self.sitting.incorrect_questions = ','.join(current_incorrect_list)
 
-            if self.sitting.quiz.negative_marking:
+            if type(self.question) is MCQuestion:
+                negative_score = score
+            elif self.sitting.quiz.negative_marking:
                 negative_score = -(float(self.sitting.quiz.negative_percentage * score) / 100)
             else:
                 negative_score = 0
@@ -396,9 +439,9 @@ class QuizTake(FormView):
                         prev_score = current_score_list[idx]
                         # self.sitting.add_to_score(-prev_score)
                         # deduct previous score and add new score
-                        self.sitting.add_to_score((-int(prev_score) + int(negative_score)))
-                        progress.update_score(self.question, (-int(prev_score) + int(negative_score)),
-                                              (-int(prev_score) + int(score)))
+                        self.sitting.add_to_score((-float(prev_score) + float(negative_score)))
+                        progress.update_score(self.question, (-float(prev_score) + float(negative_score)),
+                                              (-float(prev_score) + float(score)))
                         score_list[idx] = (str(negative_score))
 
         self.sitting.score_list = ','.join(score_list)

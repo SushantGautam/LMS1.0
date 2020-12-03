@@ -313,6 +313,17 @@ class MCQuestion(Question):
     def answer_choice_to_string(self, guess):
         return Answer.objects.get(id=guess).content
 
+    def correct_option_limit_check(self):
+        correct_limit = 2
+        correct_answers = Answer.objects.filter(question=self, correct=True)
+        if correct_answers.count() < correct_limit:
+            return True
+        else:
+            return False
+
+    def get_num_correct_options(self):
+        return Answer.objects.filter(question=self, correct=True).count()
+
     class Meta:
         verbose_name = _("Multiple Choice Question")
         verbose_name_plural = _("Multiple Choice Questions")
@@ -855,12 +866,20 @@ class Sitting(models.Model):
         user_answers = json.loads(self.user_answers)
         for i in self.quiz.mcquestion.all():
             mcq_user_ans = user_answers.get(str(i.id))
-            if i.check_if_correct(mcq_user_ans):
-                totalmcq_score += i.score
+            num_correct_options = i.get_num_correct_options()
+            per_score = i.score / num_correct_options
+            if mcq_user_ans:                                    # if no answer, just add 0, so just ignore
+                for ans in mcq_user_ans:
+                    if i.check_if_correct(ans):                # multi-ans-effect
+                        totalmcq_score += per_score
+                    elif self.quiz.negative_marking:
+                        totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
         for j in self.quiz.tfquestion.all():
             tfq_user_ans = user_answers.get(str(j.id))
             if j.check_if_correct(tfq_user_ans):
                 totaltfq_score += j.score
+            elif self.quiz.negative_marking:
+                totaltfq_score -= float(j.score * self.quiz.negative_percentage) / 100
         for k in self.quiz.saquestion.all():
             i = [int(n) for n in self.question_order.split(',') if n].index(k.id)
             if self.score_list:
@@ -977,7 +996,9 @@ class Sitting(models.Model):
                 user_ans = user_answers.get(str(q.id), False)
                 if user_ans:
                     if isinstance(q, MCQuestion):
-                        q.user_answer = Answer.objects.get(id=int(user_ans)).content
+                        # q.user_answer = Answer.objects.get(id=int(user_ans)).content    # multi-ans-effect
+                        q.user_answer = Answer.objects.filter(
+                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True)    # multi-ans-effect
                     else:
                         q.user_answer = user_ans
                     
@@ -992,12 +1013,49 @@ class Sitting(models.Model):
                         else:
                             q.score_obtained = "not_graded"
                             q.ans_correct = True
+                    elif isinstance(q, MCQuestion):
+                        num_correct_options = q.get_num_correct_options() # get number of correct options
+                        num_options = q.get_answers().count()
+                        per_score = q.score / num_correct_options
+                        guess = user_ans
+                        score = 0
+                        is_correct = True   
+
+                        ##############################################################
+                        ##### loop for all user chosen:                           ####
+                        ##### chosen - 1; correct - 1 => +score                   ####
+                        ##### chosen - 1; correct - 0 => -score * negative_factor ####
+                        ##### chosen - 0; correct - 1 => 0                        ####
+                        ##### chosen - 0; correct - 0 => 0                        ####
+                        ##### so we only care about chosen values                 ####
+                        ##############################################################
+
+                        for g in guess:
+                            if q.check_if_correct(g):
+                                score += per_score
+                            else:
+                                is_correct = False          ###### user selected wrong answer
+                                if self.quiz.negative_marking:
+                                    score -= float(per_score * self.quiz.negative_percentage) / 100.0
+                                else:
+                                    score += 0
+
+                        num_correct_guess = sum([q.check_if_correct(g) for g in guess])
+                        if not (num_correct_options == num_correct_guess):
+                            is_correct = False
+                                    
+                        q.score_obtained = score
+                        q.ans_correct = is_correct
+                                        
                     else:
                         if q.check_if_correct(user_ans):
                             q.score_obtained = q.score
                             q.ans_correct = True
                         else:
-                            q.score_obtained  = 0
+                            if self.quiz.negative_marking:
+                                q.score_obtained = -float(q.score * self.quiz.negative_percentage) / 100
+                            else:
+                                q.score_obtained = 0
                             q.ans_correct = False
                 else:
                     q.user_answer = ' '
@@ -1015,7 +1073,7 @@ class Sitting(models.Model):
         return questions
 
     @property
-    def questions_with_user_answers(self):
+    def questions_with_user_answers(self):          # multi-ans-effect for child
         return {
             q: q.user_answer for q in self.get_questions(with_answers=True)
         }
