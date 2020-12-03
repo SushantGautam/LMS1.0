@@ -420,7 +420,7 @@
             {% if question %}
                 let op_limit = parseInt("{{ question.get_num_correct_options }}");
             {% else %}
-                let op_limit = 2;
+                let op_limit = 1;
             {% endif %}
             $("input[name='answers']").change(function(){
                 if($(this).prop("checked")){
