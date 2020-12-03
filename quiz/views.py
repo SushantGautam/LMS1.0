@@ -220,6 +220,10 @@ class QuizTake(FormView):
     single_complete_template_name = 'single_complete.html'
     current_question_number = 0
 
+    def get(self, request, *args, **kwargs):
+        print(self.request)
+        return super(QuizTake, self).get(request, *args, **kwargs)
+
     def dispatch(self, request, *args, **kwargs):
         self.quiz = get_object_or_404(Quiz, url=self.kwargs['quiz_name'])
         self.current_question_number = self.request.GET.get('q') if self.request.GET.get('q') else 0
@@ -257,7 +261,7 @@ class QuizTake(FormView):
         if self.logged_in_user:
             question = None
             # if query parameter is present, then fetch the form of the question.
-            if self.request.GET.get('q') and self.current_question_number:
+            if self.current_question_number:
                 question = int(self.current_question_number)
             self.question = self.sitting.get_first_question(question_index=question)
             self.progress = self.sitting.progress()
@@ -305,6 +309,7 @@ class QuizTake(FormView):
                 self.request.GET = {}
                 self.current_question_number = None
             else:
+                self.request.method = "GET"
                 self.request.GET = {'q': str(int(self.current_question_number) + 1)}
                 self.current_question_number = str(int(self.current_question_number) + 1)
         return super(QuizTake, self).get(self, self.request)
