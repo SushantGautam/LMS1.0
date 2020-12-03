@@ -439,9 +439,9 @@ class QuizTake(FormView):
                         prev_score = current_score_list[idx]
                         # self.sitting.add_to_score(-prev_score)
                         # deduct previous score and add new score
-                        self.sitting.add_to_score((-int(prev_score) + int(negative_score)))
-                        progress.update_score(self.question, (-int(prev_score) + int(negative_score)),
-                                              (-int(prev_score) + int(score)))
+                        self.sitting.add_to_score((-float(prev_score) + float(negative_score)))
+                        progress.update_score(self.question, (-float(prev_score) + float(negative_score)),
+                                              (-float(prev_score) + float(score)))
                         score_list[idx] = (str(negative_score))
 
         self.sitting.score_list = ','.join(score_list)

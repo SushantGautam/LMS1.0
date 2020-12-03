@@ -43,15 +43,27 @@ class MCForm(forms.Form):
         choice_list = [x for x in question.get_answers_list()]
         # self.fields["answers"] = forms.ChoiceField(choices=choice_list,
         #                                            widget=RadioSelect)
+        answerindex = None
+        if answer:
+            for index, x in enumerate(choice_list):
+                if str(x) == answer:
+                    answerindex = index
+                    break
         self.fields["answers"] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          choices=choice_list)
+                                          choices=choice_list, initial=answer if answer is not None else None)
 
 class TFForm(forms.Form):
     def __init__(self, question, answer=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         choice_list = [x for x in question.get_answers_list()]
+        answerindex = None
+        if answer:
+            for index, x in enumerate(choice_list):
+                if str(x[0]) == answer:
+                    answerindex = index
+                    break
         self.fields["answers"] = forms.ChoiceField(choices=choice_list,
-                                                   widget=RadioSelect, initial=choice_list[int(answerindex)] if answerindex is not None else None)
+                                                   widget=RadioSelect, initial=answer if answer is not None else None)
 
 class SAForm(forms.Form):
     def __init__(self, question, answer=None, *args, **kwargs):
