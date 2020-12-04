@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load model_template_relation %}
+
 {% load i18n %}
 {% load static %}
 {% load quiz_tags %}
@@ -123,22 +125,24 @@
             {% endif %}
         " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
     </div>
-    <div>
+    <!-- <div class="col-md-12 col-sm-12 col-xs-12" style="margin:10px 0">
+         <div class="row">
         {% if has_previous %}
-            <div>
+            <div class="col-md-6 col-sm-6 col-xs-12 ">
                 <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
-                    <button class="btn btn-secondary"><i class="fa fa-arrow-circle-left"></i></button>
+                    <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Previous" class="fa fa-arrow-circle-left" style="color: #eea236;;"    ></i></button>
                 </a>
             </div>
         {% endif %}
         {% if has_next %}
-            <div style="float:right">
+            <div class="col-md-6 col-sm-6 col-xs-12 text-right" >
                 <a href="{{ request.path }}?q={{ question_number|add:1 }}">
-                    <button class="btn btn-secondary"><i class="fa fa-arrow-circle-right"></i></button>
+                    <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Next" class="fa fa-arrow-circle-right" style="color: #eea236;;"></i></button>
                 </a>
             </div>
         {% endif %}
-    </div>
+    </div></div> -->
+
     {% if question %}
         {% if quiz.exam_paper %}
             <div class="col-md-12 col-md-12 col-xs-12 ">
@@ -154,101 +158,141 @@
 
 
         {% endif %}
-
-        {% if progress %}
-            <div style="float: right;">
-                {% trans "Question" %} {{ question_number }} {% trans "of" %} {{ progress.2 }}
-            </div>
-        {% endif %}
-
-
-
-        <p>
-            <small class="muted"><strong>
-                {% trans "Question category" %}:
-
-            </strong>
-            </small>
-            <strong>{{ question.category }}</strong>
-        </p>
-
-
-
-
-
-
-        <div class="quiz-questions" style="
-    padding-left: 15vw;
-    padding-right: 15vw;
-">
-            <div id="step-1">
-                <div class="privew1">
-                    <div class="questionsBox">
-                        <div class="questions">{{ question_number }})&nbsp; {{ question.content }}</div>
-
-
-                        {% if question.figure %}
-                            <div class="quiz-ques-image">
-
-                                <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
-
-
-                            </div>
-
-                        {% endif %}
-                        <form action="" method="POST">{% csrf_token %}
-                            <input type=hidden name="question_id" value="{{ question.id }}">
-                            <ul class="list-group">
-
-                                {% for answer in form.answers %}
-                                    <li class="list-group-item">
-                                        {{ answer }}
-                                    </li>
-                                {% endfor %}
-
-                            </ul>
-
-                            <input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
-                                   btn-warning" >
-
-
-                        </form>
+      <div class="col-md-12" style="margin-top: 25px;">
+          <div class="row">
+              <div class="col-md-2 button-for-height">
+                {% if has_previous %}
+                <div class=" button-prev-quiz text-center ">
+                    <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
+                        <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Previous" class="fa fa-arrow-circle-left" style="color: #eea236;font-size:25px;"    ></i></button>
+                    </a>
+                </div>
+            {% endif %}
+                
+              </div>
+            
+              <div class="col-md-8 text-center">
+                  <div class="row">
+                    <div class="col-md-6 text-left">
+                        <p>
+                            <small class="muted"><strong>
+                                {% trans "Question category" %}:
+                
+                            </strong>
+                            </small>
+                            <strong>{{ question.category }}</strong>
+                        </p>
 
                     </div>
-                </div>
+                    <div class="col-md-6 text-right">
+                        {% if progress %}
+                        <div style="float: right;">
+                           <span><b>{% trans "Remaining Question:" %} <span style="color: #eea236;">
+                            {{ progress.2|subtract:progress.0 }}
+                           </span></b></span> &nbsp;&nbsp; <span><b>{% trans "Total Question:" %} <span style="color: #eea236;">  {{ progress.2 }}     </span> </b></span>
+                            <!-- {% trans "Question" %} {{ question_number }} {% trans "of" %} {{ progress.2 }} -->
+                        </div>
+                    {% endif %}
+                      </div>
+                  </div>
+                        <div class="quiz-questions" 
+                                                        >
+        <div id="step-1">
+        <div class="privew1">
+        <div class="questionsBox">
+        <div class="questions">{{ question_number }})&nbsp; {{ question.content }}</div>
 
-            </div>
+
+        {% if question.figure %}
+        <div class="quiz-ques-image">
+
+            <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
+
+
         </div>
 
+        {% endif %}
+        <form action="" method="POST">{% csrf_token %}
+        <input type=hidden name="question_id" value="{{ question.id }}">
+        <ul class="list-group">
+
+            {% for answer in form.answers %}
+                <li class="list-group-item">
+                    {{ answer }}
+                </li>
+            {% endfor %}
+
+        </ul>
+         {% if    question_number == progress.2  %}
+        <input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
+            btn-warning" >
+         {% else   %}
+         <input type="submit" value={% trans "Next" %} class="btn btn-large btn-block
+         btn-warning" >
+         {% endif %}
+         
+
+        </form>
+
+        </div>
+        </div>
+
+        </div>
+                        </div>      
+              </div>
+              <div class="col-md-2 nextbutton-for-height  ">
+                {% if has_next %}
+                <div class="button-next-quiz text-center" >
+                    <a href="{{ request.path }}?q={{ question_number|add:1 }}">
+                        <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Next" class="fa fa-arrow-circle-right" style="color: #eea236;font-size:25px"></i></button>
+                    </a>
+                </div>
+            {% endif %}
+              </div>
+          </div>
+      </div>
+      
 
 
-        <!-- <p class="lead">{{ question.content }}</p>
 
-{% if question.figure %}
-  <div class="quiz-ques-image">
-
-					<img src="{{ question.figure.url }}" alt="{{ question.content }}" />
+       
 
 
 
-	</div>
 
-{% endif %}
 
-<form action="" method="POST">{% csrf_token %}
-  <input type=hidden name="question_id" value="{{ question.id }}">
 
-  <ul class="list-group">
+      
 
-	{% for answer in form.answers %}
-	  <li class="list-group-item">
-	    {{ answer }}
-	  </li>
-	{% endfor %}
 
-  </ul>
-  <input type="submit" value={% trans "Check" %} class="btn btn-large btn-block btn-warning" >
-</form> -->
+
+                        <!-- <p class="lead">{{ question.content }}</p>
+
+                {% if question.figure %}
+                <div class="quiz-ques-image">
+
+                                    <img src="{{ question.figure.url }}" alt="{{ question.content }}" />
+
+
+
+                    </div>
+
+                {% endif %}
+
+                <form action="" method="POST">{% csrf_token %}
+                <input type=hidden name="question_id" value="{{ question.id }}">
+
+                <ul class="list-group">
+
+                    {% for answer in form.answers %}
+                    <li class="list-group-item">
+                        {{ answer }}
+                    </li>
+                    {% endfor %}
+
+                </ul>
+                <input type="submit" value={% trans "Check" %} class="btn btn-large btn-block btn-warning" >
+                </form> -->
 
     {% endif %}
 {% endblock %}

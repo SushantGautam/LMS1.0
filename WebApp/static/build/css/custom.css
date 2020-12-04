@@ -2677,3 +2677,28 @@ a.badge-dark:focus {
 .selector .selector-chosen input {
     width: 210px !important;
 }
+
+/* quiz button height */
+.button-for-height{
+    height: 200px;
+    position: relative;
+    
+    
+}
+.button-prev-quiz{
+    position: absolute;
+    bottom: 1%;
+    left: 50%;
+    z-index:100
+}
+.nextbutton-for-height{
+    height: 200px;
+    position: relative;
+    
+}
+.button-next-quiz{
+    position: absolute;
+    bottom: 1%;
+    right: 50%;
+    z-index:100
+}
