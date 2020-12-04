@@ -1055,7 +1055,7 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
-            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
             ssl = sitting.score_list
@@ -1109,7 +1109,7 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
-            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
 
             ssl = sitting.score_list
             if not ssl:
