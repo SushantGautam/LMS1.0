@@ -104,13 +104,13 @@
                 <hr>
                 <span><b>Student Group &nbsp; : </b>&nbsp;{{ object.Groups }}</span>
                 <b>Courses :</b>
-                <span>
-                    <p style="height:40px; overflow:auto;padding:0 10px">
+                <div style="height:40px; overflow:auto;" class="mt-2 ml-2">
+                    <ul>
                         {% for groups in object.Course_Group.all %}
-                        {{ groups.Course_Code }}
+                        <li>{{ groups.Course_Code }}</li>
                         {% endfor %}
-                    </p>
-                </span>
+                    </ul>
+                </div>
                 <span><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}</span>
                 <span><b>End Date : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</span>
             </div>

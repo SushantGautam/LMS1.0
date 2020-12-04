@@ -18,7 +18,12 @@
                     Course Name : {{ object.Course_Code }}
                 </li>
                 <li class="p-2">
-                    Teachers Name : {% for teachers in object.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}
+                    Teachers Name :
+                    <ul class="ml-3">
+                        {% for teachers in object.Teacher_Code.all %}
+                        <li>{{ teachers }}</li>
+                        {% endfor %}
+                    </ul>
                 </li>
                 <li class="p-2">
                     Register Agent : {% getUser object.Register_Agent as register_agent %}{{ register_agent }}
