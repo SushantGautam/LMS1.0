@@ -1062,7 +1062,11 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
             if not ssl:
                 ssl = ''
             score_list = [s for s in ssl.split(',') if s]
-            score_list[indx] = request.POST.get('new_score', 0)
+            try:
+                score_list[indx] = request.POST.get('new_score', 0)
+            except IndexError:
+                if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
+                    score_list.insert(indx, request.POST.get('new_score', 0))
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
             sitting.save()
@@ -1106,13 +1110,16 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
             indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
-            print(request.POST['new_score'], "new_score")
-            print(indx, "index")
+
             ssl = sitting.score_list
             if not ssl:
                 ssl = ''
             score_list = [s for s in ssl.split(',') if s]
-            score_list[indx] = request.POST.get('new_score', 0)
+            try:
+                score_list[indx] = request.POST.get('new_score', 0)
+            except IndexError:
+                if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
+                    score_list.insert(indx, request.POST.get('new_score', 0))
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
             sitting.save()

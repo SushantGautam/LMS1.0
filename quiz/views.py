@@ -392,6 +392,7 @@ class QuizTake(FormView):
                     score = 'not_graded'
                     self.sitting.add_to_score(0)
                     progress.update_score(self.question, 0, 1)
+                    score_list.append(str(score))
             else:
                 if str(self.question.id) in self.sitting.question_list.split(','):
                     self.sitting.add_to_score(score)
