@@ -42,7 +42,7 @@
 
             id="card_content_label">
 
-            {{ object.mail.get_label_display }}
+            {% trans object.mail.get_label_display %}
 
 
             </span>
@@ -58,18 +58,18 @@
                 {%if email_type == 'inbox'%}
                 <a href="#"
                    class="btn btn-outline-primary reply_redirect "
-                   data-toggle="tooltip" title="Reply">
+                   data-toggle="tooltip" title="{% trans 'Reply' %}">
                     <i class="ti-back-right"></i>
                 </a>
                  <a href="{% url 'student_mail_spam' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-warning ml-2 "
                    data-toggle="tooltip"
-                   title="Mark as spam">
+                   title="{% trans 'Mark as Spam' %}">
                     <i class="ti-info-alt"></i>
                 </a>
                 <a href="{% url 'student_mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-danger ml-2 "
-                   title="Dispose"
+                   title="{% trans 'Dispose' %}"
                    id="inbox_detail_trash"
                    data-toggle="tooltip">
                     <i class="ti-trash"></i>
@@ -78,18 +78,18 @@
                 {%elif email_type == 'starred'%}
                 <a href="#"
                    class="btn btn-outline-primary reply_redirect "
-                   data-toggle="tooltip" title="Reply">
+                   data-toggle="tooltip" title="{% trans 'Reply' %}">
                     <i class="ti-back-right "></i>
                 </a>
                  <a href="{% url 'student_mail_spam' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-warning ml-2 "
                    data-toggle="tooltip"
-                   title="Mark as spam">
+                   title="{% trans 'Mark as Spam' %}">
                     <i class="ti-info-alt "></i>
                 </a>
                 <a href="{% url 'student_mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-danger ml-2 "
-                   title="Dispose"
+                   title="{% trans 'Dispose' %}"
 
                    data-toggle="tooltip">
                     <i class="ti-trash"></i>
@@ -99,12 +99,12 @@
                  <a href="{% url 'student_mail_spam' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-success ml-2 "
                    data-toggle="tooltip"
-                   title="Remove Spam">
+                   title="{% trans 'Remove Spam' %}">
                     <i class="fa fa-envelope "></i>
                 </a>
                 <a href="{% url 'student_mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-danger ml-2 "
-                   title="Dispose"
+                   title="{% trans 'Dispose' %}"
 
                    data-toggle="tooltip">
                     <i class="ti-trash"></i>
@@ -113,7 +113,7 @@
                 {%elif email_type == 'trash'%}
                 <a href="{% url 'student_mail_deleted' object.pk %}?email_type={{email_type}}"
                    class="btn btn-outline-success ml-2 "
-                   title="Recover Email"
+                   title="{% trans 'Recover Email' %}"
 
                    data-toggle="tooltip">
                     <i class="ti-reload"></i>
@@ -125,7 +125,7 @@
 
                     <form action="{%url 'student_mail_receiver_delete' object.pk%}?email_type={{email_type}}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="dropdown-item text-danger"><a class="btn btn-outline-danger ml-2 "  title="Empty Trash" data-toggle="tooltip"><i class="ti-trash"></i></a></button>
+                        <button type="submit" class="dropdown-item text-danger"><a class="btn btn-outline-danger ml-2 "  title="{% trans 'Empty Trash' %}" data-toggle="tooltip"><i class="ti-trash"></i></a></button>
                     </form>
 
 
@@ -150,7 +150,9 @@
                         <span class="text-primary"
                               id="card_content_sender"> {% trans "From" %}: {{ object.mail.sender }}
                             {% if object.mail.sender.email%}
+                            {% if object.mail.sender.email %}
                             &lt {{object.mail.sender.email}} &gt
+                            {% endif%}
                             {%endif%}
                         </span>
 
@@ -231,7 +233,11 @@
                     <div>
                         <h6 class="m-b-0">
                         <span class="text-primary"
-                              id="card_content_sender{{reply.pk}}">{{ reply.sender }} &lt {{reply.sender.email}} &gt</span>
+                              id="card_content_sender{{reply.pk}}">{{ reply.sender }}
+                            {% if reply.sender.email %}
+                            &lt {{reply.sender.email}} &gt
+                                {%endif%}
+                        </span>
                             <!--                                            <span class="d-sm-inline d-none text-muted"> &lt;elnora@gmail.com&gt;</span>-->
                         </h6>
                         <!--                        <span class="small text-muted" id="card_content_receiver{{reply.pk}}"></span>-->

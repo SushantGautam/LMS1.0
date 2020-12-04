@@ -78,7 +78,7 @@
 
 
 <div class="app-pager d-flex align-items-center">
-   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count }}</div>
+   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count }}</div>
    <nav aria-label="Page navigation example">
       <ul class="pagination">
 

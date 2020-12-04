@@ -181,7 +181,7 @@
 
 
 <div class="app-pager d-flex align-items-center">
-   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count }}</div>
+   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count }}</div>
    <nav aria-label="Page navigation example">
       <ul class="pagination">
 
@@ -251,19 +251,19 @@
 <!--        -->
 
                 {% if '?email_type=inbox'  in request.get_full_path %}
-                <a href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16{%if email.mail_starred%} text-warning fa-star {% else %} fa-star-o {%endif%} "></i></a>
                 {%endif%}
                 {% if '?email_type=send'  in request.get_full_path %}
-                <a href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16 {%if email.sender_starred%} text-warning fa-star{% else %}fa-star-o {%endif%}"></i></a>
                 {%endif%}
                  {% if '?email_type=starred_outbox'  in request.get_full_path %}
-                <a href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16 {%if email.sender_starred%} text-warning fa-star{% else %}fa-star-o {%endif%}"></i></a>
                 {%endif%}
                 {% if 'email_type=received_starred'  in request.get_full_path %}
-                <a href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16{%if email.mail_starred%} text-warning fa-star {% else %} fa-star-o {%endif%} "></i></a>
                 {%endif%}
 
@@ -278,7 +278,7 @@
        <div class="mb-1 d-flex justify-content-between align-items-center">
           <div class="text-truncate app-list-title">
              {% if 'mail_outbox' in request.get_full_path %}
-                To:
+                {% trans 'To' %}:
               {% for u in user_list%}
               {% if u.pk in email.get_receiver_list %}
              {{u.username}}
@@ -291,7 +291,7 @@
 
 
              {%else%}
-              From:
+              {% trans 'From' %}:
              {{email.mail.sender}}
               {%if email.mail.sender.email %}
              &lt{{email.mail.sender.email}}&gt
@@ -320,7 +320,7 @@
                       data-email_id="{{ email.pk }}" href="#">{% trans "Reply" %}</a>
                    <a class="dropdown-item text-warning"
                       href="{%url 'student_mail_starred' email.pk%}?email_type={{email_type}}">
-                      {%if email.mail_starred%}Remove Star{%else%} {% trans "Add star" %} {%endif%}</a>
+                      {%if email.mail_starred%}{% trans 'Remove Star' %}{%else%} {% trans "Add star" %} {%endif%}</a>
                    <a class="dropdown-item text-danger" href="{%url 'student_mail_spam' email.pk%}?email_type={{email_type}}">{% trans "Mark as Spam" %} </a>
                    <a class="dropdown-item text-danger"
                       href="{%url 'student_mail_deleted' email.pk%}?email_type={{email_type}}"> {% trans "Delete" %} </a>
@@ -332,7 +332,7 @@
                       href="{%url 'student_sender_delete' email.pk%}?email_type={{email_type}}"> {% trans "Delete" %} </a>
                    <a class="dropdown-item text-warning"
                       href="{%url 'student_sender_starred' email.pk%}?email_type={{email_type}}">
-                      {%if email.sender_starred%}Remove Star {%else%} {% trans "Add star" %} {%endif%}</a>
+                      {%if email.sender_starred%}{% trans 'Remove Star' %} {%else%} {% trans "Add star" %} {%endif%}</a>
                    {%endif%}
 
                    {%if '?email_type=draft' in request.get_full_path%}

@@ -181,7 +181,7 @@
 
 
 <div class="app-pager d-flex align-items-center">
-   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count }}</div>
+   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count }}</div>
    <nav aria-label="Page navigation example">
       <ul class="pagination">
 
@@ -251,19 +251,19 @@
 <!--        -->
 
                 {% if '?email_type=inbox'  in request.get_full_path %}
-                <a href="{%url 'mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16{%if email.mail_starred%} text-warning fa-star {% else %} fa-star-o {%endif%} "></i></a>
                 {%endif%}
                 {% if '?email_type=send'  in request.get_full_path %}
-                <a href="{%url 'sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16 {%if email.sender_starred%} text-warning fa-star{% else %}fa-star-o {%endif%}"></i></a>
                 {%endif%}
                  {% if '?email_type=starred_outbox'  in request.get_full_path %}
-                <a href="{%url 'sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16 {%if email.sender_starred%} text-warning fa-star{% else %}fa-star-o {%endif%}"></i></a>
                 {%endif%}
                 {% if 'email_type=received_starred'  in request.get_full_path %}
-                <a href="{%url 'mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'mail_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16{%if email.mail_starred%} text-warning fa-star {% else %} fa-star-o {%endif%} "></i></a>
                 {%endif%}
 
@@ -393,9 +393,9 @@
        <div class="text-muted d-flex justify-content-between">
           <div class="text-truncate small">
               {% if 'mail_outbox' in request.get_full_path  %}
-             {{email.subject}}
+             {% trans email.subject %}
                  {%else%}
-             {{email.mail.subject}}
+             {% trans email.mail.subject %}
              {%endif%}
 <!--             Lorem ipsum dolor sit amet, consectetur adipisicing-->
 <!--             elit. Illum, labore?-->

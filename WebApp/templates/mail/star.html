@@ -75,7 +75,7 @@
 
 
 <div class="app-pager d-flex align-items-center">
-   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count }}</div>
+   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count }}</div>
    <nav aria-label="Page navigation example">
       <ul class="pagination">
 
@@ -127,7 +127,7 @@
     <div>
 
 
-                <a href="{%url 'mail_starred' email.rec_obj.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'mail_starred' email.rec_obj.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16{%if email.rec_obj.mail_starred%} text-warning fa-star {% else %} fa-star-o {%endif%} "></i></a>
 
 
@@ -219,7 +219,7 @@
     <div>
 
 
-                <a href="{%url 'sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="Add stars">
+                <a href="{%url 'sender_starred' email.pk%}?email_type={{email_type}}"class="add-star mr-3"title="{% trans 'Add star' %}">
                 <i class="fa font-size-16 {%if email.sender_starred%} text-warning fa-star{% else %}fa-star-o {%endif%}"></i></a>
 
 

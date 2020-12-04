@@ -44,7 +44,7 @@
 
         id="card_content_label">
 
-               {{ object.get_label_display }}
+               {% trans object.get_label_display %}
 
 
 
@@ -65,14 +65,14 @@
              <a href="{% url 'sender_delete' object.pk %}?email_type={{email_type}}"
                class="btn btn-outline-success ml-2 "
                data-toggle="tooltip"
-               title="Recover Email">
+               title="{% trans 'Recover Email' %}">
                 <i class="ti-reload"></i>
             </a>
 
             <a href="{%url 'mail_delete' object.pk%}?email_type={{email_type}}"
                class="btn btn-outline-danger ml-2 "
                data-toggle="tooltip"
-               title="Empty Trash">
+               title="{% trans 'Empty Trash' %}">
                 <i class="ti-trash"></i>
             </a>
 
@@ -83,13 +83,13 @@
             <a href="#"
                class="btn btn-outline-primary reply_redirect "
                data-toggle="tooltip"
-               title="Reply">
+               title="{% trans 'Reply' %}">
                 <i class="ti-back-right"></i>
             </a>
             <a href="{% url 'sender_delete' object.pk %}?email_type={{email_type}}"
                class="btn btn-outline-danger ml-2 "
                data-toggle="tooltip"
-               title="Dispose">
+               title="{% trans 'Dispose' %}">
                 <i class="ti-trash"></i>
             </a>
             {%endif%}
