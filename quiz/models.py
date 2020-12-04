@@ -322,7 +322,11 @@ class MCQuestion(Question):
             return False
 
     def get_num_correct_options(self):
-        return Answer.objects.filter(question=self, correct=True).count()
+        count = Answer.objects.filter(question=self, correct=True).count()
+        if count == 0:
+            return 1
+        else:
+            return count
 
     class Meta:
         verbose_name = _("Multiple Choice Question")
