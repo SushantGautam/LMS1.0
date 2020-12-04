@@ -126,17 +126,18 @@
     <div>
         {% if has_previous %}
             <div>
+                <br>
                 <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
-                    <button class="btn btn-secondary"><i class="fa fa-arrow-circle-left"></i></button>
+                    <button class="btn btn-lg btn-secondary"><i class="fa fa-arrow-circle-left"></i> Previous</button>
                 </a>
             </div>
         {% endif %}
         {% if has_next %}
             <div style="float:right">
                 <a href="{{ request.path }}?q={{ question_number|add:1 }}">
-                    <button class="btn btn-secondary"><i class="fa fa-arrow-circle-right"></i></button>
+                    <button class="btn btn-lg btn-secondary"><i class="fa fa-arrow-circle-right"></i> Next</button>
                 </a>
-            </div>
+            </div><br><br>
         {% endif %}
     </div>
     {% if question %}
