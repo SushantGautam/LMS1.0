@@ -164,7 +164,7 @@
                 {% if has_previous %}
                 <div class=" button-prev-quiz text-center ">
                     <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
-                        <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Previous" class="fa fa-arrow-circle-left" style="color: #eea236;;"    ></i></button>
+                        <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Previous" class="fa fa-arrow-circle-left" style="color: #eea236;font-size:25px;"    ></i></button>
                     </a>
                 </div>
             {% endif %}
@@ -223,10 +223,14 @@
             {% endfor %}
 
         </ul>
-
+         {% if    question_number == progress.2  %}
         <input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
             btn-warning" >
-
+         {% else   %}
+         <input type="submit" value={% trans "Next" %} class="btn btn-large btn-block
+         btn-warning" >
+         {% endif %}
+         
 
         </form>
 
@@ -240,7 +244,7 @@
                 {% if has_next %}
                 <div class="button-next-quiz text-center" >
                     <a href="{{ request.path }}?q={{ question_number|add:1 }}">
-                        <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Next" class="fa fa-arrow-circle-right" style="color: #eea236;;"></i></button>
+                        <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Next" class="fa fa-arrow-circle-right" style="color: #eea236;font-size:25px"></i></button>
                     </a>
                 </div>
             {% endif %}
