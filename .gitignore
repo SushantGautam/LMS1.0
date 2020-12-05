@@ -74,7 +74,7 @@ coverage.xml
 
 # Translations
 *.mo
-
+*.po
 # Django stuff:
 
 # Flask stuff:

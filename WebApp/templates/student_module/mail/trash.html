@@ -78,7 +78,7 @@
 
 
 <div class="app-pager d-flex align-items-center">
-   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count }}</div>
+   <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count }}</div>
    <nav aria-label="Page navigation example">
       <ul class="pagination">
 
@@ -237,11 +237,13 @@
     <div class="flex-grow-1 min-width-0">
        <div class="mb-1 d-flex justify-content-between align-items-center">
           <div class="text-truncate app-list-title">
-                To:
+                {% trans 'To' %}:
               {% for u in user_list %}
               {% if u.pk in email.get_receiver_list %}
              {{u.username}}
-             &lt{{u.email}}&gt.
+              {% if u.email  %}
+             &lt{{u.email}}&gt
+              {% endif %}.
               {% endif%}
               {% endfor%}
          </div>

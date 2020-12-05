@@ -12,21 +12,21 @@
         <a href="#" data-toggle="tooltip" title=""
            id="draft_email_save"
            class="btn btn-outline-primary mr-3"
-           data-original-title="Keep">
+           data-original-title="{% trans 'Keep' %}">
             <i class="ti-save"></i>
         </a>
 
         <a href="{%url 'student_sender_delete' object.pk%}?email_type={{email_type}}"
            class="btn btn-outline-danger ml-2"
            data-toggle="tooltip"
-           title="Dispose">
+           title="{% trans 'Dispose' %}">
             <i class="ti-trash"></i>
         </a>
 
     </div>
  <div class="dropdown ml-3">
         <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"
-           data-toggle="dropdown" title="Recipients ">
+           data-toggle="dropdown" title="{% trans 'Recipients' %} ">
             <i class="fa fa-ellipsis-h"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" >
@@ -103,7 +103,7 @@
                 <select name="label" class="form-control select2-example">
                     {%for label in label_list%}
                             <option value="{{label.0}}" {% if label.0 == object.label %} selected {% endif %} >
-                                {{label.1}}</option>
+                                {% trans label.1%}</option>
                     {%endfor%}
                 </select>
             </div>

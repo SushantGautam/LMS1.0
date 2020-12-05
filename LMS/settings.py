@@ -2,6 +2,7 @@ import os
 
 from django.contrib.messages import constants as messages
 
+
 # # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # import socket
 # import subprocess
@@ -182,6 +183,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
@@ -276,3 +278,5 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
+
+# LOCALE_PATHS = [os.path.join(BASE_DIR, "locale"),]

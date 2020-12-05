@@ -234,13 +234,13 @@
                    <a href="#" data-toggle="tooltip" title=""
                        id="draft_email_create"
                       class="btn btn-outline-primary mr-2"
-                      data-original-title="Keep">
+                      data-original-title="{% trans 'Keep' %}">
                    <i class="ti-save"></i>
                    </a>
                    <a href="#" data-toggle="tooltip" title=""
                       id="reset_compose_form"
                       class="btn btn-outline-danger mr-2"
-                      data-original-title="Delete">
+                      data-original-title="{% trans 'Delete' %}">
                    <i class="ti-trash"></i>
                    </a>
 
@@ -327,7 +327,7 @@
                 <div class="form-group">
                    <select name="label" class="form-control select2-example">
                       {%for label in label_list%}
-                      <option value="{{label.0}}">{{label.1}}
+                      <option value="{{label.0}}">{% trans label.1 %}
 
                       </option>
                       {%endfor%}
