@@ -1,21 +1,8 @@
 import os
-
 from django.contrib.messages import constants as messages
-
-
-# # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# import socket
-# import subprocess
-# import django_heroku
-# import sentry_sdk
-
-# from sentry_sdk.integrations.celery import CeleryIntegration
-# from sentry_sdk.integrations.django import DjangoIntegration
+from django.utils.translation import ugettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
@@ -24,11 +11,9 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = False
-
 ALLOWED_HOSTS = ['127.0.0.1', 'id.ublcloud.me', 'kr.ublcloud.me', 'vn.ublcloud.me']
 
 # Application definition
-
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.admin',
@@ -145,20 +130,6 @@ DATABASES = {
 #     }
 # }
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "ROUTING": "LMS.routing.channel_routing",
-
-#         # Dev Config
-#         "BACKEND": "asgiref.inmemory.ChannelLayer",
-
-#         # Production Config using REDIS
-#         # "BACKEND": "asgi_redis.RedisChannelLayer",
-#         # "CONFIG": {
-#         #    "hosts": [("redis", 6379)],
-#         # },
-#     },
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -173,7 +144,20 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('ko', _('Korean')),
+    ('ne', _('Nepali')),
+    ('id', _('Indonesian')),
+    ('mn', _('Mongolian')),
+    ('vi', _('Vietnamese'))
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 TIME_ZONE = 'UTC'
 
@@ -200,8 +184,6 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# django_heroku.settings(locals())
-
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = '/'
 
@@ -222,16 +204,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-# sentry_sdk.init(
-#     dsn="https://c929f92bf1284629815c8d96805a4dba@sentry.io/1803012",
-#     integrations=[DjangoIntegration(), CeleryIntegration()],
-#     release="LMS@1.0-" + str(subprocess.check_output(["git", "describe", "--always"]).strip()),
-#     server_name=socket.gethostname(),
-#     send_default_pii=True,
-#     debug=True,
-# )
-
-
 # CACHES = {
 #     'default': {
 #         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
@@ -242,11 +214,11 @@ REST_FRAMEWORK = {
 # SERVER_NAME = 'Indonesian_Server'
 # SERVER_NAME = 'Korean_Server'
 SERVER_NAME = 'Vietnam_Server'
+# SERVER_NAME = 'Mongolia_Server'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 WHITENOISE_MAX_AGE = 43200
-
 
 # FOR PWA APP
 PWA_APP_NAME = 'LMS'
@@ -278,5 +250,3 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
-
-# LOCALE_PATHS = [os.path.join(BASE_DIR, "locale"),]
