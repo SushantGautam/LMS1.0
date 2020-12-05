@@ -1014,7 +1014,7 @@ class Sitting(models.Model):
                         q.user_answer = user_ans
                     
                     if isinstance(q, SA_Question):
-                        i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
+                        i = [int(n) for n in json.loads(self.user_answers).keys() if n].index(q.id)
                         score_list = str(self.score_list).split(',')
                         if i < len(score_list):
                             q.score_obtained = score_list[i]
