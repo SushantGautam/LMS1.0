@@ -30,6 +30,7 @@
     <!-- Fullcalendar -->
     <script src="{% static 'vendors/fullcalendar/moment.min.js' %}"></script>
     <script src="{% static 'vendors/fullcalendar/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'vendors/fullcalendar/locale-all.js' %}"></script>
     <!-- <script src="{% static 'js/examples/fullcalendar.js' %}"></script> -->
 
     <!-- Clockpicker -->
@@ -219,10 +220,11 @@
                             view_result : '{{c.Publish_Result}}',
 
                             category: '{{c.Category_Code}}',
+                            tp:'SR',
 
                             part_list: '{% for p in c.get_participant_for_calendar %}{{p.username}},{% endfor %}',
                             {% if c.get_participant_for_calendar == "All Students" %}
-                            part: 'All Students',
+                            part: '{% trans "All Students" %}',
                             {% else %}
                             event_part_list: [
                             {% for part in c.get_participant_for_calendar %}
@@ -249,7 +251,7 @@
 
 
                             url: '{% url 'questions_student_detail' pk=c.pk  %}',
-                            type: 'Survey',
+                            type: '{% trans "Survey" %}',
 
                          icon: "diamond",
                          className: 'btn btn-secondary',
@@ -269,6 +271,7 @@
                             {% endfor %}
 
                         chapter:'{{i.get_chapter}}',
+                        tp:'AS',
 
                         event_part_list: [
                             {% for part in i.get_participant_for_calendar %}
@@ -282,9 +285,9 @@
                             {% endfor %}
                             ],
 
-                        part:"All Students",
+                        part:"{% trans 'All Students' %}",
                         url: '{% url 'student_assignmentinfo_detail' course=i.Course_Code.pk chapter=i.Chapter_Code.pk pk=i.pk  %}',
-                        type: 'Assignment',
+                        type: '{% trans "Assignment" %}',
                         icon: "calendar",
                         className: 'btn btn-dark',
 
@@ -298,11 +301,13 @@
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
+                        tp: '{{event.event_type}}',
                         start: '{{ event.date_start.isoformat}}',
                        // end: '{{ event.date_end.isoformat }}',
                         end: '{{ event.get_end_date.isoformat }}',
                       //  allDay: false,
                         part: '{{ event.get_participation_type_display }}',
+                        pt: '{{event.participation_type}}',
                         event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
                         event_part_list: [
                             {% for part in event.get_participants %}
@@ -385,6 +390,8 @@
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay,listMonth'
                 },
+                 {% get_current_language as LANGUAGE_CODE %}
+                locale: '{{ LANGUAGE_CODE }}',
                 timezone:"local",
                 nextDayThreshold: '00:00',
                 editable: false,
@@ -449,43 +456,46 @@
                     var modal = $('#viewEventModal');
 
 
-                        if (event.type == "Program")
+                         if (event.tp == "PR")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-secondary btn-dark btn-primary');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-primary btn-secondary btn-dark');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
-                          if (event.type == "Holiday")
+                          if (event.tp == "HO")
                             {
-                            modal.find('.event-type').removeClass('btn btn-success btn-info btn-secondary btn-dark btn-primary');
+                            modal.find('.event-type').removeClass('btn btn-success btn-info btn-primary btn-secondary btn-dark');
                             modal.find('.event-type').addClass('btn btn-danger');
 
                             }
-                          if (event.type == "Meeting")
+                          if (event.tp == "ME")
                             {
-                            modal.find('.event-type').removeClass("btn btn-danger btn-info btn-secondary btn-dark btn-primary");
+                            modal.find('.event-type').removeClass("btn btn-danger btn-info btn-primary btn-secondary btn-dark");
                             modal.find('.event-type').addClass("btn btn-success");
 
                             }
-                           if (event.type == "Examination")
+                          if (event.tp == "EX")
                             {
                             modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-secondary btn-dark");
                             modal.find('.event-type').addClass("btn btn-primary");
 
                             }
-                            if (event.type == "Assignment")
+
+
+                          if (event.tp == "AS")
                             {
                             modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-secondary');
                             modal.find('.event-type').addClass('btn btn-dark');
+                            modal.find('.srv-cat').html("");
 
                             }
-                            if (event.type == "Survey")
+                          if (event.tp == "SR")
                             {
                             modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-dark');
                             modal.find('.event-type').addClass('btn btn-secondary');
                             // modal.find('.survey-category').text("Category:" + event.category);
-                            modal.find('.srv-cat').html(`<span style='margin-left:18px;font-size:14px;'>Category: &nbsp;</span><span class='survey-category btn btn-sm btn-dark' style='font-weight:normal; <fon></fon>t-size:14px; margin-left:15px;'> ${event.category}</span> <br><br>` );
+                            modal.find('.srv-cat').html(`<span style='margin-left:18px;font-size:14px;'>{% trans 'Category' %}: &nbsp;</span><span class='survey-category btn btn-sm btn-dark' style='font-weight:normal; <fon></fon>t-size:14px; margin-left:15px;'> ${event.category}</span>` );
 
                             }
 
@@ -537,9 +547,9 @@
 
 
                     if (event.allDay){
-                        modal.find('.type_event').html("<a class='btn btn-sm btn-light'>All Day Event</a>");
+                        modal.find('.type_event').html("<a class='btn btn-sm btn-light'>{% trans 'All Day Event' %}</a>");
                         if (start_date == end_date){
-                             modal.find('.strt_at').html("Date: (MM/DD/YYYY)");
+                             modal.find('.strt_at').html("{% trans 'Date' %}: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date);
                              modal.find('.end_at').empty();
                              modal.find('.en_at').empty();
@@ -548,33 +558,33 @@
                         else{
 
 
-                            modal.find('.strt_at').html("Start At: (MM/DD/YYYY)")
-                            modal.find('.en_at').html("End At: (MM/DD/YYYY)")
+                            modal.find('.strt_at').html("{% trans 'Start At' %}: (MM/DD/YYYY)")
+                            modal.find('.en_at').html("{% trans 'End At' %}: (MM/DD/YYYY)")
                             modal.find('.start_at').html(start_date);
                             modal.find('.end_at').html(end_date);
                         }
 
                     }else{
                         modal.find('.type_event').empty();
-                        modal.find('.en_at').html("Time: (24Hrs.)");
+                        modal.find('.en_at').html("{% trans 'Time' %}: (24Hrs.)");
                         modal.find('.end_at').html(stime + "&nbsp; to &nbsp;" + etime );
                         if(start_date == end_date){
-                             modal.find('.strt_at').html("Date: (MM/DD/YYYY)")
+                             modal.find('.strt_at').html("{% trans 'Date' %}: (MM/DD/YYYY)")
                              modal.find('.start_at').html(start_date);
 
                         }
                         else{
-                             modal.find('.strt_at').html("From: (MM/DD/YYYY)");
+                             modal.find('.strt_at').html("{% trans 'From' %}: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date +" &nbsp; to &nbsp; "+ end_date);
                         }
                     }
 
 
-                    if (event.part == 'Choose User')
+                    if (event.pt == 'CH')
                     {
 
                         console.log(event.event_part_list);
-                         modal.find('.participant').html("Participants:&nbsp;"+event.event_part_list.length);
+                         modal.find('.participant').html("{% trans 'Participants' %}:&nbsp;"+event.event_part_list.length);
                          $('.part_list').empty();
                         for (i = 0; i < event.event_part_list.length; i++){
                              $('.part_list').append(` <a href='#' class='list-group-item d-flex align-items-center'>
@@ -604,26 +614,26 @@
                     {
                   // modal.find('.participant').append(event.part);
                      console.log(event.part);
-                     modal.find('.participant').html("Participants:&nbsp;"+ event.part);
+                     modal.find('.participant').html("{% trans 'Participants' %}:&nbsp;"+ event.part);
                      modal.find('.part_custom').hide();
                      }
                     }
 
 
-                    if ( event.type == "Assignment"){
+                    if ( event.tp == "AS"){
                             modal.find('.dsp').html(" ");
                             modal.find('.desc').html(" ");
                                 if (event.can_submit == "True"){
-                                modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Participate </a>');
+                                modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> {% trans 'Participate' %} </a>');
                                 }else{
-                                modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Details </a>');
+                                modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> {% trans 'Details' %} </a>');
                                 }
 
                             $(".dtlbtn").attr("href", event.url)
-                            $('.version_info').html(`<h5 style="text-align:left; font-size:14px">Course: ${event.course}  </h5>   `);
-                            $('.view_result').html(`<h5 style="text-align:left; font-size:14px">Chapter: ${event.chapter} </h5>   `);
+                            $('.version_info').html(`<h5 style="text-align:left; font-size:14px">{% trans 'Course' %}: ${event.course}  </h5>   `);
+                            $('.view_result').html(`<h5 style="text-align:left; font-size:14px">{% trans 'Chapter' %}: ${event.chapter} </h5>   `);
 
-                            modal.find('.participant').html(`Participants:&nbsp;  ${event.event_part_list.length}`);
+                            modal.find('.participant').html(`{% trans 'Participants' %}:&nbsp;  ${event.event_part_list.length}`);
 
                                     $('.part_list').empty();
                                     for (i = 0; i < event.event_part_list.length; i++){
@@ -645,14 +655,14 @@
 
                     }
 
-                    else if ( event.type == "Survey"){
+                    else if ( event.tp == "SR"){
 
 
-                        $('.version_info').html(`<h5 style="text-align:left; font-size:14px">Version: ${event.version} </h5>   `);
-                        $('.view_result').html(`<h5 style="text-align:left; font-size:14px">View Result: ${event.view_result} </h5>   `);
+                        $('.version_info').html(`<h5 style="text-align:left; font-size:14px">{% trans 'Version' %}: ${event.version} </h5>   `);
+                        $('.view_result').html(`<h5 style="text-align:left; font-size:14px">{% trans 'View Result' %}: ${event.view_result} </h5>   `);
                             if ( event.category == "Session" || event.category == "Course")
                             {
-                                modal.find('.participant').html(`Participants:&nbsp;  ${event.event_part_list.length}`);
+                                modal.find('.participant').html(`{% trans 'Participants' %}:&nbsp;  ${event.event_part_list.length}`);
 
                                     $('.part_list').empty();
                                     for (i = 0; i < event.event_part_list.length; i++){
@@ -681,9 +691,9 @@
                         modal.find('.desc').html(" ");
 
                         if (event.can_submit == "True"){
-                            modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Participate </a>');
+                            modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> {% trans 'Participate' %} </a>');
                         }else{
-                             modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> Details </a>');
+                             modal.find('.dsp').html( '<a href= "#" class="btn btn-primary dtlbtn"> {% trans 'Details' %} </a>');
                         }
 
 

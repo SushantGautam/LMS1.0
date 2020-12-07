@@ -29,6 +29,7 @@
     <!-- Fullcalendar -->
     <script src="{% static 'vendors/fullcalendar/moment.min.js' %}"></script>
     <script src="{% static 'vendors/fullcalendar/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'vendors/fullcalendar/locale-all.js' %}"></script>
     <!-- <script src="{% static 'js/examples/fullcalendar.js' %}"></script> -->
 
     <!-- Clockpicker -->
@@ -52,15 +53,15 @@
 
 
                     var modal = $('#createEventModal');
-                    modal.find('.modal-title').text("Update Event");
+                    modal.find('.modal-title').text("{% trans 'Update Event' %}");
                     modal.find('#id_title').val(event.title);
-                   if (event.type === "Holiday")
+                   if (event.tp === "HO")
                    {
                         modal.find("#customRadioInline3").prop("checked", true);
-                   }else if (event.type === "Examination")
+                   }else if (event.tp === "EX")
                     {
                         modal.find("#customRadioInline4").prop( "checked", true );
-                   }else if (event.type === "Meeting")
+                   }else if (event.tp === "ME")
                     {
                         modal.find("#customRadioInline2").prop( "checked", true );
                    }else{
@@ -150,15 +151,15 @@
 
 
 
-                    if (event.part === "All User")
+                    if (event.pt === "AL")
                      {
                      modal.find("#id_participant_type_1").prop( "checked", true );
                      $(".participant_dynamic").hide();
-                    }else if (event.part === "All Student")
+                    }else if (event.pt === "AS")
                     {
                     $(".participant_dynamic").hide();
                     modal.find("#id_participant_type_2").prop( "checked", true );
-                    }else if (event.part === "All Teacher")
+                    }else if (event.pt === "AT")
                     {
                      $(".participant_dynamic").hide();
                      modal.find("#id_participant_type_3").prop( "checked", true );
@@ -187,7 +188,7 @@
 
                     modal.find("#id_description").html(" ");
                     modal.find("#id_description").html(event.description);
-                    modal.find("#btn-save").text("Update");
+                    modal.find("#btn-save").text("{% trans 'Update' %}");
                   //  modal.find(".close").click(function() {
                   //  location.reload();
 
@@ -214,6 +215,7 @@
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
+                        tp: '{{event.event_type}}',
                         r_a: '{{event.register_agent.pk}}',
                         {% if not event.register_agent.pk == request.user.pk %}
                         editable: false,
@@ -225,6 +227,7 @@
                         end: '{{ event.get_end_date.isoformat }}',
                       //  allDay: false,
                         part: '{{ event.get_participation_type_display }}',
+                        pt: '{{event.participation_type}}',
                         event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
                         event_part_list: [
                             {% for part in event.get_participants %}
@@ -281,6 +284,7 @@
                 // store data so the calendar knows to render an event upon drop
                 $(this).data('event', {
                     title: $.trim($(this).text()), // use the element's text as the event title
+                    d_type: $(this).attr("data_val"),
                     stick: true, // maintain when user navigates (see docs on the renderEvent method),
                     color: $(this).find('i').css("color"),
                     icon: $(this).find('i').data('icon')
@@ -301,6 +305,8 @@
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay,listMonth'
                 },
+                {% get_current_language as LANGUAGE_CODE %}
+                locale: '{{ LANGUAGE_CODE }}',
                 timezone:"local",
                 nextDayThreshold: '00:00',
                 editable: true,
@@ -345,7 +351,7 @@
 
 
                     $('#createEventModal').modal();
-                    $(".modal-title").text("Create Event");
+                    $(".modal-title").text("{% trans 'Create Event' %}");
                     $("#id_title").val("");
                     $("#customRadioInline1").prop("checked", true);
 
@@ -374,7 +380,7 @@
                  $(".participant_dynamic").hide();
                  $(".datetime_dynamic").hide();
                  $("#id_description").html(" ");
-                 $("#createEventModal #btn-save").text("Create");
+                 $("#createEventModal #btn-save").text("{% trans 'Create' %}");
 
 
 
@@ -387,26 +393,26 @@
                     var modal = $('#viewEventModal');
 
 
-                        if (event.type == "Program")
+                        if (event.tp == "PR")
                             {
                             modal.find('.event-type').removeClass('btn btn-danger btn-success');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
-                          if (event.type == "Holiday")
+                          if (event.tp == "HO")
                             {
                             modal.find('.event-type').removeClass('btn btn-success btn-info');
                             modal.find('.event-type').addClass('btn btn-danger');
 
                             }
-                          if (event.type == "Meeting")
+                          if (event.tp == "ME")
                             {
                             modal.find('.event-type').removeClass("btn btn-danger btn-info");
                             modal.find('.event-type').addClass("btn btn-success");
 
                             }
-                          if (event.type == "Examination")
+                          if (event.tp == "EX")
                             {
                             modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
                             modal.find('.event-type').addClass("btn btn-primary");
@@ -462,9 +468,9 @@
 
 
                     if (event.allDay){
-                        modal.find('.type_event').html("<a class='btn btn-sm btn-light'>All Day Event</a>");
+                        modal.find('.type_event').html("<a class='btn btn-sm btn-light'>{% trans 'All Day Event' %}</a>");
                         if (start_date == end_date){
-                             modal.find('.strt_at').html("Date: (MM/DD/YYYY)");
+                             modal.find('.strt_at').html("{% trans 'Date' %}: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date);
                              modal.find('.end_at').empty();
                              modal.find('.en_at').empty();
@@ -473,32 +479,32 @@
                         else{
 
 
-                            modal.find('.strt_at').html("Start At: (MM/DD/YYYY)")
-                            modal.find('.en_at').html("End At: (MM/DD/YYYY)")
+                            modal.find('.strt_at').html("{% trans 'Start At' %}: (MM/DD/YYYY)")
+                            modal.find('.en_at').html("{% trans 'End At' %}: (MM/DD/YYYY)")
                             modal.find('.start_at').html(start_date);
                             modal.find('.end_at').html(end_date);
                         }
 
                     }else{
                         modal.find('.type_event').empty();
-                        modal.find('.en_at').html("Time: (24Hrs.)");
+                        modal.find('.en_at').html("{% trans 'Time' %}: (24Hrs.)");
                         modal.find('.end_at').html(stime + "&nbsp; to &nbsp;" + etime );
                         if(start_date == end_date){
-                             modal.find('.strt_at').html("Date: (MM/DD/YYYY)")
+                             modal.find('.strt_at').html("{% trans 'Date' %}: (MM/DD/YYYY)")
                              modal.find('.start_at').html(start_date);
 
                         }
                         else{
-                             modal.find('.strt_at').html("From: (MM/DD/YYYY)");
+                             modal.find('.strt_at').html("{% trans 'From' %}: (MM/DD/YYYY)");
                              modal.find('.start_at').html(start_date +" &nbsp; to &nbsp; "+ end_date);
                         }
                     }
 
 
-                    if (event.part == 'Choose User' || event.part == 'All Student')
+                    if (event.pt == 'CH' || event.pt == 'AS')
                     {
                         console.log(event.event_part_list);
-                         modal.find('.participant').html("Participants:&nbsp;"+event.event_part_list.length);
+                         modal.find('.participant').html("{% trans 'Participants' %}:&nbsp;"+event.event_part_list.length);
                          $('.part_list').empty();
                         for (i = 0; i < event.event_part_list.length; i++){
                              $('.part_list').append(` <a href='#' class='list-group-item d-flex align-items-center'>
@@ -595,20 +601,20 @@
             function drag_create(event){
                 $('#createEventModal').modal();
 
-                       $(".modal-title").text("Create Event");
+                       $(".modal-title").text("{% trans 'Create Event' %}");
                        $("#id_title").val("");
 
-                       if (event.title === "Holiday"){
+                       if (event.d_type === "HO"){
                             $("#customRadioInline3").prop("checked", true);
 
                          }
-                         if (event.title === "Program"){
+                         if (event.d_type === "PR"){
                             $("#customRadioInline1").prop("checked", true);
                          }
-                         if (event.title === "Meeting"){
+                         if (event.d_type === "ME"){
                             $("#customRadioInline2").prop("checked", true);
                          }
-                         if (event.title === "Examination"){
+                         if (event.d_type === "EX"){
                             $("#customRadioInline4").prop("checked", true);
                          }
 
@@ -633,7 +639,7 @@
                          $(".datetime_dynamic").hide();
 
                          $("#id_description").html(" ");
-                         $("#createEventModal #btn-save").text("Create");
+                         $("#createEventModal #btn-save").text("{% trans 'Create' %}");
 
                           $(".close").click(function (){
                             location.reload();
@@ -911,7 +917,7 @@
 
             //console.log("event create button click");
             $("#calendar_event_form").trigger("reset");
-            $('#createEventModal .modal-title').text("Create Event");
+            $('#createEventModal .modal-title').text("{% trans 'Create Event' %}");
             $('#createEventModal #id_is_all_day').prop("checked", true);
 
                     if ($("#createEventModal #id_is_all_day").is(':checked')) {
@@ -939,7 +945,7 @@
             $(".participant_dynamic").hide();
             $("#createEventModal #id_title").val("");
             $("#createEventModal #id_description").val("");
-            $("#createEventModal #btn-save").text("Create");
+            $("#createEventModal #btn-save").text("{% trans 'Create' %}");
             $("#createEventModal").trigger("change");
 
 

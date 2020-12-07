@@ -26,18 +26,18 @@
                     <p class="text-muted">{% trans "Drag and drop your event" %}</p>
                     {%endif%}
                     <div class="list-group mb-3" id="external-events">
-                        <div class="list-group-item px-0 fc-event">
+                        <div class="list-group-item px-0 fc-event" data_val="HO">
                             <i class="fa fa-circle text-danger" data-icon="car"></i> {% trans "Holiday" %}
                         </div>
-                        <div class="list-group-item px-0 fc-event">
+                        <div class="list-group-item px-0 fc-event" data_val="EX">
                             <i class="fa fa-circle text-primary" data-icon="building"></i> {% trans "Examination" %}
                         </div>
                         {% if not "students" in request.get_full_path %}
-                        <div class="list-group-item px-0 fc-event">
+                        <div class="list-group-item px-0 fc-event" data_val="ME">
                             <i class="fa fa-circle text-success" data-icon="users"></i> {% trans "Meeting" %}
                         </div>
                         {% endif %}
-                        <div class="list-group-item px-0 fc-event">
+                        <div class="list-group-item px-0 fc-event" data_val="PR">
                             <i class="fa fa-circle text-info" data-icon="building"></i> {% trans "Program" %}
                         </div>
                         {% if "students" in request.get_full_path %}
@@ -174,7 +174,7 @@
                                     <div class="form-group row participant_dynamic">
                                         <div class="dropdown ml-3 ">
                                                 <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"
-                                                   data-toggle="dropdown" title="Participants ">
+                                                   data-toggle="dropdown" title="{% trans 'Participants' %} ">
                                                 <i class="fa fa-ellipsis-h"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right  ">
@@ -302,47 +302,34 @@
 
                     <span class="event-title ">{% trans "Modal Title" %}</span>
                 </h5>
-                <br><br>
-                <h5 class="srv-cat"></h5> <br><br>
 
-
-
-                 {% if not 'students' in request.get_full_path %}
-
-
-                <form method="POST" class="delete_event  d-inline "  action=""
-                      onsubmit="return confirm('Are you sure you want to delete?');">
+                 {% if 'students' in request.get_full_path %}
+                    <br><br>
+                 <h5 class="srv-cat"></h5>
+                {% else %}
+                <form method="POST" class="delete_event  d-inline"  action=""
+                      onsubmit="return confirm('{% trans 'Are you sure you want to delete?' %}');">
                     {% csrf_token %}
-
                     <button type="submit" class="btn btn-danger btn-sm  pull-right ml-2 mr-5 del_hide" data-toggle="tooltip"
-                   title="Delete">
-                        <i class="fa fa-trash ml-1"  aria-hidden="true" ></i> &nbsp;
-                    </button>
-                </form>
+                   title="{% trans 'Delete' %}"><i class="fa fa-trash ml-1"  aria-hidden="true"></i> &nbsp;</button></form>
+
+
+
 
                 <button class="btn btn-sm btn-primary text-white pull-right del_hide"  data-toggle="tooltip"
-                   title="Update" name="update"
-                        id="update_event_btn"
-                ><i class="fa fa-edit ml-1"  aria-hidden="true"></i> &nbsp;
-                </button>
+                   title="{% trans 'Update' %}" name="update"
+                        id="update_event_btn"><i class="fa fa-edit ml-1"  aria-hidden="true"></i> &nbsp;</button>
+                 {%endif%}
+                  </div>
 
-
-            {%endif%}
-
-
-
-
-
-
-
-            </div>
+            <br>
 
 
             <div class="modal-body" style="text-align:center">
 
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-8" style="float:left;text-align:left;">
+                        <div class="col-md-10" style="float:left;text-align:left;">
                             <h6> {% trans "Event Type" %}:</h6>
                             <div>
                                 <span class="btn btn-sm   event-type"> </span>
@@ -386,7 +373,7 @@
 
                         <div class="col-md-6 part_custom" style="text-align:left;">
                             <a class='btn btn-success btn-sm detail_btn' data-toggle="modal"
-                        data-target="#custom_Participant_Modal">{% trans "Details" %}</a>
+                        data-target="#custom_Participant_Modal">{% trans 'Details' %}</a>
                         </div>
 
                     </div>
