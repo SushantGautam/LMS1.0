@@ -57,8 +57,8 @@
                             <div class="form-group">
                                 <label for="id_mustreadtime" class="font-weight-bold">Running Time (in minutes)</label>
                                 <input type="number" class="form-control" name="mustreadtime" id="id_mustreadtime"
-                                    placeholder="Enter Running Time for Chapter" value="{{object.mustreadtime}}"
-                                    required>
+                                    placeholder="Enter Running Time for Chapter" value="{{ object.mustreadtime }}"
+                                    min="0" max="5000" required>
                             </div>
                         </div>
                         <div class="col-lg-5 text-center">
