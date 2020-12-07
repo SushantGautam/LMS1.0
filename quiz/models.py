@@ -1048,7 +1048,7 @@ class Sitting(models.Model):
                                     score -= float(per_score * self.quiz.negative_percentage) / 100.0
                                 else:
                                     score += 0
-                        print("guess: ",guess, score, type(guess))
+                        # print("guess: ",guess, score, type(guess))
                         num_correct_guess = sum([q.check_if_correct(g) for g in guess])
                         if not (num_correct_options == num_correct_guess):
                             is_correct = False
