@@ -2635,13 +2635,24 @@ def QuizMarkingCSV(request, quiz_pk):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
             if question_name_value:
-                ans_value = Answer.objects.get(id=int(question_name_value)).content
+                # ans_value = Answer.objects.get(id=int(question_name_value)).content
+                if (isinstance(question_name_value, list)):
+                    ans_value_list = [Answer.objects.get(id=int(ans)).content for ans in question_name_value] 
+                else: #### for old data, there wont be list
+                    ans_value_list = [Answer.objects.get(id=int(question_name_value)).content]
             else:
-                ans_value = ''
-            new_row[question_name] = ans_value
-            if mcquestion.check_if_correct(question_name_value):
+                # ans_value = ''
+                ans_value_list = []
+            mcq_score, mcq_is_correct = quiz_sitting.get_mcq_score(mcquestion)
+            
+            # new_row[question_name] = ans_value
+            new_row[question_name] = ans_value_list
+
+            # if mcquestion.check_if_correct(question_name_value):
+            if mcq_is_correct:
                 new_row[answer_name + " M" + str(i + 1)] = "✔"
-                totalmcq_score += mcquestion.score
+                # totalmcq_score += mcquestion.score
+                totalmcq_score += mcq_score
             else:
                 new_row[answer_name + " M" + str(i + 1)] = "❌"
         for i, tfquestion in enumerate(tfquestions):
