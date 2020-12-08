@@ -60,7 +60,7 @@
                         <i class="fa fa-{{ category.Category_Icon }} mr-2
                     {% if category.Category_Name in request.get_full_path %} text-light {%else%} text-primary {%endif%}">
 
-                        </i>{{ category.Category_Name }}
+                        </i>{% trans category.Category_Name %}
                         <span class="small ml-auto">  </span>
 
                          {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
@@ -145,7 +145,7 @@
 
 
                 <div class="app-pager d-flex align-items-center">
-                    <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count}}
+                    <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count}}
                     </div>
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
@@ -221,7 +221,7 @@
                         </div>
                         {%endfor%}
                          {% else %}
-                        <p style="margin:35px;">No Any Surveys!</p>
+                        <p style="margin:35px;">{% trans 'No Any Surveys' %}!</p>
                         {%endif%}
 
 

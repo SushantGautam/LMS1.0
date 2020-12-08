@@ -111,9 +111,6 @@ class SurveyInfoListView(AdminAuthMxnCls, ListView):
         if date_filter == "expire":
             qs = qs.filter(End_Date__lte=timezone.now())
 
-
-
-
         query = self.request.GET.get('query')
         if query:
             query = query.strip()
@@ -181,6 +178,7 @@ class SurveyInfoCreateView(CreateView):
 class SurveyInfo_ajax(AjaxableResponseMixin, CreateView):
     model = SurveyInfo
     form_class = SurveyInfoForm
+
     # template_name = 'ajax/surveyInfoAddSurvey_ajax2.html'
 
     def get_form_kwargs(self):
@@ -549,6 +547,7 @@ class SurveyInfoRetake_ajax(AjaxableResponseMixin, CreateView):
 
 class SurveyInfoDetailView(AdminAuthMxnCls, SurveyInfoAuthMxnCls, DetailView):
     model = SurveyInfo
+
     # template_name = 'survey/surveyinfo_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -563,10 +562,14 @@ class SurveyInfoDetailView(AdminAuthMxnCls, SurveyInfoAuthMxnCls, DetailView):
             context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.Retaken_From).order_by(
                 'Version_No')
 
+
+
+
         else:
             context['history'] = SurveyInfo.objects.filter(id=self.object.id)
             context['history'] |= SurveyInfo.objects.filter(Retaken_From=self.object.id).order_by(
                 'Version_No')
+        print("History", context['history'])
         return context
 
 
@@ -693,4 +696,3 @@ def deleteSurvey(request):
     if "teachers" in request.path:
         return redirect(reverse('teacher_surveyinfo_list') + s_u)
     return redirect(reverse('surveyinfo_list') + s_u)
-

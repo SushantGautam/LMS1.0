@@ -19,7 +19,9 @@
     <form>
     <div class="custom-control custom-switch">
         <input type="checkbox" class="custom-control-input" id="chk" checked >
-        <label class="custom-control-label" for="chk">Live Survey</label>
+        <label class="custom-control-label" for="chk">{% trans 'Live Survey' %}</label>
+
+
     </div>
 
     </form>
@@ -52,23 +54,22 @@
                         <li>
                             <div class="form-group">
                                 <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                       for="first-name">Category:
+                                       for="first-name">{% trans 'Category' %}:
                                     <span class="category-label">{{ object.Category_Code }}</span>
                                 </label>
                             </div>
                         </li>
 
                         <li class="surveyViewDates">
-                            <i class="fa fa-calendar"></i><label>Start date: <span
+                            <i class="fa fa-calendar"></i><label>{% trans 'Start date' %}: <span
                                 class="">{{ object.Start_Date|date:'M d, Y H:i' }}</span></label>
                         </li>
                         <li class="surveyViewDates">
-                            <i class="fa fa-calendar"></i><label>End date: <span
+                            <i class="fa fa-calendar"></i><label>{% trans 'End date' %}: <span
                                 class="">{{ object.End_Date|date:'M d, Y H:i' }}</span></label>
                         </li>
                         <li class="surveyViewDates">
-                            <i class="fa fa-user" style="padding-right: 10px;"></i><label>Number of
-                            Participants: &nbsp;</label><label id="Participants"> {{ submit }}</label>
+                            <i class="fa fa-user" style="padding-right: 10px;"></i><label>{% trans 'Number of Participants' %}: &nbsp;</label><label id="Participants"> {{ submit }}</label>
                         </li>
                     </ul>
                 </div>
@@ -78,24 +79,24 @@
                  <ul class="card_labels" style="text-align:center">
                         <li>
                             <div class="form-group">
-                              <strong>  <h3 class=" col-md-12 col-sm-12 col-xs-12 text-info" >Status</h3> </strong>
+                              <strong>  <h3 class=" col-md-12 col-sm-12 col-xs-12 text-info" >{% trans 'Status' %}</h3> </strong>
                             </div>
                         </li>
                         <li class="surveyViewDates">
                             <h4>
                                 {% if object.get_status == "Expired" %}
-                                    <a class=" btn btn-sm btn-danger text-white">Expired</a>
+                                    <a class=" btn btn-sm btn-danger text-white">{% trans 'Expired' %}</a>
                                 {% elif object.get_status == "Active" %}
-                                    <a class=" btn btn-sm btn-success text-white">Active</a>
+                                    <a class=" btn btn-sm btn-success text-white">{% trans 'Active' %}</a>
                                 {% elif object.get_status == "Upcoming" %}
-                                    <a class="btn btn-sm btn-warning text-white">Upcoming</a>
+                                    <a class="btn btn-sm btn-warning text-white">{% trans 'Upcoming' %}</a>
                                 {% endif %}
                             </h4>
                         </li>
                         <li class="surveyViewDates">
                             <h4>
                                 {% if object.Use_Flag == False %}
-                                    <a class=" btn btn-sm btn-danger text-white">Not Published</a>
+                                    <a class=" btn btn-sm btn-danger text-white">{% trans 'Not Published' %}</a>
                                 {% endif %}
                             </h4>
                         </li>
@@ -108,7 +109,7 @@
 
                  <div class="dropdown ml-3 ">
                       <a href="#" class="btn btn-outline-light btn-floating btn-sm "
-                           data-toggle="dropdown" title="Options">
+                           data-toggle="dropdown" title="{% trans 'Options' %}">
                         <i class="ti-more-alt"></i>
                         </a>
                      <div class="dropdown-menu dropdown-menu-right  ">
@@ -128,7 +129,7 @@
                            <button type="submit" class="dropdown-item" id="update_survey_button_limited"
                                     data-toggle="modal"
                                     data-target="#survey_form_modal" style="font-size:14px;"><i class="fa fa-edit text-warning" aria-hidden="true"></i> &nbsp;
-                                  Edit Basic Info
+                                  {% trans 'Edit Basic Info' %}
                             </button>
                          <div class="dropdown-divider" ></div>
                         {% else %}
@@ -136,7 +137,7 @@
                           <button type="button" class="dropdown-item" id="update_survey_button"
                                     data-toggle="modal"
                                     data-target="#survey_form_modal">
-                                Edit
+                                {% trans 'Edit' %}
                             </button>
                          <div class="dropdown-divider" ></div>
                         {% endif %}
@@ -144,12 +145,12 @@
                      {% else %}
                         <!-- ##################### No Access  ##############################  -->
                         <button type="submit" class="dropdown-item"  disabled>
-                            No Edit Permission
+                            {% trans 'No Edit Permission' %}
                         </button>
                          <div class="dropdown-divider" ></div>
                     {% endif %}
                     <button class="dropdown-item" type="submit" id="retakeSurveyBtn" data-toggle="modal"
-                            data-target="#survey_form_modal" style="font-size:14px;"><i class="fa fa-refresh text-success" aria-hidden="true"></i> &nbsp;Retake survey</button>
+                            data-target="#survey_form_modal" style="font-size:14px;"><i class="fa fa-refresh text-success" aria-hidden="true"></i> &nbsp; {% trans 'Retake survey' %}</button>
                          <div class="dropdown-divider" ></div>
                      {% if 'teachers' in request.path and request.user.pk == object.Added_By.pk or not 'teachers' in request.path and not 'students' in request.path and not object.Category_Code.Category_Name == "System" or not 'teachers' in request.path and not 'students' in request.path and request.user.pk == object.Added_By.pk %}
                         <form method="POST" action="
@@ -162,12 +163,12 @@
                               onsubmit="return confirm('Are you sure you want to delete?');">
                             {% csrf_token %}
                             <input type="hidden" value="{{ object.pk }}" name="objectpk">
-                            <button type="submit" class="dropdown-item" style="font-size:14px;"><i class="fa fa-trash text-danger" aria-hidden="true"></i> &nbsp; Delete Survey</button></form>
+                            <button type="submit" class="dropdown-item" style="font-size:14px;"><i class="fa fa-trash text-danger" aria-hidden="true"></i> &nbsp; {% trans 'Delete Survey' %}</button></form>
                             {%endif%}
                             <div class="dropdown-divider" ></div>
                           {% if 'teachers' in request.get_full_path %}
                 {%else%}
-                <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers" ><button type="submit" class="dropdown-item"><i class="fa fa-trash text-danger" aria-hidden="true"></i> &nbsp; Delete All Answers</button></a>
+                <a onclick="askIfRemoveAll()" class="deleteallsurveyanswers" ><button type="submit" class="dropdown-item"><i class="fa fa-trash text-danger" aria-hidden="true"></i> &nbsp; {% trans 'Delete All Answers' %}</button></a>
 
                 {%endif%}
                      </div>
@@ -184,7 +185,7 @@
 
                      {% if submit > 0 %}
                         <button type="button" id="btnDownload" class="btn btn-primary btn-md">
-                            <i class="fa fa-print" aria-hidden="true"></i> &nbsp; Print Results
+                            <i class="fa fa-print" aria-hidden="true"></i> &nbsp; {% trans 'Print Results' %}
                         </button>
 
                         {% endif %}
@@ -210,10 +211,10 @@
                         <div class="card-body">
                             <input type="radio" name="mychart" class="mychart" id="column{{ forloop.counter }}"
                                            value="column" checked >
-                            <label for="column{{ forloop.counter }}">Column &nbsp;</label>
+                            <label for="column{{ forloop.counter }}">{% trans 'Column' %} &nbsp;</label>
                             <input type="radio" name="mychart" class="mychart" id="pie{{ forloop.counter }}"
                                            value="pie">
-                            <label for="pie{{ forloop.counter }}">Pie&nbsp;</label>
+                            <label for="pie{{ forloop.counter }}">{% trans 'Pie' %}&nbsp;</label>
                             <div id="chart{{ forloop.counter }}"  data-qn-title="{{ forloop.counter }}. {{ question.Question_Name }}" >
                                 <div class="columnChart"></div>
                                 <div class="pieChart" style="display: none;"></div>
@@ -338,7 +339,7 @@
                                                                    href="#collapse{{ forloop.counter }}" aria-expanded="false"
                                                                    aria-controls="collapse{{ forloop.counter }}">
                                                                     <h5 class="panel-title text-primary"  onclick="$('#chk').prop('checked',
-                                                                        false)">Click to See Answers
+                                                                        false)">{% trans 'Click to See Answers' %}
                                                                     </h5>
                                                                 </a>
                                                         <br><br>
@@ -351,9 +352,9 @@
                                                     <thead class="data_table_head" >
                                                     <tr>
                                                         <th class="sn">S.N.</th>
-                                                        <th class="fn">Full Name (Username)</th>
-                                                        <th >Answer</th>
-                                                        <th class="ds">Date Submitted</th>
+                                                        <th class="fn">{% trans 'Full Name (Username)' %}</th>
+                                                        <th >{% trans 'Answer' %}</th>
+                                                        <th class="ds">{% trans 'Date Submitted' %}</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -366,6 +367,7 @@
                                                             <td class="ans">{{ answer.Answer_Value }}</td>
                                                             <td class="">
                                                                 <span class="datecon">{{ answer.Submit_Code.Created_Date|date:"d M, Y h:i A" }}</span>
+
                                                             </td>
                                                         </tr>
 
@@ -404,8 +406,8 @@
 
                     <br><br><br>
 
-                     <div class="card" style="width: 16rem;"  >
-                         <div class="card-header text-primary" style="text-align: center">Survey Version Info</div>
+                     <div class="card" style="width: 17rem;"  >
+                         <div class="card-header text-primary" style="text-align: center">{% trans 'Survey Version Info' %}</div>
                           <div class="card-body">
                               <div class="card-scroll">
 
@@ -413,9 +415,9 @@
 
                             {% if survey.id == object.id %}
                                  <b> <a class="text-info text-center"> {{ survey.Survey_Title }}</a></b><br><br>
-                                  <a class="text-primary text-center">Version: {{ survey.Version_No }}</a><br>
-                                  <a class="fa fa-calendar text-primary text-center" > Created: {{ survey.Created_Date|date:'M d, Y H:i' }}</a><br>
-                                  <a class="fa fa-calendar text-primary text-center" > Updated: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a><br><br><br>
+                                  <a class="text-primary text-center">{% trans 'Version' %}: {{ survey.Version_No }}</a><br>
+                                  <a class="fa fa-calendar text-primary text-center" > {% trans 'Created' %}: {{ survey.Created_Date|date:'M d, Y H:i' }}</a><br>
+                                  <a class="fa fa-calendar text-primary text-center" > {% trans 'Updated' %}: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a><br><br><br>
                                   <hr class="btn-info">
 
 
@@ -423,9 +425,9 @@
 
                                <b> <a class="text-danger text-center"
                                         href="{{ survey.get_absolute_url }}">{{ survey.Survey_Title }}</a> </b> <br><br>
-                                <a class="text-warning  text-center">Version: {{ survey.Version_No }}</a> <br>
-                                <a class="fa fa-calendar text-warning text-center"> Created: {{ survey.Created_Date|date:'M d, Y H:i' }}</a> <br>
-                                <a class="fa fa-calendar text-warning text-center"> Updated: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a> <br><br><br>
+                                <a class="text-warning  text-center">{% trans 'Version' %}: {{ survey.Version_No }}</a> <br>
+                                <a class="fa fa-calendar text-warning text-center"> {% trans 'Created' %}: {{ survey.Created_Date|date:'M d, Y H:i' }}</a> <br>
+                                <a class="fa fa-calendar text-warning text-center"> {% trans 'Updated' %}: {{ survey.Updated_Date|date:'M d, Y H:i' }}</a> <br><br><br>
                                   <hr class="btn-info">
                             {% endif %}
 
@@ -446,7 +448,7 @@
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
+                <h4 class="modal-title">{% trans 'Create Survey' %}</h4>
                 <div class="form-group">
                     <label class="control-label " id="categoryTitle" for="first-name">
                         {% for category in categories %}

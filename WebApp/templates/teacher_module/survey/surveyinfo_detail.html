@@ -37,7 +37,12 @@
 
 
             var table_main = $('.SATable').DataTable({
-                colReorder: true
+                colReorder: true,
+                "language": {
+                        {% get_current_language as LANGUAGE_CODE %}
+
+                    "url": '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/{{ LANGUAGE_CODE|language_name }}.json'
+                },
 
             });
 
@@ -54,9 +59,9 @@
                     $("#dynamic")
                         .css("width", current_progress + "%")
                         .attr("aria-valuenow", current_progress)
-                        .text("Refreshing In :" + (10 - (current_progress / 10)));
+                        .text("{% trans 'Refreshing In' %} :" + (10 - (current_progress / 10)));
                 } else {
-                    $("#dynamic").text("Paused");
+                    $("#dynamic").text("{% trans 'Paused' %}");
                 }
 
                 if (current_progress >= 100) {

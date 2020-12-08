@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="row app-block">
 
 
@@ -6,7 +7,7 @@
         <div class="card">
             <div class="card-body">
                 <a href="#" class="btn btn-outline-light dropdown-toggle bg-primary" data-toggle="dropdown">
-                   {% if 'active' in request.get_full_path %}Active{%endif%}{% if 'expire' in request.get_full_path %} Expired {%endif%}
+                   {% if 'active' in request.get_full_path %} {% trans 'Active' %}{%endif%}{% if 'expire' in request.get_full_path %} {% trans 'Expired' %} {%endif%}
 
                 </a>
                 <div class="dropdown-menu dropdown-menu-left">
@@ -16,7 +17,7 @@
                         {% if 'active' in request.get_full_path %}
                                  active
                                 {%endif%} "
-                          href="{% url 'surveyinfo_list'%}?category_name={{cat}}&date_filter=active">Active</a>
+                          href="{% url 'surveyinfo_list'%}?category_name={{cat}}&date_filter=active">{% trans 'Active' %}</a>
 
                     <div class="dropdown-divider"></div>
 
@@ -24,7 +25,7 @@
                         {% if 'expire' in request.get_full_path %}
                         active
                         {%endif%} "
-                         href="{% url 'surveyinfo_list'%}?category_name={{cat}}&date_filter=expire">Expired</a>
+                         href="{% url 'surveyinfo_list'%}?category_name={{cat}}&date_filter=expire">{% trans 'Expired' %}</a>
 
 
 
@@ -36,7 +37,7 @@
 
             <div class="app-sidebar-menu">
                 <div class="card-body">
-                    <h6 class="mb-0">Category</h6>
+                    <h6 class="mb-0">{% trans 'Category' %}</h6>
 
                 </div>
 
@@ -47,7 +48,7 @@
                        id="all_survey">
                         <i class="fa fa-bar-chart mr-2
                         {% if 'all_survey' in request.get_full_path %} text-light {%else%} text-primary {%endif%}"
-                       id="categoryIcons"></i>All survey
+                       id="categoryIcons"></i>{% trans 'All survey' %}
                     </a>
                 </div>
 
@@ -60,7 +61,7 @@
                         <i class="fa fa-{{ category.Category_Icon }} mr-2
                     {% if category.Category_Name in request.get_full_path %} text-light {%else%} text-primary {%endif%}">
 
-                        </i>{{ category.Category_Name }}
+                        </i>{% trans  category.Category_Name %}
                         <span class="small ml-auto">  </span>
 
                          {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
@@ -71,7 +72,7 @@
                                 id="category_Add_Button{{ category.Category_Name }}"
                                 style="margin: 0;"
                                 data-toggle="modal"
-                                data-target="#survey_form_modal"><i class="ti-plus mr-2"></i>Add
+                                data-target="#survey_form_modal"><i class="ti-plus mr-2"></i>{% trans 'Add' %}
                         </button>
                         {%endif%}
 
@@ -90,7 +91,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" style="position:relative; left:420px">&times;</button>
 
-                <h4 class="modal-title" style="position:relative; right:288px;">Create New Survey</h4>
+                <h4 class="modal-title" style="position:relative; right:288px;">{% trans 'Create New Survey' %}</h4>
             </div>
             <div class="modal-body" id="surveyForm">
 
@@ -131,7 +132,7 @@
                             aria-describedby="button-addon1">
                         <input type="hidden" class="form-control" name = "date_filter" value="{{filter}}"
                             aria-describedby="button-addon1">
-                        <input type="text" class="form-control"  name="query" placeholder="Survey search"
+                        <input type="text" class="form-control"  name="query" placeholder="{% trans 'Survey search' %}"
                                value="{{ search_q }}"
                                aria-describedby="button-addon1">
 
@@ -148,7 +149,7 @@
 
 
                 <div class="app-pager d-flex align-items-center">
-                    <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} of {{ page_obj.paginator.count}}
+                    <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count}}
                     </div>
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
@@ -212,9 +213,9 @@
 
                                     <small class="text-muted">
                                         <ul class="card_labels">
-                                            <li><label>Questions: {{ object.questions_count }}</label></li>
-                                            <li><label>Start date: {{ object.Start_Date }}</label></li>
-                                            <li><label>End date: {{ object.End_Date }}</label></li>
+                                            <li><label>{% trans 'Questions' %}: {{ object.questions_count }}</label></li>
+                                            <li><label>{% trans 'Start date' %}: {{ object.Start_Date }}</label></li>
+                                            <li><label>{% trans 'End date' %}: {{ object.End_Date }}</label></li>
                                         </ul>
 
                                     </small>
@@ -223,7 +224,7 @@
                         </div>
                         {%endfor%}
                         {% else %}
-                        <p style="margin:35px;">No Any Surveys!</p>
+                        <p style="margin:35px;">{% trans 'No Any Surveys' %}!</p>
                         {%endif%}
 
 
