@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
 <!-- <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -9,7 +10,9 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Report</li>
+<li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page" style="font-weight:normal;">{% trans 'Report' %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Teacher's Report" %}</li>
 {% endblock %}
 {% block content %}
 {% include 'teacherReport/teacherReport.html' %}
@@ -45,13 +48,18 @@
                     {
                         extend: 'csv',
                          title: 'Teacher Report',
-                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> {% trans 'Export to CSV' %} </span>'
                     },
                     {
                         extend: 'print',
-                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        text: '<span class="print"><i class="fa fa-print"></i> {% trans 'Print' %} </span>',
                         fieldSeparator: '\t'
-                    }]
+                    }],
+                     "language": {
+                        {% get_current_language as LANGUAGE_CODE %}
+
+                    "url": '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/{{ LANGUAGE_CODE|language_name }}.json'
+                },
             });
 
              table.on('order.dt', function () {

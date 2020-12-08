@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <!-- sidebar menu -->
 {% if user.is_authenticated %}
@@ -11,7 +12,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="home"></i>
                     </span>
-                    <span>Dashboard</span>
+                    <span>{% trans 'Dashboard' %}</span>
                 </a>
             </li>
             <li>
@@ -19,7 +20,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="users"></i>
                     </span>
-                    <span>Members</span>
+                    <span>{% trans 'Members' %}</span>
                 </a>
             </li>
             <li>
@@ -27,7 +28,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="book"></i>
                     </span>
-                    <span>Courses</span>
+                    <span>{% trans 'Courses' %}</span>
                 </a>
             </li>
             <li>
@@ -35,7 +36,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="align-justify"></i>
                     </span>
-                    <span>Session</span>
+                    <span>{% trans 'Session' %}</span>
                 </a>
             </li>
             <li>
@@ -43,7 +44,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="help-circle"></i>
                     </span>
-                    <span>Quiz</span>
+                    <span>{% trans 'Quiz' %}</span>
                 </a>
             </li>
             <li>
@@ -51,7 +52,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="message-square"></i>
                     </span>
-                    <span>Forum</span>
+                    <span>{% trans 'Forum' %}</span>
                 </a>
             </li>
             <li>
@@ -59,7 +60,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="clipboard"></i>
                     </span>
-                    <span>Survey</span>
+                    <span>{% trans 'Survey' %}</span>
                 </a>
             </li>
             <li>
@@ -67,7 +68,7 @@
                     <span class="menu-tab-icon">
                         <i data-feather="archive"></i>
                     </span>
-                    <span>Miscellaneous</span>
+                    <span>{% trans 'Miscellaneous' %}</span>
                 </a>
             </li>
         </ul>
@@ -77,45 +78,45 @@
     <!-- Menu body -->
     <div class="navigation-menu-body">
         <ul id="dashboard">
-            <li class="navigation-divider">Dashboard</li>
+            <li class="navigation-divider">{% trans 'Dashboard' %}</li>
             <li>
                 <a href="{% url 'start' %}">
                     <span class="nav-link-icon" data-feather="airplay"></span>
-                    <span>Home Page</span>
+                    <span>{% trans 'Home Page' %}</span>
                 </a>
             </li>
         </ul>
         <ul id="members">
-            <li class="navigation-divider">Members</li>
+            <li class="navigation-divider">{% trans 'Members' %}</li>
             <li>
                 <a href="{% url 'memberinfo_list' %}">
                     <span class="nav-link-icon" data-feather="users"></span>
-                    <span>Member List</span>
+                    <span>{% trans 'Member List' %}</span>
                     <!-- <span class="badge badge-danger">5</span> -->
                 </a>
             </li>
             <li>
                 <a  href="{% url 'departmentinfo_list'%}">
                     <span class="nav-link-icon" data-feather="briefcase"></span>
-                    <span>Department List</span>
+                    <span>{% trans 'Department List' %}</span>
                     <!-- <span class="badge badge-danger">5</span> -->
                 </a>
             </li>
             <li>
                 <a href="{% url 'memberinfo_create' %}">
                     <span class="nav-link-icon" data-feather="user-plus"></span>
-                    <span>Register Members</span>
+                    <span>{% trans 'Register Members' %}</span>
                 </a>
             </li>
         </ul>
         <ul id="courses">
-            <li class="navigation-divider">Courses</li>
+            <li class="navigation-divider">{% trans 'Courses' %}</li>
             <li>
                 <a href="{% url 'courseinfo_grid_active' %}">
                     <span class="nav-link-icon">
                         <i data-feather="book"></i>
                     </span>
-                    <span>Course List</span>
+                    <span>{% trans 'Course List' %}</span>
                 </a>
             </li>
             <li>
@@ -123,56 +124,56 @@
                     <span class="nav-link-icon">
                         <i data-feather="plus"></i>
                     </span>
-                    <span>Register Course</span>
+                    <span>{% trans 'Register Course' %}</span>
                 </a>
             </li>
         </ul>
         <ul id="session">
-            <li class="navigation-divider">Sessions</li>
+            <li class="navigation-divider">{% trans 'Sessions' %}</li>
             <li>
                 <a href="{% url 'inninginfo_list' %}">
                     <span class="nav-link-icon" data-feather="align-justify"></span>
-                    <span>Session List</span>
+                    <span>{% trans 'Session List' %}</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'groupmapping_list' %}">
                     <span class="nav-link-icon" data-feather="user"></span>
-                    <span>Student Group</span>
+                    <span>{% trans 'Student Group' %}</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'inninggroup_list' %}">
                     <span class="nav-link-icon" data-feather="clipboard"></span>
-                    <span>Teacher Course Allocation</span>
+                    <span>{% trans 'Teacher Course Allocation' %}</span>
                 </a>
             </li>
 
         </ul>
         <ul id="quiz">
-            <li class="navigation-divider">Quiz</li>
+            <li class="navigation-divider">{% trans 'Quiz' %}</li>
             <li>
                 <a href="{% url 'quiz_list' %}">
                     <span class="nav-link-icon" data-feather="help-circle"></span>
-                    <span>Quiz List</span>
+                    <span>{% trans 'Quiz List' %}</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'quiz_exam_list' %}">
                     <span class="nav-link-icon" data-feather="book-open"></span>
-                    <span>Quiz Exam</span>
+                    <span>{% trans 'Quiz Exam' %}</span>
                 </a>
             </li>
         </ul>
 
         <ul id="forum">
-            <li class="navigation-divider">Forum</li>
+            <li class="navigation-divider">{% trans 'Forum' %}</li>
             <li>
                 <a href="{% url 'forum:index' %}">
                     <span class="nav-link-icon">
                         <i data-feather="home"></i>
                     </span>
-                    <span>Home</span>
+                    <span>{% trans 'Home' %}</span>
                 </a>
             </li>
             <li>
@@ -180,31 +181,31 @@
                     <span class="nav-link-icon">
                         <i data-feather="info"></i>
                     </span>
-                    <span>Profile</span>
+                    <span>{% trans 'Profile' %}</span>
                 </a>
             </li>
         </ul>
         <ul id="survey">
-            <li class="navigation-divider">Survey</li>
+            <li class="navigation-divider">{% trans 'Survey' %}</li>
             <li>
                 <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">
 
                     <span class="nav-link-icon">
                         <i data-feather="layers"></i>
                     </span>
-                    <span>Survey List</span>
+                    <span>{% trans 'Survey List' %}</span>
                 </a>
             </li>
         </ul>
 
         <ul id="achievement">
-            <li class="navigation-divider">Miscellaneous</li>
+            <li class="navigation-divider">{% trans 'Miscellaneous' %}</li>
             <li>
                 <a href="{% url 'mail_list' %}?email_type=inbox">
                     <span class="nav-link-icon">
                         <i data-feather="mail"></i>
                     </span>
-                    <span>Mail</span>
+                    <span>{% trans 'Mail' %}</span>
                 </a>
             </li>
             <li>
@@ -212,7 +213,7 @@
                     <span class="nav-link-icon">
                         <i data-feather="calendar"></i>
                     </span>
-                    <span>Calendar</span>
+                    <span>{% trans 'Calendar' %}</span>
                 </a>
             </li>
             <li>
@@ -220,7 +221,7 @@
                     <span class="nav-link-icon">
                         <i data-feather="file-text"></i>
                     </span>
-                    <span>Teacher Report</span>
+                    <span>{% trans 'Teacher Report' %}</span>
                 </a>
             </li>
         </ul>

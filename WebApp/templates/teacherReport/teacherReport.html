@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 {% block stylesheets %}
 <!-- <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -10,7 +11,7 @@
     <div class="page-section">
         <div class="media v-middle">
             <div class="media-body">
-                <h1 class="text-display-1 margin-none">Teacher Report</h1>
+                <h1 class="text-display-1 margin-none">{% trans 'Teacher Report' %}</h1>
             </div>
 
         </div>
@@ -30,18 +31,18 @@
                 <thead class="bg-primary ">
                     <tr class="tableTitleRow  ">
                         <th rowspan="2">S.No</th>
-                        <th rowspan="2">Teacher Name</th>
-                        <th rowspan="2">Course Name</th>
+                        <th rowspan="2">{% trans 'Teacher Name' %}</th>
+                        <th rowspan="2">{% trans 'Course Name' %}</th>
                         <th colspan="
                             {% if max_chapter_count > 0 %}
                                 {{ max_chapter_count }}
                             {% else %}
                                 1
                             {% endif %}
-                        ">Chapter
+                        ">{% trans 'Chapter' %}
                         </th>
-                        <th rowspan="2">Chapter Contents</th>
-                        <th rowspan="2">Total Chapter</th>
+                        <th rowspan="2">{% trans 'Chapter Contents' %}</th>
+                        <th rowspan="2">{% trans 'Total Chapter' %}</th>
                     </tr>
 
 
@@ -55,7 +56,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <th> No Chapters</th>
+                            <th> {% trans 'No Chapters' %}</th>
                         </tr>
                     {% endif %}
 
