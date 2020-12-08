@@ -880,8 +880,10 @@ class Sitting(models.Model):
             num_correct_options = i.get_num_correct_options()
             per_score = i.score / num_correct_options
             if mcq_user_ans:                                    # if no answer, just add 0, so just ignore
+                if not (isinstance(mcq_user_ans, list)):        # For old data without list
+                    mcq_user_ans = [mcq_user_ans]
                 for ans in mcq_user_ans:
-                    if i.check_if_correct(ans):                # multi-ans-effect
+                    if i.check_if_correct(ans):                 # multi-ans-effect
                         totalmcq_score += per_score
                     elif self.quiz.negative_marking:
                         totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
