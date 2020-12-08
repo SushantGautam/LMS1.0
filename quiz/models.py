@@ -1009,7 +1009,7 @@ class Sitting(models.Model):
                 user_ans = user_answers.get(str(q.id), False)
                 if user_ans:
                     if isinstance(q, MCQuestion):
-                        if (isinstance(user_ans, list)):
+                        if not (isinstance(user_ans, list)):
                             q.user_answer = Answer.objects.filter(
                                             id__in=[int(a) for a in user_ans]).values_list('content', flat=True)    # multi-ans-effect
                         else:               # old data case
