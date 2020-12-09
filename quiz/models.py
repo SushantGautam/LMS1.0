@@ -817,7 +817,7 @@ class Sitting(models.Model):
 
     start = models.DateTimeField(auto_now_add=True,
                                  verbose_name=_("Start"))
-    time_elapsed = models.IntegerField(
+    remaining_time = models.IntegerField(
         null=True, blank=True,
         default=0,
     )

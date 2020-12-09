@@ -157,7 +157,7 @@ class SittingAdminForm(forms.ModelForm):
 class SittingAdmin(admin.ModelAdmin):
     form = SittingAdminForm
     search_fields = ('user__username', 'quiz__title')
-    list_display = ['user', 'quiz', 'complete', 'start', 'end', 'question_order']
+    list_display = ['user', 'quiz', 'complete', 'start', 'end', 'question_order', 'remaining_time']
     list_filter = ('complete', 'quiz', QuizTypeFilter)
 
 class AnswerAdminForm(forms.ModelForm):
