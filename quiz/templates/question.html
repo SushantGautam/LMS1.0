@@ -164,7 +164,7 @@
                 {% if has_previous %}
                 <div class=" button-prev-quiz text-center ">
                     <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
-                        <button class="btn btn-secondary btn-lg" title="Previous Question"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+                        <button class="btn btn-secondary btn-lg" title="Previous Question" id="previous-btn"><i class="fa fa-arrow-circle-left"></i> Previous</button>
                     </a>
                 </div>
             {% endif %}
@@ -212,7 +212,8 @@
         </div>
 
         {% endif %}
-        <form action="" method="POST">{% csrf_token %}
+        <form action="" method="POST">
+            {% csrf_token %}
         <input type=hidden name="question_id" value="{{ question.id }}">
         <ul class="list-group">
 
@@ -244,7 +245,7 @@
                 {% if has_next %}
                 <div class="button-next-quiz text-center" >
                     <a href="{{ request.path }}?q={{ question_number|add:1 }}">
-                        <button class="btn btn-secondary btn-lg" title="Next Question"><i class="fa fa-arrow-circle-right"></i> Next</button>
+                        <button class="btn btn-secondary btn-lg" title="Next Question" id="next-btn"><i class="fa fa-arrow-circle-right"></i> Next</button>
                     </a>
                 </div>
             {% endif %}
@@ -260,8 +261,7 @@
     {% block customjss %}
     <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
         <script>
-            function updateFunctionTimeElapsed(count) {
-                {% if quiz.exam_paper %}
+            function updateFunctionTimeElapsed() {
                     $.ajax({
                         url: "{% url 'quiz_update_time_taken' %}",
                         method: 'post',
@@ -281,12 +281,19 @@
                             console.log(e.responseText)
                         }
                     })
-                {% endif %}
             }
 
-            $('form').on('submit', function (e) {
-                updateFunctionTimeElapsed(count)
-            })
+            {% if quiz.exam_paper %}
+                $('form').on('submit', function (e) {
+                    updateFunctionTimeElapsed();
+                });
+                $('#previous-btn').on('click', function (e) {
+                    updateFunctionTimeElapsed();
+                });
+                $('#next-btn').on('click', function (e) {
+                    updateFunctionTimeElapsed();
+                });
+            {% endif %}
         </script>
         <script>
             const FULL_DASH_ARRAY = 283;
