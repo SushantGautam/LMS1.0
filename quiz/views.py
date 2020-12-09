@@ -307,7 +307,11 @@ class QuizTake(FormView):
         context['quiz'] = self.quiz
         context['sitting_id'] = self.sitting.id
         context['sitting'] = self.sitting
-        context['remaininig_time'] = self.quiz.duration - self.sitting.time_elapsed
+        if self.sitting.remaining_time == 0:
+            context['remaining_time'] = self.quiz.duration
+        else:
+            context['remaining_time'] = self.sitting.remaining_time
+        # context['remaininig_time'] = self.quiz.duration - self.sitting.time_elapsed
         if hasattr(self, 'previous'):
             context['previous'] = self.previous
         if hasattr(self, 'progress'):
@@ -636,9 +640,9 @@ def UpdateQuizTime(request):
         quiz = Quiz.objects.get(pk=request.POST.get('quiz_id'))
         if quiz.exam_paper:
             sitting = Sitting.objects.get(pk=request.POST.get('sitting_id'))
-            elapsed_time = request.POST.get('time_elapsed')
-            sitting.time_elapsed = elapsed_time
-            if int(elapsed_time) >= quiz.duration:
+            remaining_time = request.POST.get('remaining_time')
+            sitting.remaining_time = remaining_time
+            if int(remaining_time) < 1:
                 sitting.end = timezone.now()
                 sitting.complete = True
             sitting.save()
@@ -649,7 +653,7 @@ def UpdateQuizTime(request):
                 url = "/students/quiz/progress/" + str(sitting.id)
 
             return JsonResponse({
-                'sitting_time_elapsed': sitting.time_elapsed,
+                'sitting_remaining_time': sitting.remaining_time,
                 'url': url if sitting.complete else 0
             }, status=200)
         return JsonResponse({

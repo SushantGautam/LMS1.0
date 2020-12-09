@@ -143,13 +143,13 @@
         {% if quiz.exam_paper %}
             <div class="col-md-12 col-md-12 col-xs-12 ">
                 {% comment %}
-                <div class="pie degree" id="quiz-timer" data-timer="{{ remaininig_time }}">
+                <div class="pie degree" id="quiz-timer" data-timer="{{ remaining_time }}">
                     <span class="block-timer"></span>
                     <span id="time"></span>
                     <!-- <span id="time1">0</span> -->
                 </div>
                 {% endcomment %}
-                <div id="app" class="quiz-timer" data-timer="{{ remaininig_time }}"></div>
+                <div id="app" class="quiz-timer" data-timer="{{ remaining_time }}"></div>
             </div>
 
 
@@ -163,92 +163,46 @@
 
 
 
-        <p>
-            <small class="muted"><strong>
-                {% trans "Question category" %}:
+        {% endif %}
+        <form action="" method="POST">{% csrf_token %}
+        <input type=hidden name="question_id" value="{{ question.id }}">
+        <ul class="list-group">
+
+            {% for answer in form.answers %}
+                <li class="list-group-item">
+                    {{ answer }}
+                </li>
+            {% endfor %}
+
+        </ul>
+         {% if question_number == progress.2  %}
+            <input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block btn-warning" >
+         {% else %}
+            <input type="submit" value="{% trans 'Submit' %}" class="btn btn-large btn-block btn-warning" >
+         {% endif %}
+         
+
+        </form>
 
             </strong>
             </small>
             <strong>{{ question.category }}</strong>
         </p>
 
-
-
-
-
-
-        <div class="quiz-questions" style="
-    padding-left: 15vw;
-    padding-right: 15vw;
-">
-            <div id="step-1">
-                <div class="privew1">
-                    <div class="questionsBox">
-                        <div class="questions">{{ question_number }})&nbsp; {{ question.content }}</div>
-
-
-                        {% if question.figure %}
-                            <div class="quiz-ques-image">
-
-                                <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
-
-
-                            </div>
-
-                        {% endif %}
-                        <form action="" method="POST">{% csrf_token %}
-                            <input type=hidden name="question_id" value="{{ question.id }}">
-                            <ul class="list-group">
-
-                                {% for answer in form.answers %}
-                                    <li class="list-group-item">
-                                        {{ answer }}
-                                    </li>
-                                {% endfor %}
-
-                            </ul>
-
-                            <input type="submit" value={% trans "Submit" %} class="btn btn-large btn-block
-                                   btn-warning" >
-
-
-                        </form>
-
-                    </div>
-                </div>
-
-            </div>
         </div>
-
-
-
-        <!-- <p class="lead">{{ question.content }}</p>
-
-{% if question.figure %}
-  <div class="quiz-ques-image">
-
-					<img src="{{ question.figure.url }}" alt="{{ question.content }}" />
-
-
-
-	</div>
-
-{% endif %}
-
-<form action="" method="POST">{% csrf_token %}
-  <input type=hidden name="question_id" value="{{ question.id }}">
-
-  <ul class="list-group">
-
-	{% for answer in form.answers %}
-	  <li class="list-group-item">
-	    {{ answer }}
-	  </li>
-	{% endfor %}
-
-  </ul>
-  <input type="submit" value={% trans "Check" %} class="btn btn-large btn-block btn-warning" >
-</form> -->
+                        </div>      
+              </div>
+              <div class="col-md-2 nextbutton-for-height  ">
+                {% if has_next %}
+                <div class="button-next-quiz text-center" >
+                    <a href="{{ request.path }}?q={{ question_number|add:1 }}">
+                        <button class="btn btn-secondary btn-lg" title="Next Question"><i class="fa fa-arrow-circle-right"></i> Next</button>
+                    </a>
+                </div>
+            {% endif %}
+              </div>
+          </div>
+      </div>
 
     {% endif %}
 {% endblock %}
@@ -267,7 +221,7 @@
                             'csrfmiddlewaretoken': '{{ csrf_token }}',
                             'sitting_id': '{{ sitting_id }}',
                             'quiz_id': '{{ quiz.id }}',
-                            'time_elapsed': parseInt('{{ sitting.time_elapsed }}') + parseInt(count)
+                            'remaining_time': parseInt(timeLeft)
                         },
                         success: function (data) {
                             if (data.url != 0 || data.url != '0') {
@@ -306,7 +260,7 @@
             };
 
             const TIME_LIMIT = '{{ quiz.duration }}';
-            let timePassed = '{{ quiz.duration }}' - '{{ remaininig_time }}';
+            let timePassed = '{{ quiz.duration }}' - '{{ remaining_time }}';
             let timeLeft = TIME_LIMIT - timePassed;
             let timerInterval = null;
             let remainingPathColor = COLOR_CODES.info.color;
