@@ -93,7 +93,7 @@ class MCQuestionAdmin(admin.ModelAdmin):
 
     #change_form_template = 'admin_add_form.html'
     #change_list_template = 'custom_list.html'
-    list_display = ('content', 'score', 'course_code', )
+    list_display = ('content', 'score', 'course_code', 'get_num_correct_options')
     list_filter = ('course_code',)
     fields = ('content', 'figure', 'explanation', 'answer_order', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
@@ -101,6 +101,9 @@ class MCQuestionAdmin(admin.ModelAdmin):
 
     inlines = [AnswerInline]
     # add_form_template = 'admin_add_form.html'
+
+    def get_num_correct_options(self, obj):
+        return Answer.objects.filter(question=obj, correct=True).count()
 
 
 class TFQuestionAdmin(admin.ModelAdmin):

@@ -4295,10 +4295,10 @@ def InningInfoMappingView(model_name, request=None, **kwargs):
     inninginfoObj = get_object_or_404(InningInfo, pk=session_id)
     Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=object_id)
 
-    if model_name == "AssignmentInfo":
-        if start_date == '' or end_date == '' or \
-                start_date is None or end_date is None:
-            return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
+    # if model_name == "AssignmentInfo":
+    #     if start_date == '' or end_date == '' or \
+    #             start_date is None or end_date is None:
+    #         return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
 
     if (start_date and end_date):
         if (start_date > end_date):

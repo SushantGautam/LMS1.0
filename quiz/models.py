@@ -322,7 +322,11 @@ class MCQuestion(Question):
             return False
 
     def get_num_correct_options(self):
-        return Answer.objects.filter(question=self, correct=True).count()
+        count = Answer.objects.filter(question=self, correct=True).count()
+        if count == 0:
+            return 1
+        else:
+            return count
 
     class Meta:
         verbose_name = _("Multiple Choice Question")
@@ -825,7 +829,7 @@ class Sitting(models.Model):
     class Meta:
         permissions = (("view_sittings", _("Can see completed exams.")),)
 
-    def get_first_question(self, question_pk=None):
+    def get_first_question(self, question_index=None):
         """
         Returns the next question.
         If no question is found, returns False
@@ -833,19 +837,26 @@ class Sitting(models.Model):
         """
         if not self.question_list:
             return False
-        if not question_pk:
+        if not question_index:
             first, _ = self.question_list.split(',', 1)
         else:
-            first = self.question_order.split(',')[question_pk-1]
+            first = self.question_order.split(',')[question_index-1]
         question_id = int(first)
 
         return Question.objects.get_subclass(id=question_id)
 
-    def remove_first_question(self):
+    def remove_first_question(self, question_id=None):
         if not self.question_list:
             return
-        _, others = self.question_list.split(',', 1)
-        self.question_list = others
+        if question_id:
+            x = self.question_list.split(',')
+            x.remove(question_id)
+            x = ','.join(x)
+            self.question_list = x
+
+        else:
+            _, others = self.question_list.split(',', 1)
+            self.question_list = others
         self.save()
 
     def add_to_score(self, points):
@@ -870,8 +881,10 @@ class Sitting(models.Model):
             num_correct_options = i.get_num_correct_options()
             per_score = i.score / num_correct_options
             if mcq_user_ans:                                    # if no answer, just add 0, so just ignore
+                if not (isinstance(mcq_user_ans, list)):        # For old data without list
+                    mcq_user_ans = [mcq_user_ans]
                 for ans in mcq_user_ans:
-                    if i.check_if_correct(ans):                # multi-ans-effect
+                    if i.check_if_correct(ans):                 # multi-ans-effect
                         totalmcq_score += per_score
                     elif self.quiz.negative_marking:
                         totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
@@ -997,14 +1010,18 @@ class Sitting(models.Model):
                 user_ans = user_answers.get(str(q.id), False)
                 if user_ans:
                     if isinstance(q, MCQuestion):
-                        # q.user_answer = Answer.objects.get(id=int(user_ans)).content    # multi-ans-effect
-                        q.user_answer = Answer.objects.filter(
-                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True)    # multi-ans-effect
+                        if (isinstance(user_ans, list)):
+                            ans_temp = list(Answer.objects.filter(
+                                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True))    # multi-ans-effect
+                            q.user_answer = ", ".join(ans_temp)   # formatted display
+                            
+                        else:               # old data case
+                            q.user_answer = Answer.objects.get(id=int(user_ans)).content 
                     else:
                         q.user_answer = user_ans
                     
                     if isinstance(q, SA_Question):
-                        i = [int(n) for n in self.question_order.split(',') if n].index(q.id)
+                        i = [int(n) for n in json.loads(self.user_answers).keys() if n].index(q.id)
                         score_list = str(self.score_list).split(',')
                         if i < len(score_list):
                             q.score_obtained = score_list[i]
@@ -1019,6 +1036,8 @@ class Sitting(models.Model):
                         num_options = q.get_answers().count()
                         per_score = q.score / num_correct_options
                         guess = user_ans
+                        if not (isinstance(guess, list)):
+                            guess = [guess]         #### support for old sitting data where there won't be list.
                         score = 0
                         is_correct = True   
 
@@ -1040,7 +1059,7 @@ class Sitting(models.Model):
                                     score -= float(per_score * self.quiz.negative_percentage) / 100.0
                                 else:
                                     score += 0
-
+                        # print("guess: ",guess, score, type(guess))
                         num_correct_guess = sum([q.check_if_correct(g) for g in guess])
                         if not (num_correct_options == num_correct_guess):
                             is_correct = False
@@ -1102,3 +1121,42 @@ class Sitting(models.Model):
         answered = len(json.loads(self.user_answers))
         total = len(self._question_ids())
         return answered * 100 / total
+
+    def get_mcq_score(self, mcq):
+        user_answers = json.loads(self.user_answers)
+        guess = user_answers.get(str(mcq.id), False)
+        if guess and not (isinstance(guess, list)):
+            guess = [guess]         #### support for old sitting data where there won't be list.
+        if guess:
+            num_correct_options = mcq.get_num_correct_options() # get number of correct options
+            num_options = mcq.get_answers().count()
+            per_score = mcq.score / num_correct_options
+            score = 0
+            is_correct = True   
+
+            ##############################################################
+            ##### loop for all user chosen:                           ####
+            ##### chosen - 1; correct - 1 => +score                   ####
+            ##### chosen - 1; correct - 0 => -score * negative_factor ####
+            ##### chosen - 0; correct - 1 => 0                        ####
+            ##### chosen - 0; correct - 0 => 0                        ####
+            ##### so we only care about chosen values                 ####
+            ##############################################################
+
+            for g in guess:
+                if mcq.check_if_correct(g):
+                    score += per_score
+                else:
+                    is_correct = False          ###### user selected wrong answer
+                    if self.quiz.negative_marking:
+                        score -= float(per_score * self.quiz.negative_percentage) / 100.0
+                    else:
+                        score += 0
+
+            num_correct_guess = sum([mcq.check_if_correct(g) for g in guess])
+            if not (num_correct_options == num_correct_guess):
+                is_correct = False                  ######### user didn't selected all answers
+                        
+            return score, is_correct
+        else:
+            return 0, False

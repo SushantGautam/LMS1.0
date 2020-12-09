@@ -58,13 +58,12 @@
                         <td class="session_id"><span data-value="{{ session.id }}">{{ session.Inning_Name }}</span></td>
                         <td class="session_start_date">
                             <input type="text" name="Start_Date" class="form-control"
-                                   max="9999-12-31" autocomplete="off" value="{{ sessionmap.0.Start_Date|date:'c' }}"
-                                   required>
+                                   max="9999-12-31" autocomplete="off" value="{{ sessionmap.0.Start_Date|date:'c' }}">
                         </td>
                         <td class="session_end_date">
                             <input type="text" name="End_Date" class="form-control"
                                    value="{{ sessionmap.0.End_Date|date:'c' }}"
-                                   max="9999-12-31" autocomplete="off" required>
+                                   max="9999-12-31" autocomplete="off">
                         </td>
                     </tr>
                 {% endfor %}
@@ -118,13 +117,17 @@
 
     var submitted = false;
     $("#ajaxassignmentinfoform").submit(function (e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
         if (submitted) {
             return false
         }
         submitted = true;
-        e.preventDefault(); // avoid to execute the actual submit of the form.
+
         sessiondata = [];
         let submitCheck = true;
+        let checkStartDate = false;
+        let checkEndDate = false;
+        debugger
         $.each($('#inning_dataTable tr'), function (index, value) {
             if ($(value).find('td').length > 0) {
                 {%  comment %}
@@ -139,6 +142,8 @@
                     submitCheck = false;
                     return false;
                 }
+                checkStartDate = true ? (start_date != null && start_date.length != 0) : false;
+                checkEndDate = true ? (end_date != null && end_date.length != 0) : false;
                 inputvalues = {
                     'session_id': $(value).find('.session_id span').attr('data-value'),
                     'start_date': start_date,
@@ -146,8 +151,21 @@
                 };
                 sessiondata.push(inputvalues)
             }
+            if ((!checkStartDate && checkEndDate) || (checkStartDate && !checkEndDate)) {
+                alert('Start Date and End Date are both required.');
+                submitted = false;
+                submitCheck = false;
+                return false;
+            }
         });
+        if (!checkStartDate && !checkEndDate) {
+            submitCheck = confirm('Assignment will be inactive if dates are not provided. Confirm?');
+            if (!submitCheck) {
+                submitted = false;
+            }
+        }
         if (submitCheck) {
+            debugger
             $.ajax({
                 url: $(this).attr('action'),  // URL to your view that serves new info
                 data: {

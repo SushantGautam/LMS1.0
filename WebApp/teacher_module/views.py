@@ -1055,14 +1055,18 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
-            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
+            indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
             print(request.POST['new_score'], "new_score")
             print(indx, "index")
             ssl = sitting.score_list
             if not ssl:
                 ssl = ''
             score_list = [s for s in ssl.split(',') if s]
-            score_list[indx] = request.POST.get('new_score', 0)
+            try:
+                score_list[indx] = request.POST.get('new_score', 0)
+            except IndexError:
+                if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
+                    score_list.insert(indx, request.POST.get('new_score', 0))
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
             sitting.save()
@@ -1105,14 +1109,17 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
             q = Question.objects.get_subclass(id=int(q_to_toggle))
-            indx = [int(n) for n in sitting.question_order.split(',') if n].index(q.id)
-            print(request.POST['new_score'], "new_score")
-            print(indx, "index")
+            indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
+
             ssl = sitting.score_list
             if not ssl:
                 ssl = ''
             score_list = [s for s in ssl.split(',') if s]
-            score_list[indx] = request.POST.get('new_score', 0)
+            try:
+                score_list[indx] = request.POST.get('new_score', 0)
+            except IndexError:
+                if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
+                    score_list.insert(indx, request.POST.get('new_score', 0))
             sitting.score_list = ','.join(list(map(str, score_list)))
             print(sitting.score_list, "score_list_update")
             sitting.save()
@@ -2628,13 +2635,24 @@ def QuizMarkingCSV(request, quiz_pk):
             question_name = "MCQ" + str(i + 1)
             question_name_value = user_answers.get(str(mcquestion.id))
             if question_name_value:
-                ans_value = Answer.objects.get(id=int(question_name_value)).content
+                # ans_value = Answer.objects.get(id=int(question_name_value)).content
+                if (isinstance(question_name_value, list)):
+                    ans_value_list = [Answer.objects.get(id=int(ans)).content for ans in question_name_value] 
+                else: #### for old data, there wont be list
+                    ans_value_list = [Answer.objects.get(id=int(question_name_value)).content]
             else:
-                ans_value = ''
-            new_row[question_name] = ans_value
-            if mcquestion.check_if_correct(question_name_value):
+                # ans_value = ''
+                ans_value_list = []
+            mcq_score, mcq_is_correct = quiz_sitting.get_mcq_score(mcquestion)
+            
+            # new_row[question_name] = ans_value
+            new_row[question_name] = ans_value_list
+
+            # if mcquestion.check_if_correct(question_name_value):
+            if mcq_is_correct:
                 new_row[answer_name + " M" + str(i + 1)] = "✔"
-                totalmcq_score += mcquestion.score
+                # totalmcq_score += mcquestion.score
+                totalmcq_score += mcq_score
             else:
                 new_row[answer_name + " M" + str(i + 1)] = "❌"
         for i, tfquestion in enumerate(tfquestions):
