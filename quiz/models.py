@@ -836,7 +836,7 @@ class Sitting(models.Model):
         """
 
         if not question_index:
-            first, _ = self.question_list.split(',', 1)
+            first, _ = self.question_list.split(',', 1) if self.question_list != '' else None
         else:
             first = self.question_order.split(',')[question_index-1]
         question_id = int(first)

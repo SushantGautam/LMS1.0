@@ -125,23 +125,6 @@
             {% endif %}
         " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
     </div>
-    <!-- <div class="col-md-12 col-sm-12 col-xs-12" style="margin:10px 0">
-         <div class="row">
-        {% if has_previous %}
-            <div class="col-md-6 col-sm-6 col-xs-12 ">
-                <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
-                    <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Previous" class="fa fa-arrow-circle-left" style="color: #eea236;;"    ></i></button>
-                </a>
-            </div>
-        {% endif %}
-        {% if has_next %}
-            <div class="col-md-6 col-sm-6 col-xs-12 text-right" >
-                <a href="{{ request.path }}?q={{ question_number|add:1 }}">
-                    <button style="background-color: #2a3f54; " class="btn btn-secondary"><i title="Next" class="fa fa-arrow-circle-right" style="color: #eea236;;"></i></button>
-                </a>
-            </div><br><br>
-        {% endif %}
-    </div></div> -->
 
     {% if question %}
         {% if quiz.exam_paper %}
@@ -163,21 +146,21 @@
               <div class="col-md-2 button-for-height">
                 {% if has_previous %}
                 <div class=" button-prev-quiz text-center ">
-                    <a href="{{ request.path }}?q={{ question_number|add:-1 }}">
+                    <a href="javascript:void(0)" id="prevBtn">
                         <button class="btn btn-secondary btn-lg" title="Previous Question" id="previous-btn"><i class="fa fa-arrow-circle-left"></i> Previous</button>
                     </a>
                 </div>
             {% endif %}
-                
+
               </div>
-            
+
               <div class="col-md-8 text-center">
                   <div class="row">
                     <div class="col-md-6 text-left">
                         <p>
                             <small class="muted"><strong>
                                 {% trans "Question category" %}:
-                
+
                             </strong>
                             </small>
                             <strong>{{ question.category }}</strong>
@@ -195,7 +178,7 @@
                     {% endif %}
                       </div>
                   </div>
-                        <div class="quiz-questions" 
+                        <div class="quiz-questions"
                                                         >
         <div id="step-1">
         <div class="privew1">
@@ -212,7 +195,7 @@
         </div>
 
         {% endif %}
-        <form action="" method="POST">
+        <form action="" method="POST" id="quizForm">
             {% csrf_token %}
         <input type=hidden name="question_id" value="{{ question.id }}">
         <ul class="list-group">
@@ -226,12 +209,12 @@
         </ul>
          {% if    question_number == progress.2  %}
         <input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
-            btn-success" >
+            btn-success" id="completeQuizBtn">
          {% else   %}
          <input type="submit" value="{% trans 'Submit' %}" class="btn btn-large btn-block
          btn-warning" >
          {% endif %}
-         
+
 
         </form>
 
@@ -239,12 +222,12 @@
         </div>
 
         </div>
-                        </div>      
+                        </div>
               </div>
               <div class="col-md-2 nextbutton-for-height  ">
                 {% if has_next %}
                 <div class="button-next-quiz text-center" >
-                    <a href="{{ request.path }}?q={{ question_number|add:1 }}">
+                    <a href="javascript:void(0)" id="nextBtn">
                         <button class="btn btn-secondary btn-lg" title="Next Question" id="next-btn"><i class="fa fa-arrow-circle-right"></i> Next</button>
                     </a>
                 </div>
@@ -448,11 +431,7 @@
                 }
             });
         </script>
-        <script>
-            $(document).ready(function () {
-                runQuizTimerInterval()
-            })
-        </script>
+
         <script>
             $(document).ready(function () {
                 runQuizTimerInterval();
@@ -463,6 +442,39 @@
                     window.history.pushState({path:newurl},'',newurl);
                 }
             });
+        </script>
+
+        <script>
+            $('#prevBtn').on('click', function (e) {
+                e.preventDefault();
+                newUrl = addParameterToURL('action=-1')
+                $('#quizForm').attr('action', newUrl)
+                $('#quizForm').submit()
+            });
+
+            $('#nextBtn').on('click', function (e) {
+                e.preventDefault();
+                newUrl = addParameterToURL('action=1');
+                $('#quizForm').attr('action', newUrl);
+                $('#quizForm').submit()
+            });
+
+            $('#completeQuizBtn').on('click', function (e) {
+                let confirmation = confirm('This is the final submission. Are you sure to end the quiz?');
+                if (!confirmation) {
+                    return false;
+                }
+                e.preventDefault();
+                newUrl = addParameterToURL('c=1');
+                $('#quizForm').attr('action', newUrl);
+                $('#quizForm').submit()
+            });
+
+            function addParameterToURL(param){
+                _url = location.href;
+                _url += (_url.split('?')[1] ? '&':'?') + param;
+                return _url;
+            }
         </script>
     {% endblock %}
 

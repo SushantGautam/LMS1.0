@@ -289,7 +289,7 @@ class QuizTake(FormView):
     def form_valid(self, form):
         if self.logged_in_user:
             self.form_valid_user(form)
-            if self.sitting.get_first_question() is False or self.sitting.complete:
+            if (self.request.GET.get('c') and self.request.GET.get('c') == '1') or self.sitting.complete:
                 return self.final_result_user()
         else:
             self.form_valid_anon(form)
