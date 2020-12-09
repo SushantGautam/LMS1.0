@@ -50,7 +50,7 @@ class MCForm(forms.Form):
                     answerindex = index
                     break
         self.fields["answers"] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          choices=choice_list, initial=answer if answer is not None else None)
+                                          choices=choice_list, initial=answer if answer is not None else None, required=False)
 
 class TFForm(forms.Form):
     def __init__(self, question, answer=None, *args, **kwargs):
@@ -63,13 +63,13 @@ class TFForm(forms.Form):
                     answerindex = index
                     break
         self.fields["answers"] = forms.ChoiceField(choices=choice_list,
-                                                   widget=RadioSelect, initial=answer if answer is not None else None)
+                                                   widget=RadioSelect, initial=answer if answer is not None else None, required=False)
 
 class SAForm(forms.Form):
     def __init__(self, question, answer=None, *args, **kwargs):
         super(SAForm, self).__init__(*args, **kwargs)
         self.fields["answers"] = forms.CharField(
-            widget=Textarea(attrs={'style': 'width:100%'}), initial=answer)
+            widget=Textarea(attrs={'style': 'width:100%'}), initial=answer, required=False)
 
 
 class QuizForm(forms.ModelForm):

@@ -830,8 +830,7 @@ class Sitting(models.Model):
         If no question is found, returns False
         Does NOT remove the question from the front of the list.
         """
-        if not self.question_list:
-            return False
+
         if not question_index:
             first, _ = self.question_list.split(',', 1)
         else:

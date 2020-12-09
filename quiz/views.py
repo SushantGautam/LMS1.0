@@ -297,18 +297,38 @@ class QuizTake(FormView):
                 return self.final_result_anon()
 
         self.request.POST = {}
-        if len(self.sitting.question_order.split(',')) <= int(self.current_question_number):
-            self.request.GET = {}
-            self.current_question_number = None
-        else:
-            if self.sitting.question_order.split(',')[int(self.current_question_number)] == '':
+        if not self.request.GET.get('action') or (
+                self.request.GET.get('action') and self.request.GET.get('action') != "-1"):
+            if len(self.sitting.question_order.split(',')) <= int(self.current_question_number):
                 self.request.GET = {}
                 self.current_question_number = None
             else:
-                self.request.method = "GET"
-                self.request.GET = {'q': str(int(self.current_question_number) + 1)}
-                self.current_question_number = str(int(self.current_question_number) + 1)
+                if self.sitting.question_order.split(',')[int(self.current_question_number)] == '':
+                    self.request.GET = {}
+                    self.current_question_number = None
+                else:
+                    self.request.method = "GET"
+                    self.request.GET = {'q': str(int(self.current_question_number) + 1)}
+                    self.current_question_number = str(int(self.current_question_number) + 1)
+        else:
+            self.request.method = "GET"
+            self.request.GET = {'q': str(int(self.current_question_number) - 1)}
+            self.current_question_number = str(int(self.current_question_number) - 1)
         return super(QuizTake, self).get(self, self.request)
+
+    def form_invalid(self, form):
+        if self.request.GET.get('action'):
+            if self.request.GET.get('action') and self.request.GET.get('action') != "-1":
+                self.request.method = "GET"
+                self.request.GET = {'q': str(int(self.current_question_number) - 1)}
+                self.current_question_number = str(int(self.current_question_number) - 1)
+            else:
+                self.request.method = "GET"
+                self.request.GET = {'q': str(int(self.current_question_number) - 1)}
+                self.current_question_number = str(int(self.current_question_number) - 1)
+            return super(QuizTake, self).get(self, self.request)
+        else:
+            return super(QuizTake, self).get(self, self.request)
 
     def get_context_data(self, **kwargs):
         context = super(QuizTake, self).get_context_data(**kwargs)
@@ -332,7 +352,8 @@ class QuizTake(FormView):
         if int(self.sitting.question_order.split(',').index(str(self.question.pk))) == 0:
             context['has_previous'] = False
         # if question is to be attempted for first time, then assumption is all following questions after current is not taken, hence no next.
-        if str(self.question.id) in self.sitting.question_list.split(','):
+        if str(self.question.id) == (self.sitting.question_order.split(',')[-1] if \
+        self.sitting.question_order.split(',')[-1] != '' else self.sitting.question_order.split(',')[-2]):
             context['has_next'] = False
 
         return context
@@ -341,7 +362,7 @@ class QuizTake(FormView):
         progress, c = Progress.objects.get_or_create(user=self.request.user)
         # if type(self.question) is TF_Question:
         #     guess = form.cleaned_data['answers'][0]        # because saq and mcq share same form
-        # else:                                              # so for tfq, need to remove list '[]'                     
+        # else:                                              # so for tfq, need to remove list '[]'
         #     guess = form.cleaned_data['answers']
         guess = form.cleaned_data['answers']
         print("multiple selected values: ", guess)
