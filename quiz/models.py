@@ -322,7 +322,11 @@ class MCQuestion(Question):
             return False
 
     def get_num_correct_options(self):
-        return Answer.objects.filter(question=self, correct=True).count()
+        count = Answer.objects.filter(question=self, correct=True).count()
+        if count == 0:
+            return 1
+        else:
+            return count
 
     class Meta:
         verbose_name = _("Multiple Choice Question")
@@ -813,7 +817,7 @@ class Sitting(models.Model):
 
     start = models.DateTimeField(auto_now_add=True,
                                  verbose_name=_("Start"))
-    time_elapsed = models.IntegerField(
+    remaining_time = models.IntegerField(
         null=True, blank=True,
         default=0,
     )
@@ -1004,9 +1008,13 @@ class Sitting(models.Model):
                 user_ans = user_answers.get(str(q.id), False)
                 if user_ans:
                     if isinstance(q, MCQuestion):
-                        # q.user_answer = Answer.objects.get(id=int(user_ans)).content    # multi-ans-effect
-                        q.user_answer = Answer.objects.filter(
-                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True)    # multi-ans-effect
+                        if (isinstance(user_ans, list)):
+                            ans_temp = list(Answer.objects.filter(
+                                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True))    # multi-ans-effect
+                            q.user_answer = ", ".join(ans_temp)   # formatted display
+                            
+                        else:               # old data case
+                            q.user_answer = Answer.objects.get(id=int(user_ans)).content 
                     else:
                         q.user_answer = user_ans
                     

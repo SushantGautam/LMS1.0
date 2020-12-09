@@ -69,13 +69,8 @@
       </td>
 {#      <td style="overflow: scroll">{{ question|answer_choice_to_string:question.user_answer }}</td>#}
       <td>
-          {% if question.is_mcq %}
-              {% for answer in question.user_answer %}
-                  {{ answer }},
-              {% endfor %}
-          {% else %}
             {{ question.user_answer }}
-          {% endif %}
+         
       </td>
       <td>
         {% if not question.ans_correct %}

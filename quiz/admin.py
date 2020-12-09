@@ -3,6 +3,26 @@ from django.contrib import admin
 
 from .models import Quiz, Progress, Answer, MCQuestion, TF_Question, SA_Question, Sitting
 
+class QuizTypeFilter(admin.SimpleListFilter):
+    title = 'Quiz_type' # or use _('country') for translated title
+    parameter_name = 'Quiz_type'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('ex', 'Exam'),
+            ('pr', 'Pre Test'),
+            ('po', 'Post Test'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'ex':
+            return queryset.filter(quiz__exam_paper=True)
+        elif value == 'pr':
+            return queryset.filter(quiz__pre_test=True)
+        elif value == 'po':
+            return queryset.filter(quiz__post_test=True)
+        return queryset
 
 class AnswerInline(admin.TabularInline):
     model = Answer
@@ -93,7 +113,7 @@ class MCQuestionAdmin(admin.ModelAdmin):
 
     #change_form_template = 'admin_add_form.html'
     #change_list_template = 'custom_list.html'
-    list_display = ('content', 'score', 'course_code', )
+    list_display = ('content', 'score', 'course_code', 'get_num_correct_options')
     list_filter = ('course_code',)
     fields = ('content', 'figure', 'explanation', 'answer_order', 'score', 'course_code', 'cent_code')
     search_fields = ('content', 'explanation')
@@ -101,6 +121,9 @@ class MCQuestionAdmin(admin.ModelAdmin):
 
     inlines = [AnswerInline]
     # add_form_template = 'admin_add_form.html'
+
+    def get_num_correct_options(self, obj):
+        return Answer.objects.filter(question=obj, correct=True).count()
 
 
 class TFQuestionAdmin(admin.ModelAdmin):
@@ -134,8 +157,8 @@ class SittingAdminForm(forms.ModelForm):
 class SittingAdmin(admin.ModelAdmin):
     form = SittingAdminForm
     search_fields = ('user__username', 'quiz__title')
-    list_display = ['user', 'quiz', 'complete', 'start', 'end', 'question_order']
-    list_filter = ('complete', 'quiz')
+    list_display = ['user', 'quiz', 'complete', 'start', 'end', 'question_order', 'remaining_time']
+    list_filter = ('complete', 'quiz', QuizTypeFilter)
 
 class AnswerAdminForm(forms.ModelForm):
     class Meta:
