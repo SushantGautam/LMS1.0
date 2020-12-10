@@ -171,7 +171,7 @@
                         {% if progress %}
                         <div style="float: right;">
                            <span><b>{% trans "Remaining Question:" %} <span style="color: #eea236;">
-                            {{ progress.2|subtract:progress.0 }}
+                            {{ sitting.get_remaining_question.remaining_count }}
                            </span></b></span> &nbsp;&nbsp; <span><b>{% trans "Total Question:" %} <span style="color: #eea236;">  {{ progress.2 }}     </span> </b></span>
                             <!-- {% trans "Question" %} {{ question_number }} {% trans "of" %} {{ progress.2 }} -->
                         </div>

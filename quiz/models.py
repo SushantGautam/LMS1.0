@@ -1158,3 +1158,18 @@ class Sitting(models.Model):
             return score, is_correct
         else:
             return 0, False
+
+    def get_remaining_question(self):
+        answers = dict(json.loads(self.user_answers))
+        remaining_count = self.progress()[2]-self.progress()[0]
+        remaining_list = []
+        for qno, ans in answers.items():
+            if isinstance(ans, str):
+                if ans == '':
+                    remaining_count += 1
+                    remaining_list.append(qno)
+            if isinstance(ans, list):
+                if len(ans) < 1:
+                    remaining_count += 1
+                    remaining_list.append(qno)
+        return {'remaining_count':remaining_count, 'remaining_list':remaining_list}
