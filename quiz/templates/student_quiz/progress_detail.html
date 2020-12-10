@@ -39,12 +39,12 @@
         <div class="hr2"></div>
         <div class="row" style="margin-bottom: 10px;">
             <div class="col-md-6 col-sm-6 col-xs-12 text-left"><span class="text-bold"> {% trans 'Taken Date' %}:</span>
-                &nbsp; {{ object.start }}</div>
+                &nbsp; <span class="datecon">{{ object.start|date:'d M, Y h:i A' }}</span></div>
 
 
             <div class="col-md-6 col-sm-6 col-xs-12 text-right"><span
                     class="text-bold"> {% trans 'Finished Date' %}:</span>
-                &nbsp;{{ object.end }}</div>
+                &nbsp;<span class="datecon">{{ object.end|date:'d M, Y h:i A' }}</span></div>
 
         </div>
         <div class="row" style="margin-bottom: 10px;">
