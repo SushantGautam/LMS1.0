@@ -16,6 +16,14 @@
     {% block sidebar %}
 
         <style>
+            .hide {
+                display: none;
+            }
+
+            .show {
+                display: block;
+            }
+
             .nav-md .container.body .right_col {
                 padding: 10px 20px 0;
                 margin-left: 0px !important;
@@ -79,11 +87,13 @@
                 font-size: 20px;
             }
         </style>
-
+        <link rel="stylesheet" href="{% static 'chapterPageBuilder/css/jquery-ui.css' %}">
     {% endblock sidebar %}
 {% endblock %}
 
 {% block content %}
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% if previous.answers %}
 
@@ -237,12 +247,23 @@
       </div>
 
     {% endif %}
+
+    <div class="hide" id="dialog-confirm" title="Confirm Submit?">
+        <p>
+            <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+            This is the final submission. Are you sure to end the quiz?
+            <span class="text-danger">There are still {{ sitting.get_remaining_question.remaining_count }} questions left.</span>
+
+        </p>
+    </div>
 {% endblock %}
     <hr>
 
 
     {% block customjss %}
-    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'chapterPageBuilder/js/jquery-ui.min.js' %}"></script>
+
         <script>
             function updateFunctionTimeElapsed() {
                     $.ajax({
@@ -460,14 +481,26 @@
             });
 
             $('#completeQuizBtn').on('click', function (e) {
-                let confirmation = confirm('This is the final submission. Are you sure to end the quiz?');
-                if (!confirmation) {
-                    return false;
-                }
                 e.preventDefault();
-                newUrl = addParameterToURL('c=1');
-                $('#quizForm').attr('action', newUrl);
-                $('#quizForm').submit()
+                $( "#dialog-confirm" ).dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    open: function(){
+                      $( this ).removeClass( "hide" );
+                    },
+                    buttons: {
+                        "Complete": function() {
+                            newUrl = addParameterToURL('c=1');
+                            $('#quizForm').attr('action', newUrl);
+                            $('#quizForm').submit()
+                        },
+                        Cancel: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                });
             });
 
             function addParameterToURL(param){
