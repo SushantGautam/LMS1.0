@@ -1,15 +1,17 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-<small>Choose meaningful name and View Details on Assigned Courses Name List <b><a
-            href="{% url 'inninggroup_list' %}">here</a></b></small>
+<small>{% trans "Choose meaningful name and View Details on Assigned Courses Name List" %}
+    <a href="{% url 'inninggroup_list' %}" class="font-weight-bold">{% trans "here" %} </a>
+</small>
 <br>
 
 <form method="post" id="ajaxgroupforms">
     {% csrf_token %}
     {{ form.InningGroup_Name|as_crispy_field }}
     <div class="form-group">
-        <label for="id_Course_Code">Select Course</label>
+        <label for="id_Course_Code">{% trans "Select Course" %}</label>
         <select class="select2" id="id_Course_Code" name="Course_Code">
             {% for x, y in form.fields.Course_Code.choices %}
             <option value="{{ x }}" {% if form.initial.Course_Code == x %}selected{% endif %}>
@@ -22,8 +24,9 @@
         {{ form.Teacher_Code }}
     </div>
     <div class="d-inline-block col-12 text-center">
-        *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
-        MAC.
+        * {% trans "You can select multiple students by holding" %}
+        <code> {% trans "ctrl" %}</code> {% trans "key on Windows and" %} <code> {% trans "Command" %}⌘</code>
+        {% trans "key on MAC" %} .
     </div>
     <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
     <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
@@ -31,8 +34,9 @@
     <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
         class="select form-control">
     <div class="col-12 d-inline-block submitButton text-center pt-3">
-        <button class="btn btn-primary" type="submit">Submit</button>
-        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
+        <button class="btn btn-primary" type="submit">{% trans "Submit" %}</button>
+        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal"
+            id="close-btn">{% trans "Close" %}</button>
     </div>
 </form>
 

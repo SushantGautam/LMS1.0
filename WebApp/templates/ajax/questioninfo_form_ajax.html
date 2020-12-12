@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {{ form.media }}
 <div>
@@ -7,24 +8,24 @@
         {% csrf_token %}
         <div class="form-group">
             <label for="id_Question_Title" class="control-label">
-                Question Title <span class="asteriskField">*</span>
+                {% trans "Question Title" %} <span class="asteriskField">*</span>
             </label>
             <input type="text" name="Question_Title" maxlength="4000" class="form-control" required
                 value="{{ object.Question_Title }}" id="id_Question_Title">
         </div>
         <div class="form-group">
-            <label for="id_Question_Description">Question Description</label>
+            <label for="id_Question_Description">{% trans "Question Description" %}</label>
             {{ form.Question_Description }}
         </div>
         <div class="form-group">
             <label for="id_Question_Score">
-                Question Score <span class="asteriskField">*</span>
+                {% trans "Question Score" %} <span class="asteriskField">*</span>
             </label>
             <input type="numb er" name="Question_Score" value="{{ object.Question_Score }}" required
                 id="id_Question_Score" class="form-control">
         </div>
         <div class="form-group">
-            <label for="id_Answer_Type">Answer Type <span class="asteriskField">*</span></label>
+            <label for="id_Answer_Type">{% trans "Answer Type" %} <span class="asteriskField">*</span></label>
             <select class="form-control" id="id_Answer_Type" name="Answer_Type">
                 {% for x, y in form.fields.Answer_Type.choices %}
                 <option value="{{ x }}" {% if form.initial.Answer_Type == x %} selected{% endif %}>{{ y }}
@@ -33,7 +34,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="id_Course_Cover_File">Question Media File</label>
+            <label for="id_Course_Cover_File">{% trans "Question Media File" %}</label>
             <br>
             {{form.Question_Media_File}}
         </div>
@@ -45,7 +46,7 @@
             <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.pk }}"
                 class="select form-control">
             <div class="text-center pt-3">
-                <button type="submit" class="btn btn-primary" style="margin:auto">Submit</button>
+                <button type="submit" class="btn btn-primary" style="margin:auto">{% trans "Submit" %}</button>
             </div>
     </form>
 </div>

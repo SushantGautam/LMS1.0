@@ -1,11 +1,12 @@
 {% load static %}
-
+{% load i18n %}
 
 <div class="modal fade" id="add_question_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="add_question_modal_title">Add Question
+                <h5 class="modal-title text-primary font-weight-bold" id="add_question_modal_title">
+                    {% trans "Add Question" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
@@ -21,7 +22,8 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="editAssignmentModal_title">Edit Assignment
+                <h5 class="modal-title text-primary font-weight-bold" id="editAssignmentModal_title">
+                    {% trans "Edit Assignment" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
@@ -34,17 +36,17 @@
                     </div>
                     <div class="form-group">
                         <label for="id_Assignment_Topic_edit" class="control-label">
-                            Assignment Topic <span class="asteriskField">*</span>
+                            {% trans "Assignment Topic" %} <span class="asteriskField">*</span>
                         </label>
-                        <input type="text" name="Assignment_Topic" maxlength="500" class="form-control" required
-                            id="id_Assignment_Topic_edit" value="{{ object.Assignment_Topic }}">
+                        <input type="text" name="Assignment_Topic" maxlength="500" class="form-control"
+                            id="id_Assignment_Topic_edit" value="{{ object.Assignment_Topic }}" required>
                     </div>
 
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="id_Assignment_Start_edit" class="control-label">
-                                    Assignment Start *
+                                    {% trans "Assignment Start" %} *
                                 </label>
                                 <input type="text" name="Assignment_Start_edit" class="form-control"
                                     id="id_Assignment_Start_edit" value="{{ object.Assignment_Start|date:'c' }}" min=""
@@ -54,16 +56,16 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="id_Assignment_Deadline_edit" class="control-label">
-                                    Assignment Deadline *
+                                    {% trans "Assignment Deadline" %} *
                                 </label>
                                 <input type="text" name="Assignment_Deadline_edit" class="form-control"
                                     id="id_Assignment_Deadline_edit" value="{{ object.Assignment_Deadline|date:'c' }}"
-                                    min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31">
+                                    min="{{ datetime|date:'Y-m-d' }}" max="9999-12-31" required>
                             </div>
                         </div>
                     </div>
                     <div class="form-group text-center">
-                        <label for="id_Use_Flag">Publish</label><br>
+                        <label for="id_Use_Flag">{% trans "Publish" %}</label><br>
                         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
                             {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} checked
                             {% endif %}>
@@ -81,7 +83,7 @@
                             class="select form-control">
                     </div>
                     <div class="submitButton text-center col-md-12">
-                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <button class="btn btn-primary" type="submit">{% trans "Submit" %}</button>
                     </div>
                 </form>
             </div>
@@ -93,7 +95,7 @@
     <div class=" col-md-8 col-sm-12 col-xs-12 ">
         <div class="page-header">
             <div class="page-title">
-                <h4 class="d-flex align-items-center">Assignment Information
+                <h4 class="d-flex align-items-center">{% trans "Assignment Information" %}
                 </h4>
             </div>
             <h5>{{ object.Assignment_Topic }}</h5>
@@ -101,11 +103,11 @@
 
         <div class="my-5">
             <div class="d-flex justify-content-between">
-                <h4 class="text-primary mb-4">List of Questions</h4>
+                <h4 class="text-primary mb-4">{% trans "List of Questions" %}</h4>
                 <div>
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add_question_modal"
                         id="add-newquestion-btn">
-                        Add Question
+                        {% trans "Add Question" %}
                     </button>
                 </div>
             </div>
@@ -124,7 +126,7 @@
                         <div class="row d-flex align-items-center">
                             {% if '/students' in request.path %}
                             <button class="btn btn-sm btn-outline-primary answerButton mx-2" type="button"
-                                id="{{ question.pk }}">ANSWER <i class="fa fa-arrow-right"></i>
+                                id="{{ question.pk }}">{% trans "ANSWER" %} <i class="fa fa-arrow-right"></i>
                             </button>
                             {% endif %}
                             {% if '/students' not in request.path %}
@@ -134,7 +136,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header text-center">
                                             <h5 class="modal-title text-primary font-weight-bold"
-                                                id="editQuestionModal_title">Edit Question
+                                                id="editQuestionModal_title">{% trans "Edit Question" %}
                                             </h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <i class="ti-close"></i>
@@ -195,28 +197,28 @@
                         data-parent="#questionList{{ question.pk }}">
                         <div class="p-3">
                             {% if  question.Question_Score %}
-                            <p>Question Score : {{ question.Question_Score }}</p>
+                            <p>{% trans "Question Score" %} : {{ question.Question_Score }}</p>
                             {% endif %}
                             {% if  question.Question_Description %}
-                            <p>Question Description : {{ question.Question_Description | safe }}</p>
+                            <p>{% trans "Question Description" %} : {{ question.Question_Description | safe }}</p>
                             {% endif %}
                             {% if question.Answer_Type %}
-                            <p>Answer Type : {% if question.Answer_Type == 'S' %}
-                                Short Answer
+                            <p>{% trans "Answer Type" %} : {% if question.Answer_Type == 'S' %}
+                                {% trans "Short Answer" %}
                                 {% else %}
-                                File Upload
+                                {% trans "File Upload" %}
                                 {% endif %}
                             </p>
                             {% endif %}
                             {% if  question.Question_Media_File %}
-                            <p>Question Media : </p>
+                            <p>{% trans "Question Media" %} : </p>
                             <p>
                                 {% if question.extension == '.jpg' or question.extension == '.png' %}
                                 <img class="card-img-top" width="400px" src="{{ question.Question_Media_File.url }}">
                                 {% else %}
                                 <a href="{{ question.Question_Media_File.url }}" target="_blank"><b
-                                        style="color:#017a9b">Click
-                                        to view attatched file</b></a>
+                                        style="color:#017a9b">
+                                        {% trans "Click to view attatched file" %}</b></a>
                                 {% endif %}
                             </p>
                             {% endif %}
@@ -243,9 +245,9 @@
                         </button>
                         {% endif %}
                         {% else %}
-                        <p>File has been Submitted</p>
-                        <a href="{{ answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">Click
-                                to view Submitted file</b></a>
+                        <p>{% trans "File has been Submitted" %}</p>
+                        <a href="{{ answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">
+                                {% trans "Click to view Submitted file" %}</b></a>
                         <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}" style="float: right"
                             title="Delete Answer"><i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
@@ -279,16 +281,17 @@
                                 <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ question.pk }}">
                                                 Cancel
                                             </button> -->
-                                <button class="btn btn-sm btn-primary" type="reset">Reset
+                                <button class="btn btn-sm btn-primary" type="reset">{% trans "Reset" %}
                                 </button>
                                 <button type="button" class="btn btn-sm btn-success submitAnswer"
                                     id="answer{{ question.id }}" data-id="{{ question.id }}"
                                     data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                    Submit
+                                    {% trans "Submit" %}
                                 </button>
                                 {% else %}
-                                <p class="text-danger">Submission is prohibited. Please check
-                                    assignment start and end date</p>
+                                <p class="text-danger">
+                                    {% trans "Submission is prohibited. Please check assignment start and end date" %}
+                                </p>
                                 {% endif %}
                             </div>
 
@@ -297,7 +300,7 @@
                             <div class="form-group">
                                 <label for="id_Assignment_File{{ question.id }}" class="">
                                     <span style="font-size: 10px; color: #721c24">
-                                        Assignment File (Max: 10 MB) </span>
+                                        {% trans "Assignment File" %} ({% trans "Max" %}: 10 MB) </span>
                                 </label>
 
                                 <input type="file" name="Assignment_File" id="id_Assignment_File{{ question.id }}"
@@ -311,17 +314,18 @@
                                 {% now "Y-m-d H:i" as todays_date %}
                                 {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
                                 <button class="btn btn-sm btn-primary" type="reset" id="cancelButton{{ question.pk }}">
-                                    Cancel
+                                    {% trans "Cancel" %}
                                 </button>
 
                                 <button type="button" class="btn btn-sm btn-success submitAnswer"
                                     id="answer{{ question.id }}" data-id="{{ question.id }}"
                                     data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                    Submit
+                                    {% trans "Submit" %}
                                 </button>
                                 {% else %}
-                                <p class="text-danger">Submission is prohibited. Please check
-                                    assignment start and end date</p>
+                                <p class="text-danger">
+                                    {% trans "Submission is prohibited. Please check assignment start and end date" %}
+                                </p>
                                 {% endif %}
                             </div>
                             {% endif %}
@@ -337,38 +341,38 @@
     <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="card">
             <div class="px-4 pt-4">
-                <p class="text-primary mb-3">Assignment : {{ object.Assignment_Topic }}</p>
+                <p class="text-primary mb-3">{% trans "Assignment" %} : {{ object.Assignment_Topic }}</p>
                 <p>
-                    Assignment Start Date : {{ object.Assignment_Start|date:'d M, Y h:i A' }}
+                    {% trans "Assignment Start Date" %} : {{ object.Assignment_Start|date:'d M, Y h:i A' }}
                 </p>
                 <p>
-                    Assignment End Date : {{ object.Assignment_Deadline|date:'d M, Y h:i A' }}
+                    {% trans "Assignment End Date" %} : {{ object.Assignment_Deadline|date:'d M, Y h:i A' }}
                 </p>
                 <p>
-                    Course Code : {{ object.Course_Code }}
+                    {% trans "Course Code" %} : {{ object.Course_Code }}
                 </p>
                 <p>
-                    Chapter Code : {{ object.Chapter_Code }}
+                    {% trans "Chapter Code" %} : {{ object.Chapter_Code }}
                 </p>
                 <p>
-                    Status :{% if object.Use_Flag is True %}
-                    <span class="badge badge-success">Published</span>
+                    {% trans "Status" %} :{% if object.Use_Flag is True %}
+                    <span class="badge badge-success">{% trans "Published" %}</span>
                     {% elif object.Use_Flag is False %}
-                    <span class="badge badge-danger">Not Published</span>
+                    <span class="badge badge-danger">{% trans "Not Published" %}</span>
                     {% endif %}
 
                     {% now "Y-m-d H:i" as todays_datewithtime %}
                     {% if object.Assignment_Start and todays_datewithtime < object.Assignment_Start|date:"Y-m-d H:i" %}
-                    <span class="badge badge-info">Upcoming</span>
+                    <span class="badge badge-info">{% trans "Upcoming" %}</span>
                     {% elif object.Assignment_Deadline and todays_datewithtime > object.Assignment_Deadline|date:"Y-m-d H:i" %}
-                    <span class="badge badge-danger">Expired</span>
+                    <span class="badge badge-danger">{% trans "Expired" %}</span>
                     {% else %}
-                    <span class="badge badge-success">Active</span>
+                    <span class="badge badge-success">{% trans "Active" %}</span>
                     {% endif %}
                 </p>
 
                 <p>
-                    Register Agent : {{ object.Register_Agent }}
+                    {% trans "Register Agent" %} : {{ object.Register_Agent }}
                 </p>
             </div>
             <ul class="text-center">
@@ -376,11 +380,12 @@
                 <li class="p-2 border-top">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAssignmentModal"
                         id="editAssignment-btn">
-                        Edit Assignment
+                        {% trans "Edit Assignment" %}
                     </button>
                     &nbsp;
                     {% if '/teachers' in request.path %}
-                    <a class="btn btn-danger text-white assignment-confirm-delete" id="{{ object.pk }}">Delete</a>
+                    <a class="btn btn-danger text-white assignment-confirm-delete"
+                        id="{{ object.pk }}">{% trans "Delete" %}</a>
                     <form method="post" action="{% url 'teacher_assignmentinfo_delete' pk=object.pk %}"
                         id="deleteAssignment{{ object.pk }}">
                         {% csrf_token %}
@@ -390,7 +395,8 @@
                         <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
                     </form>
                     {% else %}
-                    <a class="btn btn-danger text-white assignment-confirm-delete" id="{{ object.pk }}">Delete</a>
+                    <a class="btn btn-danger text-white assignment-confirm-delete"
+                        id="{{ object.pk }}">{% trans "Delete" %}</a>
                     <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
                         id="deleteAssignment{{ object.pk }}">
                         {% csrf_token %}
@@ -413,7 +419,7 @@
                 {% if 'teacher' in request.path %}
                 <li class="p-2 border-top">
                     <a class="btn btn-success btn-info" href="{% url 'teacher_assignment_answers' object.pk %}">
-                        View Assignment Submissions
+                        {% trans "View Assignment Submissions" %}
                     </a>
                 </li>
                 {% endif %}
