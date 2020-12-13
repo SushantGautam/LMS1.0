@@ -65,7 +65,7 @@
                         <th rowspan="2">S.No</th>
                         <th rowspan="2">Chapter Name</th>
                         <th rowspan="2">Content</th>
-                        <th rowspan="2">ReadTime</th>
+                        <th rowspan="2">Running Time</th>
                         <th rowspan="2">Quiz</th>
                         <th rowspan="2">Assignment</th>
                         {% for session in sessions %}
@@ -142,6 +142,28 @@
                     $(this).text($(this).closest('tr').find('.chaptertd').length)
                 }
             });
+
+             var table = $('.table').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ]
+            });
+            table.on('order.dt', function () {
+                table.column(0, {order: 'applied'}).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                    table.cell(cell).invalidate('dom');
+                });
+            }).draw();
         });
     </script>
 
