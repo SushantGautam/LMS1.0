@@ -123,3 +123,8 @@ def getSessionMap(object, model_name, sessions=None):
     elif model_name == 'chapterinfo':
         return object.chapter_sessionmaps.filter(
             Session_Code=sessions) if sessions else object.chapter_sessionmaps.all
+
+@register.simple_tag
+def getQuizQuestionIndex(sitting, questionID):
+    if str(questionID) in sitting.question_order.split(','):
+        return sitting.question_order.split(',').index(str(questionID)) + 1

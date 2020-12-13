@@ -308,7 +308,7 @@ class MCQuestion(Question):
 
     def get_correct_answer(self):
         correct_ans = list(Answer.objects.filter(question=self, correct=True).values_list('content', flat=True))
-        return ", ".join( repr(e) for e in correct_ans)
+        return ", ".join(repr(e) for e in correct_ans)
 
     def answer_choice_to_string(self, guess):
         return Answer.objects.get(id=guess).content
@@ -598,12 +598,11 @@ class Quiz(models.Model):
 
     def has_saqs(self):
         return (self.saquestion.count() > 0)
-    
+
     def has_sittings(self):
         if Sitting.objects.filter(quiz=self):
             return True
         return False
-
 
     # def get_questions(self):
     #    return self.question_set.all()
@@ -713,7 +712,6 @@ class SittingManager(models.Manager):
             else:
                 saquestion_set = quiz.saquestion.all()
                 saquestion_set = [item.id for item in saquestion_set]
-            
 
         if (len(mcquestion_set) == 0 and len(tfquestion_set) == 0 and len(saquestion_set) == 0):
             raise ImproperlyConfigured('Question set of the quiz is empty. Please configure questions properly')
@@ -836,9 +834,11 @@ class Sitting(models.Model):
         """
 
         if not question_index:
-            first, _ = self.question_list.split(',', 1) if self.question_list != '' else self.question_order.split(',', 1)
+            first, _ = self.question_list.split(',', 1) if self.question_list != '' else (
+                self.question_order.split(',', 1) if self.question_order.split(
+                    ',')[-1] != '' else self.question_order.split(',')[-2], None)
         else:
-            first = self.question_order.split(',')[question_index-1]
+            first = self.question_order.split(',')[question_index - 1]
         question_id = int(first)
 
         return Question.objects.get_subclass(id=question_id)
@@ -878,11 +878,11 @@ class Sitting(models.Model):
             mcq_user_ans = user_answers.get(str(i.id))
             num_correct_options = i.get_num_correct_options()
             per_score = i.score / num_correct_options
-            if mcq_user_ans:                                    # if no answer, just add 0, so just ignore
-                if not (isinstance(mcq_user_ans, list)):        # For old data without list
+            if mcq_user_ans:  # if no answer, just add 0, so just ignore
+                if not (isinstance(mcq_user_ans, list)):  # For old data without list
                     mcq_user_ans = [mcq_user_ans]
                 for ans in mcq_user_ans:
-                    if i.check_if_correct(ans):                 # multi-ans-effect
+                    if i.check_if_correct(ans):  # multi-ans-effect
                         totalmcq_score += per_score
                     elif self.quiz.negative_marking:
                         totalmcq_score -= float(per_score * self.quiz.negative_percentage) / 100
@@ -1010,14 +1010,15 @@ class Sitting(models.Model):
                     if isinstance(q, MCQuestion):
                         if (isinstance(user_ans, list)):
                             ans_temp = list(Answer.objects.filter(
-                                            id__in=[int(a) for a in user_ans]).values_list('content', flat=True))    # multi-ans-effect
-                            q.user_answer = ", ".join(ans_temp)   # formatted display
-                            
-                        else:               # old data case
-                            q.user_answer = Answer.objects.get(id=int(user_ans)).content 
+                                id__in=[int(a) for a in user_ans]).values_list('content',
+                                                                               flat=True))  # multi-ans-effect
+                            q.user_answer = ", ".join(ans_temp)  # formatted display
+
+                        else:  # old data case
+                            q.user_answer = Answer.objects.get(id=int(user_ans)).content
                     else:
                         q.user_answer = user_ans
-                    
+
                     if isinstance(q, SA_Question):
                         i = [int(n) for n in json.loads(self.user_answers).keys() if n].index(q.id)
                         score_list = str(self.score_list).split(',')
@@ -1025,19 +1026,19 @@ class Sitting(models.Model):
                             q.score_obtained = score_list[i]
                             q.ans_correct = True
                             if str(q.score_obtained) == '0':
-                                 q.ans_correct = False
+                                q.ans_correct = False
                         else:
                             q.score_obtained = "not_graded"
                             q.ans_correct = True
                     elif isinstance(q, MCQuestion):
-                        num_correct_options = q.get_num_correct_options() # get number of correct options
+                        num_correct_options = q.get_num_correct_options()  # get number of correct options
                         num_options = q.get_answers().count()
                         per_score = q.score / num_correct_options
                         guess = user_ans
                         if not (isinstance(guess, list)):
-                            guess = [guess]         #### support for old sitting data where there won't be list.
+                            guess = [guess]  #### support for old sitting data where there won't be list.
                         score = 0
-                        is_correct = True   
+                        is_correct = True
 
                         ##############################################################
                         ##### loop for all user chosen:                           ####
@@ -1052,7 +1053,7 @@ class Sitting(models.Model):
                             if q.check_if_correct(g):
                                 score += per_score
                             else:
-                                is_correct = False          ###### user selected wrong answer
+                                is_correct = False  ###### user selected wrong answer
                                 if self.quiz.negative_marking:
                                     score -= float(per_score * self.quiz.negative_percentage) / 100.0
                                 else:
@@ -1061,10 +1062,10 @@ class Sitting(models.Model):
                         num_correct_guess = sum([q.check_if_correct(g) for g in guess])
                         if not (num_correct_options == num_correct_guess):
                             is_correct = False
-                                    
+
                         q.score_obtained = score
                         q.ans_correct = is_correct
-                                        
+
                     else:
                         if q.check_if_correct(user_ans):
                             q.score_obtained = q.score
@@ -1077,7 +1078,7 @@ class Sitting(models.Model):
                             q.ans_correct = False
                 else:
                     q.user_answer = ' '
-                    q.score_obtained  = 0
+                    q.score_obtained = 0
 
                 # # q.user_answer = user_answers[str(q.id)]
                 # q.user_answer = user_answers.get(str(q.id), False)
@@ -1091,7 +1092,7 @@ class Sitting(models.Model):
         return questions
 
     @property
-    def questions_with_user_answers(self):          # multi-ans-effect for child
+    def questions_with_user_answers(self):  # multi-ans-effect for child
         return {
             q: q.user_answer for q in self.get_questions(with_answers=True)
         }
@@ -1124,13 +1125,13 @@ class Sitting(models.Model):
         user_answers = json.loads(self.user_answers)
         guess = user_answers.get(str(mcq.id), False)
         if guess and not (isinstance(guess, list)):
-            guess = [guess]         #### support for old sitting data where there won't be list.
+            guess = [guess]  #### support for old sitting data where there won't be list.
         if guess:
-            num_correct_options = mcq.get_num_correct_options() # get number of correct options
+            num_correct_options = mcq.get_num_correct_options()  # get number of correct options
             num_options = mcq.get_answers().count()
             per_score = mcq.score / num_correct_options
             score = 0
-            is_correct = True   
+            is_correct = True
 
             ##############################################################
             ##### loop for all user chosen:                           ####
@@ -1145,7 +1146,7 @@ class Sitting(models.Model):
                 if mcq.check_if_correct(g):
                     score += per_score
                 else:
-                    is_correct = False          ###### user selected wrong answer
+                    is_correct = False  ###### user selected wrong answer
                     if self.quiz.negative_marking:
                         score -= float(per_score * self.quiz.negative_percentage) / 100.0
                     else:
@@ -1153,15 +1154,15 @@ class Sitting(models.Model):
 
             num_correct_guess = sum([mcq.check_if_correct(g) for g in guess])
             if not (num_correct_options == num_correct_guess):
-                is_correct = False                  ######### user didn't selected all answers
-                        
+                is_correct = False  ######### user didn't selected all answers
+
             return score, is_correct
         else:
             return 0, False
 
     def get_remaining_question(self):
         answers = dict(json.loads(self.user_answers))
-        remaining_count = self.progress()[2]-self.progress()[0]
+        remaining_count = self.progress()[2] - self.progress()[0]
         remaining_list = []
         for qno, ans in answers.items():
             if isinstance(ans, str):
@@ -1172,4 +1173,4 @@ class Sitting(models.Model):
                 if len(ans) < 1:
                     remaining_count += 1
                     remaining_list.append(qno)
-        return {'remaining_count':remaining_count, 'remaining_list':remaining_list}
+        return {'remaining_count': remaining_count, 'remaining_list': remaining_list}

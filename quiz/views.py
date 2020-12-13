@@ -298,7 +298,7 @@ class QuizTake(FormView):
 
         self.request.POST = {}
         if not self.request.GET.get('action') or (
-                self.request.GET.get('action') and self.request.GET.get('action') != "-1"):
+                self.request.GET.get('action') and self.request.GET.get('action') not in ["-1","0"]):
             if len(self.sitting.question_order.split(',')) <= int(self.current_question_number):
                 self.request.GET = {}
                 self.current_question_number = None
@@ -310,6 +310,13 @@ class QuizTake(FormView):
                     self.request.method = "GET"
                     self.request.GET = {'q': str(int(self.current_question_number) + 1)}
                     self.current_question_number = str(int(self.current_question_number) + 1)
+
+        elif self.request.GET.get('action') and self.request.GET.get('action') == "0":
+            print(self.request.GET.get('action'), self.request.GET.get('nq'))
+            self.request.method = "GET"
+            self.current_question_number = str(self.request.GET.get('nq'))
+            self.request.GET = {'q': str(self.request.GET.get('nq'))}
+
         else:
             self.request.method = "GET"
             self.request.GET = {'q': str(int(self.current_question_number) - 1)}
@@ -322,6 +329,10 @@ class QuizTake(FormView):
                 self.request.method = "GET"
                 self.request.GET = {'q': str(int(self.current_question_number) - 1)}
                 self.current_question_number = str(int(self.current_question_number) - 1)
+            elif self.request.GET.get('action') and self.request.GET.get('action') == "0":
+                self.request.method = "GET"
+                self.current_question_number = str(self.request.GET.get('nq'))
+                self.request.GET = {'q': str(self.request.GET.get('nq'))}
             else:
                 self.request.method = "GET"
                 self.request.GET = {'q': str(int(self.current_question_number) - 1)}
@@ -480,16 +491,6 @@ class QuizTake(FormView):
                         score_list[idx] = (str(negative_score))
 
         self.sitting.score_list = ','.join(score_list)
-
-        # if self.quiz.answers_at_end is not True:
-        #     self.previous = {'previous_answer': guess,
-        #                      'previous_outcome': is_correct,
-        #                      'previous_question': self.question,
-        #                      'answers': self.question.get_answers(),
-        #                      'question_type': {self.question
-        #                                            .__class__.__name__: True}}
-        # else:
-        #     self.previous = {}
 
         self.previous = {}
 

@@ -271,7 +271,7 @@
 
                   <ul  class="nav nav-pills">
                     <li class="active">
-                <a  href="#1a" data-toggle="tab" style="padding: 5px!important;     ">All Question</a>
+                <a  href="#1a" data-toggle="tab" style="padding: 5px!important;">All Question</a>
                     </li>
                     <li><a href="#2a" data-toggle="tab" style="padding: 5px!important;" >Incomplete</a>
                     </li>
@@ -281,16 +281,29 @@
                     <div class="tab-pane active" id="1a">
                         <ul class="incomplete-qts">
 
-                        {% for question in sitting.get_remaining_question.remaining_list %}
-                            <li> <b><i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i></b> &nbsp; <b>{{question}}</b>    </li>
-                         
+                        {% for question in sitting.get_questions %}
+                            <li> <b><i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i></b> &nbsp;
+                                <b>
+                                    {% getQuizQuestionIndex sitting question.id as qindex %}
+                                    <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}"> {{ qindex }}</a>
+                                </b>
+                            </li>
+
                           {% endfor %}
 
                         </ul>
                       </div>
                       <div class="tab-pane" id="2a">
                         <ul class="incomplete-qts">
+                            {% for question in sitting.get_remaining_question.remaining_list %}
+                                <li> <b><i class="fa fa-times" aria-hidden="true" style="color:rgb(136, 60, 72); "></i></b> &nbsp;
+                                    <b>
+                                        {% getQuizQuestionIndex sitting question as qindex %}
+                                        <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}"> {{ qindex }}</a>
+                                    </b>
+                                </li>
 
+                              {% endfor %}
                         </ul>
                       </div>
             
@@ -530,6 +543,13 @@
             $('#nextBtn').on('click', function (e) {
                 e.preventDefault();
                 newUrl = addParameterToURL('action=1');
+                $('#quizForm').attr('action', newUrl);
+                $('#quizForm').submit()
+            });
+
+            $('.quizlinkBtn').on('click', function (e) {
+                e.preventDefault();
+                newUrl = addParameterToURL('action=0&nq='+$(this).attr('data-value'));
                 $('#quizForm').attr('action', newUrl);
                 $('#quizForm').submit()
             });
