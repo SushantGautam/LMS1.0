@@ -16,6 +16,22 @@
     {% block sidebar %}
 
         <style>
+            .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+                color: #fff;
+                background-color: #2a3f54!important;}
+            .incomplete-qts{
+                list-style: none;
+                padding: 0px!important;
+                max-height: 80vh;
+                overflow: auto;
+                margin: 10px 0;
+              
+            }
+            .incomplete-qts li {
+                border-bottom: 1px solid grey;
+                padding: 3px;
+
+            }
             .hide {
                 display: none;
             }
@@ -137,116 +153,154 @@
     </div>
 
     {% if question %}
-        {% if quiz.exam_paper %}
-            <div class="col-md-12 col-md-12 col-xs-12 ">
-                {% comment %}
-                <div class="pie degree" id="quiz-timer" data-timer="{{ remaining_time }}">
-                    <span class="block-timer"></span>
-                    <span id="time"></span>
-                    <!-- <span id="time1">0</span> -->
-                </div>
-                {% endcomment %}
-                <div id="app" class="quiz-timer" data-timer="{{ remaining_time }}"></div>
-            </div>
-
-
-        {% endif %}
-      <div class="col-md-12" style="margin-top: 25px;">
-          <div class="row">
-              <div class="col-md-2 button-for-height">
-                {% if has_previous %}
-                <div class=" button-prev-quiz text-center ">
-                    <a href="javascript:void(0)" id="prevBtn">
-                        <button class="btn btn-secondary btn-lg" title="Previous Question" id="previous-btn"><i class="fa fa-arrow-circle-left"></i> Previous</button>
-                    </a>
-                </div>
-            {% endif %}
-
-              </div>
-
-              <div class="col-md-8 text-center">
-                  <div class="row">
-                    <div class="col-md-6 text-left">
-                        <p>
-                            <small class="muted"><strong>
-                                {% trans "Question category" %}:
-
-                            </strong>
-                            </small>
-                            <strong>{{ question.category }}</strong>
-                        </p>
-
+    <div class="col-md-12" style="padding: 0px!important;">
+        <div class="row">
+            <div class="col-md-10">
+                {% if quiz.exam_paper %}
+                <div class="col-lg-12 col-md-12 col-xs-12 ">
+                    {% comment %}
+                    <div class="pie degree" id="quiz-timer" data-timer="{{ remaining_time }}">
+                        <span class="block-timer"></span>
+                        <span id="time"></span>
+                        <!-- <span id="time1">0</span> -->
                     </div>
-                    <div class="col-md-6 text-right">
-                        {% if progress %}
-                        <div style="float: right;">
-                           <span><b>{% trans "Remaining Question:" %} <span style="color: #eea236;">
-                            {{ sitting.get_remaining_question.remaining_count }}
-                           </span></b></span> &nbsp;&nbsp; <span><b>{% trans "Total Question:" %} <span style="color: #eea236;">  {{ progress.2 }}     </span> </b></span>
-                            <!-- {% trans "Question" %} {{ question_number }} {% trans "of" %} {{ progress.2 }} -->
-                        </div>
-                    {% endif %}
-                      </div>
-                  </div>
-                        <div class="quiz-questions"
-                                                        >
-        <div id="step-1">
-        <div class="privew1">
-        <div class="questionsBox">
-        <div class="questions">{{ question_number }})&nbsp; {{ question.content }}</div>
-
-
-        {% if question.figure %}
-        <div class="quiz-ques-image">
-
-            <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
-
-
-        </div>
-
-        {% endif %}
-        <form action="" method="POST" id="quizForm">
-            {% csrf_token %}
-        <input type=hidden name="question_id" value="{{ question.id }}">
-        <ul class="list-group">
-
-            {% for answer in form.answers %}
-                <li class="list-group-item">
-                    {{ answer }}
-                </li>
-            {% endfor %}
-
-        </ul>
-         {% if    question_number == progress.2  %}
-        <input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
-            btn-success" id="completeQuizBtn">
-         {% else   %}
-         <input type="submit" value="{% trans 'Submit' %}" class="btn btn-large btn-block
-         btn-warning" >
-         {% endif %}
-
-
-        </form>
-
-        </div>
-        </div>
-
-        </div>
-                        </div>
-              </div>
-              <div class="col-md-2 nextbutton-for-height  ">
-                {% if has_next %}
-                <div class="button-next-quiz text-center" >
-                    <a href="javascript:void(0)" id="nextBtn">
-                        <button class="btn btn-secondary btn-lg" title="Next Question" id="next-btn"><i class="fa fa-arrow-circle-right"></i> Next</button>
-                    </a>
+                    {% endcomment %}
+                    <div id="app" class="quiz-timer" data-timer="{{ remaining_time }}"></div>
                 </div>
+    
+    
             {% endif %}
+          <div class="col-md-12" style="margin-top: 25px;">
+              <div class="row">
+                  <div class="col-md-1 button-for-height">
+                    {% if has_previous %}
+                    <div class=" button-prev-quiz text-center ">
+                        <a href="javascript:void(0)" id="prevBtn">
+                            <button class="btn btn-secondary btn-sm" title="Previous Question" id="previous-btn"><i class="fa fa-arrow-circle-left"style="font-size: 20px;"></i> <br> Prev</button>
+                        </a>
+                    </div>
+                {% endif %}
+    
+                  </div>
+    
+                  <div class="col-md-10 text-center">
+                      <div class="row">
+                        <div class="col-md-6 text-left">
+                            <p>
+                                <small class="muted"><strong>
+                                    {% trans "Question category" %}:
+    
+                                </strong>
+                                </small>
+                                <strong>{{ question.category }}</strong>
+                            </p>
+    
+                        </div>
+                        <div class="col-md-6 text-right">
+                            {% if progress %}
+                            <div style="float: right;">
+                               <span><b>{% trans "Remaining Question:" %} <span style="color: #eea236;">
+                                {{ sitting.get_remaining_question.remaining_count }}
+                               </span></b></span> &nbsp;&nbsp; <span><b>{% trans "Total Question:" %} <span style="color: #eea236;">  {{ progress.2 }}     </span> </b></span>
+                                <!-- {% trans "Question" %} {{ question_number }} {% trans "of" %} {{ progress.2 }} -->
+                            </div>
+                        {% endif %}
+                          </div>
+                      </div>
+                            <div class="quiz-questions"
+                                                            >
+            <div id="step-1">
+            <div class="privew1">
+            <div class="questionsBox">
+            <div class="questions">{{ question_number }})&nbsp; {{ question.content }}</div>
+    
+    
+            {% if question.figure %}
+            <div class="quiz-ques-image">
+    
+                <img src="{{ question.figure.url }}" alt="{{ question.content }}"/>
+    
+    
+            </div>
+    
+            {% endif %}
+            <form action="" method="POST" id="quizForm">
+                {% csrf_token %}
+            <input type=hidden name="question_id" value="{{ question.id }}">
+            <ul class="list-group">
+    
+                {% for answer in form.answers %}
+                    <li class="list-group-item">
+                        {{ answer }}
+                    </li>
+                {% endfor %}
+    
+            </ul>
+             {% if    question_number == progress.2  %}
+            <input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
+                btn-success" id="completeQuizBtn">
+             {% else   %}
+             <input type="submit" value="{% trans 'Submit' %}" class="btn btn-large btn-block
+             btn-warning" >
+             {% endif %}
+    
+    
+            </form>
+    
+            </div>
+            </div>
+    
+            </div>
+                            </div>
+                  </div>
+                  <div class="col-md-1 nextbutton-for-height  ">
+                    {% if has_next %}
+                    <div class="button-next-quiz text-center" >
+                        <a href="javascript:void(0)" id="nextBtn">
+                            <button class="btn btn-secondary btn-sm" title="Next Question" id="next-btn"><i class="fa fa-arrow-circle-right" style="font-size: 20px;"></i> <br> Next</button>
+                        </a>
+                    </div>
+                {% endif %}
+                  </div>
               </div>
           </div>
-      </div>
+            </div>
+            <div class="col-md-2">
+               
 
-    {% endif %}
+
+                  <ul  class="nav nav-pills">
+                    <li class="active">
+                <a  href="#1a" data-toggle="tab" style="padding: 5px!important;     ">All Question</a>
+                    </li>
+                    <li><a href="#2a" data-toggle="tab" style="padding: 5px!important;" >Incomplete</a>
+                    </li>
+                  
+                </ul>
+                <div class="tab-content clearfix" style="border:2px solid #f0ad4e; margin:10px 0;padding:0px 10px; border-radius:5px">
+                    <div class="tab-pane active" id="1a">
+                        <ul class="incomplete-qts">
+
+                        {% for question in sitting.get_remaining_question.remaining_list %}
+                            <li> <b><i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i></b> &nbsp; <b>{{question}}</b>    </li>
+                         
+                          {% endfor %}
+
+                        </ul>
+                      </div>
+                      <div class="tab-pane" id="2a">
+                        <ul class="incomplete-qts">
+
+                        </ul>
+                      </div>
+            
+                  </div>
+            </div>
+        </div>
+    </div>
+  
+
+    {% endif %} 
 
     <div class="hide" id="dialog-confirm" title="Confirm Submit?">
         <p>
