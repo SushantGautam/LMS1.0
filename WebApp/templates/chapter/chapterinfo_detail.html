@@ -1,6 +1,30 @@
 {% load static %}
 {% load i18n %}
 {% load model_template_relation %}
+{% load comment_tags %}  {# Loading the template tag #}
+
+<style>
+      .custom-table-width {
+        max-width: 40%;
+
+    }
+
+    .date-width {
+        max-width: 25%
+    }
+
+    @media (min-width: 768px ) and (max-width: 991px) {
+        .custom-table-width {
+            max-width: 38%;
+        }
+
+        .date-width {
+            max-width: 30%
+        }
+
+    }
+</style>
+
 
 <div class="modal fade" id="create_assignment_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

@@ -2078,67 +2078,88 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
     form_class = AssignmentInfoForm
     template_name = 'ajax/assignmentinfo_form_ajax.html'
 
-    def post(self, request, *args, **kwargs):
-        Obj = AssignmentInfo()
-        Obj.Assignment_Topic = request.POST["Assignment_Topic"]
-        Obj.Assignment_Start = request.POST["Assignment_Start"]
-        Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
-        Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-        Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-        Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
-        Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.save()
+        if self.request.POST.get('sessiondata[]'):
+            for session in json.loads(self.request.POST.get('sessiondata[]')):
+                requestStatus = InningInfoMappingView(model_name='AssignmentInfo', start_date=session['start_date'],
+                                                      end_date=session['end_date'], session_id=session['session_id'],
+                                                      object_id=form.instance.id)
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
-        if Obj.Assignment_Start and Obj.Assignment_Deadline:
-            if (Obj.Assignment_Start > Obj.Assignment_Deadline):
-                return JsonResponse(
-                    data={'Message': 'Assignment Deadline must be greater than start date.'}, status=500
-                )
-        Obj.save()
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
-        return JsonResponse(data={'Message': 'Success'})
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentInfoCreateViewAjax, self).get_context_data()
+        if self.kwargs.get('chapterpk'):
+            datetime_now = timezone.now().replace(microsecond=0)
+            # student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(
+                Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapterpk')).Course_Code)
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    # Groups__in=student_groups,
+                                                                    Course_Group__in=course_groups).distinct()
+        return context
 
 
-class AssignmentInfoEditViewAjax(AjaxableResponseMixin, CreateView):
+
+class AssignmentInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     model = AssignmentInfo
+    context_object_name = 'Object'
+    form_class = AssignmentInfoForm
+    template_name = 'ajax/assignmentinfo_form_ajax.html'
 
-    def post(self, request, *args, **kwargs):
-        try:
-            Obj = AssignmentInfo.objects.get(pk=request.POST["Assignment_ID"])
-            Obj.Assignment_Topic = request.POST["Assignment_Topic"]
-            Obj.Assignment_Start = request.POST["Assignment_Start"]
-            Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
-            Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
-            Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
-            Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
-            Obj.Register_Agent = MemberInfo.objects.get(pk=request.POST["Register_Agent"])
-            if Obj.Assignment_Start and Obj.Assignment_Deadline:
-                if (Obj.Assignment_Start > Obj.Assignment_Deadline):
-                    return JsonResponse(
-                        data={'Message': 'Deadline date must be greater than start date'},
-                        status=500
-                    )
-            Obj.save()
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.save()
+        if self.request.POST.get('sessiondata[]'):
+            for session in json.loads(self.request.POST.get('sessiondata[]')):
+                requestStatus = InningInfoMappingView(model_name='AssignmentInfo', start_date=session['start_date'],
+                                                      end_date=session['end_date'], session_id=session['session_id'],
+                                                      object_id=form.instance.id)
+        return JsonResponse(
+            data={'Message': 'Success'}
+        )
 
-            return JsonResponse(data={'Message': 'Success'})
+    def form_invalid(self, form):
+        return JsonResponse({'errors': form.errors}, status=500)
 
-        except:
-            return JsonResponse(data={'Message': 'Fail'})
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentInfoEditViewAjax, self).get_context_data()
+        if self.kwargs.get('chapterpk'):
+            datetime_now = timezone.now().replace(microsecond=0)
+            # student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(
+                Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapterpk')).Course_Code)
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    # Groups__in=student_groups,
+                                                                    Course_Group__in=course_groups).distinct()
+        return context
 
 
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
     model = AssignmentInfo
-    template_name = 'WebApp/assignmentinfo_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(
-            Assignment_Code=self.kwargs.get('pk'))
-        context['Course_Code'] = get_object_or_404(
-            CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(
-            ChapterInfo, pk=self.kwargs.get('chapter'))
-        context['datetime'] = datetime.now()
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['datetime'] = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Course_Group__in=course_groups).distinct()
         return context
+
 
 
 class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, UpdateView):
@@ -2147,12 +2168,9 @@ class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(
-            CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(
-            ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
         return context
-
 
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
@@ -2161,19 +2179,15 @@ class AssignmentInfoDeleteView(DeleteView):
 
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = AssignmentInfo.objects.get(
-                pk=self.request.POST['assignment_id'])
+            Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
             Obj.delete()
-            return redirect('chapterinfo_detail',
-                            course=request.POST['course_id'],
-                            pk=request.POST['chapter_id'])
+            return redirect('chapterinfo_detail', course=request.POST['course_id'], pk=request.POST['chapter_id'])
 
         except:
-            messages.error(request, "Cannot delete assignment")
-            return redirect('assignmentinfo_detail',
-                            course=self.request.POST['course_id'],
-                            chapter=self.request.POST['chapter_id'],
-                            pk=self.request.POST['assignment_id'])
+            messages.error(request,
+                           "Cannot delete assignment")
+            return redirect('assignmentinfo_detail', course=self.request.POST['course_id'],
+                            chapter=self.request.POST['chapter_id'], pk=self.request.POST['assignment_id'])
 
 
 class QuestionInfoListView(ListView):
@@ -3127,8 +3141,10 @@ class ContentsView(TemplateView):
 
 class NewContentsView(TemplateView):
     template_name = 'chapter/newContentViewer.html'
+    chapters = []
 
     def get(self, request, *args, **kwargs):
+        from WebApp.student_module.views import student_active_chapters
         datetime_now = timezone.now()
 
         if CourseAuth(request, self.kwargs.get('course')) == 1:
@@ -3145,17 +3161,29 @@ class NewContentsView(TemplateView):
             return redirect('login')
         try:
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
+
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    if chapterObj.Start_Date:
-                        if chapterObj.Start_Date >= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    student_groups = GroupMapping.objects.filter(Students=self.request.user)
+                    course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
+                    assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                                 Start_Date__lte=datetime_now,
+                                                                 End_Date__gte=datetime_now,
+                                                                 Groups__in=student_groups,
+                                                                 Course_Group__in=course_groups)
 
-                    if chapterObj.End_Date:
-                        if chapterObj.End_Date <= datetime_now:
-                            messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                            raise ObjectDoesNotExist
+                    # chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('course'), Use_Flag=True)
+                    # active_chapters = []
+                    # for chapter in chapters:
+                    active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=self.kwargs.get('course')),
+                                                              assigned_session)
+
+                    self.chapters = active_chapters
+
+                    if chapterObj not in active_chapters:
+                        messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                        raise ObjectDoesNotExist
+
             else:
                 if '/students' in request.path:
                     messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
@@ -3175,9 +3203,7 @@ class NewContentsView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         if '/students' in self.request.path:
-            context['chapterList'] = context['course'].chapterinfos.filter(Use_Flag=True).filter(
-                Q(Start_Date__lte=datetime.utcnow()) | Q(Start_Date=None)) \
-                .filter(Q(End_Date__gte=datetime.utcnow()) | Q(End_Date=None))
+            context['chapterList'] = self.chapters
         else:
             context['chapterList'] = context['course'].chapterinfos.all()
         context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
@@ -3197,6 +3223,8 @@ class NewContentsView(TemplateView):
             context['data'] = ""
 
         return context
+
+
 
 
 class OfflineContentsView(ContentsView):
@@ -4195,8 +4223,6 @@ class TeacherIndividualReport(TemplateView):
 
         chapters = ChapterInfo.objects.filter(Course_Code=course)
         teacher_course_session = teacher.get_teacher_courses()
-        # print("teacher Course", teacher_course_session)
-
         assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups).distinct()
 
         for chapter in chapters:
@@ -4210,7 +4236,6 @@ class TeacherIndividualReport(TemplateView):
             assignmentc = dict()
 
             for session in assigned_sessions:
-
                 datest[session.id] = ''
                 datend[session.id] = ''
                 progressc[session.id] = 0
@@ -4257,6 +4282,80 @@ class TeacherIndividualReport(TemplateView):
         context['course_list'] = teacher_course_session['courses']
         context['sessions'] = assigned_sessions
         return context
+
+def CourseProgressDownload(request, coursepk, sessionpk):
+    course = CourseInfo.objects.get(pk=int(coursepk))
+    session = InningInfo.objects.get(pk=int(sessionpk))
+    chapters = ChapterInfo.objects.filter(Course_Code=course)
+    students = session.Groups.Students.all()
+
+    column_names = (("Student Name", "Full Name"), ("Username", "User ID"))
+    score_dict = dict()
+    for chapter in chapters:
+        chapter_name = chapter.Chapter_Name
+        column_names = (column_names + (
+            (chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
+        quizes = Quiz.objects.filter(chapter_code=chapter)
+        quiz_total_score = 0.0
+        for quiz in quizes:
+            quiz_total_score += quiz.get_max_score
+        assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter)
+        assignment_total_score = 0.0
+        for assignemnt in assignments:
+            assignment_total_score += assignemnt.get_total_score
+        quiz_total_score = decimal.Decimal(round(quiz_total_score, 2))
+        assignment_total_score = decimal.Decimal(round(assignment_total_score, 2))
+        score_dict[chapter.pk] = [quiz_total_score, assignment_total_score]
+    cols = pd.MultiIndex.from_tuples(column_names)
+    df = pd.DataFrame(columns=column_names)
+
+    for i, student in enumerate(students):
+        new_row = {("Student Name", "Full Name"): student.get_full_name(), ("Username", "User ID"): student.username}
+        for chapter in chapters:
+            chapter_name = chapter.Chapter_Name
+
+            student_quiz_scores = []
+            student_quiz_score = 0.0
+            quiz_sittings = Sitting.objects.filter(quiz__chapter_code=chapter, user=student, complete=True)
+            for quiz_sitting in quiz_sittings:
+                student_quiz_scores.append(quiz_sitting.get_score_correct)
+            student_quiz_score = max(student_quiz_scores) if student_quiz_scores else 0
+            student_quiz_score = decimal.Decimal(round(student_quiz_score, 2))
+
+            student_assignment_score = AssignAnswerInfo.objects.filter(
+                Question_Code__Assignment_Code__Chapter_Code=chapter, Student_Code=student).aggregate(
+                Sum('Assignment_Score'))['Assignment_Score__sum']
+            if student_assignment_score:
+                student_assignment_score = decimal.Decimal(round(student_assignment_score, 2))
+            else:
+                student_assignment_score = 0
+
+            data = get_study_time(course.pk, chapter, student)
+            progress = data['progress']
+
+            new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(
+                student_quiz_score) + ')'
+            new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(
+                student_assignment_score) + ')'
+            new_row[(chapter_name, "Progress Complete")] = str(progress)
+
+        df = df.append(new_row, ignore_index=True)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.index += 1
+        df.index.name = 'S.N.'
+        sheet_name = str(course.Course_Name)
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
+        if len(sheet_name) > 28:
+            sheet_name = sheet_name[:27] + ' ..'
+        df.to_excel(writer, sheet_name=sheet_name)
+        writer.save()
+        response = HttpResponse(b.getvalue(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'StudentProgress_' + sheet_name + '.xlsx"'
+        return response
 
 
 # Teacher Report View
@@ -4384,33 +4483,40 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.apps import apps
 
 
-def InningInfoMappingView(request, model_name):
-    inninginfoObj = get_object_or_404(InningInfo, pk=request.POST.get('sessionid'))
-    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=request.POST.get('objectid'))
+def InningInfoMappingView(model_name, request=None, **kwargs):
+    if request:
+        start_date, end_date, session_id, object_id = request.POST['Start_Date'], request.POST['End_Date'], \
+                                                      request.POST['sessionid'], request.POST['objectid']
+    else:
+        start_date, end_date, session_id, object_id = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
+            'session_id'), kwargs.get('object_id')
 
-    if model_name == "AssignmentInfo":
-        if request.POST['Start_Date'] == '' or request.POST['End_Date'] == '' or \
-                request.POST['Start_Date'] is None or request.POST['End_Date'] is None:
-            return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
+    inninginfoObj = get_object_or_404(InningInfo, pk=session_id)
+    Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=object_id)
 
-    if (request.POST['Start_Date'] and request.POST['End_Date']):
-        if (request.POST['Start_Date'] > request.POST['End_Date']):
+    # if model_name == "AssignmentInfo":
+    #     if start_date == '' or end_date == '' or \
+    #             start_date is None or end_date is None:
+    #         return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
+
+    if (start_date and end_date):
+        if (start_date > end_date):
             return JsonResponse({'message': 'End date must be greater than start date.'}, status=500)
     if SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
                                      content_type=get_content_type_for_model(Obj), object_id=Obj.pk):
         sessionmap = SessionMapInfo.objects.filter(Session_Code__id=inninginfoObj.id,
                                                    content_type=get_content_type_for_model(Obj), object_id=Obj.pk)
         sessionmap.update(
-            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
-            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            Start_Date=start_date if start_date != "" else None,
+            End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
             Session_Code=inninginfoObj
         )
     else:
         sessionmap = SessionMapInfo.objects.create(
-            Start_Date=request.POST['Start_Date'] if request.POST['Start_Date'] != "" else None,
-            End_Date=request.POST['End_Date'] if request.POST['End_Date'] != "" else None,
+            Start_Date=start_date if start_date != "" else None,
+            End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
             Session_Code=inninginfoObj
@@ -4421,7 +4527,7 @@ def InningInfoMappingView(request, model_name):
 
 def ChapterInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request, 'ChapterInfo')
+        requestStatus = InningInfoMappingView(request=request, model_name='ChapterInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
@@ -4432,7 +4538,7 @@ def ChapterInningInfoMappingView(request):
 
 def AssignmentInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request, 'AssignmentInfo')
+        requestStatus = InningInfoMappingView(request=request, model_name='AssignmentInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:

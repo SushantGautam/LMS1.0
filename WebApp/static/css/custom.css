@@ -131,3 +131,14 @@
 #div_id_new_password1 .controls ul {
   color: #ff9f43;
 }
+
+/* courselist height css */
+.img-height-10 {
+  object-fit: cover;
+  max-height: 10rem;
+}
+
+.img-height-30 {
+  object-fit: cover;
+  max-height: 30rem;
+}
