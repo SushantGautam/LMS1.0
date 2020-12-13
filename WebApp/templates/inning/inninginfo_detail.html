@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold">Create Survey </h5>
+                <h5 class="modal-title text-primary font-weight-bold">{% trans "Create Survey" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
                 </button>
@@ -22,7 +22,7 @@
 </div>
 <div class="page-header">
     <div class="page-title justify-content-center align-items-center">
-        <h2>Session Detail
+        <h2>{% trans "Session Detail" %}
         </h2>
         <div class="d-inline-block dropdown ml-5">
             <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
@@ -30,16 +30,19 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
-                <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">Edit
-                    Session</a>
+                <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">
+                    {% trans "Edit Session" %}
+                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-info" id="{{ object.pk }}"
-                    href="{% url 'inninginfo_saveasnew' object.pk %}" href="javascript:void(0)">Save as new
-                    Session</a>
+                    href="{% url 'inninginfo_saveasnew' object.pk %}" href="javascript:void(0)">
+                    {% trans "Save as new Session" %}
+                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-danger inning-confirm-delete" id="{{ object.pk }}"
-                    href="javascript:void(0)">Delete
-                    Session</a>
+                    href="javascript:void(0)">
+                    {% trans "Delete Session" %}
+                </a>
                 <form method="post" action="{% url 'inninginfo_delete' pk=object.pk %}"
                     id="deleteInning{{ object.pk }}">
                     {% csrf_token %}
@@ -47,8 +50,9 @@
                     <input type="hidden" value="{{ object.pk }}" name="inning_id">
                 </form>
                 {% else %}
-                <a class="dropdown-item text-primary" href="{{ object.get_teacher_update_url }}">Edit
-                    Session</a>
+                <a class="dropdown-item text-primary" href="{{ object.get_teacher_update_url }}">
+                    {% trans "Edit Session" %}
+                </a>
                 {% endif %}
             </div>
         </div>
@@ -59,52 +63,53 @@
     <div class="col-lg-6 col-md-12 px-5 mb-5">
         <table class="table table-bordered table-striped">
             <tr>
-                <td>Center Code</td>
+                <td>{% trans "Center Code" %}</td>
                 <td>{{ object.Center_Code }}</td>
             </tr>
             <tr>
-                <td>Session Name</td>
+                <td>{% trans "Session Name" %}</td>
                 <td>{{ object.Inning_Name }}</td>
             </tr>
             <tr>
-                <td>Student Group Name</td>
+                <td>{% trans "Student Group Name" %}</td>
                 <td>{{ object.Groups }}</td>
             </tr>
 
             <tr>
-                <td>Start Date</td>
+                <td>{% trans "Start Date" %}</td>
                 <td>{{ object.Start_Date }}</td>
             </tr>
             <tr>
-                <td>End Date</td>
+                <td>{% trans "End Date" %}</td>
                 <td>{{ object.End_Date }}</td>
             </tr>
 
             <tr>
-                <td>Courses</td>
+                <td>{% trans "Courses" %}</td>
                 <td> {% for groups in object.Course_Group.all %} {{ groups }}<br>{% endfor %}</td>
             </tr>
 
             <tr>
-                <td>Register Agent</td>
+                <td>{% trans "Register Agent" %}</td>
                 <td>{% getUser object.Register_Agent as register_agent %}{{ register_agent }}</td>
             </tr>
             <tr>
-                <td>Status</td>
+                <td>{% trans "Status" %}</td>
                 <td>{% if object.Use_Flag == True %}
-                    Active
+                    {% trans "Active" %}
                     {% else %}
-                    Inactive
-                    {% endif %}</td>
+                    {% trans "Inactive" %}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td>
-                    Session Managers
+                    {% trans "Session Managers" %}
                     {% if request.user.Is_CenterAdmin and '/mysession' not in request.path %}
                     <a class="btn btn-sm btn-outline-primary mx-2" href="
-                        {% url 'session-manager-update' object.pk %}
-
-                ">Edit Manager</a> {% endif %}
+                        {% url 'session-manager-update' object.pk %}">
+                        {% trans "Edit Manager" %}
+                    </a> {% endif %}
                 </td>
                 <td>
                     {% for x in session_managers.memberinfoobj.all %}
@@ -119,7 +124,7 @@
         <div class="card">
             <div class="pt-3 px-4">
                 <div class="d-flex justify-content-between align-items-start">
-                    <h4 class="text-primary">List of Teachers</h4>
+                    <h4 class="text-primary">{% trans "List of Teachers" %}</h4>
                     <!-- <a href="#">All Sales</a> -->
                 </div>
             </div>
@@ -128,13 +133,13 @@
                     <thead>
                         <tr>
                             <th>
-                                Course Allocation Name
+                                {% trans "Course Allocation Name" %}
                             </th>
                             <th>
-                                Courses
+                                {% trans "Courses" %}
                             </th>
                             <th>
-                                Teachers
+                                {% trans "Teachers" %}
                             </th>
                         </tr>
                     </thead>
@@ -142,26 +147,23 @@
                         {% for groups in object.Course_Group.all %}
                         <tr>
                             <td>
-                                <a href="
-                                            {% if not '/mysession' in request.path %}
+                                <a href="{% if not '/mysession' in request.path %}
                                                 {{ groups.get_update_url }}
                                             {% else %}
                                                 {% url 'teachers_inninggroup_detail' groups.pk %}
-                                            {% endif %}
-                                            ">{{ groups.InningGroup_Name }}</a>
-                                <a href="
-                            {% if not '/mysession' in request.path %}
+                                            {% endif %}">
+                                    {{ groups.InningGroup_Name }}
+                                </a>
+                                <a href="{% if not '/mysession' in request.path %}
                                 {{ groups.get_update_url }}
                             {% else %}
                                 {% url 'teachers_inninggroup_detail' groups.pk %}
-                            {% endif %}
-                            " class="text-info float-right">
+                            {% endif %}" class="text-info float-right">
                                     <i class="fa fa-edit mr-4"></i>
                                 </a>
                             </td>
                             <td>
-                                <a href="
-                                            {% if not '/mysession' in request.path %}
+                                <a href="{% if not '/mysession' in request.path %}
                                                 {{ groups.Course_Code.get_absolute_url }}
                                             {% else %}
                                                 {{ groups.Course_Code.teacher_get_absolute_url }}
@@ -181,7 +183,7 @@
         </div>
         <div class="card">
             <div class="pt-3 px-4">
-                <h4 class="text-primary">List of Students</h4>
+                <h4 class="text-primary">{% trans "List of Students" %}</h4>
                 <div class="d-flex justify-content-between align-items-start my-3">
                     <h5 class="text-primary"> <a href="{% if '/mysession' in request.path %}
                         {% url 'teacher_groupmapping_detail' object.Groups.pk %}
@@ -189,7 +191,7 @@
                         {{ object.Groups.get_absolute_url }}
                     {% endif %}
                     ">
-                            <b>{{ object.Groups }} Students &nbsp;
+                            <b>{{ object.Groups }}{% trans "Students" %} &nbsp;
                                 ( {{ object.Groups.Students.count }} )
                             </b>
                         </a>
@@ -198,9 +200,8 @@
                                                 {{ object.get_teacher_update_url }}#step-3
                                             {% else %}
                                                 {{ object.get_update_url }}#step-3
-                                            {% endif %}
-                                            ">
-                        Change Group
+                                            {% endif %}">
+                        {% trans "Change Group" %}
                     </a>
                 </div>
             </div>
@@ -242,10 +243,10 @@
 <div class="card">
     <div class="pt-3 px-4">
         <div class="d-flex justify-content-between align-items-start">
-            <h4 class="text-primary">List of Survey</h4>
+            <h4 class="text-primary">{% trans "List of Survey" %}</h4>
             <button class="Session btn btn-sm btn-success" id="category_Add_ButtonSession"
-                style="    float: right; margin-bottom:20px  " data-toggle="modal" data-target="#survey_form_modal">Add
-                Session Survey
+                style="float: right; margin-bottom:20px  " data-toggle="modal" data-target="#survey_form_modal">
+                {% trans "Add Session Survey" %}
             </button>
             <!-- <a href="#">All Sales</a> -->
         </div>
@@ -255,23 +256,22 @@
         <table id="table_survey" class="table table-striped bg-white nowrap">
             <thead>
                 <tr>
-                    <th>Survey Title</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>{% trans "Survey Title" %}</th>
+                    <th>{% trans "Start Date" %}</th>
+                    <th>{% trans "End Date" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for survey in SessionSurvey %}
                 <tr>
                     <td>
-                        <a href="
-                                {% if '/mysession' in request.path %}
+                        <a href="{% if '/mysession' in request.path %}
                                     {% url 'surveyinfodetail' pk=survey.id %}
                                 {% else %}
                                     {% url 'surveyinfo_detail' pk=survey.id %}
-                                {% endif %}
-                                
-                                ">{{ survey.Survey_Title }}</a>
+                                {% endif %}">
+                            {{ survey.Survey_Title }}
+                        </a>
                     </td>
                     <td>{{ survey.Start_Date }}</td>
                     <td>{{ survey.End_Date }}</td>
@@ -282,7 +282,7 @@
         {% else %}
         <div class="text-center mb-3">
             <h5>
-                No Survey Created for this session.
+                {% trans "No Survey Created for this session" %}
             </h5>
         </div>
         {% endif %}

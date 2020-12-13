@@ -1,10 +1,11 @@
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 
 {% block content %}
 <div class="page-header">
     <div class="page-title d-block text-center">
-        <h2>Course Allocation Information</h2>
+        <h2>{% trans "Course Allocation Information" %}</h2>
     </div>
 </div>
 <div class="row">
@@ -12,13 +13,13 @@
         <div class="card p-3">
             <ul class="font-weight-bold">
                 <li class="p-2">
-                    Course Allocation Name : {{ object.InningGroup_Name }}
+                    {% trans "Course Allocation Name" %} : {{ object.InningGroup_Name }}
                 </li>
                 <li class="p-2">
-                    Course Name : {{ object.Course_Code }}
+                    {% trans "Course Name" %} : {{ object.Course_Code }}
                 </li>
                 <li class="p-2">
-                    Teachers Name :
+                    {% trans "Teachers Name" %} :
                     <ul class="ml-3">
                         {% for teachers in object.Teacher_Code.all %}
                         <li>{{ teachers }}</li>
@@ -26,10 +27,15 @@
                     </ul>
                 </li>
                 <li class="p-2">
-                    Register Agent : {% getUser object.Register_Agent as register_agent %}{{ register_agent }}
+                    {% trans "Register Agent" %} :
+                    {% getUser object.Register_Agent as register_agent %}{{ register_agent }}
                 </li>
                 <li class="p-2">
-                    Status : {% if object.Use_Flag %} Active {% else %} Inactive {% endif %}
+                    {% trans "Status" %} :
+                    {% if object.Use_Flag %}
+                    {% trans "Active" %} {% else %}
+                    {% trans "Inactive" %}
+                    {% endif %}
                 </li>
                 <li class="p-2 text-center">
                     <a class="btn btn-sm btn-outline-primary mx-2" href="
@@ -38,10 +44,13 @@
                     {% else %}
                         {{ object.get_update_url }}
                     {% endif %}
-                    ">Edit Teacher Allocation</a>
+                    ">
+                        {% trans "Edit Teacher Allocation" %}
+                    </a>
                     <a class="btn btn-sm btn-outline-danger inninggroup-confirm-delete mx-2" id="{{ object.pk }}"
-                        href="javascript:void(0)">Delete
-                        Teacher Allocation</a>
+                        href="javascript:void(0)">
+                        {% trans "Delete Teacher Allocation" %}
+                    </a>
                     <form method="post" action="{% url 'inninggroup_delete' pk=object.pk %}"
                         id="deleteInningGroup{{ object.pk }}">
                         {% csrf_token %}

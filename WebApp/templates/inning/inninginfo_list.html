@@ -1,8 +1,9 @@
 {% load static %}
+{% load i18n %}
 
 <div class="page-header">
     <div class="page-title">
-        <h2>List of Active Sessions</h2>
+        <h2>{% trans "List of Active Sessions" %}</h2>
         <div>
             <a href="javascript:void(0)" class="btn btn-sm btn-outline-primary" title="List" data-toggle="tooltip"
                 id="listButton">
@@ -20,19 +21,22 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-lg-8 col-md-6 col-sm-6">
-            <a class="view-inactive" href="
+            <a class="view-inactive font-weight-bold" href="
                 {% if '/mysessions' not in request.path %}
                     {% url 'inninginfo_list_inactive' %}
                 {% else %}
                     {% url 'teachers_mysession_list_inactive' %}
-                {% endif %}
-                "><b>View Inactive Sessions</b></a>
+                {% endif %}">
+                {% trans "View Inactive Sessions" %}
+            </a>
         </div>
 
         <div class="col-lg-4 col-md-6 col-sm-6">
             {% if request.user.Is_CenterAdmin and '/mysessions' not in request.path %}
             <div class="pull-right">
-                <a class="btn btn-success" href="{% url 'inninginfo_create' %}">Register New Session</a>
+                <a class="btn btn-success" href="{% url 'inninginfo_create' %}">
+                    {% trans "Register New Session" %}
+                </a>
                 <button class="btn btn-info btn-floating editCheckedInnings ml-2" type="button" data-toggle="modal"
                     data-target="#edit_checked_details_modal">
                     <i class="fa fa-edit"></i>
@@ -50,13 +54,13 @@
             <thead class="thead-light">
                 <tr class="tableTitleRow">
                     <th><input type="checkbox" class="inningInfoCheckAll"></th>
-                    <th>ID</th>
-                    <th>Session Name</th>
-                    <th>Student Group</th>
-                    <th>No. of Courses</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Action</th>
+                    <th>{% trans "ID" %}</th>
+                    <th>{% trans "Session Name" %}</th>
+                    <th>{% trans "Student Group" %}</th>
+                    <th>{% trans "No. of Courses" %}</th>
+                    <th>{% trans "Start Date" %}</th>
+                    <th>{% trans "End Date" %}</th>
+                    <th>{% trans "Action" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,12 +102,12 @@
         {% for object in object_list %}
         <div class="col-lg-4 col-sm-6 col-xs-12">
             <div class="card p-4">
-                <h5><strong>Session : &nbsp;<a href="{{ object.get_absolute_url }}"
+                <h5><strong>{% trans "Session" %} : &nbsp;<a href="{{ object.get_absolute_url }}"
                             class="text-primary">{{ object.Inning_Name }}</a></strong>
                 </h5>
                 <hr>
-                <span><b>Student Group &nbsp; : </b>&nbsp;{{ object.Groups }}</span>
-                <b>Courses :</b>
+                <span><b>{% trans "Student Group" %} &nbsp; : </b>&nbsp;{{ object.Groups }}</span>
+                <b>{% trans "Courses" %} :</b>
                 <div style="height:40px; overflow:auto;" class="mt-2 ml-2">
                     <ul>
                         {% for groups in object.Course_Group.all %}
@@ -111,8 +115,8 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <span><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}</span>
-                <span><b>End Date : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</span>
+                <span><b>{% trans "Start Date" %} : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}</span>
+                <span><b>{% trans "End Date" %} : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</span>
             </div>
         </div>
         {% endfor %}

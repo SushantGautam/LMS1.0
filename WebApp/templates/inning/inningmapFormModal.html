@@ -1,4 +1,6 @@
 {% load crispy_forms_tags %}
+{% load i18n %}
+
 <style>
     .modal-body {
         overflow: inherit;
@@ -22,7 +24,7 @@
                     </div>
                     <div id="div_Start_Date" class="form-group">
                         <label for="id_Start_Date" class="control-label ">
-                            Start Date
+                            {% trans "Start Date" %}
                         </label>
                         <div class="controls ">
                             <input type="text" name="Start_Date" class="form-control" id="id_Start_Date" value=""
@@ -31,7 +33,7 @@
                     </div>
                     <div id="div_End_Date" class="form-group">
                         <label for="id_End_Date" class="control-label ">
-                            End Date
+                            {% trans "End Date" %}
                         </label>
                         <div class="controls ">
                             <input type="text" name="End_Date" class="form-control" id="id_End_Date" value=""
@@ -43,8 +45,8 @@
                 <div class="modal-footer">
                     <input type="hidden" name="sessionid" id="sessionid" value="">
                     <input type="hidden" name="objectid" id="objectid" value="">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
                 </div>
             </form>
         </div>
