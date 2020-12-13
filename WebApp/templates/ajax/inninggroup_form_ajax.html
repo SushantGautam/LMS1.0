@@ -11,7 +11,7 @@
     {% csrf_token %}
     {{ form.InningGroup_Name|as_crispy_field }}
     <div class="form-group">
-        <label for="id_Course_Code">{% trans "Select Course" %}</label>
+        <label for="id_Course_Code">{% trans "Select Course" %} *</label>
         <select class="select2" id="id_Course_Code" name="Course_Code">
             {% for x, y in form.fields.Course_Code.choices %}
             <option value="{{ x }}" {% if form.initial.Course_Code == x %}selected{% endif %}>

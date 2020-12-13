@@ -110,7 +110,7 @@
             <div class="card">
                 <div class="card-body">
                     <div id="wizard-example">
-                        <h3>Select Session Name</h3>
+                        <h3>Session Name</h3>
                         <section class="card card-body border mb-0">
                             <div class="text-center mb-2">
                                 <h5>Select Session Name</h5>
@@ -122,8 +122,8 @@
                                         <div class="col-md-6 col-sm-8" style="margin: auto;">
                                             <select class="select2" id="id_Inning_Name" name="Inning_Name">
                                                 {% for x, y in form.fields.Inning_Name.choices %}
-                                                <option value="{{ x }}"
-                                                    {% if form.initial.Inning_Name == x %}selected{% endif %}>
+                                                <option value="{{ x }}" 
+                                                {% if form.initial.Inning_Name == x %}selected{% endif %}>
                                                     {{ y }}
                                                 </option>
                                                 {% endfor %}
@@ -155,10 +155,10 @@
                                         of a particular study, where certain Courses are taught.
                                     </p>
                                 </div>
-                                {%  endblock %}
+                                {% endblock %}
                             </div>
                         </section>
-                        <h3>Select the duration of the Session</h3>
+                        <h3>Duration of Session</h3>
                         <section class="card card-body border mb-0">
                             <div class="text-center mb-2">
                                 <h5>Select the duration of the Session</h5>
@@ -194,7 +194,7 @@
                                 </div>
                             </div>
                         </section>
-                        <h3>Choose Student Group Session</h3>
+                        <h3>Student Group</h3>
                         <section class="card card-body border mb-0">
                             <div class="text-center mb-2">
                                 <h5>Choose Student Group Session</h5>
@@ -205,8 +205,9 @@
                                         <div class="col-md-6 col-sm-8" style="margin: auto;">
                                             <select class="select2" id="id_Groups" name="Groups">
                                                 {% for x, y in form.fields.Groups.choices %}
-                                                <option value="{{ x }}"
-                                                    {% if form.initial.Groups == x %}selected{% endif %}>{{ y }}
+                                                <option value="{{ x }}" 
+                                                {% if form.initial.Groups == x %}selected{% endif %}>
+                                                {{ y }}
                                                 </option>
                                                 {% endfor %}
                                             </select>
@@ -232,7 +233,7 @@
                                 </div>
                             </div>
                         </section>
-                        <h3>Select Courses for Session</h3>
+                        <h3>Courses</h3>
                         <section class="card card-body border mb-0">
                             <div class="text-center mb-2">
                                 <h5>Select Courses for Session</h5>
