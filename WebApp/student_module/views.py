@@ -69,12 +69,14 @@ def student_active_chapters(courses, sessions):
 def student_all_assignments(chapters, sessions):  # It includes expired assignments also
     datetime_now = timezone.now().replace(microsecond=0)
     assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapters, Use_Flag=True).distinct()
+    print("Assg",assignments)
     for assignment in assignments:
         if not SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                              object_id=assignment.id,
                                              Start_Date__lte=datetime_now,
                                              Session_Code__in=sessions).exists():
             assignments = assignments.exclude(pk=assignment.pk)
+    print("SessAssign",assignments)
     for assignment in assignments:
         assignment.deadline = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                             object_id=assignment.id,
@@ -335,6 +337,9 @@ class MyCoursesListView(ListView):
         return qset
 
 
+
+
+
 class MyAssignmentsListView(ListView):
     model = AssignmentInfo
     template_name = 'student_module/myassignments_list.html'
@@ -343,12 +348,30 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
 
         datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        print(sessions)
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True)
+        chapters = student_active_chapters(courses, sessions)
+        print(chapters)
+
         context['currentDate'] = datetime_now
-        context['Assignment'] = student_all_assignements(self.request.user)
-        context['activeAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__gte=datetime_now)
-        context['expiredAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__lte=datetime_now)
+        context['Assignment'] = student_all_assignments(chapters, sessions)
+        print(context['Assignment'])
+
+        context['activeAssignment'] = filter_active_assignments(chapters, sessions)
+        print(context['activeAssignment'])
+
+        context['expiredAssignment'] = context['Assignment'].difference(context['activeAssignment'])
+        print(context['expiredAssignment'])
+        # context['Assignment'] = student_all_assignements(self.request.user)
+        # context['activeAssignment'] = context['Assignment'].filter(
+        #     Assignment_Deadline__gte=datetime_now)
+        # context['expiredAssignment'] = context['Assignment'].filter(
+        #     Assignment_Deadline__lte=datetime_now)
 
         return context
 
