@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 {% load define_action %}
 
@@ -22,20 +23,20 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_report' %}">Teacher Report</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_report' %}">{% trans 'Teacher Report' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ user.username }}</li>
 {% endblock %}
 {% block content %}
     <div class="inningInfoListClass">
         <hr class="header_hr">
-        <h2 class="tableHeader">Teacher Report of {{ teacher }}</h2>
+        <h2 class="tableHeader">{% trans 'Teacher Report of' %} {{ teacher }}</h2>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <hr class="header_hr">
-            <div class="h5"><b>Teacher Name:</b> {{ teacher.get_full_name }}</div>
+            <div class="h5"><b>{% trans 'Teacher Name' %}:</b> {{ teacher.get_full_name }}</div>
 
             <div class="form-inline">
-                <div class="h5 form-group"><b>Course: </b>
+                <div class="h5 form-group"><b>{% trans 'Course' %}: </b>
 
                 {% if course_list|length == 1 %}
                     {{ course }}
@@ -63,22 +64,22 @@
                     <thead class="thead-light bg-primary">
                     <tr class="tableTitleRow">
                         <th rowspan="2">S.No</th>
-                        <th rowspan="2">Chapter Name</th>
-                        <th rowspan="2">Content</th>
-                        <th rowspan="2">ReadTime</th>
-                        <th rowspan="2">Quiz</th>
-                        <th rowspan="2">Assignment</th>
+                        <th rowspan="2">{% trans 'Chapter Name' %}</th>
+                        <th rowspan="2">{% trans 'Content' %}</th>
+                        <th rowspan="2">{% trans 'ReadTime' %}</th>
+                        <th rowspan="2">{% trans 'Quiz' %}</th>
+                        <th rowspan="2">{% trans 'Assignment' %}</th>
                         {% for session in sessions %}
-                            <th colspan="5">{{ session }} (Total students={{ session.student_count }})</th>
+                            <th colspan="5">{{ session }} ({% trans 'Total students' %}={{ session.student_count }})</th>
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for session in sessions %}
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Chapter Complete</th>
-                            <th>Quiz complete</th>
-                            <th>Assignment complete</th> 
+                            <th>{% trans 'Start Date' %}</th>
+                            <th>{% trans 'End Date' %}</th>
+                            <th>{% trans 'Chapter Complete' %}</th>
+                            <th>{% trans 'Quiz complete' %}</th>
+                            <th>{% trans 'Assignment complete' %}</th>
                         {% endfor %}                           
                     </tr>
                     </thead>

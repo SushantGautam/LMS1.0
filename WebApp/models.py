@@ -208,7 +208,8 @@ class MemberInfo(AbstractUser):
     def get_student(self):
         val_ls = MemberInfo.objects.filter(groupmapping__in=GroupMapping.objects.filter(
             inninginfos__pk__in=InningInfo.objects.filter(
-                Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.pk)))).distinct().values_list('pk', flat=True)
+                Course_Group__in=InningGroup.objects.filter(Teacher_Code__pk=self.pk)))).distinct().values_list('pk',
+                                                                                                                flat=True)
         return list(val_ls)
 
     def get_student_obj(self):
@@ -383,6 +384,8 @@ class ChapterInfo(models.Model):
     End_Date = DateTimeField(null=True, blank=True)
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
+    chapter_sessionmaps = GenericRelation('SessionMapInfo')
+
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
@@ -519,7 +522,6 @@ class AssignmentInfo(models.Model):
         groups = GroupMapping.objects.filter(inninginfos__in=inning_infos)
         students = MemberInfo.objects.filter(groupmapping__in=groups)
         return students.distinct()
-
 
     def get_student_assignment_status(self, user):
         status = False
@@ -810,8 +812,6 @@ class InningGroup(models.Model):
         return reverse('inninggroup_update', args=(self.pk,))
 
 
-
-
 class InningInfo(models.Model):
     Start_Date = DateTimeField()
     End_Date = DateTimeField()
@@ -869,7 +869,6 @@ class InningInfo(models.Model):
 
     def student_count(self):
         return self.Groups.Students.all().count()
-
 
     def __str__(self):
         return self.Inning_Name.Session_Name
@@ -966,7 +965,7 @@ class Notice(models.Model):
         'CenterInfo',
         related_name="noticeviews", on_delete=models.DO_NOTHING, null=True, blank=True
     )
-    
+
     def __str__(self):
         return self.title
 
@@ -977,6 +976,7 @@ class NoticeView(models.Model):
     dont_show = BooleanField(default=False)
     Register_DateTime = DateTimeField(auto_now_add=True)
     Updated_DateTime = DateTimeField(auto_now=True)
+
 
 class SessionMapInfo(models.Model):
     Start_Date = DateTimeField(null=True, blank=True)
