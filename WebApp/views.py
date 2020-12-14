@@ -2093,8 +2093,6 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
                 return JsonResponse(
                     data={'Message': 'Assignment Deadline must be greater than start date.'}, status=500
                 )
-
-
         Obj.save()
 
         return JsonResponse(data={'Message': 'Success'})
