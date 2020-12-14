@@ -1,11 +1,13 @@
 {% load static %}
+{% load i18n %}
 
 <div class="page-header">
     <div class="page-title d-block text-center">
         <h2>{% if 'create' in request.path %}
-            Create New{% elif 'edit' in request.path %}
-            Edit {% endif %}
-            Chapter</h2>
+            {% trans "Create New" %}{% elif 'edit' in request.path %}
+            {% trans "Edit" %} {% endif %}
+            {% trans "Chapter" %}
+        </h2>
     </div>
 </div>
 <div class="row">
@@ -17,21 +19,24 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label for="id_Chapter_No" class="font-weight-bold">Chapter No.</label>
+                                <label for="id_Chapter_No" class="font-weight-bold">
+                                    {% trans "Chapter No" %}.
+                                </label>
                                 <input type="number" class="form-control" name="Chapter_No" id="id_Chapter_No"
                                     placeholder="Enter Chaper Number" value="{{object.Chapter_No}}" required>
                             </div>
                         </div>
                         <div class="col-lg-8">
                             <div class="form-group">
-                                <label for="id_Chapter_Name" class="font-weight-bold">Chapter Name</label>
+                                <label for="id_Chapter_Name" class="font-weight-bold">
+                                    {% trans "Chapter Name" %}</label>
                                 <input type="text" class="form-control" name="Chapter_Name" id="id_Chapter_Name"
                                     placeholder="Enter Chaper Number" value="{{object.Chapter_Name}}" required>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="id_Summary" class="font-weight-bold">Summary</label>
+                        <label for="id_Summary" class="font-weight-bold">{% trans "Summary" %}</label>
                         <textarea name="Summary" id="id_Summary" class="form-control"
                             rows="10">{{object.Summary}}</textarea><span class="ma-form-highlight"></span><span
                             class="ma-form-bar"></span>
@@ -39,14 +44,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label for="Start_Date" class="font-weight-bold">Start Date</label>
+                                <label for="Start_Date" class="font-weight-bold">{% trans "Start Date" %}</label>
                                 <input name="Start_Date" type="date" class="form-control" id="id_Start_Date"
                                     max="9999-12-31" value="{{ object.Start_Date|date:'Y-m-d' }}">
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label for="End_Date" class="font-weight-bold">End Date</label>
+                                <label for="End_Date" class="font-weight-bold">{% trans "End Date" %}</label>
                                 <input name="End_Date" type="date" class="form-control" id="id_End_Date"
                                     max="9999-12-31" value="{{ object.End_Date|date:'Y-m-d' }}">
                             </div>
@@ -55,14 +60,16 @@
                     <div class="row">
                         <div class="col-lg-7">
                             <div class="form-group">
-                                <label for="id_mustreadtime" class="font-weight-bold">Running Time (in minutes)</label>
+                                <label for="id_mustreadtime" class="font-weight-bold">
+                                    {% trans "Running Time" %} ({% trans "in minutes" %})
+                                </label>
                                 <input type="number" class="form-control" name="mustreadtime" id="id_mustreadtime"
                                     placeholder="Enter Running Time for Chapter" value="{{ object.mustreadtime }}"
                                     min="0" max="5000" required>
                             </div>
                         </div>
                         <div class="col-lg-5 text-center">
-                            <label for="id_Use_Flag" class="font-weight-bold">Publish</label><br>
+                            <label for="id_Use_Flag" class="font-weight-bold">{% trans "Publish" %}</label><br>
                             <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput"
                                 {% if object.Use_Flag %}checked{% endif %}>
                         </div>
@@ -72,7 +79,7 @@
                     <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ Course_Code.id }}"
                         class="select form-control">
                     <div class="text-center pt-3">
-                        <button type="submit" class="btn btn-primary" style="margin:auto">Submit</button>
+                        <button type="submit" class="btn btn-primary m-auto">{% trans "Submit" %}</button>
                     </div>
                 </form>
             </div>

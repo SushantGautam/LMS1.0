@@ -1,10 +1,12 @@
 {% load static %}
+{% load i18n %}
 
 <div class="modal fade" id="create_chapter_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="create_chapter_modal_title">Create Chapter
+                <h5 class="modal-title text-primary font-weight-bold" id="create_chapter_modal_title">
+                    {% trans "Create Chapter" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
@@ -40,7 +42,7 @@
             </div>
         </div>
         <div class="card mt-4 p-3">
-            <h4 class="text-primary m-2">List of Chapters</h4>
+            <h4 class="text-primary m-2">{% trans "List of Chapters" %}</h4>
             <ul>
                 {% for chapter in chapters %}
                 <li class="p-3">
@@ -64,9 +66,9 @@
     <div class="col-lg-4 col-md-12">
         <div class="card">
             <div class="px-4 pt-4">
-                <h5 class="text-primary mb-3">Course</h5>
+                <h5 class="text-primary mb-3">{% trans "Course" %}</h5>
                 <p>
-                    Difficulty :
+                    {% trans "Difficulty" %} :
                     {% for i in '12345'|make_list %}
                     {% if object.Course_Level >= forloop.counter %}
                     <span class="fa fa-fw fa-star text-warning"></span>
@@ -76,21 +78,21 @@
                     {% endif %}
                     {% endfor %}
                 </p>
-                <p>Course Provider : {{ object.Course_Provider }}
+                <p>{% trans "Course Provider" %} : {{ object.Course_Provider }}
                 </p>
-                <p>Status : &nbsp;
+                <p>{% trans "Status" %} : &nbsp;
                     {% if object.Use_Flag == True %}
-                    <span class="badge bg-success-bright text-success">Active</span>
+                    <span class="badge bg-success-bright text-success">{% trans "Active" %}</span>
                     </span>
                     {% elif object.Use_Flag == False %}
-                    <span class="badge bg-danger-bright text-danger">Inactive</span>
+                    <span class="badge bg-danger-bright text-danger">{% trans "Inactive" %}</span>
                     {% endif %}
 
                 </p>
-                <p><i class="fa fa-clock-o fa-fw"></i> 4 hrs &nbsp;
-                    <i class="fa fa-calendar fa-fw"></i> 21/10/14
+                <p><i class="fa fa-clock-o fa-fw"></i> &nbsp;
+                    <i class="fa fa-calendar fa-fw"></i>
                 </p>
-                <p>Instructor:
+                <p>{% trans "Instructor" %} :
                     {% if object.get_teachers_of_this_course %}
                 <ul class="row">
                     {% for eachTeacher in object.get_teachers_of_this_course %}
@@ -102,11 +104,11 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                &nbsp; No Teachers Assigned Yet
+                &nbsp;{% trans "No Teachers Assigned Yet" %}
                 {% endif %}
                 </p>
                 <!-- <p>Max. students: 50</p> -->
-                <p>Attending: 30</p>
+                <p>{% trans "Attending" %} : </p>
             </div>
             {% if '/students' not in request.path %}
             <ul class="text-center">
@@ -115,20 +117,20 @@
                     /teachers{{ object.get_update_url }}
                         {% else %}
                             {{ object.get_update_url }}
-                        {% endif %}">Edit Course</a>
+                        {% endif %}">{% trans "Edit Course" %}</a>
                 </li>
 
                 <li class="p-2 border-top">
                     <button class="btn btn-success relative" data-z="1" data-toggle="modal"
-                        data-target="#create_chapter_modal" data-animated id="add-newchapter-btn">Add
-                        Chapter</button>
+                        data-target="#create_chapter_modal" data-animated id="add-newchapter-btn">
+                        {% trans "Add Chapter" %}</button>
                 </li>
             </ul>
             {% endif %}
         </div>
         <div class="card">
             <div class="p-3">
-                <h5 class="text-primary m-0">Other Courses</h5>
+                <h5 class="text-primary m-0">{% trans "Other Courses" %}</h5>
             </div>
             <ul class="text-center">
                 {% for courses in other_courses %}
@@ -137,7 +139,7 @@
                 </li>
                 {% empty %}
                 <li class="p-3 border-top">
-                    No other Courses Available
+                    {% trans "No other Courses Available" %}
                 </li>
                 {% endfor %}
             </ul>

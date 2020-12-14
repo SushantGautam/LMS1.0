@@ -1,22 +1,26 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
 <li class="breadcrumb-item"><a href="
     {% if object.Course_Code.Use_Flag %}
         {% url 'courseinfo_grid_active' %}
     {% else %}
         {% url 'courseinfo_grid_inactive' %}
-    {% endif %}
-    ">Course</a></li>
+    {% endif %}">
+        {% trans "Course" %}
+    </a>
+</li>
 <li class="breadcrumb-item"><a href="{{ Course_Code.get_absolute_url }}">{{ Course_Code }}</a></li>
 <li class="breadcrumb-item"><a href="{{ object.get_absolute_url }}">{{ object.Chapter_Name }}</a>
 </li>
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/create/' in request.path %}
-    Create New Chapter
+    {% trans "Create New Chapter" %}
     {% else %}
-    Edit Chapter
+    {% trans "Edit Chapter" %}
     {% endif %}
 </li>
 

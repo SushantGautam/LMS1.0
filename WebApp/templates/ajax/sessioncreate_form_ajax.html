@@ -1,17 +1,23 @@
 {% load static %}
+{% load i18n %}
+<small class="text-info">{% trans "Please make sure that the name is not defined, before creating a new one" %}
+</small>
+<br>
+<small>{% trans "View Detail about Session Name List" %}
+    <a href="{% url 'sessioninfo_list' %}" class="font-weight-bold">{% trans "here" %}</a>
+</small>
+<br><br>
 
-<small class="text-info">Please make sure that the name is not defined, before creating a new one.</small><br>
-<small>View Detail about Session Name List <b><a href="{% url 'sessioninfo_list' %}">here</a></b></small><br><br>
 <form method="post" id="ajaxsessionform">
     {% csrf_token %}
     <div class="form-group">
-        <label for="id_Session_Name">Session Name *</label>
+        <label for="id_Session_Name">{% trans "Session Name" %} *</label>
         <input type="text" class="form-control" name="Session_Name" maxlength="150" id="id_Session_Name" required>
     </div>
     <span id="error-msg-span" class="text-danger"></span>
     <div id="div_id_Description" class="form-group">
         <label for="id_Description" class="control-label">
-            Description
+            {% trans "Description" %}
         </label>
         <div class="controls ">
             <textarea name="Description" cols="40" id="id_Description" rows="6"
@@ -22,8 +28,9 @@
     <input type="hidden" name="Center_Code" id="id_Center_Code" value="{{ request.user.Center_Code.id }}"
         class="select form-control">
     <div class="submitButton text-center pt-3">
-        <button class="btn btn-primary" id="ajaxsessionsubmit-btn">Submit</button>
-        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
+        <button class="btn btn-primary" id="ajaxsessionsubmit-btn">{% trans "Submit" %}</button>
+        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal"
+            id="close-btn">{% trans "Close" %}</button>
     </div>
 </form>
 
