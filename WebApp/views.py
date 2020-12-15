@@ -8,9 +8,9 @@ import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
 from json import JSONDecodeError
 
-import cloudinary
-import cloudinary.api
-import cloudinary.uploader
+# import cloudinary
+# import cloudinary.api
+# import cloudinary.uploader
 import pandas as pd
 import requests
 from django.conf import settings
