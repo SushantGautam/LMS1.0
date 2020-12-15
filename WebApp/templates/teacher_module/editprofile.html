@@ -1,9 +1,10 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_user_profile' %}">Profile</a></li>
-<li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_user_profile' %}">{% trans 'Profile' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Edit Profile' %}</li>
 {% endblock %}
 
 {% block content %}

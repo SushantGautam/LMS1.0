@@ -1,20 +1,21 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
-    | Course Form
+    | {% trans 'Course Form' %}
 {% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_mycourses_list_active' %}">My Courses</a>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'teacher_mycourses_list_active' %}">{% trans 'My Courses' %}</a>
     </li>
     <li class="breadcrumb-item" aria-current="page"><a
             href="{{ object.teacher_get_absolute_url }}">{{ object.Course_Name }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/create/' in request.path %}
-            Create New Course
+            {% trans 'Create New Course' %}
         {% else %}
-            Edit Course Info
+            {% trans 'Edit Course Info' %}
         {% endif %}
     </li>
 

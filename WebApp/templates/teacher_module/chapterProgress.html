@@ -5,7 +5,7 @@
 {% load getMemberFromPk %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Progress</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Progress' %}</li>
 
 {% endblock %}
 
@@ -61,10 +61,10 @@
     <div class="container">
 
         <div style="font-size:18px; font-weight: 700; margin-bottom:20px">
-            [Course Info]
+            [{% trans 'Course Info' %}]
             {% if inning %}
                 <a href="{% url 'progress_download' course.pk inning.pk %}" target="__blank">
-                    <button class="btn btn-info btn-sm pull-right" id="downloadProgress">Download All Student Progress
+                    <button class="btn btn-info btn-sm pull-right" id="downloadProgress">{% trans 'Download All Student Progress' %}
                     </button>
                 </a>
             {% endif %}
@@ -74,7 +74,7 @@
             <div class="col-md-6">
 
                 <div class="center-name" style="padding: 10px 0;">
-                    <span style="font-size:18px;"><b> Course Title: </b></span>
+                    <span style="font-size:18px;"><b> {% trans 'Course Title' %}: </b></span>
                     <select id="select_course">
                         {% for courseObj in course_list %}
                             <option value="{{ courseObj.pk }}" {% if courseObj.pk == course.pk %}
@@ -85,7 +85,7 @@
 
                 </div>
                 <div class="session-detail" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> Session: </b></span>
+                    <span style="font-size:18px"><b> {% trans 'Session' %}: </b></span>
                     <select id="select_session" class="" style="width: 50%;">
                         {% for x in session_list %}
                             {% for session in x %}
@@ -106,11 +106,11 @@
             </div>
             <div class="col-md-6">
                 <div class="no-student" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> No of Student: </b></span>
+                    <span style="font-size:18px"><b> {% trans 'No of Student' %}: </b></span>
                     <span style="font-size: 16px;">{{ number_of_students }}</span>
                 </div>
                 <div class="time-period" style="padding: 10px 0;">
-                    <span style="font-size:18px"><b> Period: </b></span>
+                    <span style="font-size:18px"><b> {% trans 'Period' %}: </b></span>
                     <span style="font-size: 16px;">{{ inning.Start_Date|date:"Y/m/d" }} - {{ inning.End_Date|date:"Y/m/d" }}</span>
 
                 </div>
@@ -119,7 +119,7 @@
 
 
         <div class="col-md-12">
-            <span style="font-size:18px; font-weight: 700;">[List of Chapters]  </span>
+            <span style="font-size:18px; font-weight: 700;">[{% trans 'List of Chapters' %}]  </span>
         </div>
 
 
@@ -129,7 +129,7 @@
                     {{ chapter.Chapter_No }}
                 </button>
             {% endfor %}
-            <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn active" value="all">All
+            <button type="button" class="custom-btn1 btn btn-info btn-circle chapterBtn active" value="all">{% trans 'All' %}
             </button>
         </div>
         <div class="col-md-12">
@@ -152,7 +152,7 @@
                         <div class="circle2" data-percent="10">
                             <div></div>
                         </div>
-                        <div><h3>&nbsp;&nbsp;&nbsp;Progress</h3>
+                        <div><h3>&nbsp;&nbsp;&nbsp;{% trans 'Progress' %}</h3>
                         </div>
                     </div>
 
@@ -168,7 +168,7 @@
             </div>
         </div>
         <div class="col-md-12">
-            <span style="font-size:18px; font-weight: 700;"> [Chapter Info] </span>
+            <span style="font-size:18px; font-weight: 700;"> [{% trans 'Chapter Info' %}] </span>
 
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12 chapterinfo-detail-only  ">
@@ -176,12 +176,12 @@
             <div id="chapter-details" class=" ">
                 <div class="col-md-6">
                     <div class="center-name" style="padding: 5px 0;">
-                        <span style="font-size:18px"><b> Chapter Title: </b></span>
+                        <span style="font-size:18px"><b> {% trans 'Chapter Title' %}: </b></span>
                         <span id="chapter-title" style="font-size: 16px;"></span>
 
                     </div>
                     <div class="time-period" style="padding: 5px 0;">
-                        <span style="font-size:18px"><b> Visited Students: </b></span>
+                        <span style="font-size:18px"><b> {% trans 'Visited Students' %}: </b></span>
                         <span id="visited-students" style="font-size: 14px;"></span>
 
                     </div>
@@ -189,15 +189,15 @@
                 </div>
                 <div class="col-md-6">
                     <div class="no-student" style="padding: 5px 0;">
-                        <span style="font-size:18px"><b> No of Quiz: </b></span>
+                        <span style="font-size:18px"><b> {% trans 'No of Quiz' %}: </b></span>
                         <span id="visited-students" style="font-size: 16px;"></span>
                     </div>
                     <div class="no-chapter" style="padding: 5px 0;">
-                        <span style="font-size:18px"><b> Chapter Status: </b></span>
+                        <span style="font-size:18px"><b> {% trans 'Chapter Status' %}: </b></span>
                         <span id="chapter-status" style="font-size: 16px;"></span>
                     </div>
                     <div class="no-chapter" style="padding: 5px 0;">
-                        <span style="font-size:18px"><b> Chapter Running Time: </b></span>
+                        <span style="font-size:18px"><b> {% trans 'Chapter Running Time' %}: </b></span>
                         <span id="chapter-runningtime" style="font-size: 16px;"></span>
                     </div>
 
@@ -218,21 +218,21 @@
         </div>
         {% if session_list.count > 0 %}
             <div class="no-attendance-display text-center">
-                <h3 style="font-size:24px; text-transform:uppercase;"><b>No Session Created</b>
+                <h3 style="font-size:24px; text-transform:uppercase;"><b>{% trans 'No Session Created' %}</b>
                 </h3>
             </div>
         {% else %}
             <div id=" container student_progress-table">
                 {% if student_progress_data|length is not 0 %}
                     <div class="col-md-12">
-                        <h3 class="detailListHeader2 ">Student Progress List</h3>
+                        <h3 class="detailListHeader2 ">{% trans 'Student Progress List' %}</h3>
                     </div>
 
                     <table id="QuizTable" class="table table-striped table-bordered"
                            data-title="Progress Report of Course: {{ course }}" style="width:100%">
                         <thead class="thead-light bg-info">
                         <tr>
-                            <th>{% trans " No." %}</th>
+                            <th>{% trans "No." %}</th>
                             <th>{% trans "Study Progress" %}</th>
                             <th>{% trans "Username" %}</th>
                             <th>{% trans "Fullname" %}</th>
@@ -300,40 +300,40 @@
                                     data-score_obtained="{{ a.quiz.avg_percent_score }}">
                                     <span style="font-weight: 600;">Score Obtained</span>:- {{ a.quiz.avg_percent_score }}
                                     %<br>
-                                    <span style="font-weight: 600;">Completed/Total Quiz</span>:- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
+                                    <span style="font-weight: 600;">{% trans 'Completed' %}/{% trans 'Total Quiz' %}</span>:- {{ a.quiz.completed_quiz }}/{{ a.quiz.quiz_count }}
                                 </td>
                                 <td class="attendance"
                                     data-attendance="{% if a.overall_progress == 100.00 %}True{% else %}None{% endif %}">
                                     {% if a.chapter.attendance == None %}
-                                        No Chapter Running Time
+                                        {% trans 'No Chapter Running Time' %}
                                     {% elif a.overall_progress == 100.00 %}
-                                        Completed
+                                        {% trans 'Completed' %}
                                     {% else %}
                                         {% if a.chapter.progresspercent == 100.00 %}
-                                            <span class="text-success">Slide ✔</span><br>
+                                            <span class="text-success">{% trans 'Slide' %} ✔</span><br>
                                         {% else %}
-                                            <span class="text-danger">Slide ✖</span><br>
+                                            <span class="text-danger">{% trans 'Slide' %} ✖</span><br>
                                         {% endif %}
                                         {% if a.chapter.studytimeprogresspercent == 100.00 %}
-                                            <span class="text-success">Study time ✔</span><br>
+                                            <span class="text-success">{% trans 'Study time' %} ✔</span><br>
                                         {% else %}
-                                            <span class="text-danger">Study time ✖</span><br>
+                                            <span class="text-danger">{% trans 'Study time' %} ✖</span><br>
                                         {% endif %}
                                         {% if a.quiz.quiz_count != 0 %}
                                             {% if a.quiz.progress == 100.00 %}
-                                                <span class="text-success">Quiz ✔</span><br>
+                                                <span class="text-success">{% trans 'Quiz' %} ✔</span><br>
                                             {% else %}
-                                                <span class="text-danger">Quiz ✖</span><br>
+                                                <span class="text-danger">{% trans 'Quiz' %} ✖</span><br>
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if 'teachers' in request.path %}
-                                        <a href="{% url 'student_chapter_progress_teacher' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">View</a>
+                                        <a href="{% url 'student_chapter_progress_teacher' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">{% trans 'View' %}</a>
                                         </td>
                                     {% else %}
-                                        <a href="{% url 'student_chapter_progress' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">View</a>
+                                        <a href="{% url 'student_chapter_progress' courseid=course.id chapterid=a.chapter.chapterObj.id studentid=a.student.id %}">{% trans 'View' %}</a>
                                         </td>
                                     {% endif %}
                             </tr>
@@ -356,18 +356,18 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">
-                        Edit Study Progress Time of <span id="edit_progress_studytime_student_span"></span>
-                        <br>Chapter: <span id="edit_progress_studytime_chapter_span"></span>
+                        {% trans 'Edit Study Progress Time of' %} <span id="edit_progress_studytime_student_span"></span>
+                        <br>{% trans 'Chapter' %}: <span id="edit_progress_studytime_chapter_span"></span>
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <h5>Chapter Study Time: <span class="text-success" id="chapter_read_time"></span></h5>
+                    <h5>{% trans 'Chapter Study Time' %}: <span class="text-success" id="chapter_read_time"></span></h5>
                     <h6>
                         <a class="studymarkcomplete" id="studymarkcomplete" href="javascript:void(0)"
-                           style="float: right">Mark As Complete</a>
+                           style="float: right">{% trans 'Mark As Complete' %}</a>
                     </h6>
                     <form method="post" id="edit_progress_studytime_form">
-                        <label>Study Time</label>
+                        <label>{% trans 'Study Time' %}</label>
                         <input type="number" id="edit_progress_studytime_timeinputhh"
                                name="edit_progress_studytime_inputhr" min="0" placeholder="hh">
                         <input type="number" id="edit_progress_studytime_timeinputmm"
@@ -383,7 +383,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
                 </div>
             </div>
 

@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 <div class="outerdiv">
@@ -6,9 +7,9 @@
     <div class="headerDiv">
         <h2 class="tableHeader">
             {% if '/create/' in request.path %}
-            Create New Assignment
+            {% trans 'Create New Assignment' %}
             {% else %}
-            Edit Assignment
+            {% trans 'Edit Assignment' %}
             {% endif %}
         </h2>
         <hr class="header_hr">
@@ -23,7 +24,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                     <div id="div_id_Assignment_Deadline" class="form-group">
                         <label for="id_Assignment_Deadline" class="control-label ">
-                            Assignment Deadline
+                            {% trans 'Assignment Deadline' %}
                         </label>
                         <div class="controls ">
                             <input type="date" name="Assignment_Deadline" class="datetimeinput form-control"
@@ -46,7 +47,7 @@
                         class="select form-control">
                 </div>
                 <div class="submitButton  col-md-12">
-                    <button class="btn btn-success" type="submit">Submit</button>
+                    <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
                 </div>
             </form>
         </div>

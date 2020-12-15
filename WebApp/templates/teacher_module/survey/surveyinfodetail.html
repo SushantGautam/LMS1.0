@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
@@ -12,7 +13,7 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'question_teachers' %}">Survey</a>
+        <a href="{% url 'question_teachers' %}">{% trans 'Survey' %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}

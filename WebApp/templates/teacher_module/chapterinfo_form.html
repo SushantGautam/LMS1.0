@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="
         {% if object.Course_Code.Use_Flag %}
@@ -7,16 +8,16 @@
         {% else %}
             {% url 'teacher_mycourses_list_inactive' %}
         {% endif %}
-    ">My Courses</a></li>
+    ">{% trans 'My Courses' %}</a></li>
     <li class="breadcrumb-item"><a href="{{ object.Course_Code.teacher_get_absolute_url }}">{{ object.Course_Code }}</a>
     </li>
     <li class="breadcrumb-item"><a href="{{ object.teacher_get_absolute_url }}">{{ object.Chapter_Name }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/chapterinfo/create/' == request.path %}
-            Create New Chapter
+            {% trans 'Create New Chapter' %}
         {% else %}
-            Edit Chapter Info
+            {% trans 'Edit Chapter Info' %}
         {% endif %}
     </li>
 {% endblock %}
