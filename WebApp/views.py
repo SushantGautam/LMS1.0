@@ -2082,7 +2082,9 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         Obj = AssignmentInfo()
         Obj.Assignment_Topic = request.POST["Assignment_Topic"]
         Obj.Assignment_Start = request.POST["Assignment_Start"]
+        print(Obj.Assignment_Start)
         Obj.Assignment_Deadline = request.POST["Assignment_Deadline"]
+        print(Obj.Assignment_Deadline)
         Obj.Use_Flag = request.POST["Use_Flag"].capitalize()
         Obj.Course_Code = CourseInfo.objects.get(pk=request.POST["Course_Code"])
         Obj.Chapter_Code = ChapterInfo.objects.get(id=request.POST["Chapter_Code"])
