@@ -348,7 +348,12 @@ class CourseInfo(models.Model):
         return reverse('courseinfo_update', args=(self.pk,))
 
     def innings_of_this_course(self):
-        innings = InningInfo.objects.filter(Course_Group__in=self.inninggroups.all())
+        innings = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=self.inninggroups.all())
+        return innings
+    
+    def innings_active(self):
+        innings = InningInfo.objects.filter(Use_Flag=True, Start_Date__lte=datetime.now(),
+                        End_Date__gte=datetime.now(), Course_Group__in=self.inninggroups.all())
         return innings
 
     def get_teachers_of_this_course(self):
@@ -386,6 +391,10 @@ class ChapterInfo(models.Model):
 
     chapter_sessionmaps = GenericRelation('SessionMapInfo')
 
+    # from comment.models import Comment
+
+    # comments = GenericRelation(Comment)
+    is_commentable = models.BooleanField(default=True)
     # Relationship Fields
     Course_Code = ForeignKey(
         'CourseInfo',
@@ -414,6 +423,24 @@ class ChapterInfo(models.Model):
         return str(int(self.mustreadtime / 3600)) + ':' + str(int(self.mustreadtime % 3600 / 60)) + ':' + str(
             int(self.mustreadtime % 60)) if self.mustreadtime is not None else None
 
+    def display_mustreadtime(self):
+        if self.mustreadtime:
+            seconds = self.mustreadtime
+            hour = seconds // 3600
+            seconds %= 3600
+            minutes = seconds // 60
+            seconds %= 60
+            final = ''
+            if hour:
+                final = str(hour) + " hr "
+            if minutes:
+                final += str(minutes) + " min "
+            if seconds:
+                final += str(seconds) + " sec "
+            return final
+        else:
+            return '-'
+
     def __str__(self):
         return self.Chapter_Name
 
@@ -433,12 +460,18 @@ class ChapterInfo(models.Model):
             content_data = ""
 
         return content_data
-
+    
     def has_content(self):
-        file_path = os.path.join(settings.MEDIA_ROOT, 'chapterBuilder', str(self.Course_Code.pk), str(self.pk),
-                                 str(self.pk) + '.txt')
-
+        file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
         return os.path.exists(file_path)
+
+    # def quiz_count(self):
+    #     return Quiz.objects.filter(chapter_code=self, draft=False).count()
+
+    def assignment_count(self):
+        return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
+
+
 
 
 class ChapterContentsInfo(models.Model):
@@ -465,6 +498,7 @@ class ChapterContentsInfo(models.Model):
 
     def get_update_url(self):
         return reverse('chaptercontentsinfo_update', args=(self.pk,))
+
 
 
 # ================AssignmentModels================#
