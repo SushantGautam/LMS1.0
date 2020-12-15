@@ -25,7 +25,7 @@
             <textarea name="Summary" id="id_Summary" class="form-control" rows="10"></textarea><span
                 class="ma-form-highlight"></span><span class="ma-form-bar"></span>
         </div>
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for="Start_Date" class="font-weight-bold">{% trans "Start Date" %}</label>
@@ -38,9 +38,9 @@
                     <input name="End_Date" type="date" class="form-control" id="id_End_Date">
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="row">
-            <div class="col-lg-7">
+            <div class="col-lg-6">
                 <div class="form-group">
                     <label for="id_mustreadtime" class="font-weight-bold">
                         {% trans "Running Time" %} ({% trans "in minutes" %})</label>
@@ -48,11 +48,21 @@
                         max="5000" placeholder="Enter Running Time for Chapter">
                 </div>
             </div>
-            <div class="col-lg-5 text-center">
-                <div class="form-group">
-                    <label for="id_Use_Flag" class="font-weight-bold">{% trans "Publish" %}</label>
-                    <br>
-                    <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput">
+            <div class="col-lg-6 text-center row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="id_Use_Flag" class="font-weight-bold">{% trans "Publish" %}</label>
+                        <br>
+                        <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="id_is_commentable" class="font-weight-bold">{% trans "Comment" %}</label>
+                        <br>
+                        <input type="checkbox" id="id_is_commentable" class="checkboxinput" name="is_commentable"
+                            checked>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,55 +73,7 @@
         </div>
     </form>
 </div>
-<!-- <form method="post" id="ajaxchapterinfoform">
-    {% csrf_token %}
 
-    <div class="alert alert-danger form-errors" style="display: none">
-    </div>
-    <div class="col-md-3 col-sm-12 col-xs-12 text-center">
-        {{ form.Chapter_No }}<br>
-    </div>
-    <div class="col-md-9 col-sm-12 col-xs-12 text-center">
-        {{ form.Chapter_Name }}<br>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-        <div id="div_id_Summary" class="form-group">
-            <label for="id_Summary" class="control-label ">
-                Summary
-            </label>
-            <div class="controls ">
-                <textarea name="Summary" rows="3" class="textarea form-control" id="id_Summary"
-                    cols="40">{{ object.Summary }}</textarea>
-            </div>
-        </div>
-        <br>
-    </div>
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        {{ form.Start_Date }}<br>
-    </div>
-    <div class="col-md-6 col-sm-12 col-xs-12">
-        {{ form.End_Date }}<br>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        {{ form.mustreadtime }}<br>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12" id="div_use_flag">
-        <label for="id_Use_Flag" class="control-label ">Publish</label>
-        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked>
-    </div>
-
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
-               class="select form-control">
-    </div>
-
-    <div class="col-md-12 text-center" style="margin:2em auto;">
-        <button class="btn btn-success" type="submit">Submit</button>
-    </div>
-
-</form> -->
-
-<!-- <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script> -->
 <script>
 
     $("#ajaxchapterinfoform").submit(function (e) {
@@ -128,9 +90,9 @@
                 "Use_Flag": $('#id_Use_Flag').is(":checked"),
                 "Register_Agent": $('#id_Register_Agent').val(),
                 "Course_Code": $('#id_Course_Code').val(),
-                "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
-                "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
-
+                //"Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
+                //"End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
+                "is_commentable": $('#id_is_commentable').is(":checked"),
             },
             // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -150,4 +112,5 @@
             }
         });
     });
+
 </script>

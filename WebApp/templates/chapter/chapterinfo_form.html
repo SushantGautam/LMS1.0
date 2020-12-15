@@ -16,6 +16,21 @@
             <div class="card-body">
                 <form method="post" id="ajaxchapterinfoform">
                     {% csrf_token %}
+                    {% if form.errors %}
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="form-group">
@@ -41,7 +56,7 @@
                             rows="10">{{object.Summary}}</textarea><span class="ma-form-highlight"></span><span
                             class="ma-form-bar"></span>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="Start_Date" class="font-weight-bold">{% trans "Start Date" %}</label>
@@ -56,9 +71,9 @@
                                     max="9999-12-31" value="{{ object.End_Date|date:'Y-m-d' }}">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
-                        <div class="col-lg-7">
+                        <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="id_mustreadtime" class="font-weight-bold">
                                     {% trans "Running Time" %} ({% trans "in minutes" %})
@@ -68,10 +83,26 @@
                                     min="0" max="5000" required>
                             </div>
                         </div>
-                        <div class="col-lg-5 text-center">
-                            <label for="id_Use_Flag" class="font-weight-bold">{% trans "Publish" %}</label><br>
-                            <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput"
-                                {% if object.Use_Flag %}checked{% endif %}>
+                        <div class="col-lg-6 text-center row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="id_Use_Flag" class="font-weight-bold">{% trans "Publish" %}</label>
+                                    <br>
+                                    <input type="checkbox" {% if object.Use_Flag %}checked{% endif %} name="Use_Flag"
+                                        id="id_Use_Flag" class="checkboxinput">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="id_is_commentable" class="font-weight-bold">
+                                        {% trans "Comment" %}
+                                    </label>
+                                    <br>
+                                    <input type="checkbox" id="id_is_commentable" class="checkboxinput"
+                                        name="is_commentable" {% if object.is_commentable %} checked {% endif %}>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user }}"
