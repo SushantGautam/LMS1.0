@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "All Quizzes" %}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">QUIZ</li>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="">
+    <div class="jumbothon  bg-thansparent" style="margin: 15px 0 25px 0; padding:0px">
+        <div class="row">
+            <div class="col-md-6  page-header">
+                <div class="page-title">
+                    <h2>List Of Quizzes</h2>
+                    
+                </div>
+    
+            </div>
+            <div class="col-md-6 text-right ">
+                <a class="btn btn-light  icon-quiz-list " href="{% url 'quizfw' %}">
+
+                    <i data-feather="plus"></i>
+                    
+                    Create Quiz</a>
+    
+            </div>
+
+        </div>
+       
+      
+    </div>
+    
+        <!-- <div class="col-md-12 col-xs-12 col-sm-12 " style="margin: 10px 0; padding:0px">
+    
+
+       
+            <div class="row exam-results1">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <h2 style="margin:0px;">{% trans "List of quizzes" %}</h2>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right ">
+                    <div class="">
+                        
+                      </div>
+                    
+    
+                </div>
+            </div>
+    
+    
+        </div> -->
+ 
+    
+   
+
+    <!-- <h2>{% trans "List of quizzes" %}</h2> -->
+    
+    {% if quiz_list %}
+    <div class="table-responsive">
+     
+
+
+
+        
+        
+                <table  id="QuizTable" data-toggle="data-table" class="table no-footer" cellspacing="0" width="100%">
+                <thead class="thead-dark">
+                   <tr>
+                        <th>{% trans "Title" %}</th>
+                        <th>{% trans "Course -> Chapter" %}</th>
+                        <th>{% trans "No. of Questions" %}</th>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Updated On" %}</th>
+
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Action" %}</th>
+                  </tr>
+                </thead>
+                 
+                    <tbody>
+
+                        {% for quiz in quiz_list %}
+            
+                            <tr>
+                                <td>{{ quiz.title }}</td>
+                                <td>{{ quiz.course_code }} -> {{ quiz.chapter_code }}</td>
+                                <td>{{ quiz.question_count }}</td>
+                                <td>{% if quiz.pre_test %}
+                                    pre test <br>
+                                {% endif %}
+                                    {% if quiz.post_test %}
+                                        post test <br>
+                                    {% endif %}
+                                    {% if quiz.exam_paper %}
+                                        exam <br>
+                                    {% endif %}
+                                </td>
+            
+            
+                                <td class = "datecon">
+                                    {{ quiz.updated_date|date:'M d, Y H:i' }}
+                                </td>
+            
+            
+                                <td>{% if quiz.draft is True %}
+                                    Inactive
+                                {% else %}
+                                    Active
+                                {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'quiz_detail' pk=quiz.id %}">
+                                       <span class="text-secondary">View details</span>
+
+                                        
+                                    </a>
+                                </td>
+                            </tr>
+            
+                        {% endfor %}
+                        </tbody>
+                        <!-- <tfoot>
+                            <tr>
+                                <th>S. No.</th>
+                                <th>Username</th>
+                                <th>Member ID</th>
+                                <th>Full Name</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                              
+                            </tr>
+                        </tfoot> -->
+                </table>
+     </div>   
+
+    {% else %}
+        <p>{% trans "There are no available quizzes" %}.</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+    var table_main = $('#QuizTable').DataTable({
+        responsive: true,
+        dom: 'lBfrtip',
+        buttons: [],
+        "bSort" : false
+
+        });
+    });
+
+
+</script>
+
+
+   
+{% endblock %}

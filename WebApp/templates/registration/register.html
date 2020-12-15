@@ -1,0 +1,293 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="hide-sidebar ls-bottom-footer" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>LMS | Register</title>
+
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+</head>
+
+<body class="form-membership" style="background: url(../../../static/media/image/LMS_background2.jpg)no-repeat center center fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;">
+    <div class="form-wrapper" style="min-width: 500px;">
+        <!-- logo -->
+        <div id="logo">
+            <img class="logo" src="../../../static/media/image/logo/logo.png" alt="logo">
+        </div>
+        <!-- ./ logo -->
+        <h5>Create account</h5>
+        <!-- form -->
+        <form method="POST" id="registration-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Username" name="username" id="id_username" required
+                    autofocus>
+                <small id="username-error-message" class="input-error text-danger"></small>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" name="email" id="id_email" required>
+            </div>
+            <div class="form-group">
+                <label for="id_Center_Code" class="float-left">Center Code</label>
+                <select class="select2" id="id_Center_Code" name="Center_Code">
+                    {% for x, y in form.fields.Center_Code.choices %}
+                    <option value="{{ x }}" {% if form.initial.Center_Code == x %} selected{% endif %}>{{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_Center_Code" class="float-left">Gender</label>
+                <select class="form-control" id="id_Member_Gender" name="Member_Gender">
+                    {% for x, y in form.fields.Member_Gender.choices %}
+                    <option value="{{ x }}" {% if form.initial.Member_Gender == x %} selected{% endif %}>{{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex">
+                <label for="member_type" class="pull-left">Member Type</label>
+            </div>
+            <div class="form-group float-left mb-4">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="member_type" id="id_Is_Student"
+                        value="Is_Student">
+                    <label class="form-check-label" for="id_Is_Student">Student</label>
+                </div>
+                <div class="form-check form-check-inline ml-5">
+                    <input class="form-check-input" type="radio" name="member_type" id="id_Is_Teacher"
+                        value="Is_Teacher">
+                    <label class="form-check-label" for="id_Is_Teacher">Teacher</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" id="id_password1" name="password1"
+                    required>
+                {% if form.non_field_errors %}
+                <ul class='form-errors'>
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <small id="password-error-message" class="input-error text-danger"></small>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Confirm Password" id="id_password2"
+                    name="password2" required>
+                <small id="confirm-password-error-message" class="input-error text-danger"></small>
+            </div>
+            <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False">
+            <button class="btn btn-primary btn-block">Register</button>
+            <hr>
+            <p class="text-muted">Already have an account?</p>
+            <a href="{% url 'login' %}" class="btn btn-outline-light">Sign In</a>
+        </form>
+        <!-- ./ form -->
+
+
+    </div>
+    <!-- <div class="container">
+        <div class="page-section">
+            <div class="row">
+                <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+                            <h1 class="text-display-1 text-center margin-bottom-none">Register</h1>
+                            <div class="panel-body">
+                                <div class="gapping text-danger">
+                                    All fields are required to be filled
+                                </div>
+                                <form class="form-reg" method="POST" action="" id="registration-form">
+                                    {% csrf_token %}
+                                    <div class="form-group form-control-material static">
+                                        <input type="text" class="form-control" name="username" id="id_username"
+                                            type="text" required autofocus>
+                                        <label for="username">Username</label>
+                                    </div>
+
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="text" class="form-control" name="email" id="id_email" type="text"
+                                            required>
+                                        <label for="email">E-mail</label>
+                                    </div>
+                                    <div class="form-group gapping">
+                                        Center Code
+                                        <br><br>
+                                        <select style="width: 100%;" data-toggle="select2" id="id_Center_Code"
+                                            name="Center_Code">
+                                            {% for x, y in form.fields.Center_Code.choices %}
+                                            <option value="{{ x }}" {% if form.fields.Center_Code.value == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group gapping">
+                                        <div class="gapping">
+                                            Gender
+                                        </div>
+                                        <select style="width: 100%;" data-toggle="select2" id="id_Member_Gender"
+                                            name="Member_Gender" required>
+                                            {% for x, y in form.fields.Member_Gender.choices %}
+                                            <option value="{{ x }}" {% if form.fields.Member_Gender.value == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group gapping">
+                                        <div class="gapping">Member Type</div><br>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" name="member_type" id="id_Is_Student" value="Is_Student"
+                                                class="checkboxinput">
+                                            <label for="id_Is_Student">Student</label>
+                                        </div> &nbsp; &nbsp; &nbsp;
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" name="member_type" id="id_Is_Teacher" value="Is_Teacher"
+                                                class="checkboxinput">
+                                            <label for="id_Is_Teacher">Teacher</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="password" class="form-control" id="id_password1" name="password1"
+                                            required>
+                                        <label for="password1">Password</label>
+                                        {% if form.non_field_errors %}
+                                        <ul class='form-errors'>
+                                            {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                        <small id="password-error-message" class="input-error text-danger"></small>
+                                    </div>
+                                    <div class="form-group form-control-material static gapping">
+                                        <input type="password" class="form-control" id="id_password2" name="password2"
+                                            required>
+                                        <label for="password2">Password Confirm</label>
+                                    </div>
+                                    <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False">
+                                    <button class="btn btn-primary gapping" type="submit">Create Account
+                                    </button>
+                                </form>
+                                <div class="gapping">Already a member? <a href="{% url 'login' %}">Login</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div> -->
+
+    <script src="{% static 'vendors/bundle.js' %}"></script>
+    <script src="{% static 'js/app.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
+    <script>
+        $('.select2').select2({
+            placeholder: 'Select your Center'
+        });
+
+        $(document).ready(function () {
+            $('#id_Center_Code option:first').attr("disabled", "true")
+            // $('#id_Member_Gender option:first').attr("disabled", "true")
+
+            $('#id_username').change(function () {
+                let username = $('#id_username').val();
+                if (/[^a-zA-Z0-9\@\.\+\-_]/.test(username)) {
+                    $('#username-error-message').text("Username can have only alphanumeric character and symbols @ -  .  +  _");
+                } else {
+                    $.ajax({
+                        url: '{% url "validate_username" %}',
+                        type: "GET",
+                        data: {
+                            'username': username,
+                        },
+                        success: function (data) {
+                            if (data.is_taken == true) {
+                                $('#username-error-message').text(data.error_message);
+                                $('#id_username').focus();
+                            } else if (data.is_taken != true) {
+                                $('#username-error-message').text('');
+                            } else if (pw1.includes(username) && username != "" && pw1.length < 16) {
+                                $("#password-error-message").text("Username and Password are similar.");
+                                $('#id_password1').focus();
+                                $('#username-error-message').text('');
+                            }
+                        },
+                    });
+                }
+            });
+
+            $('#id_password1').keyup(function () {
+                let username = $('#id_username').val();
+                pw1 = $('#id_password1').val();
+                var upperCaseLetters = /[A-Z]/g;
+                var lowerCaseLetters = /[a-z]/g;
+                var numbers = /[0-9]/g;
+
+                if (pw1.length < 8) {
+                    $("#password-error-message").text("Password must be of at least 8 characters.");
+                    $('#id_password1').focus();
+                } else if (!pw1.match(lowerCaseLetters) && !pw1.match(upperCaseLetters)) {
+                    $("#password-error-message").text("Password cannot be only numeric.");
+                    $('#id_password1').focus();
+                } else if (pw1.includes(username) && username != "" && pw1.length < 16) {
+                    $("#password-error-message").text("Username and Password are similar.");
+                    $('#id_password1').focus();
+                } else {
+                    $('#password-error-message').text('');
+                    $.ajax({
+                        url: '{% url "validate_password" %}',
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': '{{csrf_token}}',
+                            'username': username,
+                            'password': pw1,
+                        },
+                        success: function (data) {
+                            $('#password-error-message').text(data);
+                        },
+                    });
+                }
+            });
+
+            $('#id_password2').change(function () {
+                pw1 = $('#id_password1').val();
+                pw2 = $('#id_password2').val();
+                if (pw1 != pw2) {
+                    $("#confirm-password-error-message").text("Password must be same as above.");
+                    $('#id_password2').focus();
+                } else
+                    $('#confirm-password-error-message').text('');
+            });
+
+            $('#registration-form').submit(function (e) {
+                let submitOK = true;
+                $('.input-error').each(function () {
+                    if ($(this).text() != "")
+                        submitOK = false
+                });
+                if (!submitOK)
+                    return false
+            })
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+{% extends base_file %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
+{{ form.media }}
+{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'inninggroup_list' %}">Course Allocation</a></li>
+<li class="breadcrumb-item active" aria-current="page">
+    {% if '/inninggroup/create/' == request.path %}
+    Allocate Teacher to Course
+    {% else %}
+    Edit Course Allocation
+    {% endif %}
+</li>
+{% endblock %}
+{% block content %}
+<style>
+    .selector {
+        width: auto !important;
+    }
+
+    .selector-available,
+    .selector-chosen {
+        width: 280px !important;
+    }
+
+    .selector select {
+        width: 280px !important;
+    }
+
+    .selector .selector-available input {
+        width: 210px !important;
+    }
+
+    .selector .selector-chosen input {
+        width: 210px !important;
+    }
+</style>
+
+<div class="page-header">
+    <div class="page-title d-block text-center">
+        <h2>{% if '/inninggroup/create/' == request.path %}
+            Allocate Teacher to Course
+            {% else %}
+            Edit Course Allocation
+            {% endif %}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-12 m-auto">
+        <div class="card p-4">
+            <form method="post" id="FormID">
+                {% csrf_token %}
+                {% if form.errors %}
+                {% for field in form %}
+                {% for error in field.errors %}
+                <div class="m-2 alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div class="m-2 alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <div class="form-group">
+                    <label for="id_InningGroup_Name">Inning Group Name *</label>
+                    <input type="text" name="InningGroup_Name" id="id_InningGroup_Name" maxlength="200"
+                        value="{{ object.InningGroup_Name }}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="id_Course_Code" class="float-left">Select Course</label>
+                    <select class="select2" id="id_Course_Code" name="Course_Code">
+                        {% for x, y in form.fields.Course_Code.choices %}
+                        <option value="{{ x }}" {% if form.initial.Course_Code == x %}selected{% endif %}>{{ y }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mt-4">
+                    {{ form.Teacher_Code }}
+                </div>
+
+                <div class="col-12 d-inline-block text-center">
+                    {% if '/inninggroup/create/' == request.path %}
+                    <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                    {% else %}
+                    <label>
+                        Status
+                    </label><br>
+                    <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
+                        {% if object.Use_Flag == False %} &nbsp; {% else %} checked {% endif %}>
+                    {% endif %}
+                    <input type="hidden" name="Center_Code" id="id_Center_Code"
+                        value="{{ request.user.Center_Code.id }}" class="select form-control">
+                    <input type="hidden" name="Register_Agent" id="id_Register_Agent"
+                        value="{{ request.user.username }}" class="select form-control">
+                </div>
+
+                <div class="col-12 submitButton text-center mt-3">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'build/js/CustomSelectFilter2.js' %}"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#id_Course_Code').select2({
+            placeholder: 'Select Course'
+        });
+        //  $('#id_Teacher_Code').select2({
+        //      placeholder: 'Select Teachers to allocate'
+        // });
+    })
+</script>
+{% endblock %}

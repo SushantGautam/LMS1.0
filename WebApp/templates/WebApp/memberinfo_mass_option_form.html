@@ -1,0 +1,146 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+<!-- Modal -->
+<div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog"
+    aria-labelledby="edit_checked_details_modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="edit_checked_details_modal_title">
+                    {% trans "Edit Selected Members" %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="error-div" style="display: none">
+
+            </div>
+
+            <div class="modal-body">
+                <form method="post" id="editCheckedMembers" action="
+                    {% if '/inactive' in request.path %}
+                        {% url 'memberinfo_inactive_edit_checked' %}
+                    {% else %}
+                        {% url 'memberinfo_edit_checked' %}
+                    {% endif %}
+                    ">
+                    {% csrf_token %}
+                    <input type="hidden" name="member_ids[]" id="member_ids">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <select class="select2" id="id_Member_Department" name="Member_Department">
+                                    {% for x, y in partial_member_form.fields.Member_Department.choices %}
+                                    <option value="{{ x }}"
+                                        {% if partial_member_form.initial.Member_Department == x %}selected{% endif %}>
+                                        {{ y }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <!-- {{ partial_member_form.Member_Department }} -->
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changedepartment-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <select class="select2" id="id_Member_Position" name="Member_Position">
+                                    {% for x, y in partial_member_form.fields.Member_Position.choices %}
+                                    <option value="{{ x }}"
+                                        {% if partial_member_form.initial.Member_Position == x %}selected{% endif %}>
+                                        {{ y }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <!-- {{ partial_member_form.Member_Position }} -->
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changememberposition-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <select class="select2" id="id_Member_Gender" name="Member_Gender">
+                                    {% for x, y in partial_member_form.fields.Member_Gender.choices %}
+                                    <option value="{{ x }}"
+                                        {% if partial_member_form.initial.Member_Gender == x %}selected{% endif %}>
+                                        {{ y }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <!-- {{ partial_member_form.Member_Gender }} -->
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changemembergender-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <!--
+                                If the checkbox is selected then the checkbox value will be submitted else, hidden value is submitted
+                                This is because if checkbox is enabled but not checked, then the html won't submit off value.
+                                 -->
+                                <input id='id_Is_Teacher_hidden' type='hidden' value='0' name='Is_Teacher'>
+                                {{ partial_member_form.Is_Teacher }}
+                                <label for="id_Is_Teacher" class="ml-3">{% trans "Is Teacher" %}</label>
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changeisteacher-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <input id='id_Is_Student_hidden' type='hidden' value='0' name='Is_Student'>
+                                {{ partial_member_form.Is_Student }}
+                                <label for="id_Is_Student" class="ml-3">{% trans "Is Student" %}</label>
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changeisstudent-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <input id='id_Use_Flag_hidden' type='hidden' value='0' name='Use_Flag'>
+                                {{ partial_member_form.Use_Flag }}
+                                <label for="id_Use_Flag" class="ml-3">{% trans "Use Flag" %}</label>
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changeActive-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
+                        <button type="button" class="btn btn-secondary ml-3"
+                            data-dismiss="modal">{% trans "Close" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

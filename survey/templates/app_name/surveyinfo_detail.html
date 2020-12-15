@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'app_name_surveyinfo_list' %}">SurveyInfo Listing</a></p>
+<table class="table">
+<tr><td>Survey_Title</td><td>{{ object.Survey_Title }}</td></tr>
+<tr><td>Start_Date</td><td>{{ object.Start_Date }}</td></tr>
+<tr><td>End_Date</td><td>{{ object.End_Date }}</td></tr>
+<tr><td>Survey_Cover</td><td>{{ object.Survey_Cover }}</td></tr>
+<tr><td>Use_Flag</td><td>{{ object.Use_Flag }}</td></tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit SurveyInfo</a>
+
+{% endblock %}

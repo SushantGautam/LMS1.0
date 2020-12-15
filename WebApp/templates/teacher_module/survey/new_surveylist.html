@@ -1,0 +1,243 @@
+{% load i18n %}
+<div class="row app-block">
+
+
+    <div class="col-md-3 app-sidebar">
+        <div class="card">
+            <div class="card-body">
+                <a href="#" class="btn btn-outline-light dropdown-toggle bg-primary" data-toggle="dropdown">
+                   {% if 'active' in request.get_full_path %}{% trans "Active" %}{%endif%}{% if 'expire' in request.get_full_path %} {% trans "Expired" %} {%endif%}
+
+                </a>
+                <div class="dropdown-menu dropdown-menu-left">
+
+
+                      <a class="dropdown-item
+                        {% if 'active' in request.get_full_path %}
+                                 active
+                                {%endif%} "
+                          href="{% url 'teacher_surveyinfo_list'%}?category_name={{cat}}&date_filter=active">{% trans "Active" %}</a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item
+                        {% if 'expire' in request.get_full_path %}
+                        active
+                        {%endif%} "
+                         href="{% url 'teacher_surveyinfo_list'%}?category_name={{cat}}&date_filter=expire">{% trans "Expired" %}</a>
+
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="app-sidebar-menu">
+                <div class="card-body">
+                    <h6 class="mb-0">{% trans "Category" %}</h6>
+
+                </div>
+
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'teacher_surveyinfo_list' %}?category_name=all_survey&date_filter={{filter}}"
+                       class="category-name list-group-item d-flex align-items-center
+                        {% if 'all_survey' in request.get_full_path %} bg-primary {% endif %}"
+                       id="all_survey">
+                        <i class="fa fa-bar-chart mr-2
+                        {% if 'all_survey' in request.get_full_path %} text-light {%else%} text-primary {%endif%}"
+                       id="categoryIcons"></i>{% trans "All survey" %}
+                    </a>
+                </div>
+
+                {% for category in categories %}
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'teacher_surveyinfo_list' %}?category_name={{ category.Category_Name }}&date_filter={{filter}}"
+                       class="list-group-item d-flex align-items-center category-name
+                        {% if category.Category_Name  in request.get_full_path  %} bg-primary {%endif%} "
+                       id="{{ category.Category_Name }}">
+                        <i class="fa fa-{{ category.Category_Icon }} mr-2
+                    {% if category.Category_Name in request.get_full_path %} text-light {%else%} text-primary {%endif%}">
+
+                        </i>{% trans category.Category_Name %}
+                        <span class="small ml-auto">  </span>
+
+                         {% if "teachers" in request.path or category.Category_Name|lower == "session" or category.Category_Name|lower == "course" %}
+                                                {% else %}
+                        <button class=" {{ category.Category_Name }} btn add_survey_btn btn-sm
+                        {% if category.Category_Name in request.get_full_path %}btn-light{%else%}btn-primary{%endif%}"
+                                id="category_Add_Button{{ category.Category_Name }}"
+                                style="margin: 0;"
+                                data-toggle="modal"
+                                data-target="#survey_form_modal"><i class="ti-plus mr-2"></i>{% trans "Add" %}
+                        </button>
+                        {%endif%}
+
+                    </a>
+
+
+
+
+
+
+
+
+<div id="survey_form_modal" class="modal fade" style="height: -webkit-fill-available;">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{% trans "Create Survey" %}</h4>
+            </div>
+            <div class="modal-body" id="surveyForm">
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+                </div>
+                {%endfor%}
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-9 app-content">
+        <div class="app-content-overlay"></div>
+        <div class="app-action">
+            <div class="action-left"></div>
+
+
+            <div class="action-right">
+
+                <form class="d-flex mr-3 " name="search_survey" id="search_survey" method="GET" >
+
+                    <div class="input-group" style="width:50%;">
+                        <input type="hidden" class="form-control" name = "category_name" value="{{cat}}"
+                            aria-describedby="button-addon1">
+                        <input type="hidden" class="form-control" name = "date_filter" value="{{filter}}"
+                            aria-describedby="button-addon1">
+                        <input type="text" class="form-control"  name="query" placeholder="{% trans 'Survey search' %}"
+                               value="{{ search_q }}"
+                               aria-describedby="button-addon1">
+
+
+                        <div class="input-group-append">
+
+                            <button class="btn s_btn" type="submit" id="button-addon1">
+                                <i class="ti-search"></i>
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+
+
+                <div class="app-pager d-flex align-items-center">
+                    <div class="mr-3">{{ page_obj.start_index }} - {{page_obj.end_index}} {% trans 'of' %} {{ page_obj.paginator.count}}
+                    </div>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+
+                            <li class="page-item">
+                                {% if page_obj.has_previous %}
+                                <a class="page-link"
+
+                                   href="{% url 'teacher_surveyinfo_list'%}?category_name={{cat}}&date_filter={{filter}}&page={{page_obj.previous_page_number}}"
+
+
+                                   aria-label="Previous">
+                                    <i class="ti-arrow-left"></i>
+                                </a>
+                                {%endif%}
+                            </li>
+
+
+                            <li class="page-item">
+                                {% if page_obj.has_next %}
+                                <a class="page-link"
+
+                                   href="{% url 'teacher_surveyinfo_list'%}?category_name={{cat}}&date_filter={{filter}}&page={{page_obj.next_page_number }}"
+
+                                   aria-label="Next">
+                                    <i class="ti-arrow-right"></i>
+                                </a>
+                                {%endif%}
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+        <div class="card card-body app-content-body">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="card-columns">
+
+                             {% if object_list %}
+                        {% for object in object_list%}
+                        <div class="card p-3">
+                            <a href=" {% url 'teacher_surveyinfo_detail' object.pk %} ">
+
+                                <blockquote class="blockquote mb-0 card-body">
+
+                                    {% if object.id in submittedSurvey %}
+                                    <i class="fa fa-check fa-5x" id="participatedSurvey" aria-hidden="true"></i>
+                                    {% else %}
+                                    <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-5x text-primary "
+
+                                       id="participatedSurvey"
+                                       aria-hidden="true"></i>
+                                    {% endif %}
+                                    <div class="" style="text-decoration: none ;">
+                                        <h3 class="survey-title-name">{{ object.Survey_Title|truncatechars:12 }}</h3>
+                                    </div>
+
+
+                                    <small class="text-muted">
+                                        <ul class="card_labels">
+                                            <li><label>{% trans "Questions" %}: {{ object.questions_count }}</label></li>
+                                            <li><label>{% trans "Start date" %}: {{ object.Start_Date }}</label></li>
+                                            <li><label>{% trans "End date" %}: {{ object.End_Date }}</label></li>
+                                        </ul>
+
+                                    </small>
+
+                                </blockquote>
+                        </div>
+                        {%endfor%}
+                         {% else %}
+                        <p style="margin:35px;">{% trans 'No Any Surveys' %}!</p>
+                        {%endif%}
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+

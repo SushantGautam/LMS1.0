@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'app_name_surveyinfo_list' %}">SurveyInfo Listing</a></p>
+<table class="table">
+<tr>
+<td>ID</td><td>Link</td>
+    <td>Survey_Title</td>
+    <td>Start_Date</td>
+    <td>End_Date</td>
+    <td>Survey_Cover</td>
+    <td>Use_Flag</td>
+</tr>
+{% for object in object_list %}
+<tr>
+    <td>{{object.pk}}</td>
+    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+    <td>{{ object.Survey_Title }}</td>
+    <td>{{ object.Start_Date }}</td>
+    <td>{{ object.End_Date }}</td>
+    <td>{{ object.Survey_Cover }}</td>
+    <td>{{ object.Use_Flag }}</td>
+</tr>
+{% endfor %}
+</table><a class="btn btn-primary" href="{% url 'app_name_surveyinfo_create' %}">Create new SurveyInfo</a>
+{% endblock %}

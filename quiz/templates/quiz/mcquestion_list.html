@@ -1,0 +1,45 @@
+{#{% extends "base.html" %}#}
+{#{% load static %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% block content %}#}
+{#<p><a class="btn btn-default" href="{% url 'quiz_create' %}">Create Quiz</a></p>#}
+{#<form method="post">#}
+{#{% csrf_token %}#}
+{#{{form|crispy}}#}
+{#<button class="btn btn-primary" type="submit">Submit</button>#}
+{#</form>#}
+{#{% endblock %}#}
+
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'mcquestion_list' %}">MCQuestion Listing</a></p>
+<table class="table">
+<tr>
+<td>ID</td><td>Link</td>
+    <td>answer_order</td>
+{#    <td>question_type</td>#}
+{#    <td>use_flag</td>#}
+{#    <td>reg_date</td>#}
+{#    <td>reg_time</td>#}
+{#    <td>udt_date</td>#}
+{#    <td>udt_time</td>#}
+{#    <td>udt_agent</td>#}
+</tr>
+{% for object in object_list %}
+<tr>
+    <td>{{object.pk}}</td>
+    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+    <td>{{ object.answer_order }}</td>
+{#    <td>{{ object.question_type }}</td>#}
+{#    <td>{{ object.use_flag }}</td>#}
+{#    <td>{{ object.reg_date }}</td>#}
+{#    <td>{{ object.reg_time }}</td>#}
+{#    <td>{{ object.udt_date }}</td>#}
+{#    <td>{{ object.udt_time }}</td>#}
+{#    <td>{{ object.udt_agent }}</td>#}
+</tr>
+{% endfor %}
+</table><a class="btn btn-primary" href="{% url 'mcquestion_create' %}">Create new MCQuestion</a>
+{% endblock %}

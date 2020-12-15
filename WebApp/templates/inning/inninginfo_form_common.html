@@ -1,0 +1,86 @@
+{% load static %}
+{% load i18n %}
+
+<link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
+
+<!-- Modal -->
+
+<div class="modal fade" id="edit_checked_details_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_assignment_modal_title">
+                    {% trans "Edit Sessions" %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="error-div" style="display: none">
+
+            </div>
+            <div class="modal-body">
+                <form method="post" id="editCheckedInnings" action="
+            {% if '/inactive' in request.path %}
+                {% url 'inninginfo_inactive_edit_checked' %}
+            {% else %}
+                {% url 'inninginfo_edit_checked' %}
+            {% endif %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="inning_ids[]" id="inning_ids">
+                    <div class="form-group">
+                        <label for="Student_Group">{% trans "Select Student Group" %}</label>
+                        <div class="row">
+                            <div class="col-9">
+                                <select class="form-control" id="Student_Group" name="Student_Group" disabled>
+                                    <option value="">{% trans "Select Student Group" %}</option>
+                                    {% for groupmapping in student_group_list %}
+                                    <option value="{{ groupmapping.pk }}">{{ groupmapping.GroupMapping_Name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changestudentgroup-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start_Date">{% trans "Start Date" %}</label>
+                        <div class="row">
+                            <div class="col-9">
+                                <input type="date" class="form-control" id="start_Date" name="start_Date" disabled>
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changestartdate-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_Date">{% trans "End Date" %}</label>
+                        <div class="row">
+                            <div class="col-9">
+                                <input type="date" class="form-control" id="end_Date" name="end_Date" disabled>
+                            </div>
+                            <div class="col-3 text-center m-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                    id="changeenddate-btn">{% trans "Change" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
+                        <button type="button" class="btn btn-secondary ml-3"
+                            data-dismiss="modal">{% trans "Close" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>

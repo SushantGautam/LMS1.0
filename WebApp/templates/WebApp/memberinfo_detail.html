@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'memberinfo_list' %}">{% trans "Member" %}</a></li>
+<li class="breadcrumb-item" aria-current="page">{{ object.username }}</li>
+{% endblock %}
+{% block content %}
+{# {% get_current_language as LANGUAGE_CODE %} #}
+{# {{ LANGUAGE_CODE }} #}
+<div class="container">
+    <div class="page-header">
+        <div class="page-title d-block text-center">
+            <h2>{% trans "Member Information" %}</h2>
+        </div>
+    </div>
+    <div class="text-center">
+        <figure class="avatar mr-2" style="height: 10rem; width: 10rem;">
+            {% if object.Avatar %}
+            <img src="{{ object.Avatar }}" class="rounded-circle" alt="avatar">
+            {% else %}
+            <img src="{% static 'media/image/user/man_avatar3.jpg'%}" class="rounded-circle" alt="avatar">
+            {% endif %}
+        </figure>
+    </div>
+
+    <div class="dropdown float-right mb-3">
+        <!-- <a href="#" class="btn btn-outline-light btn-floating btn-sm " data-toggle="dropdown" title="Options">
+            <i class="ti-more-alt"></i>
+        </a> -->
+        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
+            <i class="ti-more-alt"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item text-primary" href="{{ object.get_update_url }}">{% trans "Edit Member" %}</a>
+            {% if object.password %}
+            <a class="dropdown-item text-warning"
+                href="/change-password/{{ object.id }}/">{% trans "Change Password" %}</a>
+            {% elif not object.password %}
+            <a class="dropdown-item text-warning"
+                href="/change-password/{{ object.id }}/">{% trans "Add New Password" %}</a>
+            {% endif %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-danger confirm-delete" href="javascript:void(0)" title="({% trans 'Note' %}: {% trans 'Instead of' %}
+            {% trans 'deleting a member' %} {% trans 'you can' %} {% trans 'deactivate' %}
+            {% trans 'him' %}/{% trans 'her' %}
+            {% trans 'instead' %})" data-toggle="tooltip" data-placement="bottom">{% trans "Delete Member" %}</a>
+            <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
+                {% csrf_token %}
+                <input type="hidden">
+            </form>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered pt-3">
+        <tr>
+            <td style="max-width: 10rem;">
+                <span class="font-weight-bold">{% trans "Member ID" %}</span>
+                <small> ({% trans "Assigned by center" %})</small>
+                <span class="pull-right">{{ object.Member_ID }}</span>
+            </td>
+            <td><span class="font-weight-bold">{% trans "Username" %}</span>
+                <small> ({% trans "Used for login" %})</small>
+                <span class="pull-right">
+                    {{ object.username }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Full Name" %}</span>
+                <span class="pull-right"> {{ object.first_name }} {{ object.last_name }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Email" %}</span>
+                <span class="pull-right">{{ object.email }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Department" %}</span>
+                <span class="pull-right"> {{ object.Member_Department }}</span>
+            </td>
+            {% if object.Is_Teacher %}
+            <td>
+                <span class="font-weight-bold">{% trans "Position" %}</span>
+                <span class="pull-right"> {{ object.Member_Position }}</span>
+            </td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Permanent Address" %}</span>
+                <span class="pull-right"> {{ object.Member_Permanent_Address }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Temporary Address" %}</span>
+                <span class="pull-right"> {{ object.Member_Temporary_Address }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "BirthDate" %}</span>
+                <span class="pull-right">{{ object.Member_BirthDate|date:"F d, Y" }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Phone Number" %}</span>
+                <span class="pull-right"> {{ object.Member_Phone }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Gender" %}</span>
+                <span class="pull-right">
+                    {% if object.Member_Gender == 'M' %}
+                    {% trans "Male" %}
+                    {% elif object.Member_Gender == 'F' %}
+                    {% trans "Female" %}
+                    {% endif %}
+                </span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Status" %}</span>
+                <span class="pull-right">
+                    {% if  object.Use_Flag  == True %}
+                    <span class="text-success mr-4 font-weight-bold">{% trans "Active" %}</span>
+                    <a href="javascript:void(0)" class="confirm-deactivate float-right" id="{{object.id}}">
+                        <small><u> {% trans "Deactivate" %} </u></small>
+                    </a>
+                    <form method="post" action="{% url 'memberinfo_deactivate'  pk=object.pk %}" id="deactivateForm">
+                        {% csrf_token %}
+                    </form>
+                    {% else %}
+                    <span class="text-danger mr-4 font-weight-bold">{% trans "Blocked" %}</span>
+                    <a href="javascript:void(0)" class="confirm-activate float-right" id="{{object.id}}">
+                        <small><u>{% trans "Activate" %} </u></small>
+                    </a>
+                    <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm">
+                        {% csrf_token %}
+                        <input type="hidden" value='' name='url'>
+                    </form>
+                    {% endif %}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="font-weight-bold">{% trans "Register DateTime" %}</span>
+                <span class="pull-right">{{ object.date_joined|date:'M d, Y H:i' }}</span>
+            </td>
+            <td>
+                <span class="font-weight-bold">{% trans "Member Type" %}</span>
+                <span class="pull-right">
+                    {% if object.Is_CenterAdmin %}
+                    &nbsp;{% trans "Admin" %}
+                    {% endif %}
+                    {% if object.Is_Teacher %}
+                    &nbsp;{% trans "Teacher" %}
+                    {% endif %}
+                    {% if object.Is_Student %}
+                    &nbsp;{% trans "Student" %}
+                    {% endif %}
+                </span>
+            </td>
+        </tr>
+        <!-- {% if object.password %}
+        <tr>
+            <td colspan="2" class="text-center font-weight-bold">
+                <span>
+                    <a href="/change-password/{{ object.id }}/">
+                        <u> {% trans "Change Password" %} </u>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {% elif not object.password %}
+        <tr>
+            <td colspan="2" class="text-center">
+                <span>
+                    <a href="/change-password/{{ object.id }}/">
+                        <u> {% trans "Add New Password" %} </u>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {% endif %} -->
+        <!-- {% if object.password %}
+        <tr>
+            <td colspan="2">
+                <span class="font-weight-bold">{% trans "Password" %}</span>
+                <span class="pull-right">
+                    <a href="/change-password/{{ object.id }}/" class="float-right"><u>
+                            {% trans "Change Password" %} </u></a>
+                </span>
+                <span class="pull-right mr-5">********</span>
+            </td>
+        </tr>
+        {% elif not object.password %}
+        <tr>
+            <td colspan="2">
+                <span class="font-weight-bold">{% trans "Password" %}</span>
+                <span class="pull-right">
+                    <a href="/change-password/{{ object.id }}/" class="float-right">
+                        <u> {% trans "Add New Password" %} </u>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {% endif %} -->
+    </table>
+
+    <!-- <div class="text-center">
+        <a class="confirm-delete" style="color: #2A3F54;cursor:pointer">
+            <b><u>{% trans "Delete Member" %}</u></b>
+        </a><small style="color:#2A3F54"><u> ({% trans "Note" %}: {% trans "Instead of" %}
+                {% trans "deleting a member" %} {% trans "you can" %} {% trans "deactivate" %}
+                {% trans "him" %}/{% trans "her" %}
+                {% trans "instead" %})</u></small>
+        <br><br>
+        <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}" id="delete_form">
+            {% csrf_token %}
+            <input type="hidden">
+        </form>
+    </div> -->
+    <hr />
+    {% if object.Is_Student %}
+    <div class="row mt-4">
+        <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
+            <h4 class="text-center text-primary pb-2">{% trans "Student Session List" %}</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Session Name" %}</th>
+                        <th>{% trans "Status" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in student_sessions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{{ session.get_absolute_url }}">
+                                {{ session.Inning_Name }}
+                            </a>
+                        </td>
+                        <td>
+                            {% now "Y-m-d H:i" as todays_datewithtime %}
+                            {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                            <span class="badge badge-success">{% trans "Active" %}</span>
+                            {% elif session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                            <span class="badge badge-warning">{% trans "Expired" %}</span>
+                            {% else %}
+                            <span class="badge badge-danger">{% trans "Expired" %}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">{% trans "No Sessions Assigned" %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
+            <h4 class="text-center text-primary pb-2">{% trans "Student Group List" %}</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Group Name" %}</th>
+                        <th>{% trans "Student Count" %}</th>
+                        <th>{% trans "Status" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in student_groups %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{{ group.get_absolute_url }}">{{ group.GroupMapping_Name }}</a></td>
+                        <td>{{ group.Students.all.count }}</td>
+                        <td>
+                            {% if group.Use_Flag %}
+                            <span class="badge badge-success">{% trans "Active" %}</span>
+                            {% else %}
+                            <span class="badge badge-danger">{% trans "Inactive" %}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">{% trans "No Groups Assigned" %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+    {% if object.Is_Teacher %}
+    <div class="row mt-4">
+        <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
+            <h4 class="text-center text-primary pb-2">{% trans "Teacher Session List" %}</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Session Name" %}</th>
+                        <th>{% trans "Status" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in teacher_sessions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{{ session.get_absolute_url }}">
+                                {{ session.Inning_Name }}
+                            </a>
+                        </td>
+                        <td>
+                            {% now "Y-m-d H:i" as todays_datewithtime %}
+                            {% if session.Use_Flag and session.Start_Date|date:"Y-m-d H:i" < todays_datewithtime and session.End_Date|date:"Y-m-d H:i" > todays_datewithtime %}
+                            <span class="badge badge-success">{% trans "Active" %}</span>
+                            {% else %}
+                            <span class="badge badge-danger">{% trans "Inactive" %}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">{% trans "No Sessions Assigned" %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6 col-md-12" style="max-height:220px; overflow:auto">
+            <h4 class="text-center text-primary pb-2">{% trans "Teacher Course Group List" %}</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>{% trans "No" %}.</th>
+                        <th>{% trans "Group Name" %}</th>
+                        <th>{% trans "Course Name" %}</th>
+                        <th>{% trans "Teacher Count" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in teacher_groups %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{{ group.get_absolute_url }}">{{ group.InningGroup_Name }}</a></td>
+                        <td>
+                            <a href="{{ group.Course_Code.get_absolute_url }}">
+                                {{ group.Course_Code.Course_Name }}
+                            </a>
+                        </td>
+                        <td>{{ group.Teacher_Code.all.count }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">{% trans "No Course Assigned" %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+
+    $(document).on('click', '.confirm-deactivate', function (event) {
+        ans = confirm('Are you sure you want to deactivate this Member?');
+        if (ans == true) {
+            $('#deactivateForm').submit();
+        } else {
+            return false;
+        }
+    });
+    $(document).on('click', '.confirm-activate', function (event) {
+        ans = confirm('Are you sure you want to activate this Member?');
+        if (ans == true) {
+            $('#activateForm').submit();
+        } else {
+            return false;
+        }
+    });
+
+    $(document).on('click', '.confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Member?');
+        if (ans == true) {
+            $('#delete_form').submit();
+        } else {
+            return false;
+        }
+    });
+</script>
+{% endblock %}

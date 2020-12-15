@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Session_Name }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title d-block text-center">
+        <h2>Session Information</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-5 col-md-8 m-auto">
+        <div class="card p-3">
+            <ul class="font-weight-bold">
+                <li class="p-2">
+                    Session Name : {{ object.Session_Name }}
+                </li>
+                <li class="p-2">
+                    Description : {{ object.Description }}
+                </li>
+                <li class="p-2">
+                    Center Code : {{ object.Center_Code }}
+                </li>
+                <li class="p-2">
+                    Use Flag : {{ object.Use_Flag }}
+                </li>
+                <li class="p-2 text-center">
+                    <a class="btn btn-sm btn-outline-primary" href="{{ object.get_update_url }}">Edit Session Name</a>
+                    <a class="btn btn-sm btn-outline-danger ml-3" href="{{ object.get_delete_url }}"
+                        onclick="return confirm('Are you sure you want to delete?')">Delete Session Name</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

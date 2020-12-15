@@ -1,0 +1,48 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+
+{% block title %}
+| Course Detail
+{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="
+        {% if object.Use_Flag %}
+            {% url 'teacher_mycourses_list_active' %}
+        {% else %}
+            {% url 'teacher_mycourses_list_inactive' %}
+        {% endif %}
+    ">My Courses</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Course_Name }}</li>
+{% endblock %}
+
+
+{% block content %}
+{% include 'course/courseinfo_detail.html' %}
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    $('#add-newchapter-btn').on('click', function () {
+        $('#create_chapter_modal_body').empty();
+        $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
+        $('#create_chapter_modal_body').append(`<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.pk }}" class="select form-control">`);
+
+        $.ajax({
+            type: "GET",
+            url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
+            success: function (response) {
+                $('#create_chapter_modal_body').append(response);
+                Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating chapter create form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+                $("#id_Chapter_No").val(lastchapter + 1);
+            }
+        });
+    });
+</script>
+{% endblock %}

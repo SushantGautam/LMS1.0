@@ -1,0 +1,1036 @@
+{% extends "student_module/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'vendors/quill/quill.snow.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'vendors/select2/css/select2.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'vendors/tagsinput/bootstrap-tagsinput.css' %}" type="text/css">
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row app-block">
+
+    <!-- Mail SideBar -->
+    <div class="col-md-3 app-sidebar">
+       <div class="card">
+           {% if "mail_draft_detail" in request.get_full_path or "send_detail" in request.get_full_path or "mail_detail" in request.get_full_path%}
+           {%else%}
+          <div class="card-body">
+             <button class="btn btn-primary btn-block comp_eml" data-toggle="modal" data-target="#compose">
+             <i class="ti-plus mr-2"></i> {% trans "Compose Email" %}
+             </button>
+          </div>
+           {% endif%}
+          <div class="app-sidebar-menu">
+             <div class="list-group list-group-flush">
+                <a href="{% url 'student_mail_list' %}?email_type=inbox"
+                   class="list-group-item
+                   {#{% if 'inbox' in request.get_full_path %}#}
+                   {% if 'inbox' == email_type %}
+                     bg-primary
+                    {% endif %}
+                   d-flex align-items-center">
+                <i class="ti-email list-group-icon mr-2 text-primary"></i>{% trans "Inbox" %}
+                <span class="small ml-auto">{% if inbox_count %}
+                    {{ inbox_count }}
+                    {%else%} {%endif%}
+                </span>
+                </a>
+
+                <a href="{% url 'student_mail_send_list' %}?email_type=send"
+                   class="list-group-item
+                    {% if 'email_type=send' in request.get_full_path %}
+                    bg-primary
+                    {% endif %} ">
+                <i class="ti-check list-group-icon mr-2 text-success"></i>{% trans "Send" %}
+                </a>
+
+                <a href="{% url 'student_mail_send_list' %}?email_type=draft"
+                   class="list-group-item
+                    {% if 'email_type=draft' in request.get_full_path %}
+                    bg-primary
+                    {% endif %} ">
+                <i class="ti-pencil-alt list-group-icon mr-2 text-secondary"></i>{% trans "Draft" %}
+                </a>
+
+
+
+
+                 <a href="{% url 'student_star_list' %}?email_type=starred"
+
+                   class="list-group-item d-flex align-items-center
+                     {% if 'email_type=starred' in request.get_full_path %}bg-primary
+                    {% endif %}  ">
+                <i class="fa fa-star mr-2 text-warning"></i>{% trans "Starred" %}
+                <span class="small ml-auto">
+                    {%if starred_count %}{{ starred_count }} {%else%} {%endif%}
+                   </span>
+                </a>
+
+
+                <a href="{% url 'student_mail_list' %}?email_type=spam"
+                   class="list-group-item
+                {% if 'spam' in request.get_full_path %}
+                bg-primary
+                {% endif %}">
+                <i class="ti-info-alt list-group-icon mr-2 text-danger"></i>{% trans "Spam" %}
+                </a>
+
+
+
+                <a href="{% url 'student_trash_list' %}?email_type=trash"
+                   class="list-group-item d-flex align-items-center
+                {% if 'trash' in request.get_full_path %}
+                            bg-primary
+                            {% endif %} ">
+                <i class="ti-trash list-group-icon mr-2 text-danger"></i>{% trans "Trash" %}
+                <span class="small ml-auto">{% if trash_count %}{{ trash_count }} {%else%} {%endif%}</span>
+                </a>
+
+             </div>
+              {% if 'mail_detail' in request.get_full_path or 'send_detail' in request.get_full_path or 'mail_draft_detail' in request.get_full_path %}
+              {% else %}
+             <div class="card-body">
+                <h6 class="mb-0">{% trans "Labels" %}</h6>
+             </div>
+
+             <div class="list-group list-group-flush">
+                <a href="{% url label_url_name %}?email_type={{ email_type }}&label_type=general"
+                   class="list-group-item d-flex align-items-center
+                {% if 'general' in request.get_full_path %} bg-dark {% endif %} ">
+                   <span class="text-secondary fa fa-circle mr-2"></span>
+                    {% trans "General" %}
+                    {%if email_type == 'inbox'%}
+                    <span class="small ml-auto">{% if glc %}{{ glc }}{%else%} {%endif%}</span>
+                    {%endif%}
+                </a>
+
+
+                <a href="{% url label_url_name %}?email_type={{ email_type }}&label_type=support"
+                   class="list-group-item d-flex align-items-center
+                   {% if 'support' in request.get_full_path %} bg-dark {% endif %} ">
+                    <span class="text-warning fa fa-circle mr-2"></span>
+                    {% trans "Support" %}
+                    {%if email_type == 'inbox'%}
+                    <span class="small ml-auto">{% if slc %}{{ slc }} {%else%} {%endif%}</span>
+                    {%endif%}
+                </a>
+
+
+                <a href="{% url label_url_name %}?email_type={{ email_type }}&label_type=assignment"
+                   class="list-group-item d-flex align-items-center
+                   {% if 'assignment' in request.get_full_path %} bg-dark {% endif %} ">
+                    <span class="text-success fa fa-circle mr-2"></span>
+                    {% trans "Assignment" %}
+                    {%if email_type == 'inbox'%}
+                    <span class="small ml-auto">{%if alc %}{{ alc }} {%else%} {%endif%}</span>
+                    {%endif%}
+                </a>
+
+
+                <a href="{% url label_url_name %}?email_type={{ email_type }}&label_type=exam"
+                   class="list-group-item d-flex align-items-center
+                 {% if 'exam' in request.get_full_path %} bg-dark {% endif %} ">
+                    <span class="text-info fa fa-circle mr-2"></span>
+                    {% trans "Examination" %}
+                    {%if email_type == 'inbox'%}
+                    <span class="small ml-auto"> {%if elc %}{{ elc }} {%else%} {%endif%}</span>
+                    {%endif%}
+                </a>
+
+                <a href="{% url label_url_name %}?email_type={{ email_type }}&label_type=practical"
+                   class="list-group-item d-flex align-items-center
+                 {% if 'practical' in request.get_full_path %} bg-dark {% endif %} ">
+                    <span class="text-danger fa fa-circle mr-2"></span>
+                    {% trans "Practical" %}
+                    {%if email_type == 'inbox'%}
+                    <span class="small ml-auto">{% if plc %}{{ plc }} {%else%} {%endif%}</span>
+                    {%endif%}
+                </a>
+
+             </div>
+              {% endif %}
+          </div>
+       </div>
+    </div>
+    <!-- Mail SideBar END -->
+
+    <div class="col-md-9 app-content">
+       <div class="app-content-overlay"></div>
+       <div class="app-action">
+          <div class="action-left">
+             <div class="custom-control custom-checkbox mr-3">
+                {%block checkbox_all%}
+
+                {%endblock%}
+             </div>
+             <ul class="list-inline">
+                <li class="list-inline-item mb-0">
+                   {% block mail_action %}
+
+                   {% endblock %}
+                </li>
+                <li class="list-inline-item mb-0">
+                   {% block mail_order %}
+
+                   {% endblock %}
+                </li>
+             </ul>
+          </div>
+          <div class="action-right">
+             {%block mail_search_pagination%}
+
+             {%endblock%}
+          </div>
+       </div>
+       <div class="card card-body app-content-body">
+          <div class="app-lists">
+             <ul class="list-group list-group-flush">
+
+                {% block mail_list %}
+
+                 {% if 'mail_detail'  or 'send_detail' in request.get_full_path %}
+                <li class="list-group-item d-none card_display_email" data-dummy_data="true"></li>
+                  {% endif %}
+
+                {% endblock %}
+
+
+             </ul>
+          </div>
+          <!-- end::app-lists -->
+          <!-- begin:app-detail -->
+
+              {% block email_detail %}
+<!--           <div class="card app-detail">-->
+<!--             </div>-->
+              {% endblock %}
+
+       </div>
+    </div>
+ </div>
+
+
+
+ <!-- Mail Compose Popup Model -->
+ <div class="modal fade" tabindex="-1" role="dialog" id="compose">
+    <div class="modal-dialog" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title">{% trans "Compose Email" %}</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <i class="ti-close"></i>
+             </button>
+          </div>
+          <div class="modal-body">
+             <div class="d-flex justify-content-between m-b-20">
+                <div>
+
+                   <a href="#" data-toggle="tooltip" title=""
+                       id="draft_email_create"
+                      class="btn btn-outline-primary mr-2"
+                      data-original-title="{% trans 'Keep' %}">
+                   <i class="ti-save"></i>
+                   </a>
+                   <a href="#" data-toggle="tooltip" title=""
+                      id="reset_compose_form"
+                      class="btn btn-outline-danger mr-2"
+                      data-original-title="{% trans 'Delete' %}">
+                   <i class="ti-trash"></i>
+                   </a>
+
+
+                </div>
+
+<!--                 <div class="dropdown ml-3 ">-->
+<!--                        <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"-->
+<!--                           data-toggle="dropdown" title="Recipients ">-->
+<!--                        <i class="fa fa-ellipsis-h"></i>-->
+<!--                        </a>-->
+<!--                        <div class="dropdown-menu dropdown-menu-right  ">-->
+<!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
+<!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
+<!--                                <a class="dropdown-item all_recipient " href="#">All </a>-->
+<!--                                <a class="dropdown-item all_stu_recipient" href="#">All Students</a>-->
+<!--                               <a class="dropdown-item all_tea_recipient"href="#"> All Teachers </a>-->
+<!--                        </div>-->
+<!--                 </div>-->
+
+
+
+
+             </div>
+              <div>
+
+                  <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> {% trans "Teacher" %}</a>
+                  <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> {% trans "Custom" %}</a>
+
+
+
+
+
+              </div>
+              <br>
+             <form method="POST" class="email_compose_form" id="email_submit_form"
+                          action="mail_create"
+                          enctype="multipart/form-data">
+                {% csrf_token %}
+
+                  <div class="form-group ">
+<!--                     -->
+
+                            <select name="receiver_multiple" class="form-control  select2-example-user"
+                                            id="receiver_multiple" multiple>
+
+                                        {% for u in user_list %}
+                                        <option
+                                                {% if u.Is_Teacher %}
+                                                class="teacher_list"
+
+                                                {% else %}
+                                                class = "user_list"
+                                                {% endif%}
+
+
+                                                value="{{ u.pk }}"
+                                                {% if object %}
+                                                {% if object.receiver.pk == u.pk %} selected {% endif %}
+                                                {% endif %}>
+
+                                            {% if u.Is_Teacher %}__teacher__{%endif%} {%if u.Is_Student %} __student__ {% endif%} {{ u.username }}
+                                        </option>
+                                        {% endfor %}
+
+
+
+
+
+
+                            </select>
+                            <input type="hidden" name="receiver_list" id="receiver_list" value="">
+                            <input type="hidden" name="sender" value="{{ request.user.pk }}">
+                            <input type="hidden" name="user_select_option" value="">
+
+                </div>
+
+
+
+
+                <div class="form-group">
+                   <input type="text" class="form-control" name = "subject" placeholder="{% trans 'Subject' %}" required>
+                </div>
+                <div class="form-group">
+                   <select name="label" class="form-control select2-example">
+                      {%for label in label_list%}
+                      <option value="{{label.0}}">{% trans label.1 %}
+
+                      </option>
+                      {%endfor%}
+                   </select>
+                </div>
+                <div class="form-group">
+                   <div class="custom-file">
+
+                      <input type="file" class="custom-file-input" name = "attachment" multiple id="customFileLangHTML">
+                      <label class="custom-file-label" for="customFileLangHTML" data-browse="{% trans 'Select files' %}"></label>
+<!--                      <input type="file" class="custom-file-input" multiple id="customFileLangHTML">-->
+<!--                      <label class="custom-file-label" for="customFileLangHTML" data-browse="Select files">Voeg-->
+<!--                      je document toe</label>-->
+                   </div>
+                </div>
+                <div>
+                   <div class="form-group d-none">
+                                <textarea class="form-control" id="input_body" name="body" rows="4" cols="50" required>
+                                </textarea>
+                   </div>
+                   <div class="compose-quill-editor mb-3"></div>
+                   <div class="d-flex justify-content-between">
+                      <div class="compose-quill-toolbar">
+                         <span class="ql-formats mr-0">
+                         <button class="ql-bold"></button>
+                         <button class="ql-italic"></button>
+                         <button class="ql-underline"></button>
+                         <button class="ql-link"></button>
+                         <button class="ql-image"></button>
+                         </span>
+                      </div>
+                      <button class="btn btn-primary">{% trans "Send" %}</button>
+                   </div>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+ </div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<!-- Tagsinput -->
+<script src="{% static 'vendors/tagsinput/bootstrap-tagsinput.js' %}"></script>
+
+<script src="{% static 'js/examples/tagsinput.js' %}"></script>
+
+<script src="{% static 'vendors/quill/quill.js' %}"></script>
+
+<script src="{% static 'vendors/select2/js/select2.full.js' %}"></script>
+
+<!-- Mail example -->
+<script src="{% static 'js/examples/mail.js' %}"></script>
+
+<script>
+   $( document ).ready(function()
+   {
+        $("#customCheckAll").prop('checked',false);
+        $(".email_checkbox").prop('checked',false);
+
+         {% if "mail_draft_detail" in request.get_full_path %}
+            $(".draft_article").find(".ql-editor").html("{{ object.body|safe }}");
+            $(".card_display_email").click();
+
+        // Recipient Teacher List Auto Selected
+            if ( $("#teacher_recipient").hasClass("btn-success")){
+
+                $(".teacher_list").show(); // css('display','block');
+                $(".student_list").hide(); //css('display','none');
+                $(".user_list").hide(); // css('display','none');
+                $("input[name='user_select_option']").val("single_teacher");
+                console.log("btn-success");
+
+            }
+
+
+
+        {% endif %}
+
+        {% if "mail_detail" in request.get_full_path %}
+            $(".card_display_email").click();
+        {% endif %}
+         {% if "send_detail" in request.get_full_path %}
+            $(".card_display_email").click();
+        {% endif %}
+
+        {% if 'reply_page' in request.get_full_path %}
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: $(".reply-email-quill-editor").offset().top
+                }, 1000);
+                $(".ql-editor").focus();
+
+        {% endif %}
+
+
+
+
+    });
+
+
+
+    // Validation Check For Email
+    $(".email_compose_form").submit(function(e) {
+        e.preventDefault();
+        $("#input_body").html($(".compose-quill-editor").find(".ql-editor").html());
+        let url_send = $("#email_submit_form").attr('action') + "?is_send=True";
+        $(".email_compose_form").attr('action',url_send);
+        $("#receiver_list").val($("#receiver_multiple").val());
+
+        let is_valid = true;
+        let receiver = $("select[name='receiver_multiple']").val();
+        let subject = $("input[name='subject']").val();
+        let body = $(".ql-editor").text();
+
+        if (receiver.length < 1){
+                $("select[name='receiver_multiple']").after('<span class="error">This field is required</span>');
+                //alert ("Email Receiver is not selected");
+                is_valid = false;
+                return false;
+
+        }
+
+        if (subject.length < 1){
+             $("input[name='subject']").after('<span class="error">This field is required</span>');
+             //   alert ("Email Subject cannot be Empty");
+                is_valid = false;
+                return false;
+
+        }
+
+        if (body === ""){
+                $(".ql-editor").after('<span class="error">This field is required</span>');
+        //      alert ("Email Body cannot be Empty");
+                is_valid = false;
+                return false;
+        }
+
+        if(is_valid){
+                console.log('form is valid');
+                e.currentTarget.submit();
+
+        }else{
+                console.log('form is invalid');
+                return false;
+        }
+
+    });
+
+
+   // Email Compose Field Reset
+    $("#reset_compose_form").click(function(){
+        $('.email_compose_form').trigger("reset");
+        $('select').empty();
+        $('.ql-editor').empty();
+        location.reload();
+     });
+
+// Reply Redirect Email Detail
+    $(".reply_redirect").click(function(){
+
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $(".reply-email-quill-editor").offset().top
+            }, 1000);
+        $(".ql-editor").focus();
+    });
+
+
+  // Upload Form Label
+    $("#customFileLangHTML").change(function(){
+       // $("label[for='customFileLangHTML']").html($("#customFileLangHTML").val());
+
+
+        let file_path = ($("#customFileLangHTML").val());
+        let file_name = file_path.substr(file_path.lastIndexOf('\\') + 1);
+        $("label[for='customFileLangHTML']").html(file_name);
+
+    });
+
+
+
+
+     // Draft Form UPLOAD Label
+    $("#customFileLangHTMLDraft").change(function(){
+       // $("label[for='customFileLangHTMLDraft']").html($("#customFileLangHTMLDraft").val());
+
+
+        let file_path = ($("#customFileLangHTMLDraft").val());
+        let file_name = file_path.substr(file_path.lastIndexOf('\\') + 1);
+        $("label[for='customFileLangHTMLDraft']").html(file_name);
+        $("#attachment-clear_id").removeAttr("checked");
+
+    });
+
+
+
+// Re-load Back on clicking Back Button //
+      $(".email_back_button").click(function(){
+        //{%if 'send_detail' in request.get_full_path %}
+        // get_url = "{%url 'student_mail_send_list'  %}?email_type=send";
+        //{%else%}
+        //get_url = "{%url 'student_mail_list'  %}?email_type=inbox";
+        //{% endif %}
+
+        {% if email_type == 'send' %}
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=send";
+        {% elif email_type == 'starred' %}
+            get_url = "{% url 'student_star_list'  %}?email_type=starred";
+        {% elif email_type == 'draft' %}
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=draft";
+        {% elif email_type == 'starred_outbox' %}
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=starred_outbox";
+        {% elif email_type == 'inbox' %}
+            get_url = "{% url 'student_mail_list'  %}?email_type=inbox";
+        {% elif email_type == 'received_starred' %}
+            get_url = "{% url 'student_mail_list'  %}?email_type=received_starred";
+        {% elif email_type == 'received_trash' %}
+            get_url = "{% url 'student_mail_list'  %}?email_type=received_trash";
+        {% elif email_type == 'spam' %}
+            get_url = "{% url 'student_mail_list'  %}?email_type=spam";
+        {% elif email_type == 'outbox_delete' %}
+            get_url = "{% url 'student_mail_send_list'  %}?email_type=outbox_delete";
+        {% elif email_type == 'trash' %}
+            get_url = "{% url 'student_trash_list'  %}?email_type=trash";
+        {% else %}
+            get_url = "{% url 'student_mail_list' %}";
+        {% endif %}
+
+         window.location.href = get_url;
+
+      });
+
+
+    function formatState(state) {
+        let sel_option = $("input[name='user_select_option']").val();
+
+        if (sel_option === "single_teacher" || sel_option === "all_teacher") {
+            if (state.text.includes("__teacher__")) {
+                return state.text.replace("__student__", "").replace("__teacher__", "");
+            } else {
+                return null;
+            }
+        }
+
+        return state.text.replace("__student__", "").replace("__teacher__", "");
+
+
+    };
+
+    function formatStateSel(state) {
+        return state.text.replace("__student__", "").replace("__teacher__", "");
+    };
+
+     $(".select2-example-user").select2({
+        placeholder: ' Select',
+        templateResult: formatState,
+        templateSelection: formatStateSel,
+    });
+
+     $(".select2-example-draft").select2({
+        placeholder: ' Select',
+        templateResult: formatState,
+        templateSelection: formatStateSel,
+    });
+
+
+// Select-2 Multiple Select
+    $(".select2-example").select2({
+        placeholder: 'Select'
+    });
+
+
+
+// Mail Detail View And Draft View upon clicking Mail-List
+   $(".card_display_email").click(function(e){
+        let e_id = $(this).attr('data-dummy_data');
+        if (e_id !== "true" && !$(e.target).is("label,i,input,a")){
+        //    console.log("asdfasdfasdf");
+        let get_url = "";
+        let email_id = $(this).attr('list_email_id');
+        let this_el = $(this);
+        //console.log(email_id)
+         {% if email_type == 'draft' %}
+            get_url = "{%url 'student_mail_draft_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
+            window.location.href = get_url;
+            // email_type == 'starred_outbox' or email_type == 'outbox_delete'
+          {% elif email_type == 'send'%}
+            get_url = "{%url 'student_send_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
+            window.location.href = get_url;
+         {% elif email_type == 'inbox' or email_type == 'spam' %}
+             get_url = "{%url 'student_mail_detail' pk=1234 %}?email_type={{ email_type }}".replace('1234', email_id);
+             window.location.href = get_url;
+         {%else%}
+          window.location.href = $(this).attr('data-email_detail_url');
+
+         {% endif %}
+
+
+
+       }
+       else{
+          console.log("just display");
+       }
+    });
+
+// Mail Mark As View on Clicking
+$(".card_display_email").click(function(){
+        let get_url = "";
+        let email_id = $(this).attr('list_email_id');
+        let this_el = $(this);
+        get_url = "{%url 'student_mail_viewed' pk=1234 %}".replace('1234', email_id);
+
+        $.ajax({
+              url: get_url,
+              type: 'GET',
+              success: function (response) {
+                    $(this_el).removeClass('bg-dark');
+              console.log("success!!");
+              },
+              error: function () {
+                 console.log('Error in posting form');
+              },
+              complete: function () {
+              }
+        });
+
+    });
+
+
+ // ///reply:
+    $("#reply_form").submit(function(e){
+        // e.preventDefault()
+        //$("#reply_body").val($(".reply-email-quill-editor").find("p").html());
+        $("#reply_body").val($(".reply-email-quill-editor").find(".ql-editor").html());
+        console.log("hello");
+        console.log($("#reply_body").val());
+
+        $("#receiver_list").val($("#receiver_multiple").val());
+    });
+
+
+// Creating Draft from Compose Save Button
+    $("#draft_email_create").click(function(){
+        let url_send = "{% url 'student_draft_create' %}";
+        $("#email_submit_form").attr('action',url_send);
+        $("#email_submit_form").submit();
+    });
+
+
+// Saving Draft from Draft Detail
+    $("#draft_email_save").click(function(){
+        {% if object%}
+        let url_send = "{% url 'student_update_draft' object.pk %}?email_type={{ email_type }}";
+        $("#draft_submit_form").attr('action',url_send);
+        $("#draft_submit_form").submit();
+        {% endif %}
+    });
+
+
+
+        // Draft Display Form & Send Email
+    $("#draft_submit_form").submit(function(){
+        //$("#input_body_draft").html($(".quill_draft").find("p").html());
+        $("#input_body_draft").html($(".quill_draft").find(".ql-editor").html());
+        console.log("hello");
+        console.log($("#input_body_draft").html());
+        let url_send = $("#draft_submit_form").attr('action') + "?is_send=True";
+        $("#email_submit_form").attr('action',url_send);
+        $("#receiver_list_draft").val($("#receiver_multiple_draft").val());
+    });
+
+
+
+
+
+
+
+// With Selected Option
+    $(".email_status_select").click(function(){
+
+        let status = $(this).attr("data-email_status");
+        console.log(status);
+
+        $(".email_checkbox:checked").each(function(index){
+            let total = $(".email_checkbox:checked").length;
+            let email_id = $(this).attr('data-email_id');
+            let email_model = $(this).attr('data_email_model');
+            console.log("eamil", email_id);
+
+
+            let get_url = "";
+            let type = "GET";
+            if (status === "spam"){
+                get_url = "{% url 'student_mail_spam' pk=1234 %}".replace('1234', email_id);
+            }
+
+      //      if (status === "star"){
+      //          {%if '?email_type=received_starred' in  request.get_full_path%}
+     //           get_url = "{% url 'student_mail_starred' pk=1234 %}".replace('1234', email_id);
+     //           {%endif%}
+
+    //            {%if '?email_type=starred_outbox' in  request.get_full_path%}
+    //            get_url = "{% url 'student_sender_starred' pk=1234 %}".replace('1234', email_id);
+    //            {%endif%}
+    //        }
+
+
+
+
+            if (email_model === "rec"){
+
+                 if (status === "star"){
+                         get_url = "{% url 'student_mail_starred' pk=1234 %}?email_type=starred".replace('1234', email_id);
+                    }
+                 if (status === "recover"){
+                     get_url = "{% url 'student_mail_deleted' pk=1234 %}?email_type=inbox".replace('1234', email_id);
+                    }
+                 if (status === "empty_trash"){
+                     get_url = "{% url 'student_mail_receiver_delete' pk=1234 %}?email_type=trash".replace('1234', email_id);
+                     type = "POST";
+
+                    }
+            }
+
+             if (email_model === "mail"){
+                    if (status === "star"){
+                            get_url = "{% url 'student_sender_starred' pk=1234 %}?email_type=starred".replace('1234', email_id);
+                         }
+                    if (status === "recover"){
+                             get_url = "{% url 'student_sender_delete' pk=1234 %}?email_type=inbox".replace('1234', email_id);
+                         }
+                    if (status === "empty_trash"){
+                             get_url = "{% url 'student_mail_delete' pk=1234 %}?email_type=trash".replace('1234', email_id);
+                         }
+
+             }
+
+
+
+
+
+
+
+
+            if (status === "outbox_delete"){
+
+                        get_url = "{% url 'student_sender_delete' pk=1234 %}".replace('1234', email_id);
+
+
+            }
+
+            if (status === "inbox_delete"){
+
+                        get_url = "{% url 'student_mail_deleted' pk=1234 %}".replace('1234', email_id);
+            }
+
+
+            if (status === "unread"){
+                get_url = "{% url 'student_mail_unread' pk=1234 %}".replace('1234', email_id);
+            }
+
+            if (status === "read"){
+                get_url = "{% url 'student_mail_viewed' pk=1234 %}".replace('1234', email_id);
+            }
+
+             if (status === "inbox_remove"){
+                get_url = "{% url 'student_mail_receiver_delete' pk=1234 %}?email_type=received_trash".replace('1234', email_id);
+                type = "POST";
+
+            }
+
+            if (status === "outbox_remove"){
+                get_url = "{% url 'student_mail_delete' pk=1234 %}?email_type=outbox_delete".replace('1234', email_id);
+            }
+
+
+            console.log(get_url);
+            // ////////// ajax post:
+            $.ajax({
+              url: get_url, // URL to your view that serves new info
+              type: type, // GET or POST
+              //data: $(this).serialize(),
+              data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+              success: function (response) {
+                console.log("email change success");
+                if (index === total - 1) {      // reload on last email
+                    location.reload();
+                }
+
+              },
+              error: function () {
+                  console.log('Error in posting form');
+              },
+              complete: function () {
+              }
+            });
+
+        });
+    });
+
+
+
+//Show Reply Page
+    $(".reply_view").click(function(){
+
+
+    // let email_el_id = "#email_list_li" + $(this).attr('data-email_id');
+     //   $("#email_list_li" + $(this).attr('data-email_id')).click();
+
+    let email_id = $(".card_display_email").attr('list_email_id');
+    get_url = "{% url 'student_mail_detail' pk=1234 %}?email_type=inbox&reply_page".replace('1234', email_id);
+    window.location.href = get_url;
+    });
+
+
+
+
+
+
+
+// Email Compose Student Label
+ $("#student_recipient").click(function(){
+
+    if ($("#teacher_recipient").hasClass("btn-success")){
+           $("#teacher_recipient").removeClass("btn-success");
+           $("#teacher_recipient").addClass("btn-light");
+           $("#student_recipient").removeClass("btn-light");
+           $("#student_recipient").addClass("btn-success");
+        // $("#teacher_recipient").toggleClass("btn-success btn-light");
+        }
+
+     // $("#student_recipient").toggleClass("btn-light btn-success");
+
+
+    if ($(this).hasClass("btn-success")){
+        $(".teacher_list").hide(); // css('display','block');
+        $(".student_list").show(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_student");
+        console.log("btn-success");
+
+    }
+
+
+
+  });
+
+
+
+
+// Email Compose Teacher Label
+$("#teacher_recipient").click(function () {
+
+    if ($("#student_recipient").hasClass("btn-success")){
+              $("#student_recipient").removeClass("btn-success");
+              $("#student_recipient").addClass("btn-light");
+              $("#teacher_recipient").removeClass("btn-light");
+              $("#teacher_recipient").addClass("btn-success");
+            //  $("#student_recipient").toggleClass("btn-success btn-light");
+        }
+
+   // $("#teacher_recipient").toggleClass("btn-success btn-light");
+
+
+    if ($(this).hasClass("btn-success")){
+        $(".teacher_list").show(); // css('display','block');
+        $(".student_list").hide(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_teacher");
+        console.log("btn-success");
+
+    }
+
+
+
+});
+
+
+
+
+
+
+
+
+$(".all_stu_recipient").click(function () {
+
+    $("input[name='user_select_option']").val("all_student");
+    let old_sel = [];
+    $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    {% for u in user_list %}
+    {% if u.Is_Student %}
+    if (!old_sel.includes('{{u.pk}}')){
+         old_sel.push('{{ u.pk }}');
+
+    }
+    {% endif %}
+    {% endfor %}
+    console.log(old_sel);
+    $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    $(".recipient_selector").click();
+
+
+});
+
+$(".all_tea_recipient").click(function () {
+    $("input[name='user_select_option']").val("all_teacher");
+
+    let old_sel = [];
+    $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    {% for u in user_list %}
+    {% if u.Is_Teacher %}
+    if (!old_sel.includes('{{u.pk}}')){
+         old_sel.push('{{ u.pk }}');
+    }
+    {% endif %}
+    {% endfor %}
+    console.log(old_sel);
+    $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    $(".recipient_selector").click();
+
+
+});
+
+
+
+$(".all_recipient").click(function () {
+    $("input[name='user_select_option']").val("all_recipients");
+
+    let old_sel = [];
+    $(".select2-example-user").val("");
+    $(".select2-example-draft").val("");
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    {% for u in user_list %}
+
+    if (!old_sel.includes('{{u.pk}}')){
+         old_sel.push('{{ u.pk }}');
+    }
+
+    {% endfor %}
+    console.log(old_sel);
+    $(".select2-example-user").val(old_sel);
+    $(".select2-example-draft").val(old_sel);
+    $(".select2-example-user").trigger('change');
+    $(".select2-example-draft").trigger('change');
+    $(".recipient_selector").click();
+
+
+});
+
+
+// Email Compose On Click
+$(".comp_eml").click(function(){
+    $("input[name='user_select_option']").val("");
+    $(".select2-example-user").trigger('change');
+
+
+
+// Recipient Teacher List Auto Selected
+    if ( $("#teacher_recipient").hasClass("btn-success")){
+
+        $(".teacher_list").show(); // css('display','block');
+        $(".student_list").hide(); //css('display','none');
+        $(".user_list").hide(); // css('display','none');
+        $("input[name='user_select_option']").val("single_teacher");
+        console.log("btn-success");
+
+    }
+
+})
+
+$("#clear_btn").click(function(){
+    $(".custom-file-label").empty();
+   // $("#customFileLangHTMLDraft").attr("value", "   ");
+   // $("#customFileLangHTMLDraft").val("   ");
+   // $("#customFileLangHTMLDraft").trigger('change');
+    $("#attachment-clear_id").attr("checked", "checked");
+    $(".clear_div").hide();
+
+
+   // if(!$(custom-file-label).text()){
+   //     $(".clear_div").hide();
+
+  //  }
+
+});
+
+$(".card-body").find("p").css("margin-left", "20px");
+
+    </script>
+{%endblock%}

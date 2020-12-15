@@ -1,0 +1,544 @@
+{% extends "student_module/base.html" %}
+{% load static %}
+{% load getStatusOfAssignmentStudents %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block stylesheets %}
+<!-- <link rel='manifest' href='/manifest.webmanifest'> -->
+<link rel="stylesheet" href="{% static 'chapterPageBuilder/js/owl-carousel/assets/owl.carousel.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/slick/slick.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'vendors/slick/slick-theme.css' %}" type="text/css">
+{% endblock stylesheets %}
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Home</li>
+{% endblock %}
+{% block content %}
+
+{% if notice %}
+{% include 'popUp.html' %}
+{% endif %}
+
+<div class="page-header">
+    <div class="page-title">
+        <h2>Welcome to Student Portal</h2>
+    </div>
+</div>
+<div class="text-center mb-3">
+    <h3 class="text-primary" id="overview">Overview</h3>
+</div>
+
+<div class="courses-lists-only">
+    <div class="text-center">
+        <h4><span><b>Courses</b> - <a href="{% url 'student_mycourses_list' %}">List
+                    of my Courses </a></span></h4>
+    </div>
+</div>
+<div class="card p-4 my-4">
+    <div class="slick-multiple">
+        {% for object in Course %}
+        <div class="slick-slide-item">
+            <div class="card">
+                <a href="{{ object.student_get_absolute_url }}">
+                    <img src="{% static 'media/image/course.jpg' %}" class="card-img-top" alt="image">
+                </a>
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">{{ object }}</h6>
+                        <a onclick="RetrieveChatper('{{ object.student_get_absolute_url }}',{{ object.pk }})"
+                            class="btn btn-sm btn-outline-primary">Continue
+                            <i class="fa fa-arrow-right"></i></a>
+                    </div>
+                    {% if object.Course_Description %}
+                    <hr>
+                    <p class="card-text">
+                        {{ object.Course_Description|truncatechars:45 }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div>
+            No courses yet
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <h4 class="text-primary">Incomplete Chapters</h4>
+                    {% if incomplete_chapters %}
+                    <b class="text-danger">[Studied time must meet the
+                        Running time to complete chapter]</b>
+                    {% endif %}
+                </div>
+                {% if incomplete_chapters %}
+                <ul class="text-center">
+                    {% for chapter in incomplete_chapters %}
+                    <li class="p-3 border-top">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <b> {{ chapter.Chapter_Name }}</b>
+                                <h5 style="margin-bottom: 0;">
+                                    <a href="{{ chapter.student_get_absolute_url }}">
+                                        <button class="btn btn-sm btn-outline-primary"> Continue <i
+                                                class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
+                                <div class="assignment-status-margin">
+                                    Chapter Progress: {{ chapter.chapter_progress|floatformat }} %
+                                </div>
+                                <div>
+                                    <span> Quiz Progress </span>
+                                    <span> :
+                                        {{ chapter.quiz.progress|floatformat }} %
+                                    </span>
+                                </div>
+                                <div>
+                                    <span> Completed/Total </span>
+                                    <span> :
+                                        {{ chapter.quiz.completed_quiz }}/{{ chapter.quiz.quiz_count }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center">
+                    <b class="text-success">There are no incomplete chapters.</b>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <h4 class="text-primary">
+                        <span><b>Assignments</b> - <a href="{% url 'student_myassignmentinfo_list' %}">List
+                                of Active Assignments </a></span>
+                    </h4>
+                </div>
+                <ul class="text-center" style="max-height: 42vh;overflow:auto">
+                    {% for object in activeAssignments %}
+                    <li class="p-3 border-top">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <b> {{ object.Assignment_Topic }}</b>
+                                <h5 class="mb-0">
+                                    <a href="{{ object.student_get_absolute_url }}">
+                                        <button class="btn btn-sm btn-outline-primary"> Continue <i
+                                                class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12 assignment-status">
+                                <div class="assignment-status-margin">Status:
+                                    {% if object.has_questions %}
+                                    {% getStatusoOfAssignment object user as assignment_status %}
+                                    {% if assignment_status == "Complete" %}
+                                    <span class="text-success"> Complete </span>
+                                    {% else %}
+                                    <span class="text-danger"> Incomplete </span>
+                                    {% endif %}
+                                    {% else %}
+                                    <span style="color: gray"> No Questions </span>
+                                    {% endif %}
+                                </div>
+                                <span class="text-danger"> Deadline </span>
+                                <span> : {{ object.deadline|timeuntil }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Display incomplete chapters list -->
+
+<div class="row">
+    <div class="col-6">
+        <div class="card p-3">
+            <div class="title text-center">
+                <h4 class="text-primary">Your Quiz Score</h4>
+            </div>
+            <div class="col-12" id="container"
+                style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="card p-3">
+            <div class="panel panel-default">
+                <div class="title text-center">
+                    <h4 class="text-primary">Word Cloud - Forum</h4>
+                </div>
+                <div class="col-12" id="word-cloud" style="padding-top:13em; width:100%; "></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/highchart_data.js' %}"></script>
+<script src="{% static 'vendors/slick/slick.min.js' %}"></script>
+
+<script>
+    $('.slick-multiple').slick({
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 4
+    });
+</script>
+<script>
+    $("#noticeForm").submit(function (e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        console.log($('#id_dont_show').is(":checked"));
+
+        if ($('#id_dont_show').is(":checked")) {
+            $.ajax({
+                url: "{% url 'notice_view_create' %}",  // URL to your view that serves new info
+                data: {
+                    "csrfmiddlewaretoken": $('#noticeForm').find('input[name="csrfmiddlewaretoken"]').val(),
+                    "dont_show": $('#id_dont_show').is(":checked"),
+                    "user_code": $('#id_user_code').val(),
+                    "notice_code": $('#id_notice_code').val(),
+                },
+
+                // get the form data
+                type: $(this).attr('method'), // GET or POST
+                success: function (response) {
+                    console.log('Success');
+                    $('.close').click();
+                },
+                error: function () {
+                    console.log('Error in submitting response');
+                }
+            });
+        } else {
+            $('.close').click();
+        }
+    });
+</script>
+
+<script>
+    function RetrieveChatper(urlx, coursepk) {
+        let chapterVal = localStorage.getItem("chapter_for_course" + coursepk);
+
+
+        if (chapterVal >= 1) {
+            window.location.href = "/students/courseinfo/" + coursepk + "/chapterinfo/" + chapterVal + "/contents";
+        } else
+            window.location.href = urlx;
+
+    }
+
+    Highcharts.chart('container', {
+        chart: {
+            type: 'scatter',
+            zoomType: 'xy'
+        },
+
+
+        credits: {
+            enabled: false
+        },
+
+        title: {
+            text: ''
+
+        },
+
+        subtitle: {
+            text: ''
+        },
+
+        yAxis: {
+            title: {
+                text: 'Score'
+            }
+        },
+
+        xAxis: {
+            type: 'datetime',
+            min: Date.UTC(2018, 1, 1),
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true
+        },
+
+
+        tooltip: {
+            pointFormat: ' <b>{point.y}</b> %<br/>',
+            shared: true
+        },
+
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+
+                series: {
+                    events: {
+                        legendItemClick: function (event) {
+                            var thisSeriesName = this.name;
+                            var thisSeriesVisibility = this.visible ? true : false;
+                            $(chart.series).each(function (i, e) {
+                                if (thisSeriesName !== e.name) {
+                                    e.hide();
+                                } else {
+                                    thisSeriesVisibility ? e.hide() : e.show();
+                                }
+                            });
+                            event.preventDefault();
+                        }
+                    }
+
+                }
+            }
+        },
+
+        series: [{
+            name: 'Pre-Test',
+            data: [
+                {% for i in sittings %}
+                        {% if i.quiz.pre_test and i.end %}
+    [Date.UTC({ { i.end | date: "Y" } }, { { i.end | date: "d" } }, { { i.end | date: "m" } }), {{ i.get_percent_correct }}],
+        {% endif %}
+        {% endfor %}
+                ], visible: true
+            }, {
+            name: 'Post-Test',
+            data: [{% for i in sittings %}
+                    {% if i.quiz.post_test and i.end %}
+    [Date.UTC({ { i.end | date: "Y" } }, { { i.end | date: "d" } }, { { i.end | date: "m" } }), {{ i.get_percent_correct } }],
+        {% endif %}
+    {% endfor %}], visible: false
+            }, {
+        name: 'Exam Paper',
+            data: [{% for i in sittings %}
+    {% if i.quiz.exam_paper and i.end %}
+    [Date.UTC({ { i.end | date: "Y" } }, { { i.end | date: "d" } }, { { i.end | date: "m" } }), {{ i.get_percent_correct }}],
+        {% endif %}
+    {% endfor %}], visible: false
+            }, {
+        name: 'Pre-Test / Post-Test',
+            data: [{% for i in sittings %}
+    {% if i.quiz.pre_test and i.quiz.post_test and i.end %}
+    [Date.UTC({ { i.end | date: "Y" } }, { { i.end | date: "d" } }, { { i.end | date: "m" } }), {{ i.get_percent_correct }}],
+        {% endif %}
+    {% endfor %}
+
+                ], visible: false
+            }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+        });
+</script>
+<script>
+    var config = {
+        trace: true,
+        spiralResolution: 1, //Lower = better resolution
+        spiralLimit: 360 * 5,
+        lineHeight: 0.8,
+        xWordPadding: 0,
+        yWordPadding: 3,
+        font: "sans-serif"
+    }
+    var values = {{ get_top_thread_keywords | safe  }};
+    var words = values.map(function (word) {
+        return {
+            word: word,
+            freq: Math.floor(Math.random() * 50) + 10
+        }
+    })
+
+    words.sort(function (a, b) {
+        return -1 * (a.freq - b.freq);
+    });
+
+    var cloud = document.getElementById("word-cloud");
+    cloud.style.position = "relative";
+    cloud.style.fontFamily = config.font;
+
+    var traceCanvas = document.createElement("canvas");
+    traceCanvas.width = cloud.offsetWidth;
+    traceCanvas.height = cloud.offsetHeight;
+    var traceCanvasCtx = traceCanvas.getContext("2d");
+    cloud.appendChild(traceCanvas);
+
+    var startPoint = {
+        x: cloud.offsetWidth / 2,
+        y: cloud.offsetHeight / 2
+    };
+
+    var wordsDown = [];
+    /* ======================= END SETUP ======================= */
+
+
+
+
+
+    /* =======================  PLACEMENT FUNCTIONS =======================  */
+    function createWordObject(word, freq) {
+        var wordContainer = document.createElement("div");
+        var wordLink = document.createElement("a");
+        wordContainer.style.position = "absolute";
+        wordContainer.style.fontSize = freq + "px";
+        wordContainer.style.lineHeight = config.lineHeight;
+        /*    wordContainer.style.transform = "translateX(-50%) translateY(-50%)";
+        wordContainer.appendChild(document.createTextNode(word));*/
+
+        wordLink.setAttribute(`href`, `/students/forum/search/(%3FP${word}.*)`);
+        wordLink.appendChild(document.createTextNode(word));
+        wordContainer.appendChild(wordLink);
+
+        return wordContainer;
+    }
+
+    function placeWord(word, x, y) {
+
+        cloud.appendChild(word);
+        word.style.left = x - word.offsetWidth / 2 + "px";
+        word.style.top = y - word.offsetHeight / 2 + "px";
+
+        wordsDown.push(word.getBoundingClientRect());
+    }
+
+    function trace(x, y) {
+        //     traceCanvasCtx.lineTo(x, y);
+        //     traceCanvasCtx.stroke();
+        traceCanvasCtx.fillRect(x, y, 1, 1);
+    }
+
+    function spiral(i, callback) {
+        angle = config.spiralResolution * i;
+        x = (1 + angle) * Math.cos(angle);
+        y = (1 + angle) * Math.sin(angle);
+        return callback ? callback() : null;
+    }
+
+    function intersect(word, x, y) {
+        cloud.appendChild(word);
+
+        word.style.left = x - word.offsetWidth / 2 + "px";
+        word.style.top = y - word.offsetHeight / 2 + "px";
+
+        var currentWord = word.getBoundingClientRect();
+
+        cloud.removeChild(word);
+
+        for (var i = 0; i < wordsDown.length; i += 1) {
+            var comparisonWord = wordsDown[i];
+
+            if (!(currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
+                currentWord.left - config.xWordPadding > comparisonWord.right + config.wXordPadding ||
+                currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
+                currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /* =======================  END PLACEMENT FUNCTIONS =======================  */
+
+
+
+
+
+    /* =======================  LETS GO! =======================  */
+    (function placeWords() {
+        for (var i = 0; i < words.length; i += 1) {
+
+            var word = createWordObject(words[i].word, words[i].freq);
+
+            for (var j = 0; j < config.spiralLimit; j++) {
+                //If the spiral function returns true, we've placed the word down and can break from the j loop
+                if (spiral(j, function () {
+                    if (!intersect(word, startPoint.x + x, startPoint.y + y)) {
+                        placeWord(word, startPoint.x + x, startPoint.y + y);
+                        return true;
+                    }
+                })) {
+                    break;
+                }
+            }
+        }
+    })();
+</script>
+{#    <script src="{% static 'vendorsx/jquery/jquery3.4.1.min.js' %}"></script>#}
+<!-- <script>
+            $.fn.andSelf = function() {
+                return this.addBack.apply(this, arguments);
+               }
+    </script> -->
+
+<script src="{% static 'chapterPageBuilder/js/owl-carousel/owl.carousel.js' %}"></script>
+
+<script>
+    $(window).on('load', function () {
+        $('#myModal').modal('show');
+    });
+</script>
+{% endblock %}

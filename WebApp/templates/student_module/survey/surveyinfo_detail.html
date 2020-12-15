@@ -1,0 +1,42 @@
+{% extends "student_module/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block stylesheets %}
+    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+     <link href="{% static 'vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+
+{% endblock stylesheets %} {% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
+    <li class="breadcrumb-item" aria-current="page">
+        <a href="{% url 'surveyFilterCategory_student' %}?category_name=all_survey&date_filter=active">{% trans "Survey" %}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+{% endblock %}
+<style>
+
+</style>
+{% block content %}
+
+
+    {% include 'student_module/survey/common/new_detail.html' %}
+
+<br><br>
+
+{% endblock %}
+
+{% block javascript %}
+
+    <!-- iCheck -->
+  <script src="{% static 'vendors/iCheck/icheck.min.js' %}"></script>
+
+  <script>
+
+      {% if can_submit == False %}
+          $("#survey_already_taken").show();
+          $("#surveyform :input").prop("readonly", true);
+          $("#surveyform :input").prop("disabled", true);
+      {% endif %}
+
+  </script>
+
+{% endblock %}

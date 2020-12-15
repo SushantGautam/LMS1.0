@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS</title>
+</head>
+
+<body class="form-membership" style="background: url(../../../static/media/image/LMS_background.jpg)no-repeat center center fixed;
+    -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;">
+    <style>
+        .splashContent {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 25vh auto;
+        }
+
+        .titleText {
+            font-weight: bolder;
+            font-size: 3.5em;
+        }
+
+        .buttons .login {
+            text-decoration: none;
+            color: yellow;
+        }
+
+        .buttons .register {
+            text-decoration: none;
+            color: blueviolet;
+        }
+
+        .logo {
+            height: 100px;
+            width: 100px;
+        }
+    </style>
+    <div class="splashContent">
+        <img src="../../static/media/image/logo/large-logo.png" class="logo">
+        <p class="titleText">Welcome to UBL CLOUD</p>
+        <h2 class="buttons">
+            [ <a href="{% url 'login' %}" class="login"> Login </a> ] /
+            [ <a href="{% url 'register' %}" class="register"> Register </a> ]
+        </h2>
+    </div>
+</body>
+
+</html>

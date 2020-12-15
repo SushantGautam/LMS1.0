@@ -1,0 +1,187 @@
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+{% load static %}
+
+{% block main_contain %}
+
+
+    <div class="" data-z="0.5">
+        <ul class="">
+            <li class="">
+                <div class="media v-middle">
+                    <div class="media-body">
+                        <h2 class="text-headline margin-none" style="color:#368BC1">
+                            Recent Threads
+                        </h2>
+
+                    </div>
+                    {% if request.user.is_authenticated %}
+                    {% if not '/students' in request.path %}
+                    <div class="media-right" style="margin-right: 15px;">
+                        <a  class="btn btn-light btn-square  custom-size-font " href="{% if '/teachers' in request.path %}
+                        {% url 'teacher_create_topic' %}
+                         {% elif '/forum' in request.path %}
+                        /forum/topic/create
+                         {% endif %}">
+                            <i class="fa fa-fw fa-plus "></i> Sub Category
+
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <div class="media-right">
+                        <a class="btn btn-light btn-square custom-size-font" href="{% if '/teachers' in request.path %}
+                        /teachers/forum/create_thread
+                        {% elif '/students' in request.path %}
+                        /students/forum/create_thread
+                        {% elif '/forum' in request.path %}
+                        /forum/t/create
+                        {% endif %}">
+                            <i class="fa fa-fw fa-plus"></i>
+                            Ask New Question  </a>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </li>
+
+
+
+            {% for nodegroup in nodegroups %}
+
+                <li class="list list-group-item" style="margin-bottom: 15px;">
+                    <div class="media v-middle">
+                        <div class=" panel media-body">
+                            <h6 class="text-headline margin-none">
+
+                                <a href="{% if '/teachers' in request.path %}
+                                {% url 'teacher_nodegroup' nodegroup.pk %}
+                                {% elif '/students' in request.path %}
+                                {% url 'student_nodegroup' nodegroup.pk %}
+                                {% elif '/forum' in request.path %}
+                                {% url 'forum:nodegroup' nodegroup.pk %}
+                                {% endif %}" class=""> <b style="text-transform: uppercase;">{{ nodegroup.title }}</b>   </a>
+
+                            </h6>
+                        </div>
+
+
+                    </div>
+                </li>
+
+
+                <div class="paper-shadow" data-z="0.5" style="margin-top: -15px">
+                    {% for thread in threads %}
+
+                    {% if thread.topic.node_group == nodegroup %}
+                    <li class="list-group-item media v-middle" style="margin-bottom: 10px;">
+                        <div class="media-left">
+                            <span class="icon-block half img-circle bg-grey-300">
+                                {% if thread.topic.topic_icon %}
+                                <i class="fa fa-{{ thread.topic.topic_icon }}"></i>
+                                {% else %}
+                                <i class="fa fa-book"></i>
+                                {% endif %}
+                            </span>
+                            <span class="text-subhead margin-none thread_title">
+                                <a href="{% if '/teachers' in request.path %}
+                                {% url 'teacher_thread' pk=thread.pk %}
+                                {% elif '/students' in request.path %}
+                                {% url 'student_thread' pk=thread.pk %}
+                                {% elif '/forum' in request.path %}
+                                {% url 'forum:thread' pk=thread.pk %}
+                                {% endif %}" class="text-secondary"> <b> {{ thread.title }}  </b></a>
+                            </span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="media-body" style="padding: 10px 0;">
+
+
+                                    <div class="text-light text-caption">
+                                        Category:
+                                        <a href="{% if '/teachers' in request.path %}
+                                        {% url 'teacher_nodegroup' thread.topic.node_group.pk %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_nodegroup' thread.topic.node_group.pk %}
+                                        {% elif '/forum' in request.path %}
+                                        {% url 'forum:nodegroup' thread.topic.node_group.pk %}
+                                        {% endif %}" class="link-text">{{ thread.topic.node_group.title }}</a>
+                                        |
+                                        Sub Category:
+                                        <a href="
+                                        {% if '/teachers' in request.path %}
+                                        {% url 'teacher_topic' pk=thread.topic.pk %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_topic' pk=thread.topic.pk %}
+                                        {% elif '/forum' in request.path %}
+                                        {% url 'forum:topic' pk=thread.topic.pk %}
+                                        {% endif %}" class="link-text">{{ thread.topic.title }}</a>
+
+                                        <br>
+                                            Posted by:
+                                        <a href="
+                                        {% if '/teachers' in request.path %}
+                                        {% url 'teacher_info' pk=thread.user.pk %}
+                                        {% elif '/students' in request.path %}
+                                        {% url 'student_info' pk=thread.user.pk %}
+                                        {% elif '/forum' in request.path %}
+                                        {% url 'forum:user_info' pk=thread.user.pk %}
+                                        {% endif %}" class="link-text">
+                                            <img src="
+                                                {% if thread.user.Member_Avatar %}
+                                                    {{ thread.user.Member_Avatar.url }}
+                                                {% elif thread.user.Member_Gender == 'M' %}
+                                                    {% static 'images/profile/male.jpg' %}
+                                                {% elif thread.user.Member_Gender == 'F' %}
+                                                    {% static 'images/profile/female.png' %}
+                                                {% else %}
+                                                    {% static 'images/profile/profile.png' %}
+                                                {% endif %}" alt="..." class="img-circle width-20" />
+                                            {{ thread.user.username }}</a>
+                                        | <i class="fa fa-clock-o fa-fw"></i> {{ thread.pub_date }}
+                                        &nbsp;
+                                        <br>
+                                        <i class="fa fa-clock-o fa-fw"></i> Last Replied: {{ thread.last_replied }}
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="media-right text-right">
+                                    <a href=" {% if '/teachers' in request.path %}
+                                    {% url 'teacher_thread' pk=thread.pk %}
+                                    {% elif '/students' in request.path %}
+                                    {% url 'student_thread' pk=thread.pk %}
+                                    {% elif '/forum' in request.path %}
+                                    {% url 'forum:thread' pk=thread.pk %}
+                                    {% endif %}
+                                    " class="btn btn-white text-dark"><i class="fa fa-comments fa-fw"></i>&nbsp;
+                                        {{ thread.reply_count }}</a>
+
+                                    <span class="btn btn-white text-dark">{% blocktrans with view_count=thread.view_count %}
+                                        <i class="fa fa-eye"></i>&nbsp;
+                                        {{ view_count }}
+                                        {% endblocktrans %}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+            {% empty %}
+                <h3 class="text-center">There are no threads yet.</h3>
+            {% endfor %}
+
+        </ul>
+        <div class="clearfix"></div>
+
+    </div>
+
+
+
+{% endblock %}

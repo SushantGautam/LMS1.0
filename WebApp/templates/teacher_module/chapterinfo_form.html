@@ -1,0 +1,51 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="
+        {% if object.Course_Code.Use_Flag %}
+            {% url 'teacher_mycourses_list_active' %}
+        {% else %}
+            {% url 'teacher_mycourses_list_inactive' %}
+        {% endif %}
+    ">My Courses</a></li>
+<li class="breadcrumb-item"><a href="{{ object.Course_Code.teacher_get_absolute_url }}">{{ object.Course_Code }}</a>
+</li>
+<li class="breadcrumb-item"><a href="{{ object.teacher_get_absolute_url }}">{{ object.Chapter_Name }}</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+    {% if '/chapterinfo/create/' == request.path %}
+    Create New Chapter
+    {% else %}
+    Edit Chapter Info
+    {% endif %}
+</li>
+{% endblock %}
+
+{% block content %}
+{% include 'chapter/chapterinfo_form.html' %}
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    var isSubmit = false
+    $("#FormID").submit(function (e) {
+        if (!isSubmit) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            {% comment %}
+            if ($('#id_Start_Date').val() != "") {
+                $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
+            }
+            if ($('#id_End_Date').val() != "") {
+                $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
+            }
+            {% endcomment %}
+            if ($('#id_mustreadtime').val() != "") {
+                $('#id_mustreadtime').val(parseFloat($('#id_mustreadtime').val()) * 60)
+            }
+            isSubmit = true
+            $("#FormID").submit()
+        }
+    });
+</script>
+{% endblock %}

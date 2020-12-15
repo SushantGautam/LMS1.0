@@ -1,0 +1,170 @@
+{% load static %}
+{% load pwa %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LMS {% block title %}{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'media/image/favicon.png' %}" />
+    <!-- Main css -->
+    <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Slick -->
+    <link rel="stylesheet" href="{% static 'vendors/slick/slick.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/slick/slick-theme.css' %}" type="text/css">
+    <!-- Daterangepicker -->
+    <link rel="stylesheet" href="{% static 'vendors/datepicker/daterangepicker.css' %}" type="text/css">
+    <!-- DataTable -->
+    <link rel="stylesheet" href="{% static 'vendors/dataTable/datatables.min.css' %}" type="text/css">
+    <!-- App css -->
+    <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
+    <!-- Custon css -->
+
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type=" text/css">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css' %}">
+
+    <!-- For PWA -->
+    <!-- <link rel="manifest" href="{% static 'PWA/manifest.json' %}"> -->
+    {% progressive_web_app_meta %}
+    
+    {% block stylesheet %}{% endblock %}
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js' %}"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js' %}"></script>
+    <![endif]-->
+</head>
+
+<body class="small-navigation">
+    <!-- Preloader -->
+    <div class="preloader">
+        <img class="logo" src="{% static 'media/image/logo/logo.png' %}" alt="logo">
+        <img class="dark-logo" src="{% static 'media/image/logo/dark-logo.png' %}" alt="logo dark">
+        <div class="preloader-icon"></div>
+    </div>
+    <!-- ./ Preloader -->
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper">
+        {% include "components/header.html" %}
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+            <!-- Navigation -->
+            <div class="navigation">
+                <!-- Logo -->
+                <div class="navigation-header">
+                    <a class="navigation-logo" href="{% url 'start' %}">
+                        <img class="logo" src="{% static 'media/image/logo/logo.png' %}" alt="logo">
+                        <img class="dark-logo" src="{% static 'media/image/logo/dark-logo.png' %}" alt="dark logo">
+                        <img class="small-logo" src="{% static 'media/image/logo/large-logo.png' %}" alt="UBL logo"
+                            style="border-radius: 50%;height: 45px;">
+                        <img class="small-dark-logo" src="{% static 'media/image/logo/small-dark-logo.png' %}"
+                            alt="small dark logo">
+                    </a>
+                    <!-- <a href="#" class="small-navigation-toggler"></a> -->
+                </div>
+                <!-- ./ Logo -->
+
+                <!-- Menu wrapper -->
+                {% block sidebar %}
+                {% include "components/sidebar.html" %}
+                {% endblock %}
+                <!-- ./ Menu wrapper -->
+            </div>
+            <!-- ./ Navigation -->
+
+            <!-- Content body -->
+            <div class="content-body">
+
+                <!-- Content -->
+                <div class="content">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mt-3">
+                            {% block breadcrumb %}{% endblock %}
+                        </ol>
+                    </nav>
+                    {% block content %}{% endblock %}
+                </div>
+                <!-- ./ Content -->
+
+                <!-- Footer -->
+                {% include "components/footer.html" %}
+                <!-- // Footer -->
+
+            </div>
+            <!-- ./ Content body -->
+        </div>
+        <!-- ./ Content wrapper -->
+    </div>
+    <!-- ./ Layout wrapper -->
+
+    <!-- Main scripts -->
+    <script src="{% static 'vendors/bundle.js' %}"></script>
+
+    <!-- Apex chart -->
+    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
+    <script src="{% static 'vendors/charts/apex/apexcharts.min.js' %}"></script>
+
+    <!-- Daterangepicker -->
+    <script src="{% static 'vendors/datepicker/daterangepicker.js' %}"></script>
+
+    <!-- Datetimepicker -->
+    <script src="{% static 'vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+
+    <!-- DataTable -->
+    <script src="{% static 'vendors/dataTable/datatables.min.js' %}"></script>
+
+    <!-- Dashboard scripts -->
+    <script src="{% static 'js/examples/pages/ecommerce-dashboard.js' %}"></script>
+
+    <!-- App scripts -->
+    <script src="{% static 'js/app.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
+
+    <!-- For alert message -->
+    <script src="{% static 'js/examples/toast.js' %}"></script>
+    <script>
+        toastr.options = {
+            timeOut: 3000,
+            progressBar: true,
+            showMethod: "slideDown",
+            hideMethod: "slideUp",
+            showDuration: 200,
+            hideDuration: 200
+        };
+    </script>
+    <!-- <script>
+        // This is the service worker with the Advanced caching
+
+        // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+
+        // Check compatibility for the browser we're running this in
+        if ("serviceWorker" in navigator) {
+            if (navigator.serviceWorker.controller) {
+                console.log("[PWA Builder] active service worker found, no need to register");
+            } else {
+                // Register the service worker
+                navigator.serviceWorker
+                    .register("{% static 'PWA/sw.js' %}", {
+                        scope: "{% static 'PWA/' %}"
+                    })
+                    .then(function (reg) {
+                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                    });
+            }
+        }
+
+    </script> -->
+
+    {% include 'components/alerts.html' %}
+    {% block javascript %}{% endblock %}
+</body>
+
+</html>

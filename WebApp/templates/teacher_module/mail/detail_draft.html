@@ -1,0 +1,157 @@
+{%extends 'teacher_module/mail/base.html'%}
+{%load static%}
+{% load i18n %}
+{% block email_detail %}
+<div class="card app-detail " style="height: fit-content;">
+<div class="modal-header ">
+    <div class="app-detail-action-left align-items-center">
+        <a class="app-detail-close-button btn btn-outline-light mr-3 email_back_button" href="">
+            <i class="ti-arrow-left"></i>
+        </a>
+
+        <a href="#" data-toggle="tooltip" title=""
+           id="draft_email_save"
+           class="btn btn-outline-primary mr-3"
+           data-original-title="{% trans 'Keep' %}">
+            <i class="ti-save"></i>
+        </a>
+
+        <a href="{%url 'teacher_sender_delete' object.pk%}?email_type={{email_type}}"
+           class="btn btn-outline-danger ml-2"
+           data-toggle="tooltip"
+           title="{% trans 'Dispose' %}">
+            <i class="ti-trash"></i>
+        </a>
+
+    </div>
+ <div class="dropdown ml-3">
+        <a href="#" class="btn btn-outline-light btn-floating btn-sm recipient_selector"
+           data-toggle="dropdown" title="{% trans 'Recipients' %} ">
+            <i class="fa fa-ellipsis-h"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" >
+            <!--                                <a class="dropdown-item  student_recipient" href="#">Student</a>-->
+            <!--                                <a class="dropdown-item teacher_recipient " href="#">Teacher </a>-->
+            <a class="dropdown-item all_recipient " href="#">{% trans "All" %} </a>
+            <a class="dropdown-item all_stu_recipient" href="#">{% trans "All Students" %}</a>
+            <a class="dropdown-item all_tea_recipient" href="#"> {% trans "All Teachers" %} </a>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<div class="app-detail-article draft_article">
+    <div class="card-body">
+        <div >
+            <a href="#" id="teacher_recipient" class="btn btn-sm btn-success mr-2"> {% trans "Teacher" %}</a>
+
+            <a href="#" id="student_recipient" class="btn btn-sm btn-light   mr-2"> {% trans "Student" %}</a>
+
+        </div>
+
+
+        <br>
+        <form method="POST" id="draft_submit_form"
+              action="{% url 'teacher_mail_draft_detail' object.pk %}"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+
+<!--                            <input type="text" class="form-control tagsinput" name = "to" placeholder="To"-->
+<!--                                   {% if object %}-->
+<!--                                    value="{{ object.receiver.username }}"-->
+<!--                                   {% endif %}-->
+<!--                                   required>-->
+
+                        <select name="receiver_multiple" class="form-control select2-example-draft"
+                                id="receiver_multiple_draft" multiple>
+                            {% for u in user_list %}
+                            <option
+                                                {% if u.Is_Teacher %}
+                                                class="teacher_list"
+                                                {% elif u.Is_Student %}
+                                                class = "student_list"
+                                                {% else %}
+                                                class = "user_list"
+                                                {% endif%}
+
+                                                value="{{ u.pk }}"
+                                            {% if object %}
+                    {% if u.pk in object.get_receiver_list  %} selected {% endif %} {% endif %}>
+
+                                {% if u.Is_Teacher %}__teacher__{%endif%} {%if u.Is_Student %} __student__ {% endif%} {{ u.username }}
+
+                                    </option>
+                                    {% endfor %}
+
+                                    </select>
+                <input type="hidden" name="receiver_list" id="receiver_list_draft" value="">
+                <input type="hidden" name="sender" value="{{ request.user.pk }}">
+                <input type="hidden" name="user_select_option" value="">
+
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name = "subject"
+                       value="{{ object.subject }}"
+                       placeholder="{% trans 'Subject' %}" required>
+            </div>
+            <div class="form-group">
+                <select name="label" class="form-control select2-example">
+                    {%for label in label_list%}
+                            <option value="{{label.0}}" {% if label.0 == object.label %} selected {% endif %} >
+                                {% trans label.1 %}</option>
+                    {%endfor%}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="custom-file">
+                    <div class="d-none"><input type="checkbox" name="attachment-clear" id="attachment-clear_id">   </div>
+                    <input type="file" class="custom-file-input" name = "attachment"
+
+                           multiple id="customFileLangHTMLDraft" value="{% if object.attachment %}{{ object.attachment.url }}{% endif %}">
+                    <label class="custom-file-label" for="customFileLangHTMLDraft" data-browse="{% trans 'Select files' %}">
+                        {{ object.get_file_upload_name }}</label>
+
+
+                </div>
+
+                {% if object.attachment%}
+                <div class="clear_div">
+                 <a href="#" id="clear_btn" class="text-danger" style="float:right;">{% trans "Clear Files" %}</a>
+                 </div>
+                {% endif%}
+                <br>
+
+
+            </div>
+
+            <div>
+                <div class="form-group d-none">
+                    <textarea class="form-control" id="input_body_draft" name = "body" rows="4" cols="50" placeholder="{% trans 'Type Your Email' %}...." required>
+                    </textarea>
+                    </div>
+                <div class="compose-quill-editor quill_draft mb-3" >
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="compose-quill-toolbar">
+                <span class="ql-formats mr-0">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-link"></button>
+                    <button class="ql-image"></button>
+                </span>
+                    </div>
+                    <button class="btn btn-primary" type="submit">{% trans "Send" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}

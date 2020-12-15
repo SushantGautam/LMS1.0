@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="panel panel-default">
+    <div class="panel-heading">{% trans "Categories" %}</div>
+    <div class="panel-body">
+        {% for nodegroup in node_groups %}
+            <a href="{% url 'forum:nodegroup' nodegroup.pk %}">
+                <span class="label label-default ">{{ nodegroup.title }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</div>

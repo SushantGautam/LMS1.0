@@ -1,0 +1,228 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% load model_template_relation %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">My Assignments</li>
+{% endblock %}
+
+{% block content %}
+<style>
+    .header-menu .active {
+        background-color: #5c6bc0;
+        color: white;
+    }
+</style>
+
+<div class="page-header">
+    <div class="page-title">
+        <h2>List of My Assignments </h2>
+    </div>
+</div>
+<div class="header-menu text-center">
+    <button class="btn btn-link tablinks active" onclick="openTab(event, 'activeAssignments')">Active</button>
+    <button class="btn btn-link tablinks" onclick="openTab(event, 'allAssignments')">All</button>
+    <button class="btn btn-link tablinks" onclick="openTab(event, 'expiredAssignments')">Expired</button>
+</div>
+
+<div class="tabcontent py-3" id="activeAssignments">
+    {% for courses in activeAssignment %}
+    {% for assignment in courses %}
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
+    <h3 class="text-center">Course -
+        <a href="{{ a.Course_Code.teacher_get_absolute_url }}" class="text-primary">{{ a.Course_Code }}</a>
+    </h3>
+    {% endifchanged %}
+    <div class="card p-3">
+        <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">
+                <h5> {{ a.Assignment_Topic }} </h5>
+                Chapter - {{ a.Chapter_Code }}
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-4 align-self-center">
+                <span class="assignment_status">
+                    {% if a.get_QuestionAndAnswer.0|length > 0 %}
+                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                    {% if teacher_assignment_status.assg_status %}
+                    <b class="text-success">
+                        All Completed
+                        ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                    </b>
+                    {% else %}
+                    <b class="text-info">
+                        {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }}
+                        Completed
+                    </b>
+                    {% endif %}
+                    {% else %}
+                    <b class="text-danger">No Questions</b>
+                    {% endif %}
+                </span>
+                <a href="{{ a.teacher_get_absolute_url }}" class="pull-right">
+                    <button type="button" class="btn btn-sm btn-outline-primary">CONTINUE
+                        <i class="fa fa-arrow-right"></i>
+                    </button>
+                </a>
+            </div>
+            <div class="col-12">
+                <hr>
+                Submission Deadline -
+                {% now "Y-m-d H:i" as todays_date %}
+                {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
+                <span class="text-danger">Expired</span>
+                {% else %}
+                <span class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+</div>
+
+<div class="tabcontent py-3" id="allAssignments" style="display: none;">
+    {% for courses in Assignment %}
+    {% for assignment in courses %}
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
+    <h3 class="text-center">Course -
+        <a href="{{ a.Course_Code.teacher_get_absolute_url }}" class="text-primary">{{ a.Course_Code }}</a>
+    </h3>
+    {% endifchanged %}
+    <div class="card p-3">
+        <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">
+                <h5> {{ a.Assignment_Topic }} </h5>
+                Chapter - {{ a.Chapter_Code }}
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-4 align-self-center">
+                <span class="assignment_status">
+                    {% if a.get_QuestionAndAnswer.0|length > 0 %}
+                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                    {% if teacher_assignment_status.assg_status %}
+                    <b class="text-success">
+                        All Completed
+                        ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                    </b>
+                    {% else %}
+                    <b class="text-info">
+                        {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }}
+                        Completed
+                    </b>
+                    {% endif %}
+                    {% else %}
+                    <b style="color: orangered">No Questions</b>
+                    {% endif %}
+                </span>
+                <a href="{{ a.teacher_get_absolute_url }}" class="pull-right">
+                    <button type="button" class="btn btn-sm btn-outline-primary">CONTINUE
+                        <i class="fa fa-arrow-right"></i>
+                    </button>
+                </a>
+            </div>
+            <div class="col-12">
+                <hr>
+                Submission Deadline -
+                {% now "Y-m-d H:i" as todays_date %}
+                {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
+                <span class="text-danger">Expired</span>
+                {% else %}
+                <span class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+</div>
+
+
+<div class="tabcontent py-3" id="expiredAssignments" style="display: none;">
+    {% for courses in expiredAssignment %}
+    {% for assignment in courses %}
+    {% for a in assignment %}
+    {% ifchanged a.Course_Code %}
+    <h3 class="text-center">Course -
+        <a href="{{ a.Course_Code.teacher_get_absolute_url }}" class="text-primary">{{ a.Course_Code }}</a>
+    </h3>
+    {% endifchanged %}
+    <div class="card p-3">
+        <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8 leftborder">
+                <h5> {{ a.Assignment_Topic }} </h5>
+                Chapter - {{ a.Chapter_Code }}
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-4 align-self-center">
+                <span class="assignment_status">
+                    {% if a.get_QuestionAndAnswer.0|length > 0 %}
+                    {% getTeacherStatusoOfAssignment a user as teacher_assignment_status %}
+                    {% if teacher_assignment_status.assg_status %}
+                    <b style="color: green">
+                        All Completed
+                        ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                    </b>
+                    {% else %}
+                    <b style="color: deepskyblue">
+                        {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }}
+                        Completed
+                    </b>
+                    {% endif %}
+                    {% else %}
+                    <b style="color: orangered">No Questions</b>
+                    {% endif %}
+                </span>
+                <a href="{{ a.teacher_get_absolute_url }}" class="pull-right">
+                    <button type="button" class="btn btn-sm btn-outline-primary">CONTINUE
+                        <i class="fa fa-arrow-right"></i>
+                    </button>
+                </a>
+            </div>
+            <div class="col-12">
+                <hr>
+                Submission Deadline -
+                {% now "Y-m-d H:i" as todays_date %}
+                {% if a.Assignment_Deadline|date:"Y-m-d H:i" <= todays_date %}
+                <span class="text-danger">Expired</span>
+                {% else %}
+                <span class="text-success">{{ a.Assignment_Deadline|timeuntil }} left </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+    document.getElementById("allAssignments").click();
+    function openTab(event, tabName) {
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).style.display = "block";
+        event.currentTarget.className += " active";
+    }
+</script>
+
+{% endblock %}

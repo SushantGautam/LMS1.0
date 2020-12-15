@@ -1,0 +1,304 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!-- Bootstrap -->
+{{ form.media }}
+<script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+<form method="post" id="quiz_form_post" onsubmit="return validateForm()"
+      action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
+    <div class="row">
+
+        {{ form.title|as_crispy_field }}
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                           aria-expanded="false" aria-controls="collapseOne">
+                            <i class="fa fa-list"></i>
+                            Manage Multiple Choice Questions </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        {{ form.mcquestion|as_crispy_field }}
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <i class="fa fa-bookmark "></i>
+                            Manage True/False Questions </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        {{ form.tfquestion|as_crispy_field }}
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <i class="fa fa-align-right  "></i>
+
+                            Manage Short Answer Type Questions
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        {{ form.saquestion|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a class="collapsed text-info" role="button" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            More Options </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        {{ form.description|as_crispy_field }}
+                        {{ form.duration|as_crispy_field }}
+                        {{ form.pass_mark|as_crispy_field }}
+                        {{ form.negative_marking|as_crispy_field }}
+                        {{ form.negative_percentage|as_crispy_field }}
+                        {{ form.random_order|as_crispy_field }}                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
+
+</form>
+<script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
+<script>
+
+
+    $(document).ready(function () {
+        $("#div_id_negative_percentage").hide();
+    });
+
+    $("#quiz_form_post").submit(function (e) {
+        e.preventDefault();
+        $('#id_mcquestion_to option').prop('selected', true);
+        $('#id_saquestion_to option').prop('selected', true);
+        $('#id_tfquestion_to option').prop('selected', true);
+        $.ajax({
+            //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: new FormData($(this)[0]),
+            url: $(this).prop("action"), // URL to your view that serves new info
+            //data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function (response) {
+                quiz_create_content(response);
+            },
+            error: function () {
+                console.log('Error in posting form');
+            }
+        });
+    });
+    if ("{{ test_type }}" === "exam_paper") {
+        $("#div_id_duration").show();
+        $("#div_id_pass_mark").show();
+        $("#div_id_negative_marking").show();
+    } else {
+        $("#div_id_exam_paper").hide();
+        $("#div_id_duration").hide();
+        $("#div_id_pass_mark").hide();
+        $("#div_id_negative_marking").hide();
+        $("#div_id_negative_percentage").hide();
+    }
+
+    $("label[for='id_mcquestion']").after(`<button type="button" class="btn qts-button " id="mcq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup" style='float:right'>Add Multiple Choice Question
+            </button>`);
+    $("#mcq_create_button, label[for='id_mcquestion']").wrapAll("<div class = 'col-md-12 col-sm-12 col-xs-12'></div>");
+    $("label[for='id_mcquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    $("#mcq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+
+    $("label[for='id_tfquestion']").after(`<button type="button" class="btn qts-button " id="tfq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup" style='float:right'>Add True/False question
+            </button>`);
+    $("#tfq_create_button, label[for='id_tfquestion']").wrapAll("<div class = 'col-md-12 col-sm-12 col-xs-12'></div>");
+    $("label[for='id_tfquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    $("#tfq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+
+    $("label[for='id_saquestion']").after(`<button type="button" class="btn qts-button " id="saq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup" style='float:right'>Add Short Answer question
+            </button>`);
+    $("#saq_create_button, label[for='id_saquestion']").wrapAll("<div class = 'col-md-12 col-sm-12 col-xs-12'></div>");
+    $("label[for='id_saquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    $("#saq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+
+    $('#mcq_create_button').on('click', function () {
+        $.ajax({
+            type: "GET",
+            data: {'course_from_quiz': '{{ course_id }}'},
+            url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#quiz_create_popup").modal('hide');
+                $("#question_model_title").html("Create Multiple Choice Question");
+                $("#question_form_ajax").html(data);
+
+            }
+        });
+    });
+    $('#tfq_create_button').on('click', function () {
+        $.ajax({
+            type: "GET",
+            data: {'course_from_quiz': '{{ course_id }}'},
+            url: "{% url 'tfquestion_create' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#quiz_create_popup").modal('hide');
+                $("#question_model_title").html("Create True/False Question");
+                $("#question_form_ajax").html(data);
+
+            }
+        });
+    });
+    $('#saq_create_button').on('click', function () {
+        $.ajax({
+            type: "GET",
+            data: {'course_from_quiz': '{{ course_id }}'},
+            url: "{% url 'saquestion_create' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#quiz_create_popup").modal('hide');
+                $("#question_model_title").html("Create Short Answer Question");
+                $("#question_form_ajax").html(data);
+
+            }
+        });
+    });
+
+    function mcq_success(response) {
+        $("#quiz_create_popup").modal('show');
+        $('#id_mcquestion_to').prepend(
+            `<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
+        $('#id_mcquestion_to').change();
+        SelectBox.add_to_cache("id_mcquestion_to", {
+            value: String(response['new_mcq_id']),
+            text: response['new_mcq_content'],
+            displayed: 1
+        });
+        $('#question_form_popup').modal('toggle');
+    }
+
+    function tfq_success(response) {
+        $("#quiz_create_popup").modal('show');
+        $('#id_tfquestion_to').prepend(
+            `<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
+        $('#id_tfquestion_to').change();
+        SelectBox.add_to_cache("id_tfquestion_to", {
+            value: String(response['new_tfq_id']),
+            text: response['new_tfq_content'],
+            displayed: 1
+        });
+        $('#question_form_popup').modal('toggle');
+    }
+
+    function saq_success(response) {
+        $("#quiz_create_popup").modal('show');
+        $('#id_saquestion_to').prepend(
+            `<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
+        $('#id_saquestion_to').change();
+        SelectBox.add_to_cache("id_saquestion_to", {
+            value: String(response['new_saq_id']),
+            text: response['new_saq_content'],
+            displayed: 1
+        });
+        $('#question_form_popup').modal('toggle');
+    }
+
+    $('#id_duration').durationPicker({
+        showDays: false,
+        onChanged: function (newVal) {
+        }
+    });
+
+    $("#id_negative_marking").change(function () {
+        if (this.checked) {
+            $("#div_id_negative_percentage").show();
+        } else {
+            $("#div_id_negative_percentage").hide();
+        }
+    });
+
+    function validateForm() {
+        if ("{{ test_type }}" === "exam_paper") {
+            $("#div_id_duration").removeClass("has-error");
+            $("#id_duration").removeClass("form-control-danger");
+            $("#error_1_id_duration").remove();
+            $("#div_id_pass_mark").removeClass("has-error");
+            $("#id_pass_mark").removeClass("form-control-danger");
+            $("#error_1_id_pass_mark").remove();
+            if ($("#id_duration").val() === "0") {
+                alert("Duration cannot be empty");
+                $("#div_id_duration").addClass("has-error");
+                $("#id_duration").addClass("form-control-danger");
+                $('div .bdp-input').after(`<span id="error_1_id_duration" class="help-block"><strong>Please Enter Quiz Duration</strong></span>`);
+
+                return false;
+            }
+            if ($("#id_pass_mark").val() === "0") {
+                alert("Pass Mark cannot be empty");
+                $("#div_id_pass_mark").addClass("has-error");
+                $("#id_pass_mark").addClass("form-control-danger");
+                $("#id_pass_mark").after(`<span id="error_1_id_pass_mark" class="help-block"><strong>Please Enter Pass Marks</strong></span>`)
+                return false;
+            }
+        }
+    }
+
+</script>
+<style>
+    @media (min-width: 350px) and (max-width: 825px) {
+        .selector-available {
+            width: 100% !important;
+        }
+
+        .selector-chosen {
+            width: 100% !important;
+        }
+
+        .filtered {
+            width: 100% !important;
+        }
+
+        .selector ul.selector-chooser {
+            float: left;
+            width: 22px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin: 5px auto 0 45% !important;
+            padding: 0;
+            transform: rotate(90deg);
+            transition: all 0.3s ease;
+        }
+    }
+</style>
+
+<script>
+    date = new Date();
+    var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+    $('#id_title').val($('#id_title').val().split(':').slice(0, -2).join(':') + ': ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
+</script>

@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{{ wizard.form.media }}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
+
+
+  <li class="breadcrumb-item active" aria-current="page">Quiz Create</li>
+{% endblock %}
+{% block content %}
+<style>
+  .wizard_horizontal ul.wizard_steps li a .step_no{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 100px;
+    display: block;
+    margin: 0 auto 5px;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+    .step_no, .wizard_verticle ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+    }
+    .wizard_horizontal ul.wizard_steps {
+      display: table;
+      list-style: none;
+      position: relative;
+      width: 100%;
+      margin: 0 0 20px;
+  } 
+  .wizard_horizontal ul.wizard_steps li {
+    display: table-cell;
+    text-align: center;
+  } 
+  .wizard_horizontal ul.wizard_steps li:first-child a:before {
+    left: 50%;
+}
+.step_no, .wizard_horizontal ul.wizard_steps li a.selected:before {
+    background: #34495E;
+    color: #fff;
+}
+.wizard_horizontal ul.wizard_steps li a:before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    background: #ccc;
+    top: 20px;
+    width: 100%;
+    z-index: 4;
+    left: 0;
+}  
+.wizard_horizontal ul.wizard_steps li a, .wizard_horizontal ul.wizard_steps li:hover {
+  display: block;
+  position: relative;
+ 
+
+  opacity: 1;
+  color: #666;
+}
+.wizard_horizontal ul.wizard_steps li:last-child a:before {
+  right: 50%;
+  width: 50%;
+  left: auto;
+}
+#id_form3-mcquestion, #id_form3-tfquestion, #id_form3-saquestion {
+  width: 100% !important;
+}
+</style>
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+  <div id="" class="form_wizard wizard_horizontal panel" style="padding-top:15px; margin-top:15px">
+    <ul class="wizard_steps anchor">
+      <li>
+        <a href="#step-1" class="done" isdone="1" rel="1">
+          <span class="step_no">1</span>
+          <span class="step_descr">Basic  Info</span>
+        </a>
+      </li>
+      <li>
+        <a href="#step-2" class="done" isdone="1" rel="2">
+          <span class="step_no">2</span>
+          <span class="step_descr">Select  Quiz Type</span>
+        </a>
+      </li>
+      <li>
+        <a href="#step-3" class="selected" isdone="1" rel="3">
+          <span class="step_no">3</span>
+          <span class="step_descr">Add  Question</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <form action="{% url 'quizfw' %}" method="post" id="quiz_form_3">{% csrf_token %}
+    {{ wizard.management_form }}
+    {% if wizard.form.forms %}
+      {{ wizard.form.management_form }}
+      {% for form in wizard.form.forms %}
+        {{ form|crispy }}
+      {% endfor %}
+    {% else %}
+      <div class="form-group">
+        {{ wizard.form.non_field_errors }}
+        <div class="col-md-12 questions-wrapper panel" style="padding-top: 15px;">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="quiz-add-label text-primary" for="">Multiple Choice Question</label>
+            </div>
+            <div class="col-md-6 questions-only text-right">
+              <!-- <a class="btn qts-button" id="mcq_create_button"> Add MCQ question </a> -->
+              <button type="button" class="btn btn-info btn-sm qts-button" id="mcq_create_button" data-toggle="modal"
+                      data-target="#question_form_popup" style="margin-bottom: 10px;">Add MCQ question
+              </button>
+            </div>
+            
+          </div>
+
+        
+          <div class="col-md-12" style="width: 100%;">
+            {{ wizard.form.mcquestion }}
+          <span>You can select multiple questions by holding <kbd>ctrl</kbd>   key on Windows and Command <kbd>⌘</kbd> key on MAC.</span>
+            {{ wizard.form.mcquestion.errors }}
+          </div>
+          <div class="col-md-12">
+            <p class="quiz-counter" id="selected_mcq_num">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12 questions-wrapper panel"  style="padding-top: 15px;">
+          <div class="row">
+               
+          <div class="col-md-6">
+            <label class="quiz-add-label text-primary" for="">True False Question</label>
+          </div>
+          <div class="col-md-6 questions-only text-right">
+            <!-- <a class="btn qts-button" href="{% url 'tfquestion_create' %}" > Add T/F question </a> -->
+            <button type="button" class="btn qts-button btn-info btn-sm" id="tfq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup"style="margin-bottom: 10px;">Add T/F question
+            </button>
+
+          </div>
+
+          </div>
+
+          <div class="col-md-12">
+            {{ wizard.form.tfquestion }}
+            <span>You can select multiple questions by holding <kbd>ctrl</kbd>   key on Windows and Command <kbd>⌘</kbd> key on MAC.</span>
+            {{ wizard.form.tfquestion.errors }}
+          </div>
+          <div class="col-md-12">
+            <p class="quiz-counter" id="selected_tfq_num">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12 questions-wrapper panel" style="padding-top: 15px;">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="quiz-add-label text-primary" for="">Short Type Question</label>
+            </div>
+            <div class="col-md-6 questions-only text-right">
+              <!-- <a class="btn qts-button" href="{% url 'saquestion_create' %}" > Add Short question </a>    -->
+              <button type="button" class="btn qts-button btn-info btn-sm" id="saq_create_button" data-toggle="modal"
+                      data-target="#question_form_popup"style="margin-bottom: 10px;">Add SA question
+              </button>
+  
+            </div>
+
+          </div>
+        
+          <div class="col-md-12">
+            {{ wizard.form.saquestion }}
+            <span>You can select multiple questions by holding <kbd>ctrl</kbd>   key on Windows and Command <kbd>⌘</kbd> key on MAC.</span>
+            {{ wizard.form.saquestion.errors }}
+          </div>
+          <div class="col-md-12">
+            <p class="quiz-counter" id="selected_saq_num">0</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    <input type="hidden" id="wizard_goto_input">
+    <div class="col-md-12 submitforquiz" style="padding-bottom: 15px;">
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 text-center">
+          <div class="quiz-admin-btn">
+            <button id="" class="btn btn-primary btn ripple " type="submit">Submit</button>
+          </div>
+        </div>
+        <div class="col-md-4 button-place text-right">
+          <button id="step_3_prev" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="add-mcq btn btn-light">Previous
+          </button>
+        </div>
+      </div>
+     
+    </div>
+
+  </form>
+  <div id="question_form_popup" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="question_model_title"></h4>
+        </div>
+        <div class="modal-body" style="height: auto" id="question_form_ajax">
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascript %}
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+  <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script>
+      $('#mcq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
+              url: "{% url 'mcquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create Multiple Choice Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#tfq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
+              url: "{% url 'tfquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create True False Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#saq_create_button').on('click', function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_from_quiz': '{{ course_from_quiz.id }}'},
+              url: "{% url 'saquestion_create' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $("#question_model_title").html("Create Short Answer Question");
+                  $("#question_form_ajax").html(data);
+              }
+          });
+      });
+      $('#id_form3-mcquestion').change(function () {
+          $('#selected_mcq_num').text($('#id_form3-mcquestion option:selected').length);
+      });
+      $('#id_form3-tfquestion').change(function () {
+          $('#selected_tfq_num').text($('#id_form3-tfquestion option:selected').length);
+      });
+      $('#id_form3-saquestion').change(function () {
+          $('#selected_saq_num').text($('#id_form3-saquestion option:selected').length);
+      });
+
+      function mcq_success(response) {
+          $('#id_form3-mcquestion').prepend(
+              `<option value="${response['new_mcq_id']}" selected>${response['new_mcq_content']}</option>`);
+          $('#id_form3-mcquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+      function tfq_success(response) {
+          $('#id_form3-tfquestion').prepend(
+              `<option value="${response['new_tfq_id']}" selected>${response['new_tfq_content']}</option>`);
+          $('#id_form3-tfquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+      function saq_success(response) {
+          $('#id_form3-saquestion').prepend(
+              `<option value="${response['new_saq_id']}" selected>${response['new_saq_content']}</option>`);
+          $('#id_form3-saquestion').change();
+          $('#question_form_popup').modal('toggle');
+      }
+
+  </script>
+{% endblock javascript %}

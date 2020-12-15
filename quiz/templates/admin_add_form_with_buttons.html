@@ -1,0 +1,26 @@
+{% extends 'admin_add_form.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+    <a href="/admin/quiz/mcquestion/"  target="_blank" class="btn btn-high btn-success">MC Question List</a>
+    <a href="/admin/quiz/tf_question/" class="btn btn-high btn-success">T/F Question List</a>
+    <a href="/admin/quiz/sa_question/" class="btn btn-high btn-success">Short Answer Question List</a>
+    {{ block.super }}
+{% endblock %}
+
+{% block customjss %}
+
+    <script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+    {{ block.super }}
+
+    <script type="text/javascript"
+            id="django-admin-form-add-constants"
+            src="{% static 'admin/js/change_form.js' %}"
+            {% if adminform and add %}
+            data-model-name="{{ opts.model_name }}"
+            {% endif %}>
+    </script>
+{% endblock %}

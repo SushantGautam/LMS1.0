@@ -1,0 +1,20 @@
+{% extends 'forum/Teacher_base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+{% load humanize %}
+
+
+{% block breadcrumb %}
+
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
+<li class="active">Search</li>
+
+{% endblock %}
+
+{% block main_contain %}
+
+{% include 'ForumInclude/Search.html' %}
+
+
+
+{% endblock %}
