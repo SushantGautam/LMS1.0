@@ -491,6 +491,7 @@ class AssignmentInfo(models.Model):
         'MemberInfo',
         related_name="assignmentinfos", on_delete=models.CASCADE
     )
+    assignment_sessionmaps = GenericRelation('SessionMapInfo')
 
     def __str__(self):
         return self.Assignment_Topic
@@ -510,18 +511,11 @@ class AssignmentInfo(models.Model):
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
-    def get_course(self):
-        return InningGroup.objects.filter(Course_Code=self.Course_Code)
-
-    def get_chapter(self):
-        return self.Chapter_Code
-
-    def get_participant_for_calendar(self):
-        inning_groups = InningGroup.objects.filter(Course_Code=self.Course_Code)
-        inning_infos = InningInfo.objects.filter(Course_Group__in=inning_groups)
-        groups = GroupMapping.objects.filter(inninginfos__in=inning_infos)
-        students = MemberInfo.objects.filter(groupmapping__in=groups)
-        return students.distinct()
+    def has_questions(self):
+        if AssignmentQuestionInfo.objects.filter(Assignment_Code=self).exists():
+            return True
+        else:
+            return False
 
     def get_student_assignment_status(self, user):
         status = False
@@ -582,6 +576,14 @@ class AssignmentInfo(models.Model):
         if self.Assignment_Start and self.Assignment_Deadline:
             if self.Assignment_Start > self.Assignment_Deadline:
                 raise ValidationError("End date must be greater than start date")
+    
+    @property
+    def get_total_score(self):
+        score = AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
+        if score:
+            return score
+        else:
+            return 0
 
 
 def upload_to(instance, filename):
@@ -705,6 +707,7 @@ class AssignAnswerInfo(models.Model):
 @receiver(post_delete, sender=AssignAnswerInfo)
 def submission_delete(sender, instance, **kwargs):
     instance.Assignment_File.delete(False)
+
 
 
 class SessionInfo(models.Model):

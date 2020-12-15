@@ -44,6 +44,7 @@
         <div class="card mt-4 p-3">
             <h4 class="text-primary m-2">{% trans "List of Chapters" %}</h4>
             <ul>
+                <script> var lastchapter = 0;</script>
                 {% for chapter in chapters %}
                 <li class="p-3">
                     <a href="{% if '/students' in request.path %}

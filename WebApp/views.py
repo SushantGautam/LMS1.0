@@ -1370,10 +1370,16 @@ class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
             return redirect('courseinfo_detail', pk=request.POST['course_id'])
 
         except:
-            messages.error(request, "Cannot delete chapter with assignments")
-            return redirect('chapterinfo_detail',
-                            course=self.request.POST['course_id'],
+            messages.error(request,
+                           "Cannot delete chapter with assignments")
+            return redirect('chapterinfo_detail', course=self.request.POST['course_id'],
                             pk=self.request.POST['chapter_id'])
+
+
+class ChapterInfoDiscussionView(ChapterAuthMxnCls, DetailView):
+    model = ChapterInfo
+    template_name = 'WebApp/chapterdiscussion.html'
+
 
 
 def CourseForum(request, course):

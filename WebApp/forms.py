@@ -454,25 +454,39 @@ class InningInfoForm(forms.ModelForm):
 
 # AssignmentInfoForms
 class AssignmentInfoForm(forms.ModelForm):
+    # Assignment_Start = forms.CharField(
+    #     required=True,
+    # )
+    # Assignment_Deadline = forms.CharField(
+    #     required=True,
+    # )
+
     class Meta:
         model = AssignmentInfo
-        fields = '__all__'
+        fields = ['Assignment_Topic', 'Use_Flag', 'Course_Code', 'Chapter_Code', 'Register_Agent', ]
+
 
 
 class QuestionInfoForm(forms.ModelForm):
     Question_Description = forms.CharField(widget=SummernoteWidget(attrs=
-                            {'summernote':
-                            {'width': '100%', 'height': '480px',
-                            'toolbar': [["style", ["style"]],
-                            ["font", ["bold", "italic", "underline"]],
-                            ["para", ["ul", "ol"]],
-                            ["table", ["table"]],
-                            ["insert", ["link", "picture"]],
-                            ]}
-                            }), required=False)
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '480px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
+
     class Meta:
         model = AssignmentQuestionInfo
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(QuestionInfoForm, self).__init__(*args, **kwargs)
+        self.fields['Question_Media_File'].label = "Question_Media_File (Max Size: 2 MB)"
 
 
 class AssignAssignmentInfoForm(forms.ModelForm):
@@ -480,8 +494,18 @@ class AssignAssignmentInfoForm(forms.ModelForm):
         model = AssignAssignmentInfo
         fields = '__all__'
 
-
 class AssignAnswerInfoForm(forms.ModelForm):
+    Assignment_Answer = forms.CharField(widget=SummernoteWidget(attrs=
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '200px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
     class Meta:
         model = AssignAnswerInfo
         fields = '__all__'

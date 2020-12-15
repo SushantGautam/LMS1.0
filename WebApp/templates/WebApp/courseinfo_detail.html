@@ -32,7 +32,7 @@
             url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
             success: function (response) {
                 $('#create_chapter_modal_body').append(response);
-                Switchery(document.querySelector('.js-switch'));
+                //Switchery(document.querySelector('.js-switch'));
             },
             error: function () {
                 console.log('Error in generating chapter create form')
