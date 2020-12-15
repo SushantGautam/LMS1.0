@@ -1,6 +1,50 @@
 {% load static %}
 {% load i18n %}
 
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">
+                    {% trans "CSV File Import" %}
+                </h5>
+                <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
+                <form method="POST" id="form_import_csv" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="id_import_csv">{% trans 'Choose the CSV file to Import Course Data' %}</label>
+                    <input type="file" name="import_csv" id="id_import_csv" accept=".csv" class="mb-4">
+                    <a target="_blank" class="text-center" href="{% static 'importCourse_sample.csv' %}">
+                        <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
+                    </a><br>
+
+                    <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>
+                            {% trans 'Read Detail Info' %}...</b></span>
+                    <ul class="info-text" style="display:none;background:azure;">
+                        <li>- {% trans 'Course Name' %} ({% trans 'required' %})</li>
+                        <li>- {% trans 'Course Name should be unique within the center' %}</li>
+                        <li>- {% trans 'Course Provider' %} ({% trans 'required' %})</li>
+                        <li>- {% trans 'Course Level should be between 1 and 5' %}</li>
+                    </ul>
+                    <div class="import-message"></div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-success" id="submitcsv" type="submit">
+                            <span id="submitspinner"></span>{% trans 'Submit File' %}
+                        </button>
+                        <button class="btn btn-primary closeImportCSV ml-4" data-dismiss="modal" aria-label="Close">
+                            {% trans 'Close' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="page-header">
     <div class="page-title">
         <h2>{% trans "Courses" %}</h2>
@@ -18,10 +62,10 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8 col-md-8 col-sm-12">
+    <div class="col-lg-8 col-md-6 col-sm-12">
         {% if 'teachers' in request.path %}
         <form method="get" action="" class="query_form">
-            <div class="col-md-4 col-sm-6">
+            <div class="col-md-6 col-sm-6">
                 <input type="text" name="teacher_coursequery" placeholder="Search Course"
                     value="{{ request.GET.query }}" class="form-control" required />
             </div>
@@ -31,7 +75,7 @@
         </form>
         {% elif 'students' in request.path %}
         <form method="get" action="" class="query_form">
-            <div class="col-md-4 col-sm-6">
+            <div class="col-md-6 col-sm-6">
                 <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
                     class="form-control" required />
             </div>
@@ -42,7 +86,7 @@
         {% else %}
         <form method="get" action="" class="query_form">
             <div class="row">
-                <div class="col-md-4 col-sm-6">
+                <div class="col-md-6 col-sm-6">
                     <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
                         class="form-control" required />
                 </div>
@@ -55,13 +99,16 @@
         {% endif %}
     </div>
     {% if 'students' not in request.path %}
-    <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
+    <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
         <a class="btn btn-primary pull-right" href="
             {% if '/teachers' in request.path %}
                 {% url 'teacher_courseinfo_create' %}
             {% else %}
                 {% url 'courseinfo_create' %}
             {% endif %}">{% trans "Create New Course" %}</a>
+        <a class="btn btn-outline-info text-info pull-right mr-4" data-toggle="modal" data-target="#exampleModal1"
+            id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> {% trans 'Import' %}</a>
+
     </div>
     {% endif %}
 </div>
