@@ -4385,8 +4385,12 @@ def DownloadChapterData(request):
                 chapter_end_date = ''
                 if chapter.chapter_sessionmaps.filter(Session_Code=session).exists():
                     d = chapter.chapter_sessionmaps.get(Session_Code=session)
-                    chapter_start_date = d.Start_Date.replace(tzinfo=None)
-                    chapter_end_date = d.End_Date.replace(tzinfo=None)
+                    chapter_start_date = d.Start_Date
+                    chapter_end_date = d.End_Date
+                    if chapter_start_date:
+                        chapter_start_date = chapter_start_date.replace(tzinfo=None)
+                    if chapter_end_date:
+                        chapter_end_date = chapter_end_date.replace(tzinfo=None)
 
                 new_row = {'S.N.': counter, 'Session': session_name, 'Course': course_name,
                            'Teachers(ID)': teachers_id, 'Teachers(Full Name)': teachers_name,
