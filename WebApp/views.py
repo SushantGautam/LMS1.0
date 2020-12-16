@@ -4385,8 +4385,8 @@ def DownloadChapterData(request):
                 chapter_end_date = ''
                 if chapter.chapter_sessionmaps.filter(Session_Code=session).exists():
                     d = chapter.chapter_sessionmaps.get(Session_Code=session)
-                    chapter_start_date = d.Start_Date
-                    chapter_end_date = d.End_Date
+                    chapter_start_date = d.Start_Date.replace(tzinfo=None)
+                    chapter_end_date = d.End_Date.replace(tzinfo=None)
 
                 new_row = {'S.N.': counter, 'Session': session_name, 'Course': course_name,
                            'Teachers(ID)': teachers_id, 'Teachers(Full Name)': teachers_name,
@@ -4397,9 +4397,7 @@ def DownloadChapterData(request):
                            'Start Date(Chapter)': chapter_start_date, 'End Date(Chapter)': chapter_end_date,
                            'No. of Quiz': quiz_no, 'No. of Assignments': assignment_no,
                            'No. of Students': student_count}
-
-                print(new_row)
-        df = df.append(new_row, ignore_index=True)
+                df = df.append(new_row, ignore_index=True)
 
     df = df.set_index('S.N.', drop=True)
 
