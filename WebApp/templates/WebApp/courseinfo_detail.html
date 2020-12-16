@@ -21,7 +21,33 @@
 {% endblock content %}
 
 {% block javascript %}
+<!-- <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script> -->
 <script>
+    if (parseInt('{{object.Course_Level}}'))
+        for (j = 0; j < parseInt('{{object.Course_Level}}'); j++) {
+            $('#rating').append("&nbsp;<i class='fa fa-star' style='color:#f5ba00'></i>");
+        }
+    else
+        $('#rating').append("Rating not defined");
+
+</script>
+
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    });
+
+    $(document).on('click', '.course-confirm-delete', function () {
+        ans = confirm('Are you sure you want to delete this Course, associated chapters, surveys and quizzes?');
+        if (ans == true) {
+            $(`#deleteCourse${this.id}`).submit();
+        } else {
+            return false;
+        }
+    });
+
+
     $('#add-newchapter-btn').on('click', function () {
         $('#create_chapter_modal_body').empty();
         $("#create_chapter_modal_body").append('<div class="se-pre-con-ajax"></div>');
@@ -32,7 +58,12 @@
             url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
             success: function (response) {
                 $('#create_chapter_modal_body').append(response);
-                //Switchery(document.querySelector('.js-switch'));
+                var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+                elems.forEach(function (html) {
+                    var switchery = new Switchery(html);
+                });
+                // Switchery(document.querySelector('.js-switch'));
             },
             error: function () {
                 console.log('Error in generating chapter create form')
@@ -42,6 +73,72 @@
                 $("#id_Chapter_No").val(lastchapter + 1);
             }
         });
+
+
     });
+
+    $('.laststudydate').each(function () {
+        if ($(this).attr('data-laststudydate') != 'None') {
+            $(this).find('b').text(new Date($(this).attr('data-laststudydatewithutc')).toLocaleString())
+        }
+    })
+</script>
+
+<script>
+    $('#exam_paper_popup').on('click', function () {
+        $.ajax({
+            type: "GET",
+            data: { 'course_id': '{{ object.id }}', 'test_type': 'exam_paper', },
+            url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#quiz_form_ajax").html(data);
+            }
+        });
+    });
+    $('#qn_close').on("click", function () {
+        $("#quiz_create_popup").modal("show");
+    });
+
+
+</script>
+
+<script>
+    let params = new URLSearchParams(location.search);
+    $(document).ready(function () {
+        if (params.get('ifsurvey')) {
+            $('.left_col, .top_nav , .breadcrumb  , #exam_paper_popup , .courseDetailStyle1 , #course-info-teacher , .course-info').remove();
+            $('#new_survey_btn').click();
+
+        }
+    });
+</script>
+
+{% endblock %}
+
+
+{% include 'chapter/content-viewer-moules/QuickSurvey.html' %}
+
+{% block quicksurvey_script %}
+<script>
+    $('#new_survey_btn').click(function () {
+        $.ajax({
+            type: "GET",
+            data: { "category_name": "live", "course_code": "{{ object.id }}" },
+            url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#survey_form_ajax").html(data);
+                $('#smartwizard').smartWizard("reset");
+                $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
+            }
+        });
+    });
+
+    function survey_create_content(response) {
+        location.reload()
+    }
+
+    function quiz_create_content(response) {
+        location.reload();
+    }
 </script>
 {% endblock %}
