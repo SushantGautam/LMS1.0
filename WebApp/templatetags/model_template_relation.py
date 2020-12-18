@@ -127,4 +127,19 @@ def getSessionMap(object, model_name, sessions=None):
 @register.simple_tag
 def getQuizQuestionIndex(sitting, questionID):
     if str(questionID) in sitting.question_order.split(','):
+        print(sitting.question_order.split(',').index(str(questionID)) + 1)
         return sitting.question_order.split(',').index(str(questionID)) + 1
+
+import json
+@register.simple_tag
+def quizQuestion_check_if_answered(sitting, questionID):
+    answers = dict(json.loads(sitting.user_answers))
+    for qno, ans in answers.items():
+        if qno == str(questionID):
+            if isinstance(ans, str):
+                if ans == '':
+                    return False
+            elif isinstance(ans, list):
+                if len(ans) < 1:
+                    return False
+            return True

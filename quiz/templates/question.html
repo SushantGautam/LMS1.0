@@ -266,9 +266,6 @@
           </div>
             </div>
             <div class="col-md-2">
-               
-
-
                   <ul  class="nav nav-pills">
                     <li class="active">
                 <a  href="#1a" data-toggle="tab" style="padding: 5px!important;">All Question</a>
@@ -282,10 +279,22 @@
                         <ul class="incomplete-qts">
 
                         {% for question in sitting.get_questions %}
-                            <li> <b><i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i></b> &nbsp;
+                            {% getQuizQuestionIndex sitting question.id as qindex %}
+                            {% quizQuestion_check_if_answered sitting question.id as is_answered %}
+                            <li {% if qindex == question_number %} style = "background:#ddd" {% endif %} >
                                 <b>
-                                    {% getQuizQuestionIndex sitting question.id as qindex %}
-                                    <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}"> {{ qindex }}</a>
+                                    {% if is_answered %}
+                                        <i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i>
+                                    {% endif %}
+                                </b> &nbsp;
+                                <b>
+                                    {% if not qindex == question_number %}
+                                        <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}">
+                                            {{ qindex }}) {{ question }}
+                                        </a>
+                                    {% else %}
+                                        {{ qindex }}) {{ question }}
+                                    {% endif %}
                                 </b>
                             </li>
 
@@ -295,14 +304,23 @@
                       </div>
                       <div class="tab-pane" id="2a">
                         <ul class="incomplete-qts">
-                            {% for question in sitting.get_remaining_question.remaining_list %}
-                                <li> <b><i class="fa fa-times" aria-hidden="true" style="color:rgb(136, 60, 72); "></i></b> &nbsp;
-                                    <b>
-                                        {% getQuizQuestionIndex sitting question as qindex %}
-                                        <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}"> {{ qindex }}</a>
-                                    </b>
-                                </li>
+                            {% for question in sitting.get_questions %}
+                                {% getQuizQuestionIndex sitting question.id as qindex %}
+                                {% quizQuestion_check_if_answered sitting question.id as is_answered %}
 
+                                {% if not is_answered %}
+                                    <li {% if qindex == question_number %} style = "background:#ddd" {% endif %} >
+                                        <b>
+                                            {% if not qindex == question_number %}
+                                                <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}">
+                                                    {{ qindex }}) {{ question }}
+                                                </a>
+                                            {% else %}
+                                                {{ qindex }}) {{ question }}
+                                            {% endif %}
+                                        </b>
+                                    </li>
+                                {% endif %}
                               {% endfor %}
                         </ul>
                       </div>
