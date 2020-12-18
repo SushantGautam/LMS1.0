@@ -1,18 +1,20 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block title %}
-    Course
+    {% trans 'Course' %}
 {% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">My Courses</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'My Courses' %}</li>
 {% endblock %}
 {% block content %}
     <div class="courseInfoListClass">
         <h2 class="tableHeader">
             {% if '/active' in request.path %}
-                List of My Courses
+                {% trans 'List of My Courses' %}
             {% else %}
-                List of Inactive Courses
+                {% trans 'List of Inactive Courses' %}
             {% endif %}
         </h2>
 
@@ -33,13 +35,13 @@
                         {% if '/active' in request.path %}
                         <a href="{% url 'teacher_mycourses_list_inactive' %}">
                             <span class="text-right " style="float:right;color:#5A738E">
-                                <b>View <span>  Inactive  </span>courses</b> 
+                                <b>{% trans 'View' %} <span>  {% trans 'Inactive' %}  </span>{% trans 'courses' %}</b>
                              </span>
                         </a>
                     {% else %}
                         <a href="{% url 'teacher_mycourses_list_active' %}">
                             <span class="text-right " style="float:right;color:#5A738E">
-                                View <span >  <b>Active</b>  </span>courses
+                                {% trans 'View' %} <span >  <b>{% trans 'Active' %}</b>  </span>{% trans 'courses' %}
                             </span>
                         </a>
                     {% endif %}
@@ -68,13 +70,13 @@
                     <input type="text" name="teacher_mycoursequery" placeholder="Search Course"
                            value="{{ request.GET.query }}" class="form-control">
                 </div>
-                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;{% trans 'Search' %}</button>
 
             </form>
         </div>
 
         <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
-            <span> <b>Show</b> </span>
+            <span> <b>{% trans 'Show' %}</b> </span>
                 <label>
                     <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
                             id="paginate_courses">
@@ -119,7 +121,7 @@
                             </a>
                         </div>
                         <div class="card-body" id="cardInfo">
-                            <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; ">
+                            <h2 class="card-title" style="height:45px;   overflow-wrap:break-word; ">
                                 <strong><a
                                         href="{{ courses.teacher_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
                             </h2>

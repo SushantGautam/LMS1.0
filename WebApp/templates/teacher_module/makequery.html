@@ -1,7 +1,8 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-    Polls
+    {% trans 'Polls' %}
 {% endblock %}
 {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
@@ -10,8 +11,8 @@
 
     <div class="clearfix"></div>
     <ol aria-label="breadcrumb" class="breadcrumb navClass">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Survey</li>
+        <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Survey' %}</li>
     </ol>
 
     <div class="container" id="mainSurveyPage">
@@ -20,16 +21,16 @@
                 <form>
                     <input type="search" placeholder="Survey...">
                     <div class="pollButtons">
-                        <button type="button" class="btn btn-info">Search</button>
+                        <button type="button" class="btn btn-info">{% trans 'Search' %}</button>
                     </div>
                 </form>
             </div>
             <div class="col-sm-7">
                 <div class="btn-group" id="status" data-toggle="buttons">
                     <label class="btn btn-default btn-on-3 btn-sm active">
-                        <input type="radio" value="1" name="multifeatured_module[module_id][status]" checked="checked">Active</label>
+                        <input type="radio" value="1" name="multifeatured_module[module_id][status]" checked="checked">{% trans 'Active' %}</label>
                     <label class="btn btn-default btn-off-3 btn-sm ">
-                        <input type="radio" value="0" name="multifeatured_module[module_id][status]">Expire</label>
+                        <input type="radio" value="0" name="multifeatured_module[module_id][status]">{% trans 'Expire' %}</label>
                 </div>
             </div>
         </div>

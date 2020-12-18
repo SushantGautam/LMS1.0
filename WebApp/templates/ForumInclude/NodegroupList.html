@@ -11,7 +11,7 @@
 <div class="x_panel">
     <div class="x_title">
         <h2>
-            Detail of Category: {{ panel_title }}
+            {% trans 'Detail of Category' %}: {{ panel_title }}
             <br>
             <small class="small_header">
                 <!-- <i class="fa fa-star"></i> No of Topics: {{ node_group.topic_count }} -->
@@ -29,8 +29,7 @@
             {% url 'forum:create_thread' nodegroup_pk=node_group.pk %}
                         {% endif %}
            "><i class="fa fa-fw fa-plus"></i>
-                Ask New
-                Question</a>
+                {% trans 'Ask New Question' %}</a>
             {% if not '/students' in request.path %}
             <a class="btn btn-white btn-flat" href="{% if '/teachers' in request.path %}
             {% url 'teacher_create_topic' teacher_nodegroup_pk=node_group.pk %}
@@ -38,7 +37,7 @@
             {% url 'forum:create_topic' nodegroup_pk=node_group.pk %}
             {% endif %}
          "><i class="fa fa-fw fa-plus"></i>
-                Sub Category
+                {% trans 'Sub Category' %}
             </a></i>
             {% endif %}
         </div>
@@ -53,18 +52,16 @@
             
                         <tr class="tableTitleRow">
             
-                            <th>Topic icon</th>
-                            <th>Sub
-                                category
+                            <th>{% trans 'Topic icon' %}</th>
+                            <th>{% trans 'Sub category' %}
                             </th>
                             <th>
-                                Posts
+                                {% trans 'Posts' %}
                             </th>
                             <th>
-                                Replies
+                                {% trans 'Replies' %}
                             </th>
-                            <th>Last
-                                Thread
+                            <th>{% trans 'Last Thread' %}
                             </th>
             
                         </tr>
@@ -112,7 +109,7 @@
                                     {% endif %}
                                     "> {{ list.1.title }} </a></td>
                             {% else %}
-                            <td> No threads yet</td>
+                            <td> {% trans 'No threads yet' %}</td>
                             {% endif %}
                         </tr>
                         {% endfor %}

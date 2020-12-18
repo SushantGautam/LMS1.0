@@ -32,7 +32,7 @@
             {% url 'forum:create_thread' topic.node_group.pk topic.pk %}
                         {% endif %}
          "><i class="fa fa-fw fa-plus"></i>
-                Ask New Question</a>
+                {% trans 'Ask New Question' %}</a>
 
         </span>
 
@@ -74,7 +74,7 @@
                             {% if thread.order <= 3 %}
                             <span class="meta">
                                 <span class="label label-info meta-top">
-                                    TOP
+                                    {% trans 'TOP' %}
                                 </span>
                             </span>
                             {% endif %}
@@ -85,7 +85,7 @@
                                 <h5>
 
                                     <span class="meta">
-                                        SubCategory:
+                                        {% trans 'SubCategory' %}:
                                         <a href="{% if '/teachers' in request.path %}
                                         {% url 'teacher_topic' pk=thread.topic.pk %}
                                         {% elif '/students' in request.path %}
@@ -100,7 +100,7 @@
                                         </a>
                                     </span>
                                     <span class="meta meta-username">
-                                        posted by<a href="{% if '/teachers' in request.path %}
+                                        {% trans 'posted by' %}<a href="{% if '/teachers' in request.path %}
                                         {% url 'teacher_info' thread.user.pk %}
                                         {% elif '/students' in request.path %}
                                         {% url 'student_info' thread.user.pk %}
@@ -133,7 +133,7 @@
                         </p>
 
                         <div class="media-right media-middle">
-                            <span class="btn btn-primary btn-xs">{{ thread.reply_count }} Reply</span>
+                            <span class="btn btn-primary btn-xs">{{ thread.reply_count }} {% trans 'Reply' %}</span>
                         </div>
 
 

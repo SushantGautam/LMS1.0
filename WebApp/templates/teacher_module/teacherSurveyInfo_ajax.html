@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% load crispy_forms_tags %}
 
 <div class="form-group">
 
-    <label class="control-label " id="categoryTitle" for="first-name">Category :
+    <label class="control-label " id="categoryTitle" for="first-name">{% trans 'Category' %} :
         <span class="Label">{{ categoryObject.Category_Name }}</span>
     </label>
 
@@ -15,15 +16,15 @@
     <div class="stepwizard-row setup-panel">
         <div class="stepwizard-step">
             <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
-            <p>Survey Information</p>
+            <p>{% trans 'Survey Information' %}</p>
         </div>
         <div class="stepwizard-step">
             <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
-            <p>Add Question</p>
+            <p>{% trans 'Add Question' %}</p>
         </div>
         <div class="stepwizard-step">
             <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
-            <p>Finish</p>
+            <p>{% trans 'Finish' %}</p>
         </div>
     </div>
 </div>
@@ -35,7 +36,7 @@
                 <div class="col-md-12">
                     {{ form|crispy }}
                     <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
-                            type="button">Next
+                            type="button">{% trans 'Next' %}
                     </button>
                 </div>
             </div>
@@ -78,7 +79,7 @@
                                                 </div>
 
                                                 <button onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                                        class="btn btn-success">Add option
+                                                        class="btn btn-success">{% trans 'Add option' %}
                                                 </button>
 
                                             {% endif %}
@@ -103,7 +104,7 @@
                         </div>
                     </div>
                     <button class="btn btn-primary nextBtn btn-lg pull-right" id="nextButton"
-                            type="button">Next
+                            type="button">{% trans 'Next' %}
                     </button>
                 </div>
             </div>
@@ -111,11 +112,15 @@
         <div class="row setup-content" id="step-3">
             <div class="col-xs-12">
                 <div class="col-md-12">
-                    <h3> Successfully completed form fill in. Click
-                        on
-                        submit
-                        button to finish.</h3>
-                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <h3>
+                        {% blocktrans %}
+                            Successfully completed form fill in. Click
+                            on
+                            submit
+                            button to finish.
+                        {% endblocktrans %}
+                    </h3>
+                    <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
                 </div>
             </div>
         </div>

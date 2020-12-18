@@ -1,15 +1,16 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'teacher_courseinfo_list' %}">Course</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_courseinfo_list' %}">{% trans 'Course' %}</a></li>
 <li class="breadcrumb-item"><a href="{{ Course_Code.teacher_get_absolute_url }}">{{ Course_Code }}</a></li>
 <li class="breadcrumb-item"><a href="{{ Chapter_No.teacher_get_absolute_url }}">{{ Chapter_No }}</a></li>
 <li class="breadcrumb-item active" aria-current="page">
     {% if '/create/' in request.path %}
-    Create New Assignment
+    {% trans 'Create New Assignment' %}
     {% else %}
-    Edit Assignment
+    {% trans 'Edit Assignment' %}
     {% endif %}
 </li>
 {% endblock %}

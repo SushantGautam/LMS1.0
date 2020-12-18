@@ -4346,3 +4346,86 @@ def AssignmentInningInfoMappingView(request):
             message = json.loads(requestStatus.content)
             return JsonResponse(message, status=requestStatus.status_code)
     return HttpResponse('GET Request Not Allowed', status=405)
+
+def DownloadChapterData(request):
+    sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code)
+
+    # Defining column names
+    column_names = ['S.N.', 'Session', 'Course', 'Teachers(ID)', 'Teachers(Full Name)',
+                    'Chapter No.', 'Chapter Name', 'Running Time', 'No. of Pages',
+                    'Created Date(Chapter)', 'Updated Date(Chapter)', 'Start Date(Chapter)',
+                    'End Date(Chapter)', 'No. of Quiz', 'No. of Assignments', 'No. of Students']
+    df = pd.DataFrame(columns=column_names)
+
+    # # extra_row_1["MCQ Score"] = mcq_full_score
+    # # extra_row_1["TFQ Score"] = tfq_full_score
+    # df = df.append(extra_row_1, ignore_index=True)
+    counter = 0
+
+    for session in sessions:
+        course_groups = session.Course_Group.all()
+        session_name = session.Inning_Name.Session_Name
+        student_count = session.Groups.Students.count()
+        for course_group in course_groups:
+            course = course_group.Course_Code
+            course_name = course.Course_Name
+            teachers = course_group.Teacher_Code.all()
+            teachers_id = ''
+            teachers_name = ''
+            for teacher in teachers:
+                teachers_id += teacher.username
+                teachers_name += teacher.get_full_name()
+            chapters = ChapterInfo.objects.filter(Course_Code=course)
+            for chapter in chapters:
+                counter += 1
+                quiz_no = Quiz.objects.filter(chapter_code=chapter).count()
+                assignment_no = AssignmentInfo.objects.filter(Chapter_Code=chapter).count()
+
+                chapter_start_date = ''
+                chapter_end_date = ''
+                if chapter.chapter_sessionmaps.filter(Session_Code=session).exists():
+                    d = chapter.chapter_sessionmaps.get(Session_Code=session)
+                    chapter_start_date = d.Start_Date
+                    chapter_end_date = d.End_Date
+                    if chapter_start_date:
+                        chapter_start_date = chapter_start_date.replace(tzinfo=None)
+                    if chapter_end_date:
+                        chapter_end_date = chapter_end_date.replace(tzinfo=None)
+
+                new_row = {'S.N.': counter, 'Session': session_name, 'Course': course_name,
+                           'Teachers(ID)': teachers_id, 'Teachers(Full Name)': teachers_name,
+                           'Chapter No.': chapter.Chapter_No, 'Chapter Name': chapter.Chapter_Name,
+                           'Running Time': chapter.display_mustreadtime(), 'No. of Pages': chapter.get_pages_no(),
+                           'Created Date(Chapter)': chapter.Register_DateTime.replace(tzinfo=None),
+                           'Updated Date(Chapter)': chapter.Updated_DateTime.replace(tzinfo=None),
+                           'Start Date(Chapter)': chapter_start_date, 'End Date(Chapter)': chapter_end_date,
+                           'No. of Quiz': quiz_no, 'No. of Assignments': assignment_no,
+                           'No. of Students': student_count}
+                df = df.append(new_row, ignore_index=True)
+
+    df = df.set_index('S.N.', drop=True)
+
+    print(df)
+    # return HttpResponse("<h4>Student All Course Progress download</h4>")
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        # df.index += 1
+        df.index.name = 'S.N.'
+        sheet_name = 'All data'
+        # sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
+        # if len(sheet_name) > 28:
+        #     sheet_name = sheet_name[:27] + ' ..'
+
+        df.to_excel(writer, sheet_name=sheet_name)
+
+        # Get the xlsxwriter workbook and worksheet objects.
+        workbook = writer.book
+        worksheet = writer.sheets[sheet_name]
+
+        # Close the Pandas Excel writer and output the Excel file.
+        writer.save()
+        response = HttpResponse(b.getvalue(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
+        response['Content-Disposition'] = 'attachment; filename="' + 'ChapterTeacherData.xlsx"'
+        return response

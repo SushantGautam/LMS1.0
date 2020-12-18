@@ -10,8 +10,9 @@
 
 <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
-        <h2>{% blocktrans with username=user.username %}
-            Threads created by {{ username }}
+        <h2>
+            {% blocktrans with username=user.username %}
+                Threads created by {{ username }}
             {% endblocktrans %}</h2>
     </div>
     <!-- List group -->

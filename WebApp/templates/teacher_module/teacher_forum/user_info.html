@@ -1,12 +1,13 @@
 {% extends 'forum/Teacher_base.html' %}
+{% load i18n %}
 
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">{% trans 'Forum' %}</a></li>
 
 <li class="breadcrumb-item active">
-    <a href="{% url 'teacher_info' pk=user.pk %}">Profile</a>
+    <a href="{% url 'teacher_info' pk=user.pk %}">{% trans 'Profile' %}</a>
 </li>
 
 

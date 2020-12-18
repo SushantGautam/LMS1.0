@@ -1,8 +1,9 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">My Assignments</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'My Assignments' %}</li>
 
 
 <style>
@@ -16,11 +17,11 @@
 {% block content %}
 
 
-<h1 class="tableHeader"><b>List of My Assignments</b></h1>
+<h1 class="tableHeader"><b>{% trans 'List of My Assignments' %}</b></h1>
 <h4 class="text-center"><b>
-        <button class="tablinks tabButton active" onclick="openTab(event, 'activeAssignments')">Active</button>
-        <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">All</button>
-        <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">Inactive</button>
+        <button class="tablinks tabButton active" onclick="openTab(event, 'activeAssignments')">{% trans 'Active' %}</button>
+        <button class="tablinks tabButton" onclick="openTab(event, 'allAssignments')">{% trans 'All' %}</button>
+        <button class="tablinks tabButton" onclick="openTab(event, 'expiredAssignments')">{% trans 'Inactive' %}</button>
     </b>
 </h4>
 <hr class="header_hr">
@@ -39,7 +40,7 @@
                 <h5>
                     <b style="color: #000000">{{ assignment.Assignment_Topic }}</b>
                 </h5>
-                <h5>Chapter - {{ assignment.Chapter_Code }}</h5>
+                <h5>{% trans 'Chapter' %} - {{ assignment.Chapter_Code }}</h5>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
@@ -47,39 +48,41 @@
                     {% getTeacherStatusoOfAssignment assignment user as teacher_assignment_status %}
                     {% if teacher_assignment_status.assg_status %}
                         <b style="color: green">
-                                All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                                {% trans 'All Completed' %} ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
                             </b>
                     {% else %}
                         <b style="color: deepskyblue">
-                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} Completed
+                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} {% trans 'Completed' %}
                             </b>
                     {% endif %}
                 {% else %}
-                    <b style="color: orangered">No Questions</b>
+                    <b style="color: orangered">{% trans 'No Questions' %}</b>
                 {% endif %}
                 </span>
                 <a href="{{ assignment.teacher_get_absolute_url }}">
                     <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                margin-top: 20px;margin-bottom: 10px;text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                     </button>
                 </a>
             </div>
 
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline -
+                <p>{% trans 'Submission Deadline' %} -
                     {% if assignment.status == 'inactive' %}
                         {% if assignment.end_date %}
                             <span class="text-danger dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }} </span>
-                            <span class="text-danger">(Expired)</span>
+                            <span class="text-danger">({% trans 'Expired' %})</span>
                         {% else %}
-                            <span class="text-danger">Inactive</span>
+                            <span class="text-danger">{% trans 'Inactive' %}</span>
                         {% endif %}
                     {% elif assignment.status == 'upcoming' %}
                         <span class="text-info dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }} </span>
-                        <span class="text-info">(upcoming)</span>
+                        <span class="text-info">({% trans 'upcoming' %})</span>
                     {% else %}
-                        <span class="text-success">{{ assignment.end_date|timeuntil }} left </span>
+                        <span class="text-success">
+                            {% blocktrans %} {{ assignment.end_date|timeuntil }} left {% endblocktrans %}
+                        </span>
                     {% endif %}</p>
             </div>
         </div>
@@ -101,7 +104,7 @@
                 <h5>
                     <b style="color: #000000">{{ assignment.Assignment_Topic }}</b>
                 </h5>
-                <h5>Chapter - {{ assignment.Chapter_Code }}</h5>
+                <h5>{% trans 'Chapter' %} - {{ assignment.Chapter_Code }}</h5>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
@@ -109,27 +112,27 @@
                     {% getTeacherStatusoOfAssignment assignment user as teacher_assignment_status %}
                     {% if teacher_assignment_status.assg_status %}
                         <b style="color: green">
-                                All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                                {% trans 'All Completed' %} ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
                             </b>
                     {% else %}
                         <b style="color: deepskyblue">
-                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} Completed
+                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} {% trans 'Completed' %}
                             </b>
                     {% endif %}
                 {% else %}
-                    <b style="color: orangered">No Questions</b>
+                    <b style="color: orangered">{% trans 'No Questions' %}</b>
                 {% endif %}
                 </span>
                 <a href="{{ assignment.teacher_get_absolute_url }}">
                     <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                    margin-top: 20px;margin-bottom: 10px;text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                     </button>
                 </a>
             </div>
 
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline - {{ assignment.end_date|timeuntil }}</p>
+                <p>{% trans 'Submission Deadline' %} - {{ assignment.end_date|timeuntil }}</p>
             </div>
         </div>
         {% endfor %}
@@ -150,7 +153,7 @@
                 <h5>
                     <b style="color: #000000">{{ assignment.Assignment_Topic }}</b>
                 </h5>
-                <h5>Chapter - {{ assignment.Chapter_Code }}</h5>
+                <h5>{% trans 'Chapter' %} - {{ assignment.Chapter_Code }}</h5>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
             <span class="assignment_status">
@@ -158,34 +161,34 @@
                     {% getTeacherStatusoOfAssignment assignment user as teacher_assignment_status %}
                     {% if teacher_assignment_status.assg_status %}
                         <b style="color: green">
-                                All Completed ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
+                                {% trans 'All Completed' %} ({{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }})
                             </b>
                     {% else %}
                         <b style="color: deepskyblue">
-                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} Completed
+                            {{ teacher_assignment_status.completed }}/{{ teacher_assignment_status.total_students }} {% trans 'Completed' %}
                             </b>
                     {% endif %}
                 {% else %}
-                    <b style="color: orangered">No Questions</b>
+                    <b style="color: orangered">{% trans 'No Questions' %}</b>
                 {% endif %}
                 </span>
                 <a href=" {{ assignment.teacher_get_absolute_url }}">
                     <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                    margin-top: 20px;margin-bottom: 10px;">CONTINUE <i class="fa fa-arrow-right"></i>
+                                    margin-top: 20px;margin-bottom: 10px;text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                     </button>
                 </a>
             </div>
 
             <div class="col-md-12 col-sm-12 col-xs-12 leftborder">
                 <hr style="margin-top: 1px; margin-bottom: 10px;">
-                <p>Submission Deadline -
+                <p>{% trans 'Submission Deadline' %} -
                     {% if assignment.status == 'upcoming' %}
                         <span class="text-info dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }} </span>
-                        <span class="text-info">(upcoming)</span>
+                        <span class="text-info">({% trans 'upcoming' %})</span>
                     {% elif assignment.end_date %}
                         <span class="text-danger dateconFullMonth">{{ assignment.end_date|date:"d M, Y h:i A" }}</span>
                     {% else %}
-                        <span class="text-danger">Inactive</span>
+                        <span class="text-danger">{% trans 'Inactive' %}</span>
                     {% endif %}
                 </p>
             </div>

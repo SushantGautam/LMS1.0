@@ -1,5 +1,6 @@
 {% extends 'WebApp/inninginfo_form.html' %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block stylesheets %}
@@ -27,11 +28,11 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{{ object.get_teacher_url }}">Session</a>
+        <a href="{{ object.get_teacher_url }}">{% trans 'Session' %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% if '/inninginfo/create/' == request.path %} Register New Session {% else %}
-            Edit Session {% endif %}
+        {% if '/inninginfo/create/' == request.path %} {% trans 'Register New Session' %} {% else %}
+            {% trans 'Edit Session' %} {% endif %}
     </li>
 {% endblock %}
 
@@ -42,7 +43,7 @@
         <div style="display:none">
             {{ form.Inning_Name | as_crispy_field }}
         </div>
-        <div class="text text-danger"> Only Admin can edit session name.</div>
+        <div class="text text-danger"> {% trans 'Only Admin can edit session name' %}.</div>
     </div>
 {% endblock %}
 

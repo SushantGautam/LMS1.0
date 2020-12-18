@@ -1,5 +1,6 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
     <link rel='manifest' href='/manifest.webmanifest'>
@@ -17,18 +18,18 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <h1 class="tableHeader"><b>
-            Welcome to Teacher Portal
+            {% trans 'Welcome to Teacher Portal' %}
         </b></h1>
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: grey">
-        <h3 style="color: white"><b>Overview</b></h3>
+        <h3 style="color: white"><b>{% trans 'Overview' %}</b></h3>
     </div>
 
     <div class="row">
         <div class="padding_homepage col-md-3 col-sm-12 col-xs-12">
             <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
                 <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span>List of my Classes </span></h3>
+                    <h3 style="margin-left: 10px"><span>{% trans 'List of my Classes' %} </span></h3>
                 </div>
                 <ul class="list-group">
                     {% for object in Session %}
@@ -56,10 +57,8 @@
         <div class="padding_homepage col-md-4 col-sm-12 col-xs-12">
             <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
                 <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span><b>Courses</b> - <a
-                            href="{% url 'teacher_mycourses_list_active' %}">List
-                            of my
-                            Courses </a></span></h3>
+                    <h3 style="margin-left: 10px"><span><b>{% trans 'Courses' %}</b> - <a
+                            href="{% url 'teacher_mycourses_list_active' %}">{% trans 'List of my Courses' %} </a></span></h3>
 
                 </div>
                 <ul class="list-group">
@@ -69,7 +68,7 @@
                                 <a href='{{ object.teacher_get_absolute_url }}'><b> {{ object }}</b></a>
                                 <a onclick="RetrieveChatper('{{ object.teacher_get_absolute_url }}',{{ object.pk }})">
                                     <button type="button" style="float: right;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                        text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                                     </button>
                                 </a>
 
@@ -83,8 +82,7 @@
         <div class="padding_homepage col-md-5 col-sm-12 col-xs-12">
             <div class="panel panel-default" style="max-height: 50vh;overflow:auto">
                 <div class="title text-center">
-                    <h3 style="margin-left: 10px"><span><a href="{% url 'teacher_myassignmentinfo_list' %}"><b>List of my
-                                Assignments</b></a>
+                    <h3 style="margin-left: 10px"><span><a href="{% url 'teacher_myassignmentinfo_list' %}"><b>{% trans 'List of my Assignments' %}</b></a>
                     </span></h3>
                 </div>
                 <ul class="list-group">
@@ -95,7 +93,7 @@
                                 <h5 style="margin-bottom: 0;">
                                     <a href="{{ object.teacher_get_absolute_url }}">
                                         <button type="button" style="border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                        ">CONTINUE <i class="fa fa-arrow-right"></i>
+                        text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
                                         </button>
                                     </a>
                                 </h5>
@@ -114,7 +112,7 @@
         <div class="col-sm-6" style="max-width: -webkit-fill-available;">
             <div class="panel panel-default">
                 <div class="title text-center">
-                    <h2 style="font-size: 2em">&nbsp;<b>Word Cloud - Forum</b></h2>
+                    <h2 style="font-size: 2em">&nbsp;<b>{% trans 'Word Cloud' %} - {% trans 'Forum' %}</b></h2>
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12" id="word-cloud" style="padding-top:13em; "></div>
             </div>

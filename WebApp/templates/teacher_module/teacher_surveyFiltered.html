@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
     <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
@@ -11,7 +12,7 @@
                 <input type="radio" value="1" name="multifeatured_module[module_id][status]"
                        checked="checked">Active</label>
             <label class="btn btn-default btn-off-3 btn-sm " id="ExpireButton">
-                <input type="radio" value="0" name="multifeatured_module[module_id][status]">Expired</label>
+                <input type="radio" value="0" name="multifeatured_module[module_id][status]">{% trans 'Expired' %}</label>
 {#            <label class="btn btn-default btn-off-3 btn-sm " id="LiveButton">#}
 {#                <input type="radio" value="2" name="multifeatured_module[module_id][status]">Live Survey</label>#}
         </div>
@@ -52,9 +53,9 @@
                             </div>
 
                             <ul class="card_labels">
-                                <li><label>Questions: {{ object.questions_count }}</label></li>
-                                <li><label>Start date: {{ object.Start_Date }}</label></li>
-                                <li><label>End date: {{ object.End_Date }}</label></li>
+                                <li><label>{% trans 'Questions' %}: {{ object.questions_count }}</label></li>
+                                <li><label>{% trans 'Start date' %}: {{ object.Start_Date }}</label></li>
+                                <li><label>{% trans 'End date' %}: {{ object.End_Date }}</label></li>
                             </ul>
 
                         </div>
@@ -78,9 +79,9 @@
                             </div>
 
                             <ul class="card_labels">
-                                <li><label>Questions: {{ object.questions_count }}</label></li>
-                                <li><label>Start date: {{ object.Start_Date }}</label></li>
-                                <li><label>End date: {{ object.End_Date }}</label></li>
+                                <li><label>{% trans 'Questions' %}: {{ object.questions_count }}</label></li>
+                                <li><label>{% trans 'Start date' %}: {{ object.Start_Date }}</label></li>
+                                <li><label>{% trans 'End date' %}: {{ object.End_Date }}</label></li>
                             </ul>
 
                         </div>
@@ -104,9 +105,9 @@
                             </div>
 
                             <ul class="card_labels">
-                                <li><label>Questions: {{ object.questions_count }}</label></li>
-                                <li><label>Start date: {{ object.Start_Date }}</label></li>
-                                <li><label>End date: {{ object.End_Date }}</label></li>
+                                <li><label>{% trans 'Questions' %}: {{ object.questions_count }}</label></li>
+                                <li><label>{% trans 'Start date' %}: {{ object.Start_Date }}</label></li>
+                                <li><label>{% trans 'End date' %}: {{ object.End_Date }}</label></li>
                             </ul>
 
                         </div>

@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div height="100vh">
     <div id="UBL-meet" style="height: 80vh;"></div>
 </div>
@@ -5,7 +7,7 @@
 <div>
     <input type="text" id="copy-link" readonly/>
     <button onclick="copyToClipBoard()">
-        Copy Invitation Link
+        {% trans 'Copy Invitation Link' %}
     </button>
 
 </div>

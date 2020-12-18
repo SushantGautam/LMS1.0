@@ -427,6 +427,20 @@ class ChapterInfo(models.Model):
             content_data = ""
 
         return content_data
+
+    def get_pages_no(self):
+        path = settings.MEDIA_ROOT
+        content = ''
+        try:
+            with open(path + '/chapterBuilder/' + str(self.Course_Code.pk) + '/' + str(self.pk) + '/' + str(
+                    self.pk) + '.txt') as json_file:
+                content = json.load(json_file)
+                page_no = content["numberofpages"]
+        except Exception as e:
+            page_no = "0"
+
+        return page_no
+
     
     def has_content(self):
         file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
