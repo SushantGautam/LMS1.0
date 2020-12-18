@@ -238,14 +238,6 @@
                 {% endfor %}
     
             </ul>
-             {% if    question_number == progress.2  %}
-            <input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
-                btn-success" id="completeQuizBtn">
-             {% else   %}
-             <input type="submit" value="{% trans 'Submit' %}" class="btn btn-large btn-block
-             btn-warning" >
-             {% endif %}
-    
     
             </form>
     
@@ -328,6 +320,8 @@
                       </div>
             
                   </div>
+                <div><input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
+                btn-success" id="completeQuizBtn"></div>
             </div>
         </div>
     </div>
