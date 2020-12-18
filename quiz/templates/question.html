@@ -143,13 +143,15 @@
 
 
     <div class="" style="text-align:right; margin-bottom: 10px;">
-        <a href="
-		    {% if request.GET.iframe %}
-		        {% url 'student_progress_detail' pk=sitting_id %}?iframe=1
-		    {% else %}
-                {% url 'student_progress_detail' pk=sitting_id %}
-            {% endif %}
-        " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
+        {% if not quiz.exam_paper %}
+            <a href="
+                {% if request.GET.iframe %}
+                    {% url 'student_progress_detail' pk=sitting_id %}?iframe=1
+                {% else %}
+                    {% url 'student_progress_detail' pk=sitting_id %}
+                {% endif %}
+            " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
+       {% endif %}
     </div>
 
     {% if question %}
@@ -192,7 +194,7 @@
     
                                 </strong>
                                 </small>
-                                <strong>{{ question.category }}</strong>
+                                <strong>{{ question.get_question_category }}</strong>
                             </p>
     
                         </div>
