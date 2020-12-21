@@ -461,6 +461,10 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
             CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(
             ChapterInfo, pk=self.kwargs.get('chapter'))
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Course_Group__in=course_groups).distinct()
         context['Answers'] = []
         AnsweredQuestion = set()
         Question = set()
