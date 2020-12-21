@@ -7,17 +7,17 @@
 {% block main_contain %}
 <div class="panel panel-default paper-shadow">
     <div class="panel panel-heading">
-        <h2> Threads Created by {{ panel_title }} </h2>
+        <h2> {% trans 'Threads Created by' %} {{ panel_title }} </h2>
     </div>
 
     {% if show_order %}
     <span class="pull-right ordering">
-        Order:
+        {% trans 'Order' %}:
         <span>
-            <a href="{% change_thread_ordering request '-last_replied' %}">Last Replied</a>
+            <a href="{% change_thread_ordering request '-last_replied' %}">{% trans 'Last Replied' %}</a>
         </span>
         <span>
-            <a href="{% change_thread_ordering request '-pub_date' %}">thread Date</a>
+            <a href="{% change_thread_ordering request '-pub_date' %}">{% trans 'thread Date' %}</a>
         </span>
     </span>
     {% endif %}
@@ -60,14 +60,14 @@
                             {% if thread.order <= 3 %}
                             <span class="meta">
                                 <span class="label label-info meta-top">
-                                    TOP
+                                    {% trans 'TOP' %}
                                 </span>
                             </span>
                             {% endif %}
                             <div class="topic_meta text-light text-caption">
                                 <h5>
                                     <span class="meta meta-username">
-                                        Topic:
+                                        {% trans 'Topic' %}:
                                         <a href="
                                         {% if '/teachers' in request.path %}
                                         {% url 'teacher_topic' thread.topic.pk %}
@@ -83,7 +83,7 @@
                                         </a>
                                     </span> |
                                     <span class="meta meta-username ">
-                                        posted by
+                                        {% trans 'posted by' %}
                                         <a href="
                                         {% if '/teachers' in request.path %}
                                         {% url 'teacher_info' thread.user.pk %}
@@ -107,7 +107,7 @@
                         </p>
 
                         <div class="media-right media-middle">
-                            <span class="pull-right badge">{{ thread.reply_count }} Reply</span>
+                            <span class="pull-right badge">{{ thread.reply_count }} {% trans 'Reply' %}</span>
                         </div>
                     </div>
                     </h5>

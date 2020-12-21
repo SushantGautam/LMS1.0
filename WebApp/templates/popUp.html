@@ -1,3 +1,4 @@
+{% load i18n %}
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  <div class="modal-dialog" role="document">
@@ -28,15 +29,15 @@
          <form method="POST" id="noticeForm">
              {% csrf_token %}
              <div class="col-md-4">
-                 <label for="id_dont_show">Don't Show again</label>
+                 <label for="id_dont_show">{% trans "Don't Show again" %}</label>
                  <input type="checkbox" name="dont_show" id="id_dont_show">
                  <input type="hidden" name="user_code" id="id_user_code" value="{{ user.id }}">
                  <input type="hidden" name="notice_code" id="id_notice_code" value="{{ notice.id }}">
              </div>
              <div class="col-md-4"></div>
              <div class="col-md-4">
-                 <button type="submit" class="btn btn-primary">Ok</button>
-                 <button type="button" class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+                 <button type="submit" class="btn btn-primary">{% trans 'Ok' %}</button>
+                 <button type="button" class="btn btn-danger" data-dismiss="modal">{% trans 'Dismiss' %}</button>
              </div>
          </form>
      </div>

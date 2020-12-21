@@ -1,5 +1,6 @@
 {% extends base_file %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block stylesheets %}
@@ -26,14 +27,14 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'inninginfo_list' %}">Session</a>
+        <a href="{% url 'inninginfo_list' %}">{% trans 'Session' %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% if '/inninginfo/create/' == request.path %} Register New Session
+        {% if '/inninginfo/create/' == request.path %} {% trans 'Register New Session' %}
         {% elif '/saveasnew' in request.path %}
-            Save New Session
+            {% trans 'Save New Session' %}
         {% else %}
-            Edit Session {% endif %}
+            {% trans 'Edit Session' %} {% endif %}
     </li>
 {% endblock %}
 
@@ -41,9 +42,9 @@
     <div class="headerDiv">
         <h2 class="infoFormHeader">
             {% if '/inninginfo/create/' == request.path %}
-                Register New Sessions
+                {% trans 'Register New Sessions' %}
             {% else %}
-                Edit Session
+                {% trans 'Edit Session' %}
             {% endif %}
         </h2>
         <hr class="header_hr"/>
@@ -55,7 +56,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="exampleModalLabel">
-                        Add New Session Name
+                        {% trans 'Add New Session Name' %}
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -71,7 +72,7 @@
             <div class="modal-content box2">
                 <div class="modal-header">
                     <h4 class="modal-title" id="exampleModalLabel">
-                        Create Students Group
+                        {% trans 'Create Students Group' %}
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -87,7 +88,7 @@
             <div class="modal-content box3">
                 <div class="modal-header">
                     <h4 class="modal-title" id="exampleModalLabel">
-                        Assign Course to Teachers
+                        {% trans 'Assign Course to Teachers' %}
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -103,14 +104,14 @@
 
         <div id="smartwizard" class="sw-theme-dots">
             <ul>
-                <li><a href="#step-1">Step 1 <br><small>Choose Session Name</small></a></li>
-                <li><a href="#step-2">Step 2<br/><small>Choose Interval</small></a></li>
-                <li><a href="#step-3">Step 3<br/><small>Choose Students</small></a></li>
-                <li><a href="#step-4">Step 4<br/><small>Choose Courses</small></a></li>
+                <li><a href="#step-1">Step 1 <br><small>{% trans 'Choose Session Name' %}</small></a></li>
+                <li><a href="#step-2">Step 2<br/><small>{% trans 'Choose Interval' %}</small></a></li>
+                <li><a href="#step-3">Step 3<br/><small>{% trans 'Choose Students' %}</small></a></li>
+                <li><a href="#step-4">Step 4<br/><small>{% trans 'Choose Courses' %}</small></a></li>
             </ul>
             <div>
                 <div id="step-1">
-                    <h2 class="StepTitle text-center">Select Session Name</h2>
+                    <h2 class="StepTitle text-center">{% trans 'Select Session Name' %}</h2>
                     {% block inning_name %}
                         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                             <div class="col-md-9 col-sm-10 col-xs-12">
@@ -124,35 +125,36 @@
                                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
                                             data-target="#exampleModal1"
                                             id="add-newsession-btn" style="margin-top: 17px; float: left;">
-                                        + Add New
+                                        + {% trans 'Add New' %}
                                     </button>
                                 </h1>
 
                             </div>
 
                             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                                <br><span class="text-info">These session name are already predefined by University.<br>
-              Only if the session name is not defined previously you can create
-              New.</span>
+                                <br><span class="text-info">{% trans 'These session name are already predefined by University' %}.<br>
+              {% trans 'Only if the session name is not defined previously you can create New' %}.</span>
                             </div>
                             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                                <div class="button-info">Read More Info...</div>
+                                <div class="button-info">{% trans 'Read More Info' %}...</div>
                                 <div class="col-md-3"></div>
                                 <p class="info-text col-md-6 col-sm-12 col-xs-12">
-                                    INFO: Session is the interval for which the particular
-                                    Course are taught and finished within it. It is the
-                                    breakdown of a program. For Ex: A Computer Engineering Bachelor
-                                    program can be divided into 8 Session and each Session has a fixed
-                                    Session Name, If it was taught yearwise then each year
-                                    can be named as Session Name. So Session represents the breakdown
-                                    of a particular study, where certain Courses are taught.
+                                    {% blocktrans %}
+                                        INFO: Session is the interval for which the particular
+                                        Course are taught and finished within it. It is the
+                                        breakdown of a program. For Ex: A Computer Engineering Bachelor
+                                        program can be divided into 8 Session and each Session has a fixed
+                                        Session Name, If it was taught year wise then each year
+                                        can be named as Session Name. So Session represents the breakdown
+                                        of a particular study, where certain Courses are taught.
+                                    {% endblocktrans %}
                                 </p>
                             </div>
                         </div>
                     {% endblock %}
                 </div>
                 <div id="step-2">
-                    <h2 class="StepTitle text-center">Select the duration of the Session</h2>
+                    <h2 class="StepTitle text-center">{% trans 'Select the duration of the Session' %}</h2>
                     <div class="col-md-12 col-sm-12 text-center">
                         <div class="col-md-6 col-sm-12 col-md-offset-3 text-center">
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
@@ -188,7 +190,7 @@
                 </div>
 
                 <div id="step-3">
-                    <h2 class="StepTitle text-center">Choose Student Group for this Session</h2>
+                    <h2 class="StepTitle text-center">{% trans 'Choose Student Group for this Session' %}</h2>
                     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                         <div class="col-md-9 col-sm-9 col-xs-12">
                             <div class="col-md-8 col-sm-12 col-xs-12 no-padding" style="float: right;">
@@ -202,29 +204,31 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
                                         data-target="#exampleModal2"
                                         id="add-newgroup-btn" style="margin-top: 17px; float: left;">
-                                    + Create New Group
+                                    + {% trans 'Create New Group' %}
                                 </button>
                             </h1>
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                            <div class="button-info">Read More Info...</div>
+                            <div class="button-info">{% trans 'Read More Info' %}...</div>
                             <div class="col-md-3"></div>
                             <p class="info-text col-md-6 col-sm-12 col-xs-12">
-                                INFO: Please select the student group you have created for this
-                                session. The student group will consists all the students enrolled
-                                in this session. You can see it in detail in student group page.
-                                Please make sure you have already created the batch or you can
-                                also create it from here.
+                                {% blocktrans %}
+                                    INFO: Please select the student group you have created for this
+                                    session. The student group will consists all the students enrolled
+                                    in this session. You can see it in detail in student group page.
+                                    Please make sure you have already created the batch or you can
+                                    also create it from here.
+                                {% endblocktrans %}
                             </p>
                         </div>
                     </div>
                 </div>
                 <div id="step-4" class="no-padding">
-                    <h2 class="StepTitle text-center">Select Courses for Session</h2>
+                    <h2 class="StepTitle text-center">{% trans 'Select Courses for Session' %}</h2>
                     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                         <button type="button" class="btn btn-sm btn-primary" id="add-inninggroup-btn"
                                 data-toggle="modal"
-                                data-target="#exampleModal3" style="margin-left:5em">+ Assign New Course
+                                data-target="#exampleModal3" style="margin-left:5em">+ {% trans 'Assign New Course' %}
                         </button>
 
                         <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3" style="width: auto;">
@@ -241,22 +245,27 @@
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <span id="step3Validate" class="text-danger"></span>
-                            <br>*You can select multiple courses by holding <code> ctrl</code> key on
-                            Windows and <code> Command⌘</code> key on MAC.
+                            <br>
+                            {% blocktrans %}
+                                *You can select multiple courses by holding <code> ctrl</code> key on
+                                Windows and <code> Command⌘</code> key on MAC.
+                            {% endblocktrans %}
                             <div class="text-center">
-                                <div class="button-info">Read More Info...</div>
+                                <div class="button-info">{% trans 'Read More Info' %}...</div>
                                 <div class="col-md-3"></div>
                                 <p class="info-text col-md-6 col-sm-12 col-xs-12">
-                                    INFO: Please select the courses that are included in this session.
-                                    You can assign multiple courses, here the courses are mapped with
-                                    teachers who taught them in this session, multiple teachers can be
-                                    associated with the same course for particular session. Teacher
-                                    allocation can be diffenent among same course in different session
-                                    so a convient name can be given to it. EX: For Math course taught
-                                    in computer can be named as MATH COMP. and same course can be
-                                    taught by different teachers in electonics and named as MATH ELEX.
-                                    It is just a grouping of a course and differnt teachers associated
-                                    with it.
+                                    {% blocktrans %}
+                                        INFO: Please select the courses that are included in this session.
+                                        You can assign multiple courses, here the courses are mapped with
+                                        teachers who taught them in this session, multiple teachers can be
+                                        associated with the same course for particular session. Teacher
+                                        allocation can be diffenent among same course in different session
+                                        so a convient name can be given to it. EX: For Math course taught
+                                        in computer can be named as MATH COMP. and same course can be
+                                        taught by different teachers in electonics and named as MATH ELEX.
+                                        It is just a grouping of a course and differnt teachers associated
+                                        with it.
+                                    {% endblocktrans %}
                                 </p>
                             </div>
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
@@ -277,7 +286,7 @@
                     </div>
 
                     <div class="submitButton col-md-12 col-sm-12 col-xs-12 text-center">
-                        <button class="btn btn-success" type="submit">Submit</button>
+                        <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
                     </div>
                 </div>
             </div>

@@ -6,8 +6,8 @@
 {% block left %}
 <div class="panel panel-default">
     <div class="panel-body">
-        <h3>Change Avatar</h3>
-        <h4>Current Avatar</h4>
+        <h3>{% trans 'Change Avatar' %}</h3>
+        <h4>{% trans 'Current Avatar' %}</h4>
         <img src="{% avatar_url request.user 120 True %}" />
         <form method="post" action="{% url "forum:upload_avatar" %}" enctype="multipart/form-data">
             {% crispy form %}

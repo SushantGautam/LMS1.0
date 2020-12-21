@@ -9,8 +9,8 @@
 
 {% block breadcrumb %}
 
-    <li class="breadcrumb-item active" aria-current="page"><a href="{% url  'attendance' %}">Attendance</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Update</li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="{% url  'attendance' %}">{% trans 'Attendance' %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Update' %}</li>
 
 {% endblock %}
 
@@ -21,21 +21,21 @@
 
     <div id="attendance-table">
         {% if attendance %}
-            <h3 class="detailListHeader2 ">Attendance List</h3>
+            <h3 class="detailListHeader2 ">{% trans 'Attendance List' %}</h3>
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-6 col-sm-6 col-xs-12"> 
                         <div class="total-students text-center">
                             <div>
-                                <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
+                                <span style="font-size:16px; font-weight: 600">{% trans 'Total Present' %}:- &nbsp;</span><span
                                     style="font-size:16px;" id="student_present"></span>
                             </div>
                             <div>
-                                <span style="font-size:16px; font-weight: 600">Total Absent:-  &nbsp;</span><span
+                                <span style="font-size:16px; font-weight: 600">{% trans 'Total Absent' %}:-  &nbsp;</span><span
                                     style="font-size:16px;" id="student_absent"></span>
                             </div>
                             <div>
-                                <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
+                                <span style="font-size:16px; font-weight: 600">{% trans 'Total Students' %}:- &nbsp;</span><span
                                     style="font-size:16px;">{{ attendance|length }}</span>
                             </div>
         
@@ -57,7 +57,7 @@
                     <th>{% trans "Roll No." %}</th>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Attendance" %}
-                        <span style="float: right;">Select All <input type="checkbox" id="select_all"
+                        <span style="float: right;">{% trans 'Select All' %} <input type="checkbox" id="select_all"
                                                                       value="all"></span>
                     </th>
 
@@ -83,7 +83,7 @@
 
                 </table>
                 <button class="btn btn-success formsubmitBtn" type="submit" href="#">
-                    Submit
+                    {% trans 'Submit' %}
                 </button>
             </form>
 

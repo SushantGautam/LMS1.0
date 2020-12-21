@@ -6,11 +6,11 @@
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Home' %}</a></li>
 <li>
 <li class="breadcrumb-item"><a href="{% url 'forum:user_info' pk=user.pk %}">{{ user.username }}</a></li>
 <li class="breadcrumb-item active">
-    <a href="{% url 'forum:user_threads' pk=user.pk %}">Threads</a>
+    <a href="{% url 'forum:user_threads' pk=user.pk %}">{% trans 'Threads' %}</a>
 </li>
 {% endblock %}
 
@@ -22,12 +22,12 @@
 
     {% if show_order %}
     <span class="pull-right ordering">
-        Order:
+        {% trans 'Order' %}:
         <span>
-            <a href="{% change_thread_ordering request '-last_replied' %}">Last Replied</a>
+            <a href="{% change_thread_ordering request '-last_replied' %}">{% trans 'Last Replied' %}</a>
         </span>
         <span>
-            <a href="{% change_thread_ordering request '-pub_date' %}">thread Date</a>
+            <a href="{% change_thread_ordering request '-pub_date' %}">{% trans 'thread Date' %}</a>
         </span>
     </span>
     {% endif %}
@@ -53,14 +53,14 @@
                             {% if thread.order <= 3 %}
                             <span class="meta">
                                 <span class="label label-info meta-top">
-                                    TOP
+                                    {% trans 'TOP' %}
                                 </span>
                             </span>
                             {% endif %}
                             <div class="topic_meta text-light text-caption">
                                 <h5>
                                     <span class="meta">
-                                        Topic:
+                                        {% trans 'Topic' %}:
                                         <a href="{% url 'forum:topic' thread.topic.pk %}">
                                             <span class="label label-success topic-meta">
                                                 {{ thread.topic.title }}
@@ -69,7 +69,7 @@
                                     </span>
                                     <span class="meta meta-username">
                                         <a href="{% url 'forum:user_info' thread.user.pk %}">
-                                            posted by {{ thread.user.username }}
+                                            {% trans 'posted by' %} {{ thread.user.username }}
                                         </a>
                                     </span>
                                     <span class="meta meta-pub_date">
@@ -83,7 +83,7 @@
                         </p>
 
                         <div class="media-right media-middle">
-                            <span class="pull-right badge">{{ thread.reply_count }} Reply</span>
+                            <span class="pull-right badge">{{ thread.reply_count }} {% trans 'Reply' %}</span>
                         </div>
                     </div>
                     </h5>

@@ -143,13 +143,15 @@
 
 
     <div class="" style="text-align:right; margin-bottom: 10px;">
-        <a href="
-		    {% if request.GET.iframe %}
-		        {% url 'student_progress_detail' pk=sitting_id %}?iframe=1
-		    {% else %}
-                {% url 'student_progress_detail' pk=sitting_id %}
-            {% endif %}
-        " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
+        {% if not quiz.exam_paper %}
+            <a href="
+                {% if request.GET.iframe %}
+                    {% url 'student_progress_detail' pk=sitting_id %}?iframe=1
+                {% else %}
+                    {% url 'student_progress_detail' pk=sitting_id %}
+                {% endif %}
+            " class="closelink"><i class="fa fa-times fa-2x" aria-hidden="true"></i></a>
+       {% endif %}
     </div>
 
     {% if question %}
@@ -192,7 +194,7 @@
     
                                 </strong>
                                 </small>
-                                <strong>{{ question.category }}</strong>
+                                <strong>{{ question.get_question_category }}</strong>
                             </p>
     
                         </div>
@@ -236,12 +238,6 @@
                 {% endfor %}
     
             </ul>
-             {% if    question_number == progress.2  %}
-            <input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
-                btn-success" id="completeQuizBtn">
-         
-             {% endif %}
-    
     
             </form>
     
@@ -264,9 +260,6 @@
           </div>
             </div>
             <div class="col-md-2">
-               
-
-
                   <ul  class="nav nav-pills">
                     <li class="active">
                 <a  href="#1a" data-toggle="tab" style="padding: 5px!important;">All Question</a>
@@ -275,15 +268,27 @@
                     </li>
                   
                 </ul>
-                <div class="tab-content clearfix" style="border:2px solid #f0ad4e; margin:10px 0;padding:0px 10px; border-radius:5px">
+                <div class="tab-content clearfix" style="border:2px solid #f0ad4e; margin:10px 0;padding:0px 10px; border-radius:5px; height: 60vh;">
                     <div class="tab-pane active" id="1a">
                         <ul class="incomplete-qts">
 
                         {% for question in sitting.get_questions %}
-                            <li> <b><i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i></b> &nbsp;
+                            {% getQuizQuestionIndex sitting question.id as qindex %}
+                            {% quizQuestion_check_if_answered sitting question.id as is_answered %}
+                            <li {% if qindex == question_number %} style = "background:#ddd" {% endif %} >
                                 <b>
-                                    {% getQuizQuestionIndex sitting question.id as qindex %}
-                                    <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}"> {{ qindex }}</a>
+                                    {% if is_answered %}
+                                        <i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i>
+                                    {% endif %}
+                                </b> &nbsp;
+                                <b>
+                                    {% if not qindex == question_number %}
+                                        <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}">
+                                            {{ qindex }}) {{ question }}
+                                        </a>
+                                    {% else %}
+                                        {{ qindex }}) {{ question }}
+                                    {% endif %}
                                 </b>
                             </li>
 
@@ -293,19 +298,30 @@
                       </div>
                       <div class="tab-pane" id="2a">
                         <ul class="incomplete-qts">
-                            {% for question in sitting.get_remaining_question.remaining_list %}
-                                <li> <b><i class="fa fa-times" aria-hidden="true" style="color:rgb(136, 60, 72); "></i></b> &nbsp;
-                                    <b>
-                                        {% getQuizQuestionIndex sitting question as qindex %}
-                                        <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}"> {{ qindex }}</a>
-                                    </b>
-                                </li>
+                            {% for question in sitting.get_questions %}
+                                {% getQuizQuestionIndex sitting question.id as qindex %}
+                                {% quizQuestion_check_if_answered sitting question.id as is_answered %}
 
+                                {% if not is_answered %}
+                                    <li {% if qindex == question_number %} style = "background:#ddd" {% endif %} >
+                                        <b>
+                                            {% if not qindex == question_number %}
+                                                <a href="javascript:void(0)" class="quizlinkBtn" data-value="{{ qindex }}">
+                                                    {{ qindex }}) {{ question }}
+                                                </a>
+                                            {% else %}
+                                                {{ qindex }}) {{ question }}
+                                            {% endif %}
+                                        </b>
+                                    </li>
+                                {% endif %}
                               {% endfor %}
                         </ul>
                       </div>
             
                   </div>
+                <div><input type="submit" value="{% trans 'Complete' %}" class="btn btn-large btn-block
+                btn-success" id="completeQuizBtn"></div>
             </div>
         </div>
     </div>

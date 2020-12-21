@@ -271,6 +271,15 @@ class Question(models.Model):
     def is_tfq(self):
         return type(self) is TF_Question
 
+    def get_question_category(self):
+        if self.is_saq():
+            return "Short Answer Question"
+        elif self.is_mcq():
+            return "Multiple Choice Question"
+        elif self.is_tfq():
+            return "True/False Question"
+        else:
+            return ""
 
 class MCQuestion(Question):
     answer_order = models.CharField(

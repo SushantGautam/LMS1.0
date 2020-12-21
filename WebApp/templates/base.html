@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 {% load import_export_tags %}
 
 <!DOCTYPE html>
@@ -15,7 +16,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
     {% endblock meta %}
 
-    <title>LMS {% block title %}{% endblock %}</title>
+    <title>{% trans 'LMS' %} {% block title %}{% endblock %}</title>
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
 
@@ -84,7 +85,7 @@
       <div class="right_col" role="main">
 
         <ol aria-label="breadcrumb" class="breadcrumb navClass">
-          <li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans 'Home' %}</a></li>
           {% block breadcrumb %}
 
           {% endblock %}

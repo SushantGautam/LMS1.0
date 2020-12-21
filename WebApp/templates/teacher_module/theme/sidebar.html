@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <div class="left_col scroll-view">
     <!-- menu profile quick info -->
 
@@ -33,17 +34,17 @@
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
         <div class="menu_section">
 
-            <h3>Teacher Portal Home</h3>
+            <h3>{% trans 'Teacher Portal Home' %}</h3>
             <hr>
 
             <ul class="nav side-menu">
                 {% if user.is_authenticated %}
                     <li>
-                        <a href="{% url 'teacher_home' %}"><i class="fa fa-home"></i> Dashboard
+                        <a href="{% url 'teacher_home' %}"><i class="fa fa-home"></i> {% trans 'Dashboard' %}
                         </a>
                     </li>
 
-                    <li><a href="{% url 'teacher_mycourses_list_active' %}"><i class="fa fa-book"></i> Courses</a>
+                    <li><a href="{% url 'teacher_mycourses_list_active' %}"><i class="fa fa-book"></i> {% trans 'Courses' %}</a>
                         <!-- <ul class="nav child_menu">
           <li><a href="{% url 'teacher_courseinfo_list' %}">Course List</a></li>
           <li><a href="{% url 'teacher_mycourses_list_active' %}">My Courses</a></li>
@@ -51,7 +52,7 @@
 
         </ul> -->
                     </li>
-                    <li><a href="{% url 'teacher_myassignmentinfo_list' %}"><i class="fa fa-pencil"></i> Assignments</a>
+                    <li><a href="{% url 'teacher_myassignmentinfo_list' %}"><i class="fa fa-pencil"></i> {% trans 'Assignments' %}</a>
                     </li>
                     <!-- <li><a><i class="fa fa-edit"></i> Assignments <span class="fa fa-chevron-down"></span></a>
         <ul class="nav child_menu">
@@ -61,35 +62,34 @@
 
                     {% if request.user.inningmanager_set.all.count is not 0 %}
                         <li>
-                            <a href="{% url 'teachers_mysession_list' %}"><i class="fa fa-trophy"></i> My Session
+                            <a href="{% url 'teachers_mysession_list' %}"><i class="fa fa-trophy"></i> {% trans 'My Session' %}
                                 <span></span>
                             </a>
                         </li>
                     {% endif %}
                     <li>
-                        <a href="{% url 'attendance' %}"><i class="fa fa-tasks"></i> Attendance (β)<span></span>
+                        <a href="{% url 'attendance' %}"><i class="fa fa-tasks"></i> {% trans 'Attendance' %} (β)<span></span>
                         </a>
                     </li>
                     <li><a><i class="fa fa-question-circle"></i> Quiz <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{% url 'teacher_quiz_list' %}">Quiz List</a></li>
-                            <li><a href="{% url 'teacher_quiz_marking' %}">Quiz Marking</a></li>
-                            <li><a href="{% url 'teacher_quiz_exam_list' %}">Quiz Exam</a></li>
+                            <li><a href="{% url 'teacher_quiz_list' %}">{% trans 'Quiz List' %}</a></li>
+                            <li><a href="{% url 'teacher_quiz_marking' %}">{% trans 'Quiz Marking' %}</a></li>
+                            <li><a href="{% url 'teacher_quiz_exam_list' %}">{% trans 'Quiz Exam' %}</a></li>
                         </ul>
                     </li>
 
 
 
                 {% endif %}
-                <li><a><i class="fa fa-user"></i>Forum<span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-user"></i>{% trans 'Forum' %}<span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="{% url 'teacher_forum' %}">Home</a></li>
-
+                        <li><a href="{% url 'teacher_forum' %}">{% trans 'Home' %}</a></li>
 
                     </ul>
                 </li>
                 <li>
-                    <a href=" {% url 'question_teachers' %}"><i class="fa fa-bar-chart"></i>Survey</a>
+                    <a href=" {% url 'question_teachers' %}"><i class="fa fa-bar-chart"></i>{% trans 'Survey' %}</a>
                 </li>
             </ul>
 

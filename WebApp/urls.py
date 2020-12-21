@@ -418,4 +418,5 @@ urlpatterns += (
     path('teacher_report/', views.TeacherReport.as_view(), name='teacher_report'),
     path('teacher_report/<int:teacherpk>/<int:coursepk>/', views.TeacherIndividualReport.as_view(),
          name='teacher_individual_report'),
+    path('teacher_report/downloadchapterdata', views.DownloadChapterData, name='donwload')
 )

@@ -1,17 +1,18 @@
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 
-<p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">Attendance Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'teacher_attendance_list' %}">{% trans 'Attendance Listing' %}</a></p>
 <table class="table">
     <tr>
-        <td>created</td>
+        <td>{% trans 'created' %}</td>
         <td>{{ object.created }}</td>
     </tr>
     <tr>
-        <td>present</td>
+        <td>{% trans 'present' %}</td>
         <td>{{ object.present }}</td>
     </tr>
 </table>
-<a class="btn btn-primary" href="{{ object.get_update_url }}">Edit Attendance</a>
+<a class="btn btn-primary" href="{{ object.get_update_url }}">{% trans 'Edit Attendance' %}</a>
 
