@@ -111,7 +111,7 @@ class AjaxableResponseMixin:
 def ProfileView(request):
     if AuthCheck(request, admn=1) == 2:
         return redirect('login')
-    return render(request, 'WebApp/profile.html')
+    return render(request, 'WebApp/profile.html', context={'SERVER_NAME':settings.SERVER_NAME})
 
 
 class CustomAuthForm(AuthenticationForm):
@@ -4347,6 +4347,7 @@ def AssignmentInningInfoMappingView(request):
             return JsonResponse(message, status=requestStatus.status_code)
     return HttpResponse('GET Request Not Allowed', status=405)
 
+
 def DownloadChapterData(request):
     sessions = InningInfo.objects.filter(Center_Code=request.user.Center_Code)
 
@@ -4429,3 +4430,37 @@ def DownloadChapterData(request):
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
         response['Content-Disposition'] = 'attachment; filename="' + 'ChapterTeacherData.xlsx"'
         return response
+
+
+def getMediaInformation(request):
+    tags = '{},{}'.format(settings.SERVER_NAME, request.user.Center_Code.Center_Name)
+    image_count, audio_count, video_count = None, None, None
+
+    type_list = request.GET.getlist('type_list[]')
+
+    for types in type_list:
+        if types == 'image':
+            image_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(types, tags)
+            image_r = requests.get(image_url)
+            if image_r.status_code == 200:
+                responseText = json.loads(image_r.text)
+                image_count = responseText['items_data']['items_count']
+        if types == 'audio':
+            audio_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(types, tags)
+            audio_r = requests.get(audio_url)
+            if audio_r.status_code == 200:
+                responseText = json.loads(audio_r.text)
+                audio_count = responseText['items_data']['items_count']
+        if types == 'video':
+            video_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(types, tags)
+            video_r = requests.get(video_url)
+            if video_r.status_code == 200:
+                responseText = json.loads(video_r.text)
+                video_count = responseText['items_data']['items_count']
+    context = {
+        'image_count': image_count,
+        'audio_count': audio_count,
+        'video_count': video_count,
+        'type_list': type_list,
+    }
+    return render(request, 'WebApp/mediaInformationFile.html', context=context)

@@ -420,3 +420,7 @@ urlpatterns += (
          name='teacher_individual_report'),
     path('teacher_report/downloadchapterdata', views.DownloadChapterData, name='donwload')
 )
+
+urlpatterns += (
+    path('mediainformation/', views.getMediaInformation, name='mediaInformation'),
+)

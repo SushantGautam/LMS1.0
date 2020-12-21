@@ -1,0 +1,16 @@
+{% for types in type_list %}
+    <p>
+        Number of {{ types|capfirst }} Files:
+        <span>
+            {% if types == "image" %}
+                {{ image_count }}
+            {% endif %}
+            {% if types == "audio" %}
+                {{ audio_count }}
+            {% endif %}
+            {% if types == "video" %}
+                {{ video_count }}
+            {% endif %}
+        </span>
+    </p>
+{% endfor %}
