@@ -34,7 +34,7 @@
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" id="create_assignment_modal">
     <div class="modal-dialog" role="document">
-        <div class="modal-content" style="height: 80vh;   overflow-y: scroll;">
+        <div class="modal-content" style="height: 80vh;   ">
             <div class="modal-header text-center">
                 <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'Create New Assignment' %}</b>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -44,7 +44,8 @@
             </div>
             <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:"Y-m-d" }}"
                    class="select form-control">
-            <div class="modal-body modal-90" id="create_assignment_modal_body">
+            <div class="modal-body " id="create_assignment_modal_body">
+                
             </div>
         </div>
     </div>

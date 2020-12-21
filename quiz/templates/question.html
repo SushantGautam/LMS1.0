@@ -24,7 +24,7 @@
                 padding: 0px!important;
                 max-height: 80vh;
                 overflow: auto;
-                margin: 10px 0;
+                
               
             }
             .incomplete-qts li {
@@ -178,7 +178,7 @@
                     {% if has_previous %}
                     <div class=" button-prev-quiz text-center ">
                         <a href="javascript:void(0)" id="prevBtn">
-                            <button class="btn btn-secondary btn-sm" title="Previous Question" id="previous-btn"><i class="fa fa-arrow-circle-left"style="font-size: 20px;"></i> <br> Prev</button>
+                            <button class="btn btn-secondary btn-sm" title="Previous Question" id="previous-btn"><i class="fa fa-arrow-circle-left"style="font-size: 20px; color: #eea236;"></i> <br> <strong style="color: #2a3f54;">Prev</strong> </button>
                         </a>
                     </div>
                 {% endif %}
@@ -194,7 +194,7 @@
     
                                 </strong>
                                 </small>
-                                <strong>{{ question.get_question_category }}</strong>
+                                <b style="color: #eea236;">{{ question.get_question_category }}</b>
                             </p>
     
                         </div>
@@ -251,7 +251,7 @@
                     {% if has_next %}
                     <div class="button-next-quiz text-center" >
                         <a href="javascript:void(0)" id="nextBtn">
-                            <button class="btn btn-secondary btn-sm" title="Next Question" id="next-btn"><i class="fa fa-arrow-circle-right" style="font-size: 20px;"></i> <br> Next</button>
+                            <button class="btn btn-secondary btn-sm" title="Next Question" id="next-btn"><i class="fa fa-arrow-circle-right" style="font-size: 20px; color:#eea236"></i> <br> <strong style="color:#2a3f54;">Next</strong> </button>
                         </a>
                     </div>
                 {% endif %}
@@ -268,18 +268,18 @@
                     </li>
                   
                 </ul>
-                <div class="tab-content clearfix" style="border:2px solid #f0ad4e; margin:10px 0;padding:0px 10px; border-radius:5px; height: 60vh;">
+                <div class="tab-content clearfix" style="border:2px solid #f0ad4e; margin:10px 0;padding:0px ; border-radius:5px; height: 60vh;">
                     <div class="tab-pane active" id="1a">
                         <ul class="incomplete-qts">
 
                         {% for question in sitting.get_questions %}
                             {% getQuizQuestionIndex sitting question.id as qindex %}
                             {% quizQuestion_check_if_answered sitting question.id as is_answered %}
-                            <li {% if qindex == question_number %} style = "background:#ddd" {% endif %} >
+                            <li style = " {% if qindex == question_number %}  background-color: #ddd; {% endif %} {% if is_answered %}  background-color: #32e8326b;     {% endif %}"   >
                                 <b>
-                                    {% if is_answered %}
-                                        <i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i>
-                                    {% endif %}
+                                    
+                                        <!-- <i class="fa fa-check" aria-hidden="true" style="color:rgb(32, 163, 32); "></i> -->
+                                
                                 </b> &nbsp;
                                 <b>
                                     {% if not qindex == question_number %}
