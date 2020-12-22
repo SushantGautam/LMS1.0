@@ -343,14 +343,33 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
 
         datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True)
+        chapters = student_active_chapters(courses, sessions)
+
         context['currentDate'] = datetime_now
-        context['Assignment'] = student_all_assignements(self.request.user)
-        context['activeAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__gte=datetime_now)
-        context['expiredAssignment'] = context['Assignment'].filter(
-            Assignment_Deadline__lte=datetime_now)
+        context['Assignment'] = student_all_assignments(chapters, sessions)
+        context['activeAssignment'] = filter_active_assignments(chapters, sessions)
+        context['expiredAssignment'] = context['Assignment'].difference(context['activeAssignment'])
 
         return context
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #
+    #     datetime_now = timezone.now().replace(microsecond=0)
+    #     context['currentDate'] = datetime_now
+    #     context['Assignment'] = student_all_assignements(self.request.user)
+    #     context['activeAssignment'] = context['Assignment'].filter(
+    #         Assignment_Deadline__gte=datetime_now)
+    #     context['expiredAssignment'] = context['Assignment'].filter(
+    #         Assignment_Deadline__lte=datetime_now)
+    #
+    #     return context
 
 
 class CourseInfoListView(ListView):
@@ -442,6 +461,10 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
             CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(
             ChapterInfo, pk=self.kwargs.get('chapter'))
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Course_Group__in=course_groups).distinct()
         context['Answers'] = []
         AnsweredQuestion = set()
         Question = set()
