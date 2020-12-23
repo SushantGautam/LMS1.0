@@ -21,261 +21,320 @@
 {% block content %}
 {% include 'assignment/assignmentinfo_detail.html' %}
 {% endblock %}
+
 {% block javascript %}
-<!-- <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
+
+<script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
-<script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script> -->
+<script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
 <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 
 <script>
-    document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
-    document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
-    // $('#id_Assignment_Deadline_edit').datetimepicker();
-    // $('#id_Assignment_Start_edit').datetimepicker();
-    $("#ajaxassignmentinfoform").submit(function (e) {
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-        $.ajax({
-            url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
-            data: {
-                "csrfmiddlewaretoken": '{{ csrf_token }}',
-                "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
-                "Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
-                "Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
-                "Use_Flag": $('#id_Use_Flag').is(":checked"),
-                "Course_Code": $('#id_Course_Code').val(),
-                "Chapter_Code": $('#id_Chapter_Code').val(),
-                "Register_Agent": $('#id_Register_Agent').val(),
-                "Assignment_ID": '{{ object.id }}'
-            },
-            // get the form data
-            type: $(this).attr('method'), // GET or POST
-            success: function (response) {
-                console.log('Success')
-                location.reload()
-            },
-            error: function (err) {
-                console.log('Error in posting assignment create form')
-                $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
-            }
 
-        });
-    });
-
-    $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
-        const result = document.querySelector('.result');
-        var date = new Date();
-        var deadline = new Date(event.target.value);
-        var remaining = dateDifference(deadline, date);
-        if (remaining < 0) {
-            result.textContent = `Days Remaining : Invalid`;
-
-        } else {
-            result.textContent = `Days Remaining : ${remaining}`;
-
-        }
-        ;
-    });
-</script>
-
-<script>
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
-    });
-
-    $(document).on('click', '.confirm-delete', function () {
-        ans = confirm('Are you sure you want to delete this Question?');
-        if (ans == true) {
-            $(`#deleteQuestion${this.id}`).submit();
-        } else {
-            return false;
-        }
-    });
-
-    $(document).on('click', '.assignment-confirm-delete', function () {
-        ans = confirm('Are you sure you want to delete this Assignment?');
-        if (ans == true) {
-            $(`#deleteAssignment${this.id}`).submit();
-        } else {
-            return false;
-        }
-    });
-
-    $('#add-newquestion-btn').on('click', function () {
-        if (submitted) {
-            return false
-        }
-        $('#add_question_modal_body').empty();
-        $('#add_question_modal_body').append(
-            `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
-                           class="select form-control">`
-        )
-        $.ajax({
-            type: "GET",
-            url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info
-            success: function (response) {
-                $('#add_question_modal_body').append(response);
-            },
-            error: function () {
-                submitted = false;
-                console.log('Error in generating add question form')
-            },
-            complete: function () {
-                $(".se-pre-con-ajax").fadeOut("fast");
-            }
-        });
-    });
-
-    $('.editquestion-btn').on('click', function () {
-        if (submitted) {
-            return false
-        }
-        $('#edit_question_modal_body').empty();
-        $('#edit_question_modal_body').append(
-            `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
-                           class="select form-control">`
-        )
-        $('#edit_question_modal_body').attr('data-questionpk', $(this).attr('data-questionpk'))
-        $.ajax({
-            type: "GET",
-            url: `/questioninfo/edit/${$(this).attr('data-questionpk')}/ajax/`,  // URL to your view that serves new info
-            success: function (response) {
-                $('#edit_question_modal_body').append(response);
-                $('#edit_question_modal_body').find('form')
-            },
-            error: function () {
-                submitted = false;
-                console.log('Error in generating edit question form')
-            },
-            complete: function () {
-                $(".se-pre-con-ajax").fadeOut("fast");
-            }
-        });
-    });
-
-
-    var submitted = false;
-    $(".qacontainer").on('click', '.submitAnswer', function (e) {
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-        if (submitted) {
-            return false
-        }
-        submitted = true;
-        var answerdata = new FormData();
-        if ($(`#id_Assignment_File${$(this).attr('data-id')}`).val()) {
-            var answer_file = $(`#id_Assignment_File${$(this).attr('data-id')}`)[0].files[0];
-        } else {
-            var answer_file = 0;
-        }
-
-        if ($(`#id_Assignment_Answer${$(this).attr('data-id')}`).val()) {
-            var answer_text = $(`#id_Assignment_Answer${$(this).attr('data-id')}`).val();
-        } else {
-            var answer_text = '';
-        }
-
-        if (answer_file == 0 && answer_text == '') {
-            console.log('empty');
-        } else {
-            answerdata.append("Assignment_File", answer_file);
-            answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
-            answerdata.append("Assignment_Answer", answer_text);
-            answerdata.append("Question_Code", $(`#id_Question_Code${$(this).attr('data-id')}`).val());
-            answerdata.append("Student_Code", $(`#id_Student_Code${$(this).attr('data-id')}`).val());
-
+        {% comment %}
+        $("#ajaxassignmentinfoform").submit(function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
-                url: $(this).attr('data-url'),  // URL to your view that serves new info
-                data: answerdata,
+                url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
+                data: {
+                    "csrfmiddlewaretoken": '{{ csrf_token }}',
+                    "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
+                    "Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
+                    "Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
+                    "Use_Flag": $('#id_Use_Flag').is(":checked"),
+                    "Course_Code": $('#id_Course_Code').val(),
+                    "Chapter_Code": $('#id_Chapter_Code').val(),
+                    "Register_Agent": $('#id_Register_Agent').val(),
+                    "Assignment_ID": '{{ object.id }}'
+                },
                 // get the form data
-                type: 'post', // GET or POST
-                enctype: 'multipart/form-data',
-                processData: false,
-                contentType: false,
+                type: $(this).attr('method'), // GET or POST
                 success: function (response) {
                     console.log('Success')
                     location.reload()
                 },
-                error: function (e) {
-                    submitted = false;
-                    alert(e.responseJSON.msg)
-                    console.log('Error in submitting file. ' + e.responseJSON.msg)
-                }
-            });
-        }
-    });
-</script>
-
-<script>
-    $(".answerButton").click(function () {
-        $(`#answerContent${this.id}`).toggle();
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('.deleteanswer').on('click', function () {
-            var answerpk = this.value
-            var result = confirm("Are you sure you want to delete this answer?");
-            if (!result) {
-                return false
-            }
-            $.ajax({
-                method: 'POST',
-                url: "{% url 'assignanswerinfo_delete' %}",  // URL to your view that serves new info
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    'answerpk': answerpk,
-                },
-                success: function (response) {
-                    location.reload()
-                },
                 error: function (err) {
-                    console.log(err.responseText)
-                    location.reload()
-                },
+                    console.log('Error in posting assignment create form')
+                    $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
+                }
+
             });
         });
-        $('.editanswer').click(function () {
-            $(this).parent().children().css('display', 'none')
-            $(this).parent().append(`
-                <div class="editdiv">
-                <form>
-                    <textarea class="form-control rounded-0" rows="5" cols="100"
-                              name="Assignment_Answer"
-                              placeholder="Enter your Answer"
-                              id="id_Assignment_Answer${$(this).attr('data-Question_Code')}" required>${$(this).parent().find('p').text()}</textarea>
-                    <input type="hidden" value="${$(this).attr('data-Student_Code')}" name="Student_Code"
-                    id=id_Student_Code${$(this).attr('data-Question_Code')}>
-                    <input type="hidden" value="${$(this).attr('data-Question_Code')}" name="Question_Code"
-                    id=id_Question_Code${$(this).attr('data-Question_Code')}>
-                    <div class="form-group text-center">
+        {% endcomment %}
+        
+        $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
+            const result = document.querySelector('.result');
+            var date = new Date();
+            var deadline = new Date(event.target.value);
+            var remaining = dateDifference(deadline, date);
+            if (remaining < 0) {
+                result.textContent = `Days Remaining : Invalid`;
 
-                             <button class="btn btn-sm btn-primary cancelBtn" type="button" id="cancelButton{{ questions.pk }}">
-                                Cancel
-                            </button>
-                            <button class="btn btn-sm btn-primary resetBtn" type="reset">Reset</button>
+            } else {
+                result.textContent = `Days Remaining : ${remaining}`;
 
-                            <button type="button" class="btn btn-sm btn-success submitAnswer"
-                                    id="answer${$(this).attr('data-Question_Code')}"
-                                    data-id="${$(this).attr('data-Question_Code')}"
-                                    data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer=${this.value}">Submit
-                            </button>
-                    </div>
-                    </form>
-                </div>
-                `)
+            }
+            ;
+        });
+</script>
+
+<script>
+        $('#editAssignment-btn').on('click', function () {
+            $('#editAssignment_modal_body').empty();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'assignmentinfo_edit_ajax_chapter_id' object.Chapter_Code.id object.pk %}",  // URL to your view that serves new info
+                success: function (response) {
+                    let url = '/assignmentinfo/edit/{{ object.pk }}/ajax/';
+                    $('#editAssignment_modal_body').append(response);
+                    $('#ajaxassignmentinfoform').attr('action', url);
+                    $('#editAssignment_modal_body').append(`
+                        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
+                               value="{{ object.Chapter_Code.id }}" class="select form-control">
+                    `)
+
+                    Switchery(document.querySelector('.js-switch'));
+                },
+                error: function () {
+                    console.log('Error in generating assignment edit form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+</script>
+
+<script>
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        });
+
+        $(document).on('click', '.confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Question?');
+            if (ans == true) {
+                $(`#deleteQuestion${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
+
+        $(document).on('click', '.assignment-confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Assignment?');
+            if (ans == true) {
+                $(`#deleteAssignment${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
+
+        $('#add-newquestion-btn').on('click', function () {
+            if (submitted) {
+                return false
+            }
+            $('#add_question_modal_body').empty();
+            $('#edit_question_modal_body').empty();
+            $('#add_question_modal_body').append(
+                `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
+                           class="select form-control">`
+            )
+            $.ajax({
+                type: "GET",
+                url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info
+                success: function (response) {
+                    $('#add_question_modal_body').append(response);
+                },
+                error: function () {
+                    submitted = false;
+                    console.log('Error in generating add question form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+
+        $('.editquestion-btn').on('click', function () {
+            if (submitted) {
+                return false
+            }
+            $('#edit_question_modal_body').empty();
+            $('#edit_question_modal_body').append(
+                `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
+                           class="select form-control">`
+            )
+            $('#edit_question_modal_body').attr('data-questionpk', $(this).attr('data-questionpk'))
+            $.ajax({
+                type: "GET",
+                url: `/questioninfo/edit/${$(this).attr('data-questionpk')}/ajax/`,  // URL to your view that serves new info
+                success: function (response) {
+                    $('#edit_question_modal_body').append(response);
+                    $('#edit_question_modal_body').find('form')
+                },
+                error: function () {
+                    submitted = false;
+                    console.log('Error in generating add question form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+
+
+        var submitted = false;
+        $(".qacontainer").on('click', '.submitAnswer', function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            if (submitted) {
+                return false
+            }
+            submitted = true;
+            var answerdata = new FormData();
+            if ($(`#id_Assignment_File${$(this).attr('data-id')}`).val()) {
+                var answer_file = $(`#id_Assignment_File${$(this).attr('data-id')}`)[0].files[0];
+            } else {
+                var answer_file = 0;
+            }
+            var answer_text = $(`.form_${$(this).attr('data-id')}`).find(`iframe`).contents().find('.note-editable').html();
+
+            if (!answer_text) {
+                answer_text = '';
+            }
+
+            if (answer_file == 0 && answer_text == '') {
+                console.log('empty');
+            } else {
+                answerdata.append("Assignment_File", answer_file);
+                answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
+                answerdata.append("Assignment_Answer", answer_text);
+                answerdata.append("Question_Code", $(`#id_Question_Code${$(this).attr('data-id')}`).val());
+                answerdata.append("Student_Code", $(`#id_Student_Code${$(this).attr('data-id')}`).val());
+
+                var answerformdiv = $(this).closest('form');
+                $.ajax({
+                    url: $(this).attr('data-url'),  // URL to your view that serves new info
+                    data: answerdata,
+                    // get the form data
+                    type: 'post', // GET or POST
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var bar = $('.bar');
+                                var percent = $('.percent');
+                                var progress = $('.progress');
+                                var percentComplete = Math.round((evt.loaded * 100) / evt.total);
+                                var percentVal = percentComplete + '%';
+                                percent.width(percentVal);
+                                percent.html(percentVal);
+                                {#$('#status').html('<b> Uploading -> ' + (Math.round(percentComplete * 100)) + '% </b>');# }
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    contentType: false,
+                    success: function (response) {
+                        console.log('Success');
+                        location.reload();
+                    },
+                    beforeSend: function () {
+                        var html = `
+                            <div class="progress" style="max-height: 10px;">
+                                <div class="percent" style="max-width: 100%; background-color: limegreen;">0%</div >
+                            </div>
+                        `;
+                        $(html).insertAfter($(answerformdiv).find('input[type=file]'));
+                        var percent = $('.percent');
+                        var progress = $('.progress');
+                        var percentVal = '0%';
+                        percent.width(percentVal);
+                    },
+                    complete: function (xhr) {
+                        progress.remove();
+                    },
+                    error: function (e) {
+                        submitted = false;
+                        alert(e.responseJSON.msg)
+                        console.log('Error in submitting file. ' + e.responseJSON.msg)
+                    }
+                });
+            }
+        });
+
+        $('button[type=reset]').on('click', function () {
+            $(this).closest('form').find('.progress').remove();
         })
+</script>
 
-        $('.qacontainer').on('click', '.cancelBtn', function () {
-            $(this).closest('.editdiv').parent().children().css('display', 'block')
-            $(this).closest('.editdiv').remove()
-        })
-        //$('.qacontainer').on('click', '.resetBtn', function () {
-        //  $(this).closest('.editdiv').find('textarea').val('')
-        //})
-    })
+<script>
+        $(".answerButton").click(function () {
+            $(`#answerContent${this.id}`).toggle();
+        });
+        $(".moreButton").click(function () {
+            $(`#questionContent${this.id}`).toggle();
+        });
+</script>
+
+<script>
+        $(document).ready(function () {
+            $('.deleteanswer').on('click', function () {
+                var answerpk = this.value
+                var result = confirm("Are you sure you want to delete this answer?");
+                if (!result) {
+                    return false
+                }
+                $.ajax({
+                    method: 'POST',
+                    url: "{% url 'assignanswerinfo_delete' %}",  // URL to your view that serves new info
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        'answerpk': answerpk,
+                    },
+                    success: function (response) {
+                        location.reload()
+                    },
+                    error: function (err) {
+                        console.log(err.responseText)
+                        location.reload()
+                    },
+                });
+            });
+
+            $('.editanswer').click(function () {
+                var assignementForm = $(this).parent().find(`.assignment_update_form`);
+                var iframe = $(this).parent().find(`iframe`);
+                var innerDoc = iframe.contents();
+                var shortAns = $(this).parent().find(`.short_answer`).html();
+                $(this).parent().children().css('display', 'none');
+                assignementForm.show();
+
+                innerDoc.find(`.note-editable`).html(shortAns);
+                $(this).parent().find(`#id_Assignment_Answer`).html(shortAns);
+            });
+
+            $('.qacontainer').on('click', '.cancelBtn', function () {
+                $(this).closest('.assignment_update_form').parent().children().css('display', 'block');
+                $(this).closest('.assignment_update_form').hide();
+            })
+            //$('.qacontainer').on('click', '.resetBtn', function () {
+            //  $(this).closest('.editdiv').find('textarea').val('')
+            //})
+        });
+
+
         // $('input[type=datetime-local]').each(function () {
         //    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)
         // })
+
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
+        })
 </script>
 {% endblock %}
