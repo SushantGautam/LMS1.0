@@ -511,6 +511,7 @@ class AssignAnswerInfoForm(forms.ModelForm):
         fields = '__all__'
 
 
+
 class MessageInfoForm(forms.ModelForm):
     class Meta:
         model = MessageInfo

@@ -31,7 +31,7 @@ from LMS import settings
 from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAuthMxnCls, StudentChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls
 from WebApp.filters import MyCourseFilter
-from WebApp.forms import UserUpdateForm
+from WebApp.forms import UserUpdateForm, AssignAnswerInfoForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView, SessionMapInfo
 from forum.forms import ThreadForm, TopicForm, ReplyForm, ThreadEditForm
@@ -452,22 +452,47 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls, DetailView):
     model = AssignmentInfo
     template_name = 'student_module/assignmentinfo_detail.html'
+    form_class = AssignAnswerInfoForm
+
+    def get_form(self):
+        form = self.form_class()  # instantiate the form
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['Questions'] = AssignmentQuestionInfo.objects.filter(
             Assignment_Code=self.kwargs.get('pk'))
         context['Course_Code'] = get_object_or_404(
             CourseInfo, pk=self.kwargs.get('course'))
         context['Chapter_No'] = get_object_or_404(
             ChapterInfo, pk=self.kwargs.get('chapter'))
+
+        context['Answers'] = []
+        datetime_now = timezone.now().replace(microsecond=0)
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Start_Date__lte=datetime_now,
+                                                                End_Date__gte=datetime_now,
+                                                                Groups__in=student_groups,
                                                                 Course_Group__in=course_groups).distinct()
-        context['Answers'] = []
+
+        # course_groups = InningGroup.objects.filter(
+        #     Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
+        # context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+        #                                                         Course_Group__in=course_groups).distinct()
+        # context['Answers'] = []
         AnsweredQuestion = set()
         Question = set()
+
+        if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(AssignmentInfo),
+                                         object_id=self.kwargs.get('pk'),
+                                         Start_Date__lte=datetime_now,
+                                         End_Date__gte=datetime_now,
+                                         Session_Code__in=context['assigned_session']).exists():
+            context['object'].active = True
 
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(
@@ -481,9 +506,10 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
         # print(Question)
         # print(context['AnsweredQuestion'])
         context['notAnswered'] = Question - AnsweredQuestion
+
+        context['form'] = self.get_form()
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
         return context
-
 
 class submitAnswer(View):
     model = AssignAnswerInfo()

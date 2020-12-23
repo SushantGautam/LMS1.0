@@ -2,6 +2,9 @@
 {% load i18n %}
 {% load model_template_relation %}
 
+
+
+
 <div class="modal fade" id="add_question_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -114,7 +117,7 @@
                     {% endif %}
                 </div>
             </div>
-            {% for question in Questions %}
+            {% for questions in Questions %}
             <div class="accordion mb-4" id="questionList{{ question.pk }}">
                 <div class="card shadow-none border">
                     <div class="card-header justify-content-between" id="headingOne">
@@ -123,13 +126,13 @@
                                 <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
                             </figure>
                             <h5 class="text-secondary m-0 pl-3 cursor-pointer">
-                                {{ question.Question_Title }}
+                                {{ questions.Question_Title }}
                             </h5>
                         </div>
                         <div class="row d-flex align-items-center">
                             {% if '/students' in request.path %}
                             <button class="btn btn-sm btn-outline-primary answerButton mx-2" type="button"
-                                id="{{ question.pk }}">{% trans "ANSWER" %} <i class="fa fa-arrow-right"></i>
+                                id="{{ questions.pk }}">{% trans "ANSWER" %} <i class="fa fa-arrow-right"></i>
                             </button>
                             {% endif %}
                             {% if '/students' not in request.path %}
@@ -229,115 +232,339 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 leftborder" style="margin-bottom: 5px;padding-right: 0;">
+
+
+                {%comment%}
                 <div class="x_panel" id="answerContent{{ question.pk }}" style="display: none">
                     <div class="x_content">
                         {% for answer in Answers %}
                         {% if question.id == answer.Question_Code.id %}
+
                         {% if answer.Assignment_Answer != '' %}
-                        <p>{{ answer.Assignment_Answer }}</p>
-                        {% now "Y-m-d H:i" as todays_date %}
-                        {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
-                        <button class="btn btn-info editanswer" data-Student_Code="{{ request.user.id }}"
-                            data-Question_Code="{{ question.id }}" data-Answer_Code="{{ answer.pk }}"
-                            value="{{ answer.pk }}" style="float: right" title="Edit Answer"><i class="fa fa-edit"
-                                aria-hidden="true"></i>
-                        </button>
-                        <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}" style="float: right"
-                            title="Delete Answer"><i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                        {% endif %}
+
+                               {# <p>{{ answer.Assignment_Answer }}</p> #}
+
+                                <div class="short_answer">
+                                    <p class="short_answer_p"
+                                       style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}
+                                    </p>
+                                </div>
+                                {% now "Y-m-d H:i" as todays_date %}
+
+                                {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                {% if object.active %}
+                                    <button class="btn btn-info editanswer"
+                                            data-Student_Code="{{ request.user.id }}"
+                                            data-Question_Code="{{ questions.id }}"
+                                            data-Answer_Code="{{ answer.pk }}"
+                                            value="{{ answer.pk }}"
+                                            style="float: right;" title="Edit Answer"><i class="fa fa-edit"
+                                                                                        aria-hidden="true"></i>
+                                    </button>
+                                    <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
+                                            style="float: right" title="Delete Answer"><i
+                                            class="fa fa-trash"
+                                            aria-hidden="true"></i>
+                                    </button>
+                                {% endif %}
+                                <div class="assignment_update_form" style="display: none;">
+                                    <form class="form_{{ questions.id }}">
+                                        <div class="form-group">
+                                            {{ form.Assignment_Answer }}
+                                            <input type="hidden" value="{{ request.user.id }}"
+                                                   name="Student_Code"
+                                                   id="id_Student_Code{{ questions.id }}">
+                                            <input type="hidden" value="{{ questions.id }}"
+                                                   name="Question_Code"
+                                                   id="id_Question_Code{{ questions.id }}">
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <button class="btn btn-sm btn-primary cancelBtn" type="button"
+                                                    id="cancelButton{{ questions.pk }}">
+                                                {% trans 'Cancel' %}
+                                            </button>
+                                            <button class="btn btn-sm btn-primary resetBtn" type="reset">
+                                                {% trans 'Reset' %}
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-success submitAnswer"
+                                                    id="answer{{ questions.id }}"
+                                                    data-id="{{ questions.id }}"
+                                                    data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer={{ answer.pk }}">
+                                                {% trans 'Submit' %}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+
                         {% else %}
-                        <p>{% trans "File has been Submitted" %}</p>
-                        <a href="{{ answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">
-                                {% trans "Click to view Submitted file" %}</b></a>
-                        <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}" style="float: right"
-                            title="Delete Answer"><i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
+                        <p style="margin: 0;color:#000000;">{% trans 'File has been Submitted' %}</p>
+                        {# <p>{% trans "File has been Submitted" %}</p> #}
+                            <a href="{{ answer.Assignment_File.url }}" target="_blank"><b style="color:#017a9b">
+                                    {% trans "Click to view Submitted file" %}</b></a>
+                            <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}" style="float: right"
+                                title="Delete Answer"><i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
                         {% endif %}
                         {% endif %}
                         {% endfor %}
 
+
+
+
+
                         {% for answer in notAnswered %}
-                        {% if  question.id == answer %}
-                        {#                                        <form enctype="multipart/form-data" method="post" id="{{ question.id }}"#}
-                        {#                                              data-parsley-validate=""#}
-                        {#                                              class="form-horizontal form-label-left submitAnswer"#}
-                        {#                                              novalidate="" data-id="{{ question.id }}">#}
-                        {#                                            {% csrf_token %}#}
-                        <form>
-                            {% if question.Answer_Type == 'S' %}
-                            <div class="form-group">
-                                <textarea class="form-control rounded-0" rows="5" cols="100" name="Assignment_Answer"
-                                    id="id_Assignment_Answer{{ question.id }}" placeholder="Enter your Answer"
-                                    required></textarea>
-                                <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                    id="id_Student_Code{{ question.id }}">
-                                <input type="hidden" value="{{ question.id }}" name="Question_Code"
-                                    id="id_Question_Code{{ question.id }}">
 
-                            </div>
+                        {% if  questions.id == answer %}
 
-                            <div class="form-group text-center">
-                                {% now "Y-m-d H:i" as todays_date %}
-                                {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
-                                <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ question.pk }}">
+                          <form class="form_{{ questions.id }}">
+                                            {% if questions.Answer_Type == 'S' %}
+                                                <div class="form-group">
+                                                    {{ form.Assignment_Answer }}
+                                                    <!-- <textarea type="hidden" name="Assignment_Answer"
+                                                     id="id_Assignment_Answer{{ questions.id }}"
+                                                     required></textarea> -->
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
+
+                                                </div>
+
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                                    {# {% isAssignmentActive object as isanswerable %}#}
+                                                    {% if object.active %}
+                                                        <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
                                                 Cancel
                                             </button> -->
-                                <button class="btn btn-sm btn-primary" type="reset">{% trans "Reset" %}
-                                </button>
-                                <button type="button" class="btn btn-sm btn-success submitAnswer"
-                                    id="answer{{ question.id }}" data-id="{{ question.id }}"
-                                    data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                    {% trans "Submit" %}
-                                </button>
-                                {% else %}
-                                <p class="text-danger">
-                                    {% trans "Submission is prohibited. Please check assignment start and end date" %}
-                                </p>
-                                {% endif %}
-                            </div>
+                                                        <button class="btn btn-sm btn-primary" type="reset">{% trans 'Reset' %}
+                                                        </button>
 
-                            {% elif question.Answer_Type == 'F' %}
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            {% trans 'Submit' %}
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">{% trans 'Submission is prohibited. Please check assignment start and end date' %}</p>
+                                                    {% endif %}
+                                                </div>
 
-                            <div class="form-group">
-                                <label for="id_Assignment_File{{ question.id }}" class="">
-                                    <span style="font-size: 10px; color: #721c24">
-                                        {% trans "Assignment File" %} ({% trans "Max" %}: 10 MB) </span>
-                                </label>
+                                            {% elif questions.Answer_Type == 'F' %}
 
-                                <input type="file" name="Assignment_File" id="id_Assignment_File{{ question.id }}"
-                                    required />
-                                <input type="hidden" value="{{ request.user.id }}" name="Student_Code"
-                                    id="id_Student_Code{{ question.id }}">
-                                <input type="hidden" value="{{ question.id }}" name="Question_Code"
-                                    id="id_Question_Code{{ question.id }}">
-                            </div>
-                            <div class="form-group text-center">
-                                {% now "Y-m-d H:i" as todays_date %}
-                                {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %}
-                                <button class="btn btn-sm btn-primary" type="reset" id="cancelButton{{ question.pk }}">
-                                    {% trans "Cancel" %}
-                                </button>
+                                                <div class="form-group">
+                                                    <label for="id_Assignment_File{{ questions.id }}" class="">
+                                                        <span style="font-size: 10px; color: #721c24">
+                                                            {% trans 'Assignment File' %} ({% trans 'Max' %}: 10 MB) </span>
+                                                    </label>
 
-                                <button type="button" class="btn btn-sm btn-success submitAnswer"
-                                    id="answer{{ question.id }}" data-id="{{ question.id }}"
-                                    data-url="{% url 'assignanswerinfo_create_ajax' %}">
-                                    {% trans "Submit" %}
-                                </button>
-                                {% else %}
-                                <p class="text-danger">
-                                    {% trans "Submission is prohibited. Please check assignment start and end date" %}
-                                </p>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        </form>
+                                                    <input type="file" name="Assignment_File"
+                                                           id="id_Assignment_File{{ questions.id }}"
+                                                           required/>
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                                    {#  {% isAssignmentActive object as isanswerable %} #}
+                                                    {% if object.active %}
+                                                        <button class="btn btn-sm btn-primary" type="reset"
+                                                                id="cancelButton{{ questions.pk }}">
+                                                            {% trans 'Cancel' %}
+                                                        </button>
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            {% trans 'Submit' %}
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">{% trans 'Submission is prohibited. Please check assignment start and end date' %}</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </form>
+
+
+
                         {% endif %}
                         {% endfor %}
                     </div>
                 </div>
-            </div>
+                {%endcomment%}
+
+
+
+             <div class="x_panel" id="answerContent{{ questions.pk }}" style="display: none">
+                            <div class="x_content">
+                                {% for answer in Answers %}
+                                    {% if questions.id == answer.Question_Code.id %}
+                                        {% if answer.Assignment_Answer != '' %}
+                                            <div class="short_answer">
+                                                <p class="short_answer_p"
+                                                   style="margin: 0;color:#000000;">{{ answer.Assignment_Answer|safe }}</p>
+                                            </div>
+                                            {% now "Y-m-d H:i" as todays_date %}
+                                            {% if object.active %}
+                                                <button class="btn btn-info editanswer"
+                                                        data-Student_Code="{{ request.user.id }}"
+                                                        data-Question_Code="{{ questions.id }}"
+                                                        data-Answer_Code="{{ answer.pk }}"
+                                                        value="{{ answer.pk }}"
+                                                        style="float: right; position:relative; bottom:60px; left:5px;" title="Edit Answer"><i class="fa fa-edit"
+                                                                                                    aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
+                                                        style="float: right; position:relative; bottom:60px;" title="Delete Answer"><i
+                                                        class="fa fa-trash"
+                                                        aria-hidden="true"></i>
+                                                </button>
+                                            {% endif %}
+                                            <div class="assignment_update_form" style="display: none;">
+                                                <form class="form_{{ questions.id }}">
+                                                    <div class="form-group">
+                                                        {{ form.Assignment_Answer }}
+                                                        <input type="hidden" value="{{ request.user.id }}"
+                                                               name="Student_Code"
+                                                               id="id_Student_Code{{ questions.id }}">
+                                                        <input type="hidden" value="{{ questions.id }}"
+                                                               name="Question_Code"
+                                                               id="id_Question_Code{{ questions.id }}">
+                                                    </div>
+                                                    <div class="form-group text-center">
+                                                        <button class="btn btn-sm btn-primary cancelBtn" type="button"
+                                                                id="cancelButton{{ questions.pk }}">
+                                                            {% trans 'Cancel' %}
+                                                        </button>
+                                                        <button class="btn btn-sm btn-primary resetBtn" type="reset">
+                                                            {% trans 'Reset' %}
+                                                        </button>
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer={{ answer.pk }}">
+                                                            {% trans 'Submit' %}
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        {% else %}
+                                            <p style="margin: 0;color:#000000;">{% trans 'File has been Submitted' %}</p>
+
+                                            <a href="{{ answer.Assignment_File.url }}" target="_blank"><b
+                                                    style="color:#017a9b">{% trans 'Click to view Submitted file' %}</b></a>
+                                            {% if object.active %}
+                                                <button class="btn btn-danger deleteanswer" value="{{ answer.pk }}"
+                                                        style="float: right" title="Delete Answer"><i
+                                                        class="fa fa-trash"
+                                                        aria-hidden="true"></i>
+                                                </button>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% for answer in notAnswered %}
+                                    {% if  questions.id == answer %}
+                                        <form class="form_{{ questions.id }}">
+                                            {% if questions.Answer_Type == 'S' %}
+                                                <div class="form-group">
+                                                    {{ form.Assignment_Answer }}
+                                                    <!-- <textarea type="hidden" name="Assignment_Answer"
+                                                     id="id_Assignment_Answer{{ questions.id }}"
+                                                     required></textarea> -->
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
+
+                                                </div>
+
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                                    {# {% isAssignmentActive object as isanswerable %}#}
+                                                    {% if object.active %}
+                                                        <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                                Cancel
+                                            </button> -->
+                                                        <button class="btn btn-sm btn-primary" type="reset">{% trans 'Reset' %}
+                                                        </button>
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            {% trans 'Submit' %}
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">{% trans 'Submission is prohibited. Please check assignment start and end date' %}</p>
+                                                    {% endif %}
+                                                </div>
+
+                                            {% elif questions.Answer_Type == 'F' %}
+
+                                                <div class="form-group">
+                                                    <label for="id_Assignment_File{{ questions.id }}" class="">
+                                                        <span style="font-size: 10px; color: #721c24">
+                                                            {% trans 'Assignment File' %} ({% trans 'Max' %}: 10 MB) </span>
+                                                    </label>
+
+                                                    <input type="file" name="Assignment_File"
+                                                           id="id_Assignment_File{{ questions.id }}"
+                                                           required/>
+                                                    <input type="hidden" value="{{ request.user.id }}"
+                                                           name="Student_Code"
+                                                           id="id_Student_Code{{ questions.id }}">
+                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ questions.id }}">
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    {% now "Y-m-d H:i" as todays_date %}
+                                                    {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
+                                                    {#  {% isAssignmentActive object as isanswerable %} #}
+                                                    {% if object.active %}
+                                                        <button class="btn btn-sm btn-primary" type="reset"
+                                                                id="cancelButton{{ questions.pk }}">
+                                                            {% trans 'Cancel' %}
+                                                        </button>
+
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-success submitAnswer"
+                                                                id="answer{{ questions.id }}"
+                                                                data-id="{{ questions.id }}"
+                                                                data-url="{% url 'assignanswerinfo_create_ajax' %}">
+                                                            {% trans 'Submit' %}
+                                                        </button>
+                                                    {% else %}
+                                                        <p class="text-danger">{% trans 'Submission is prohibited. Please check assignment start and end date' %}</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
             {% endfor %}
         </div>
     </div>
@@ -353,12 +580,6 @@
                 <p>
                   {#  {% trans "Assignment End Date" %} : {{ object.Assignment_Deadline|date:'d M, Y h:i A' }} #}
                 </p>
-
-
-
-
-
-
 
 
                 <p>
@@ -390,7 +611,7 @@
             </div>
 
 
-                   <table class="table">
+                    <table class="table">
                         {% if assigned_session %}
                             <tr>
                                 <th class="custom-table-width">{% trans 'Session' %}</th>
@@ -507,7 +728,7 @@
 
 
 
-            <ul class="text-center">
+                    <ul class="text-center">
                 {% if '/students' not in request.path %}
                 <li class="p-2 border-top">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editAssignmentModal"
@@ -565,3 +786,243 @@
         </div>
     </div>
 </div>
+{% block customjss %}
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src=" {% static 'vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+
+
+<script>
+        $(".answerButton").click(function () {
+            //$(`#answerContent${this.id}`).toggle();
+            $(`#answerContent${this.id}`).toggle();
+            //console.log("Answer Button Clicked");
+        });
+
+</script>
+
+
+<script>
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        });
+
+        $(document).on('click', '.confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Question?');
+            if (ans == true) {
+                $(`#deleteQuestion${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
+
+        $(document).on('click', '.assignment-confirm-delete', function () {
+            ans = confirm('Are you sure you want to delete this Assignment?');
+            if (ans == true) {
+                $(`#deleteAssignment${this.id}`).submit();
+            } else {
+                return false;
+            }
+        });
+
+        $('#add-newquestion-btn').on('click', function () {
+            if (submitted) {
+                return false
+            }
+            $('#add_question_modal_body').empty();
+            $('#edit_question_modal_body').empty();
+            $('#add_question_modal_body').append(
+                `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
+                           class="select form-control">`
+            )
+            $.ajax({
+                type: "GET",
+                url: "{% url 'questioninfo_create_ajax' %}",  // URL to your view that serves new info
+                success: function (response) {
+                    $('#add_question_modal_body').append(response);
+                },
+                error: function () {
+                    submitted = false;
+                    console.log('Error in generating add question form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+
+        $('.editquestion-btn').on('click', function () {
+            if (submitted) {
+                return false
+            }
+            $('#edit_question_modal_body').empty();
+            $('#edit_question_modal_body').append(
+                `<input type="hidden" name="Assignment_Code" id="id_Assignment_Code" value="{{ object.pk }}"
+                           class="select form-control">`
+            )
+            $('#edit_question_modal_body').attr('data-questionpk', $(this).attr('data-questionpk'))
+            $.ajax({
+                type: "GET",
+                url: `/questioninfo/edit/${$(this).attr('data-questionpk')}/ajax/`,  // URL to your view that serves new info
+                success: function (response) {
+                    $('#edit_question_modal_body').append(response);
+                    $('#edit_question_modal_body').find('form')
+                },
+                error: function () {
+                    submitted = false;
+                    console.log('Error in generating add question form')
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                }
+            });
+        });
+
+
+        var submitted = false;
+        $(".submitAnswer").on('click',  function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            if (submitted) {
+                return false
+            }
+            submitted = true;
+            var answerdata = new FormData();
+            if ($(`#id_Assignment_File${$(this).attr('data-id')}`).val()) {
+                var answer_file = $(`#id_Assignment_File${$(this).attr('data-id')}`)[0].files[0];
+            } else {
+                var answer_file = 0;
+            }
+            var answer_text = $(`.form_${$(this).attr('data-id')}`).find(`iframe`).contents().find('.note-editable').html();
+
+            if (!answer_text) {
+                answer_text = '';
+            }
+
+            if (answer_file == 0 && answer_text == '') {
+                console.log('empty');
+            } else {
+                answerdata.append("Assignment_File", answer_file);
+                answerdata.append("csrfmiddlewaretoken", '{{csrf_token}}');
+                answerdata.append("Assignment_Answer", answer_text);
+                answerdata.append("Question_Code", $(`#id_Question_Code${$(this).attr('data-id')}`).val());
+                answerdata.append("Student_Code", $(`#id_Student_Code${$(this).attr('data-id')}`).val());
+
+                var answerformdiv = $(this).closest('form');
+                $.ajax({
+                    url: $(this).attr('data-url'),  // URL to your view that serves new info
+                    data: answerdata,
+                    // get the form data
+                    type: 'post', // GET or POST
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var bar = $('.bar');
+                                var percent = $('.percent');
+                                var progress = $('.progress');
+                                var percentComplete = Math.round((evt.loaded * 100) / evt.total);
+                                var percentVal = percentComplete + '%';
+                                percent.width(percentVal);
+                                percent.html(percentVal);
+                                {#$('#status').html('<b> Uploading -> ' + (Math.round(percentComplete * 100)) + '% </b>');#}
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    contentType: false,
+                    success: function (response) {
+                        console.log('Success');
+                        location.reload();
+                    },
+                    beforeSend: function () {
+                        var html = `
+                            <div class="progress" style="max-height: 10px;">
+                                <div class="percent" style="max-width: 100%; background-color: limegreen;">0%</div >
+                            </div>
+                        `;
+                        $(html).insertAfter($(answerformdiv).find('input[type=file]'));
+                        var percent = $('.percent');
+                        var progress = $('.progress');
+                        var percentVal = '0%';
+                        percent.width(percentVal);
+                    },
+                    complete: function (xhr) {
+                        progress.remove();
+                    },
+                    error: function (e) {
+                        submitted = false;
+                        alert(e.responseJSON.msg)
+                        console.log('Error in submitting file. ' + e.responseJSON.msg)
+                    }
+                });
+            }
+        });
+
+        $('button[type=reset]').on('click', function () {
+            $(this).closest('form').find('.progress').remove();
+        })
+    </script>
+
+
+ <script>
+        $(document).ready(function () {
+            $('.deleteanswer').on('click', function () {
+                var answerpk = this.value
+                var result = confirm("Are you sure you want to delete this answer?");
+                if (!result) {
+                    return false
+                }
+                $.ajax({
+                    method: 'POST',
+                    url: "{% url 'assignanswerinfo_delete' %}",  // URL to your view that serves new info
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        'answerpk': answerpk,
+                    },
+                    success: function (response) {
+                        location.reload()
+                    },
+                    error: function (err) {
+                        console.log(err.responseText)
+                        location.reload()
+                    },
+                });
+            });
+
+            $('.editanswer').click(function () {
+                var assignementForm = $(this).parent().find(`.assignment_update_form`);
+                var iframe = $(this).parent().find(`iframe`);
+                var innerDoc = iframe.contents();
+                var shortAns = $(this).parent().find(`.short_answer`).html();
+                $(this).parent().children().css('display', 'none');
+                assignementForm.show();
+
+                innerDoc.find(`.note-editable`).html(shortAns);
+                $(this).parent().find(`#id_Assignment_Answer`).html(shortAns);
+            });
+
+            $('.cancelBtn').on('click', function () {
+                $(this).closest('.assignment_update_form').parent().children().css('display', 'block');
+                $(this).closest('.assignment_update_form').hide();
+            })
+            //$('.resetBtn').on('click', function () {
+            //  $(this).closest('.editdiv').find('textarea').val('')
+            //})
+        });
+
+
+        // $('input[type=datetime-local]').each(function () {
+        //    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)
+        // })
+
+        $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
+        })
+    </script>
+
+
+
+{% endblock %}
