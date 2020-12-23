@@ -289,27 +289,24 @@ class MyCoursesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
-                                              Center_Code=self.request.user.Center_Code)
-        sessions = []
         datetime_now = timezone.now().replace(microsecond=0)
-        if batches:
-            for batch in batches:
-                # Filtering out only active sessions
-                session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
-                sessions += session
-        courses = InningGroup.objects.none()
-        if sessions:
-            for session in sessions:
-                course = session.Course_Group.filter(Course_Code__Use_Flag=True)
-                courses |= course
-
-        courses = courses.distinct()
+        # batches = GroupMapping.objects.filter(Students__id=self.request.user.id,
+        #                                       Center_Code=self.request.user.Center_Code)
+        # sessions = []
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True).distinct()
         filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
-        filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
-        paginator = Paginator(filtered_qs, 8)
-        page = self.request.GET.get('page')
+        filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
+        if self.request.GET.get('paginate_by'):
+            paginate_by = self.request.GET.get('paginate_by')
+        else:
+            paginate_by = 8
+        paginator = Paginator(filtered_qs, paginate_by)
+        page = self.request.GET.get('page', 1)
 
         try:
             response = paginator.page(page)
@@ -321,8 +318,41 @@ class MyCoursesListView(ListView):
         context['response'] = response
         return context
 
+        # if batches:
+        #     for batch in batches:
+        #         # Filtering out only active sessions
+        #         session = InningInfo.objects.filter(Groups__id=batch.id, End_Date__gt=datetime_now)
+        #         sessions += session
+        # courses = InningGroup.objects.none()
+        # if sessions:
+        #     for session in sessions:
+        #         course = session.Course_Group.filter(Course_Code__Use_Flag=True)
+        #         courses |= course
+        #
+        # courses = courses.distinct()
+        # filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
+        # filtered_qs = filtered_qs.filter(Course_Code__in=context['object_list'].values_list('pk'))
+        # paginator = Paginator(filtered_qs, 8)
+        # page = self.request.GET.get('page')
+        #
+        # try:
+        #     response = paginator.page(page)
+        # except PageNotAnInteger:
+        #     response = paginator.page(1)
+        # except EmptyPage:
+        #     response = paginator.page(paginator.num_pages)
+        #
+        # context['response'] = response
+        # return context
+
     def get_queryset(self):
-        qset = self.model.objects.all()
+        datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
+        qset = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                         Use_Flag=True).distinct()
         queryset = self.request.GET.get('studentmycoursequery')
         if queryset:
             queryset = queryset.strip()
@@ -333,6 +363,18 @@ class MyCoursesListView(ListView):
         # you don't need this if you set up your ordering on the model
         qset = qset.order_by("-id")
         return qset
+
+        # qset = self.model.objects.all()
+        # queryset = self.request.GET.get('studentmycoursequery')
+        # if queryset:
+        #     queryset = queryset.strip()
+        #     qset = qset.filter(Course_Name__icontains=queryset)
+        #     if not len(qset):
+        #         messages.error(
+        #             self.request, 'Sorry no courses found! Try with a different keyword')
+        # # you don't need this if you set up your ordering on the model
+        # qset = qset.order_by("-id")
+        # return qset
 
 
 class MyAssignmentsListView(ListView):

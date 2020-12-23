@@ -50,7 +50,7 @@ Course
     <div class="col-lg-3 col-sm-6 col-xs-12">
         <div class="card">
             <a href="{{ courses.student_get_absolute_url }}">
-                <img src="{% if courses.Course_Cover_File %}
+             <img src="{% if courses.Course_Cover_File %}
             {{ courses.Course_Cover_File.url }}
         {% else %}
             {% static 'media/image/course.jpg' %}
