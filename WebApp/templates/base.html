@@ -140,6 +140,27 @@
             hideDuration: 200
         };
     </script>
+        
+    <script>
+        {% if 'memberinfo' in request.path or 'departmentinfo' in request.path %}
+            $(`a[data-menu-target='#members'] .menu-tab-icon`).click();
+        {% elif 'courseinfo' in request.path or 'myassignments' in request.path %}
+            $(`a[data-menu-target='#courses'] .menu-tab-icon`).click();
+        {% elif 'inninginfo' in request.path or 'groupmapping' in request.path or 'inninggroup' in request.path %}
+            $(`a[data-menu-target='#session'] .menu-tab-icon`).click();
+        {% elif 'quiz' in request.path %}
+            $(`a[data-menu-target='#quiz'] .menu-tab-icon`).click();
+        {% elif 'forum' in request.path %}
+            $(`a[data-menu-target='#forum'] .menu-tab-icon`).click();
+        {% elif 'survey' in request.path %}
+            $(`a[data-menu-target='#survey'] .menu-tab-icon`).click();
+        {% elif 'mail' in request.path or 'calendar' in request.path or 'teacher_report' in request.path %}
+            $(`a[data-menu-target='#achievement'] .menu-tab-icon`).click();
+        {% else %}
+            $(`a[data-menu-target='#dashboard'] .menu-tab-icon`).click();
+        {% endif %}
+    </script>
+
     <!-- <script>
         // This is the service worker with the Advanced caching
 
