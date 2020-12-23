@@ -150,14 +150,16 @@
         $("#ajaxassignmentinfoform").attr("action", url);
 
         $("#id_Assignment_Deadline").attr("min", '{{datetime|date:"Y-m-d"}}');
+        // console.log("Errajav");
+
         //  Switchery(document.querySelector(".js-switch"));
       },
       error: function () {
         console.log("Error in generating assignment create form");
       },
-      complete: function () {
-        $(".se-pre-con-ajax").fadeOut("fast");
-      },
+      // complete: function () {
+      //   $(".se-pre-con-ajax").fadeOut("fast");
+      // },
     });
   });
 </script>

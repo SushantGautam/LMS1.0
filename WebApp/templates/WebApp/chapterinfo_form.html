@@ -29,7 +29,8 @@
 {% include 'chapter/chapterinfo_form.html' %}
 {% endblock %}
 {% block javascript %}
+<script src="{% static 'js/common.js' %}"></script>
 <script>
-    document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
+   document.getElementById('id_mustreadtime').value = document.getElementById('id_mustreadtime').value / 60
 </script>
 {% endblock %}

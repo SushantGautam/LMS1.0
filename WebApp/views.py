@@ -1,16 +1,19 @@
+import decimal
 import glob
 import json
+import math
 import os
 import re
 import uuid
 import random
 import zipfile  # For import/export of compressed zip folder
 from datetime import datetime, timedelta
+from io import BytesIO
 from json import JSONDecodeError
 
-# import cloudinary
-# import cloudinary.api
-# import cloudinary.uploader
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
 import pandas as pd
 import requests
 from django.conf import settings
@@ -1274,10 +1277,6 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
         form.save()
         return JsonResponse(
             data={'Message': 'Success'}
@@ -1285,6 +1284,7 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
 
 
 class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
@@ -1341,22 +1341,22 @@ class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
 
 class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
-    template_name = "WebApp/chapterinfo_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(
-            ChapterInfo,
-            Course_Code=self.kwargs.get('course'),
-            pk=self.kwargs.get('pk'))
-        context['assignments'] = AssignmentInfo.objects.filter(
-            Chapter_Code=self.kwargs.get('pk'))
-        context['post_quizes'] = Quiz.objects.filter(
-            chapter_code=self.kwargs.get('pk'), post_test=True)
-        context['pre_quizes'] = Quiz.objects.filter(
-            chapter_code=self.kwargs.get('pk'), pre_test=True)
-        context['datetime'] = datetime.now()
+        context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'),
+                                              pk=self.kwargs.get('pk'))
+        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')).order_by('pk')
+        context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
+        context['datetime'] = timezone.now().replace(microsecond=0)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Course_Group__in=course_groups).distinct()
         return context
+
+
 
 
 class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
@@ -1409,7 +1409,6 @@ def CourseForum(request, course):
 class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
-    template_name = "WebApp/chapterinfo_form.html"
 
     def get_form_kwargs(self):
         """
@@ -1421,20 +1420,13 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        if form.cleaned_data['Start_Date'] == "":
-            form.instance.Start_Date = None
-        if form.cleaned_data['End_Date'] == "":
-            form.instance.End_Date = None
-
-        # form.instance.mustreadtime = int(form.cleaned_data['mustreadtime']) * 60
-        form.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(
-            CourseInfo, pk=self.kwargs.get('course'))
+        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
         return context
+
 
 
 class SessionInfoCreateViewPopup(CreateView):
@@ -3650,18 +3642,18 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
     return jsondata
 
 
-def getCourseProgress(courseObj,
-                      list_of_students,
-                      chapters_list,
-                      student_data=None):
+def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=None):
     student_data = []
     for chapter in chapters_list:
         for x in list_of_students:
-            jsondata = chapterProgressRecord(str(courseObj.pk),
-                                             str(chapter.pk),
-                                             str(x.id),
+            jsondata = chapterProgressRecord(str(courseObj.pk), str(chapter.pk), str(x.id),
                                              createFile=False)
             if jsondata is not None:
+                if jsondata['contents']['totalstudytime'] and chapter.mustreadtime:
+                    studytimeprogresspercent = (int(
+                        jsondata['contents']['totalstudytime']) / chapter.mustreadtime) * 100
+                else:
+                    studytimeprogresspercent = 0
                 if jsondata['contents']['totalPage'] and jsondata['contents']['currentpagenumber']:
                     if int(jsondata['contents']['totalPage']) > 0 and int(
                             jsondata['contents']['currentpagenumber']) > 0:
@@ -3673,11 +3665,28 @@ def getCourseProgress(courseObj,
                     progresspercent = 0
             else:
                 progresspercent = 0
+                studytimeprogresspercent = 0
 
-            student_quiz = Quiz.objects.filter(chapter_code=chapter)
+            if studytimeprogresspercent > 100:
+                studytimeprogresspercent = 100
+
+            student_quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
+
             student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
             # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
+
+            # Calculate QUiz progress %
+            total_quiz_count = 0
+            student_complete_count = 0
+            for q in student_quiz:
+                if q.question_count() > 0:
+                    total_quiz_count += 1
+                    if Sitting.objects.filter(user=x, quiz=q, complete=True).exists():
+                        student_complete_count += 1
+            quiz_progress = round((student_complete_count / total_quiz_count) * 100,
+                                  2) if total_quiz_count is not 0 else 0
+
             total_quiz_percent_score = 0
             temp = []
             for z in student_result:
@@ -3716,20 +3725,25 @@ def getCourseProgress(courseObj,
                             'totalPage': int(
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
                                                                           'totalPage'] is not None else None,
-                            'progresspercent': progresspercent,
+                            'progresspercent': math.floor(progresspercent),
+                            'studytimeprogresspercent': math.floor(studytimeprogresspercent),
                             'attendance': attendance,
                         },
                         'quiz': {
-                            'quiz_count': student_quiz.count(),
-                            'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': round(student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count(),
-                                              2) if student_quiz.count() is not 0 else 0,
+                            'quiz_count': total_quiz_count,
+                            'completed_quiz': student_complete_count,
+                            'progress': quiz_progress,
+                            # 'progress': round(student_result.filter(
+                            #     complete=True).count() * 100 / student_quiz.count(),
+                            #                   2) if student_quiz.count() is not 0 else 0,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
-                            'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
-                                complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                        }
+                            'avg_percent_score': float(
+                                total_quiz_percent_score / student_complete_count) if student_complete_count else 0
+                        },
+                        'overall_progress': round((math.floor(progresspercent) + math.floor(
+                            studytimeprogresspercent) + float(quiz_progress)) / 3, 2) if total_quiz_count else round(
+                            (math.floor(progresspercent) + math.floor(studytimeprogresspercent)) / 2, 2)
                     },
                 )
             else:
@@ -3743,21 +3757,25 @@ def getCourseProgress(courseObj,
                             'currentpagenumber': None,
                             'totalPage': None,
                             'progresspercent': progresspercent,
+                            'studytimeprogresspercent': studytimeprogresspercent,
                             'attendance': attendance,
                         },
                         'quiz': {
-                            'quiz_count': student_quiz.count(),
-                            'completed_quiz': student_result.filter(complete=True).count(),
-                            'progress': student_result.filter(
-                                complete=True).count() * 100 / student_quiz.count() if student_quiz.count() is not 0 else 0,
+                            'quiz_count': total_quiz_count,
+                            'completed_quiz': student_complete_count,
+                            'progress': quiz_progress,
                             # 'completed_quiz_score': student_result.filter(complete=True).values().aggregate(Sum('current_score')),
                             # 'completed_quiz_totalscore': student_quiz.aggregate(Sum('get_max_score'))
                             'avg_percent_score': float(total_quiz_percent_score / student_result.filter(
                                 complete=True).count()) if student_result.filter(complete=True).count() > 0 else 0
-                        }
+                        },
+                        'overall_progress': round((progresspercent + studytimeprogresspercent + quiz_progress) / 3,
+                                                  2) if total_quiz_count else round(
+                            (progresspercent + studytimeprogresspercent) / 2, 2)
                     },
                 )
     return student_data
+
 
 
 def getChapterScore(user, chapterObj):

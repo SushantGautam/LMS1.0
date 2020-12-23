@@ -37,8 +37,10 @@
     </h6>
     <table class="table" id="inning_dataTable">
       <tr>
-        <th><input type="checkbox" name="sessiondataAll" class="inningInfoCheckAll" {% if '/edit' not in request.path %}
-            checked {% endif %}></th>
+        <th>
+          <input type="checkbox" name="sessiondataAll" class="inningInfoCheckAll" {% if '/edit' not in request.path %}
+            checked {% endif %}>
+        </th>
         <th>S.No</th>
         <th>Session Name</th>
         <th>Start Date*</th>
@@ -71,10 +73,8 @@
     </table>
   </div>
   {% endif %}
-  <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-    <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
-      class="select form-control">
-  </div>
+  <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+    class="select form-control">
   <div class="submitButton text-center col-md-12">
     <button class="btn btn-success" type="submit">Submit</button>
   </div>
