@@ -919,7 +919,7 @@
             {% if SERVER_NAME == "Indonesian_Server" %}
                 setTimeout(function () {
                     $.ajax({
-                        url: "{% url 'mediaInformation' %}",
+                        url: "{% url 'storageinfo' %}",
                         method: 'get',
                         data: {
                             'type_list[]': ['video']
@@ -934,14 +934,14 @@
                             console.log(e.responseText)
                         },
                         complete: function () {
-                            spinner.remove();
+                            $("#overlay").fadeOut(300);
                         }
                     })
                 }, 500);
             {% endif %}
             setTimeout(function () {
                 $.ajax({
-                    url: "{% url 'mediaInformation' %}",
+                    url: "{% url 'storageinfo' %}",
                     method: 'get',
                     data: {
                         'type_list[]': ['image']
@@ -963,7 +963,7 @@
 
             setTimeout(function () {
             $.ajax({
-                url: "{% url 'mediaInformation' %}",
+                url: "{% url 'storageinfo' %}",
                 method: 'get',
                 data: {
                     'type_list[]': ['audio']

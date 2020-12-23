@@ -422,5 +422,5 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path('mediainformation/', views.getMediaInformation, name='mediaInformation'),
+    path('storageinfo/', views.getMediaInformation, name='storageinfo'),
 )
