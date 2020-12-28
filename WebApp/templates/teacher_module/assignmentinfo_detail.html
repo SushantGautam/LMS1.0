@@ -222,7 +222,8 @@
                 {% endif %}
                 {% endif %}
             </td>
-            {#    {% getSessionMap object 'assignmentinfo' sessions as sessionmap %} #}
+
+            {% getSessionMap object 'assignmentinfo' sessions as sessionmap %}
             <td class="start-date dateconFullMonth">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
             <td class="end-date dateconFullMonth">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
             {% if '/students' not in request.path %}
@@ -479,7 +480,7 @@
     $("#ajaxassignmentinfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $.ajax({
-            url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
+            url: "{% url 'assignmentinfo_edit_ajax'  object.pk %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),

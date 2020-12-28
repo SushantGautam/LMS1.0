@@ -101,7 +101,8 @@
                                 {{ assignment.Assignment_Topic }}
                             </h5>
                         </div>
-                        <a class="btn btn-outline-info" type="button" href="{% if '/students' in request.path %}
+                        <a class="btn btn-outline-info" type="button" href="
+                    {% if '/students' in request.path %}
                         {{ assignment.student_get_absolute_url }}
                     {% elif '/teachers' in request.path %}
                         {{ assignment.teacher_get_absolute_url }}

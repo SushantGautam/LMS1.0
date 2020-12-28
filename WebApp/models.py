@@ -533,6 +533,7 @@ class AssignmentInfo(models.Model):
     def student_get_absolute_url(self):
         return reverse('student_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
+
     def teacher_get_absolute_url(self):
         return reverse('teacher_assignmentinfo_detail', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
