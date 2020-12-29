@@ -471,6 +471,7 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
+                         <span style="display: none;" id="answer_{{ answer.id }}">{{ answer.Assignment_Answer|safe }}</span>
                             <button class="btn btn-sm btn-primary showanswer" data-toggle="modal"
                                {#  data-target="#create_session_modal" value="{{ answer.id }}" #}
                                 data-target="#exampleModal1"
@@ -817,8 +818,8 @@
         let short_answer = $(`#answer_${answer_id}`).html();
         let file_answer = this.dataset.answer_file;
         if (short_answer){
-                $('#answercontent').html(`${short_answer}`);
-                console.log("SA", short_answer);
+              $('#answercontent').html(`${short_answer}`);
+
             }
         if (file_answer) {
                 $('#answercontent').append(`
