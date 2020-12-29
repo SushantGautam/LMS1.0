@@ -18,6 +18,32 @@
 {% endblock %}
 
 {% block content %}
+  <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true" id="create_session_modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Answer
+
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body" style="color: black;height: -webkit-fill-available;">
+                    <div id="answercontent">
+
+                    </div>
+                    <hr>
+                    <div id="StudentScore">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <div class="modal fade" id="create_session_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -446,9 +472,15 @@
                         </td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-primary showanswer" data-toggle="modal"
-                                data-target="#create_session_modal" value="{{ answer.id }}"
+                               {#  data-target="#create_session_modal" value="{{ answer.id }}" #}
+                                data-target="#exampleModal1"
+                                value="{{ answer.id }}"
+                                data-question_score="{{ answer.Question_Code.Question_Score }}"
                                 data-student_Score="{{ answer.Assignment_Score }}"
-                                data-assignment_feedback="{{ answer.Assignment_Feedback }}" {% if not answer %} disabled
+                                data-answer_file="{{ answer.Assignment_File }}"
+                                data-assignment_feedback="{{ answer.Assignment_Feedback }}"
+                                {% if not answer %}
+                                    disabled
                                 {% endif %}>
                                 View Answer
                             </button>
@@ -468,14 +500,65 @@
 
 {% endblock %}
 
+
 {% block javascript %}
 
-<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-<script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
-<script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+<script src=" {% static 'vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+<script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+<script src="{% static 'vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
 <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 
+
+
 <script>
+   // $(document).ready(function () {
+        {#document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")#}
+        {#document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")#}
+        {#$('#id_End_Date').datetimepicker();#}
+        {#$('#id_Start_Date').datetimepicker();#}
+  //  })
+
+    function inningMapDataLoad($element, sessionid, objectid, formaction) {
+        if ($element.closest('tr').find('.start-date').text() != "") {
+            document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")
+        }
+        if ($element.closest('tr').find('.end-date').text() != "") {
+            document.getElementById('id_End_Date').value = new Date($element.closest('tr').find('.end-date').text()).toLocaleString("en-US")
+        }
+        $('#id_End_Date').datetimepicker();
+        $('#id_Start_Date').datetimepicker();
+        $('#sessionid').val(sessionid)
+        $('#objectid').val(objectid)
+        $('#inningmapForm').attr('action', formaction)
+    }
+
+    $('#inningmapForm').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'post',
+            data: {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                "sessionid": $('#sessionid').val(),
+                "objectid": $('#objectid').val(),
+                "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
+                "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
+            },
+            url: $(this).attr('action'),  // URL to your view that serves new info
+            success: function (data) {
+                console.log(data)
+                location.reload();
+            },
+            error: function (err) {
+                console.log(err.responseJSON)
+                $('.form-errors').empty().append(err.responseJSON.message).css('display', 'block')
+            }
+        });
+    })
+</script>
+
+<script>
+
+
 
     $("#ajaxassignmentinfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -729,46 +812,61 @@
         $('#StudentScore').empty()
         $('#answercontent').empty()
         $(this).addClass('clickedShowAnswer')
-        {% for answer in Answers %}
-        if (this.value == '{{ answer.id }}') {
-            $('#answercontent').html(`{{answer.Assignment_Answer|safe}}`)
-
-            if ('{{ answer.Assignment_File }}') {
-                $('#answercontent').append(`
-                            <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
-                                <b>View File</b>
-                            </button>
-                            </a>
-                        `)
+        let answer_id = this.value;
+        let question_score = this.dataset.question_score;
+        let short_answer = $(`#answer_${answer_id}`).html();
+        let file_answer = this.dataset.answer_file;
+        if (short_answer){
+                $('#answercontent').html(`${short_answer}`);
+                console.log("SA", short_answer);
             }
-            $('#StudentScore').html(`
-                        <form id="StudentScoreForm">
-                        <div>
-                            <p><b>FeedBack</b></p>
-                            <p>
-                                <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
-                            </p>
-                        </div>
-                        <div>
-                        <b>Score</b>
-                        <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
-                        value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
-                        max="{{ answer.Question_Code.Question_Score }}" >Full Score: <b>{{ answer.Question_Code.Question_Score }} </b><br><br>
-                            <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
-                        </div>
-                        </form>
-                         <input type="hidden" id="answerpk" value="{{ answer.pk }}">
+        if (file_answer) {
+                $('#answercontent').append(`
+                    <a href="/media/${file_answer}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
+                        <b>View File</b>
+                    </button>
+                    </a>
 
-                    `);
+
+                `)
+
+            }
+
+
+            $('#StudentScore').html(`
+                <form id="StudentScoreForm">
+                <div>
+                    <p><b>FeedBack</b></p>
+                    <p>
+                        <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                    </p>
+                </div>
+                <div>
+                <b>Score</b>
+                <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
+                value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                max="${question_score}" >Full Score: <b>${question_score} </b><br><br>
+                    <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
+                </div>
+                </form>
+                    <input type="hidden" id="answerpk" value="${answer_id}">
+
+            `);
+
             $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
             $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
-        }
-        {% endfor %}
+
+            {# {% endfor %} #}
     })
 
-    $('#create_session_modal').on('hidden.bs.modal', function () {
-        $('.clickedShowAnswer').removeClass('clickedShowAnswer')
-    })
+       // $('#create_session_modal').on('hidden.bs.modal', function () {
+         //   $('.clickedShowAnswer').removeClass('clickedShowAnswer')
+        // })
+
+     $('#exampleModal1').on('hidden.bs.modal', function () {
+            $('.clickedShowAnswer').removeClass('clickedShowAnswer')
+        })
+
 
     $('td').on('click', '.edit_assignment_score', function (e) {
         let assg_score = $(this).attr('data-assignment_score') == "None" ? '' : $(this).attr('data-assignment_score')
@@ -837,10 +935,15 @@
                 $('#Score_' + answer_pk).css("animation", "glowing 5000ms 1");
 
                 if (!fromtd) {
-                    $('#create_session_modal').modal('toggle');
-                    $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
-                }
-                {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);# }
+                        $('#exampleModal1').modal('toggle');
+                        $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
+                        var currentRow = $('.clickedShowAnswer').closest("tr");
+                        var data = $('.table-data').DataTable().row(currentRow).data();
+                        // Here data gives all the values of td in array. Feedback array index is 9 in datatable.
+                        data[9] = " " + feedback;
+                    }
+
+                {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);#}
             },
             error: function (e) {
                 console.log(e.responseText)
@@ -876,7 +979,7 @@
 
         var table_main = $('.table-data').DataTable({
             responsive: true,
-            stateSave: true,
+            stateSave: false,
             dom: 'lBfrtip',
 
             buttons: [
@@ -895,13 +998,13 @@
             ],
             "columnDefs": [
                 {
-                    "targets": [1, 6],
+                    "targets": [0,6],
                     "visible": false,
                     "searchable": true,
                 },
                 {
                     "orderable": false,
-                    "targets": [8]
+                    "targets": [8],
                 }
             ]
         });
@@ -965,11 +1068,16 @@
                     }, 3000)*/
                     {% endcomment %}
                 },
+                 error: function (e) {
+                        console.log(e);
+                    }
+
             });
         } else {
             alert('No Answers to download')
         }
     })
+
 </script>
 
 
@@ -997,3 +1105,5 @@
     })
 </script>
 {% endblock %}
+
+

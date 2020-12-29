@@ -472,6 +472,7 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMxnCls, DetailView):
     model = AssignmentInfo
     template_name = 'teacher_module/assignmentinfo_detail.html'
+    # template_name = 'teacher_module/assignment_detail.html'
 
     def dispatch(self, request, *args, **kwargs):
         if '/teachers' in self.request.path:
