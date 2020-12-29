@@ -23,7 +23,10 @@
 </li>
 {% endblock %}
 {% block content %}
+
 {% include 'chapter/chapterinfo_detail.html'%}
+{% include 'inning/inningmapFormModal.html' %}
+
 {% endblock %}
 {% block javascript %}
 
@@ -40,8 +43,8 @@
 </script>
 
 <script>
-  $(document).on("click", ".chapter-confirm-delete", function () {
-    ans = confirm("Are you sure you want to delete this Chapter?");
+  $(document).on('click', '.chapter-confirm-delete', function () {
+    ans = confirm('Are you sure you want to delete this Chapter?');
     if (ans == true) {
       $(`#deleteChapter${this.id}`).submit();
     } else {
@@ -52,22 +55,25 @@
 <script>
   let params = new URLSearchParams(location.search);
   $(document).ready(function () {
-    if (params.get("ifquiz")) {
-      $(
-        ".left_col, .top_nav , .breadcrumb  , .detailListHeader , #buttons , #add-newassignment-btn , .header_hr , #edit-delete , #footerText"
-      ).remove();
-      $("#pre_test_popup").click();
+
+
+    if (params.get('ifquiz')) {
+      $('.left_col, .top_nav , .breadcrumb  , .detailListHeader , #buttons , #add-newassignment-btn , .header_hr , #edit-delete , #footerText').remove();
+      $('#pre_test_popup').click();
+
     }
-    params.get("ifquiz");
+    params.get('ifquiz')
   });
+
+
 </script>
 
 <script>
   {% for quiz in pre_quizes %}
   $('#feedbackbtn-quiz{{ quiz.id }}').click(function () {
     $('#quizmodalbody').html(`<iframe style="height: 90vh; width: 100%"
-  src="/quiz/{{ quiz.url }}/take/"
-  frameborder="0px"></iframe>`);
+        src="/quiz/{{ quiz.url }}/take/"
+        frameborder="0px"></iframe>`);
   })
 
   {% endfor %}
@@ -75,91 +81,92 @@
 
 <script>
   $(document).ready(function () {
-    $(".pre_test_change").change(function () {
+    $('.pre_test_change').change(function () {
       // console.log(this.id);
       // console.log($('#radio-buttons input[name=pre-test-radio]:checked').val());
       $.ajax({
         url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
         data: $(this).serialize(), // get the form data
-        type: $(this).attr("method"), // GET or POST
+        type: $(this).attr('method'), // GET or POST
         success: function (response) {
-          console.log("posted form");
+          console.log('posted form');
         },
         error: function () {
-          console.log("Error in posting form");
-        },
+          console.log('Error in posting form');
+        }
       });
+
     });
-    $(".post_test_change").change(function () {
+    $('.post_test_change').change(function () {
       // console.log($('#radio-buttons1 input[name=post-test-radio]:checked').val());
       $.ajax({
         url: "{% url 'change_quiz_test' %}", // URL to your view that serves new info
         data: $(this).serialize(), // get the form data
-        type: $(this).attr("method"), // GET or POST
+        type: $(this).attr('method'), // GET or POST
         success: function (response) {
-          console.log("posted form");
+          console.log('posted form');
         },
         error: function () {
-          console.log("Error in posting form");
-        },
+          console.log('Error in posting form');
+        }
       });
     });
   });
-  $("#course-viewer").click(function (e) {
+  $('#course-viewer').click(function (e) {
     e.preventDefault();
     $.ajax({
       type: "GET",
-      url: "{% url 'chapterviewer' %}", // URL to your view that serves new info
+      url: "{% url 'chapterviewer' %}",  // URL to your view that serves new info
       data: {
-        chapterID: "{{ object.id }}",
+        'chapterID': '{{ object.id }}'
       },
       success: function (response) {
         if (response.data == "0") {
           alert("There are no contents available in this chapter.");
-          return;
+          return
         }
-        window.open($("#course-viewer").attr("href"), "_self");
+        window.open($('#course-viewer').attr('href'), '_self');
       },
       error: function () {
-        console.log("Error in getting chapters");
-      },
+        console.log('Error in getting chapters')
+      }
     });
   });
 </script>
 
+
+<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
-  $("#myModal").on("shown.bs.modal", function () {
-    $("#myInput").trigger("focus");
+  $('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
   });
 
-  $("#add-newassignment-btn").on("click", function () {
-    $("#create_assignment_modal_body").empty();
-    $("#create_assignment_modal_body").append(
+  $('#add-newassignment-btn').on('click', function () {
+    $('#create_assignment_modal_body').empty();
+    $('#create_assignment_modal_body').append(
       `<input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
                class="select form-control">
             <input type="hidden" name="Chapter_Code" id="id_Chapter_Code" value="{{ object.id }}"
                class="select form-control">`
-    );
+    )
 
     $.ajax({
       type: "GET",
-      url: "{% url 'assignmentinfo_create_ajax_chapter_id' object.id %}", // URL to your view that serves new info
+      url: "{% url 'assignmentinfo_create_ajax_chapter_id' object.id %}",  // URL to your view that serves new info
       success: function (response) {
-        let url = "{% url 'assignmentinfo_create_ajax' %}"; // URL to your view that serves new info
-        $("#create_assignment_modal_body").append(response);
-        $("#ajaxassignmentinfoform").attr("action", url);
+        let url = "{% url 'assignmentinfo_create_ajax' %}";  // URL to your view that serves new info
+        $('#create_assignment_modal_body').append(response);
+        $('#ajaxassignmentinfoform').attr('action', url);
 
-        $("#id_Assignment_Deadline").attr("min", '{{datetime|date:"Y-m-d"}}');
-        // console.log("Errajav");
-
-        //  Switchery(document.querySelector(".js-switch"));
+        $('#id_Assignment_Deadline').attr('min', '{{datetime|date:"Y-m-d"}}');
+        Switchery(document.querySelector('.js-switch'));
       },
       error: function () {
-        console.log("Error in generating assignment create form");
+        console.log('Error in generating assignment create form')
       },
-      // complete: function () {
-      //   $(".se-pre-con-ajax").fadeOut("fast");
-      // },
+      complete: function () {
+        $(".se-pre-con-ajax").fadeOut("fast");
+      }
     });
   });
 </script>
@@ -172,14 +179,13 @@
         'course_id': '{{ object.Course_Code.id }}',
         'chapter_id': {{ object.id }},
     'test_type': 'pre_test',
-          },
+                },
     url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
     success: function (data) {
       $("#quiz_form_ajax").html(data);
     }
-      });
-  });
-
+            });
+        });
   $('#post_test_popup').on('click', function () {
     $.ajax({
       type: "GET",
@@ -187,14 +193,13 @@
         'course_id': '{{ object.Course_Code.id }}',
         'chapter_id': {{ object.id }},
     'test_type': 'post_test',
-          },
+                },
     url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
     success: function (data) {
       $("#quiz_form_ajax").html(data);
     }
-      });
-  });
-
+            });
+        });
   $('#qn_close').on("click", function () {
     $("#quiz_create_popup").modal("show");
   });
@@ -256,5 +261,4 @@
     inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'chapterinninginfomap' %}')
   })
 </script>
-
 {% endblock %}
