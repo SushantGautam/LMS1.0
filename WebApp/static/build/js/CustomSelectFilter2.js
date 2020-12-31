@@ -15,6 +15,11 @@ Requires jQuery, core.js, and SelectBox.js.
         return node;
     }
 
+    function updateCount() {
+        $('#selector_available_info_count').text($('.selector-available select option').length)
+        $('#selector_chosen_info_count').text($('.selector-chosen select option').length)
+    }
+
     window.SelectFilter = {
         init: function (field_id, field_name, is_stacked) {
             if (field_id.match(/__prefix__/)) {
@@ -103,6 +108,9 @@ Requires jQuery, core.js, and SelectBox.js.
                     [field_name]
                 )
             );
+            var selector_available_info_p = quickElement('p', filter_p, '', 'class', 'select-info');
+            var selector_available_info_count = quickElement('span', selector_available_info_p, '', 'id', 'selector_available_info_count');
+            var selector_available_info_text = quickElement('span', selector_available_info_p, ' available');
 
             // FIlter selected
             var filterchosen_p = quickElement('p', selector_chosen, '', 'id', field_id + '_filter');
@@ -121,6 +129,9 @@ Requires jQuery, core.js, and SelectBox.js.
             var filterchosen_input = quickElement('input', filterchosen_p, '', 'type', 'text', 'placeholder', gettext("Filter"));
             filterchosen_input.id = field_id + '_inputchosen';
 
+            var selector_chosen_info_p = quickElement('p', filterchosen_p, '', 'class', 'select-info');
+            var selector_chosen_info_count = quickElement('span', selector_chosen_info_p, '', 'id', 'selector_chosen_info_count');
+            var selector_chosen_info_text = quickElement('span', selector_chosen_info_p, ' selected');
             //-------------------------------------------------------------------------------------------------------
 
             var to_box = quickElement('select', selector_chosen, '', 'id', field_id + '_to', 'multiple', 'multiple', 'size', from_box.size, 'name', from_box.getAttribute('name'));
@@ -229,6 +240,8 @@ Requires jQuery, core.js, and SelectBox.js.
             // Active if the corresponding box isn't empty
             $('#' + field_id + '_add_all_link').toggleClass('active', from.find('option').length > 0);
             $('#' + field_id + '_remove_all_link').toggleClass('active', to.find('option').length > 0);
+
+            updateCount()
         },
         filter_key_press: function (event, field_id, boxtype = "from") {
             var from = document.getElementById(field_id + '_' + boxtype);
