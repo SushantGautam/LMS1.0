@@ -5,64 +5,103 @@
 {% block title %}
     {% trans "Result of" %} {{ sitting.quiz.title }} {% trans "for" %} {{ sitting.user }}
 {% endblock %}
-{% block breadcrumb %} 
-<!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li>  -->
-<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li> 
+{% block breadcrumb %}
+    <!-- <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">Quiz</a></li>  -->
+    <li class="breadcrumb-item"><a href="{% url 'teacher_quiz_marking' %}">Marking list</a></li>
 
-<li class="breadcrumb-item"><a href="{% url 'teacher_individual_quiz_marking' quiz.pk %}">{{ quiz }}</a></li>
-<li class="breadcrumb-item active" aria-current="page">Mark short answer</li>
-{% endblock %} 
+    <li class="breadcrumb-item"><a href="{% url 'teacher_individual_quiz_marking' quiz.pk %}">{{ quiz }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Mark short answer</li>
+{% endblock %}
 
 {% block content %}
-{% include "quiz_base/sitting_detail_SAQ.html" %}
-    
+    {% include "quiz_base/sitting_detail_SAQ.html" %}
+
 {% endblock %}
 
 {% block customjss %}
-<script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendorsx/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 
 
-  <script>
-    $(".score_submit").click(function (e) {
-        console.log(parseFloat($(`#score${this.id}`).html()));
-          var user_input = parseFloat($(`#input${this.id}`).val());
-          var full_marks = parseFloat($(`#score${this.id}`).html());
-          console.log(user_input);
-          console.log(full_marks);
-          if(user_input>full_marks){
-              e.preventDefault();
-              alert("Score cannot be greater than full marks!");
-              return false
-          }
+    <script>
+        $(".score_submit").click(function (e) {
+            console.log(parseFloat($(`#score${this.id}`).html()));
+            var user_input = parseFloat($(`#input${this.id}`).val());
+            var full_marks = parseFloat($(`#score${this.id}`).html());
+            console.log(user_input);
+            console.log(full_marks);
+            if (user_input > full_marks) {
+                e.preventDefault();
+                alert("Score cannot be greater than full marks!");
+                return false
+            }
 
-      });
-  </script>
-  <script type="text/javascript">
-
-    $(document).ready(function () {
-        var table_main = $('.MarkingDetail').DataTable({
-            responsive: true,
-            dom: 'lBfrtip',
-            "searching": true,
-            buttons: [
-                {
-                    extend: 'csv',
-                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3]
-                    }
-                },
-                {
-                    extend: 'print',
-                    text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
-                    fieldSeparator: '\t'
-                }
-            ],
-            "columnDefs": []
         });
-    });
+
+        $(".score_submit_multiple").click(function (e) {
+            score_json = [];
+            $('.changeScoreCheck:checked').each(function () {
+                var user_input = parseFloat($(`#input${$(this).attr('data-qid')}`).val());
+                var full_marks = parseFloat($(`#score${$(this).attr('data-qid')}`).html());
+                if (user_input > full_marks) {
+                    e.preventDefault();
+                    alert("Score cannot be greater than full marks!");
+                    return false
+                }
+                score_json.push({
+                    "q_id": $(this).attr('data-qid'),
+                    "new_score": user_input,
+                    "sitting_id": $(this).closest('tr').find('input[name=sitting_id]').val()
+                });
+            });
+            if ($('.changeScoreCheck:checked').length > 0) {
+                $.ajax({
+                type: "POST",
+                url: "{% url 'teacher_quiz_marking_multiple' %}",  // URL to your view that serves new info
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'data': JSON.stringify(score_json)
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (request, status, error) {
+                    console.log(error)
+                },
+                complete: function () {
+                    $(".se-pre-con-ajax").fadeOut("fast");
+                },
+            });
+            } else {
+                alert('Please check at least one answer.')
+            }
+        });
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var table_main = $('.MarkingDetail').DataTable({
+                responsive: true,
+                dom: 'lBfrtip',
+                "searching": true,
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        fieldSeparator: '\t'
+                    }
+                ],
+                "columnDefs": []
+            });
+        });
 
 
-</script>
+    </script>
 
 {% endblock %}

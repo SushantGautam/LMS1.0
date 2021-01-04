@@ -1054,27 +1054,7 @@ class QuizMarkingDetail(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
 
         q_to_toggle = request.POST.get('saq_id', None)
         if q_to_toggle:
-            q = Question.objects.get_subclass(id=int(q_to_toggle))
-            indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
-            print(request.POST['new_score'], "new_score")
-            print(indx, "index")
-            ssl = sitting.score_list
-            if not ssl:
-                ssl = ''
-            score_list = [s for s in ssl.split(',') if s]
-            try:
-                score_list[indx] = request.POST.get('new_score', 0)
-            except IndexError:
-                if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
-                    score_list.insert(indx, request.POST.get('new_score', 0))
-            sitting.score_list = ','.join(list(map(str, score_list)))
-            print(sitting.score_list, "score_list_update")
-            sitting.save()
-            # if int(q_to_toggle) in sitting.get_incorrect_questions:
-            #     sitting.remove_incorrect_question(q)
-            # else:
-            #     sitting.add_incorrect_question(q)
-
+            changeQuizScore(sitting, q_to_toggle, request.POST.get('new_score', 0))
         return self.get(request)
 
     def get_context_data(self, **kwargs):
@@ -1107,26 +1087,9 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
         sitting = Sitting.objects.get(pk=int(request.POST['sitting_id']))
 
         q_to_toggle = request.POST.get('saq_id', None)
-        if q_to_toggle:
-            q = Question.objects.get_subclass(id=int(q_to_toggle))
-            indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
 
-            ssl = sitting.score_list
-            if not ssl:
-                ssl = ''
-            score_list = [s for s in ssl.split(',') if s]
-            try:
-                score_list[indx] = request.POST.get('new_score', 0)
-            except IndexError:
-                if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
-                    score_list.insert(indx, request.POST.get('new_score', 0))
-            sitting.score_list = ','.join(list(map(str, score_list)))
-            print(sitting.score_list, "score_list_update")
-            sitting.save()
-            # if int(q_to_toggle) in sitting.get_incorrect_questions:
-            #     sitting.remove_incorrect_question(q)
-            # else:
-            #     sitting.add_incorrect_question(q)
+        if q_to_toggle:
+            changeQuizScore(sitting, q_to_toggle, request.POST.get('new_score', 0))
 
         return self.get(request)
 
@@ -1138,6 +1101,31 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
             ques.get_questions(with_answers=True)
 
         return context
+
+def QuizMarkingMultiple(request, *args, **kwargs):
+    score_json = request.POST.get('data')
+    for data in json.loads(score_json):
+        changeQuizScore(Sitting.objects.get(pk=int(data['sitting_id'])), data['q_id'], data['new_score'])
+    return JsonResponse({'data': "success"}, status=200)
+
+def changeQuizScore(sitting, q_to_toggle, new_score):
+    q = Question.objects.get_subclass(id=int(q_to_toggle))
+    try:
+        indx = [int(n) for n in json.loads(sitting.user_answers).keys() if n].index(q.id)
+    except ValueError:
+        sitting.add_user_answer(q, '')
+        indx = len(json.loads(sitting.user_answers).keys()) + 1
+    ssl = sitting.score_list
+    if not ssl:
+        ssl = ''
+    score_list = [s for s in ssl.split(',') if s]
+    try:
+        score_list[indx] = new_score
+    except IndexError:
+        if sitting.complete and len(ssl.split(',')) < len(sitting.question_order.split(',')):
+            score_list.insert(indx, new_score)
+    sitting.score_list = ','.join(list(map(str, score_list)))
+    sitting.save()
 
 
 def anon_session_score(session, to_add=0, possible=0):

@@ -3,7 +3,7 @@
 
 <h3>Mark Short Answers</h3>
 
-  <hr class="header_hr">
+<hr class="header_hr">
 
 <div class="row" style="padding-bottom: 0px ;">
     <div class="col-md-12">
@@ -29,108 +29,113 @@
             <div class="col-md-4">
                 <p><b>Status :</b>
                     {% if quiz.draft is True %}
-             
+
                         <span class="text-danger"> <b>Inactive</b>
                             </span>
-               
-            {% endif %}
-            {% if quiz.draft is False %}
-               
+
+                    {% endif %}
+                    {% if quiz.draft is False %}
+
                         <span class="text-success"> <b>Active</b>   </span>
-                   
-                 
-               
-            {% endif %}</p>
+
+
+
+                    {% endif %}</p>
             </div>
             <div class="col-md-4">
                 <p><b> URL:</b>{{ quiz.url }}</p>
 
-            </div> 
-            <div class="col-md-12">
-                <p style="font-size: 14px;"><b>Description:</b> {{  quiz.description }}</p>
             </div>
-            
+            <div class="col-md-12">
+                <p style="font-size: 14px;"><b>Description:</b> {{ quiz.description }}</p>
+            </div>
+
         </div>
     </div>
 </div>
 
 <hr class="header_hr">
 {% for saq in quiz.get_saquestions %}
-    
- 
 
 
-    <p style="font-size: 16px; font-weight:500">  <b>{{forloop.counter}}</b>. {{ saq }}
-    
+
+
+    <p style="font-size: 16px; font-weight:500"><b>{{ forloop.counter }}</b>. {{ saq }}
+        <button type="submit" class="btn btn-warning score_submit_multiple btn-xs" style="float: right">{% trans "Change Score" %}</button>
+
         <button style="float:right" class="btn btn-primary btn-xs" type="button" data-toggle="collapse"
-        data-target="#mcqn_list{{ saq.id }}"
-        aria-expanded="false" aria-controls="collapseExample">
-             View Answer
-     </button>
-    
+                data-target="#mcqn_list{{ saq.id }}"
+                aria-expanded="false" aria-controls="collapseExample">
+            View Answer
+        </button>
+
     </p>
-    
-   <div  id="mcqn_list{{ saq.id }}" class="col-md-12 collapse " style="margin-bottom: 25px;">
-    <table style="width:100%!important"  class=" table table-bordered table-striped MarkingDetail ">
 
-        <thead class="thead-light bg-primary">
-        <tr>
-            <th>{% trans "S No." %}</th>
-            <th>{% trans "Username" %}</th>
-            <th>{% trans "User answer" %}</th>
-            <th>{% trans "Full Marks" %}</th>
-            <th>{% trans "Marks Obtained" %}</th>
-            <th>{% trans "Action" %}</th>
-        </tr>
-        </thead>
+    <div id="mcqn_list{{ saq.id }}" class="col-md-12 collapse " style="margin-bottom: 25px;">
+        <table style="width:100%!important" class=" table table-bordered table-striped MarkingDetail ">
 
-        <tbody>
-        {% for sitting in quiz.sitting_set.all %}
-            {% for question in sitting.questions_with_user_answers %}
-                {% if question.pk == saq.pk %}
-                    {% if question.is_saq %}
-                        <tr>
-                            <td> {{forloop.parentloop.counter}} </td>
-                            <td> {{ sitting.user }} </td>
+            <thead class="thead-light bg-primary">
+            <tr>
+                <th></th>
+                <th>{% trans "S No." %}</th>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "User answer" %}</th>
+                <th>{% trans "Marks Obtained (F.M. - " %} {{ saq.score }})</th>
+                <th>{% trans "Action" %}</th>
+            </tr>
+            </thead>
 
-                            <td>{{ question.user_answer }}</td>
+            <tbody>
+            {% for sitting in quiz.sitting_set.all %}
+                {% for question in sitting.questions_with_user_answers %}
+                    {% if question.pk == saq.pk %}
+                        {% if question.is_saq %}
+                            <tr>
+                                <td>
+                                    {% if question.is_saq %}
+                                        <input type="checkbox" class="changeScoreCheck" data-qid="{{ question.id }}">
+                                    {% endif %}
+                                </td>
+                                <td> {{ forloop.parentloop.counter }} </td>
+                                <td> {{ sitting.user }} </td>
 
-                            <td>{{ question.score }}</td>
-                            <td>{{ question.score_obtained }}</td>
+                                <td>{{ question.user_answer }}</td>
 
-                            <td style="text-align: center">
-                                <form action="" method="POST">{% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-sm-8">
-                                            <input type="number" name="new_score" min="0" max="{{ question.score }}"
-                                                   id="input{{ question.id }}"
-                                                   step="0.5" style="width: -webkit-fill-available;" required>
-                                            <input type="hidden" name="saq_id" value="{{ question.id }}">
-                                            <input type="hidden" name="sitting_id" value="{{ sitting.id }}">
+                                <td>{{ question.score_obtained }}</td>
+
+                                <td style="text-align: center">
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-sm-8">
+                                                <input type="number" name="new_score" min="0" max="{{ question.score }}"
+                                                       id="input{{ question.id }}"
+                                                       step="0.5" style="width: -webkit-fill-available;" required>
+                                                <input type="hidden" name="saq_id" value="{{ question.id }}">
+                                                <input type="hidden" name="sitting_id" value="{{ sitting.id }}">
 
 
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <button type="submit" class="btn btn-warning score_submit btn-xs"
+                                                        id="{{ question.id }}">{% trans "Change Score" %}</button>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <button type="submit" class="btn btn-warning score_submit btn-xs"
-                                                    id="{{ question.id }}">{% trans "Change Score" %}</button>
-                                        </div>
-                                    </div>
 
 
-                                </form>
-                            </td>
-                        </tr>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-        </tbody>
+            </tbody>
 
-    </table>
+        </table>
 
-   </div> 
-  
-    
+    </div>
+
+
     <br>
 
 {% endfor %}
