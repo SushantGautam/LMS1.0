@@ -113,12 +113,6 @@
     });
 </script>
 
-{% endblock %}
-
-
-{% include 'chapter/content-viewer-moules/QuickSurvey.html' %}
-
-{% block quicksurvey_script %}
 <script>
     $('#new_survey_btn').click(function () {
         $.ajax({
@@ -141,4 +135,12 @@
         location.reload();
     }
 </script>
+
 {% endblock %}
+
+
+
+
+{# {% block quicksurvey_script %} #}
+
+{# {% endblock %} #}
