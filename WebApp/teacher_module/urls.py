@@ -238,6 +238,8 @@ urlpatterns += (
          name='teacher_quiz_marking_detail'),
     path('quiz/marking/saqmarking/<int:pk>/', views.QuizMarkingDetailSAQ.as_view(),
          name='teacher_quiz_marking_saq'),
+    path('quiz/marking/multiple/', views.QuizMarkingMultiple,
+         name='teacher_quiz_marking_multiple'),
     # URL for quiz marking download    
     path('quiz/marking/exportcsv/<int:quiz_pk>', views.QuizMarkingCSV, name='quiz_marking_csv'),
 )

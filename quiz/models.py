@@ -1015,7 +1015,7 @@ class Sitting(models.Model):
             user_answers = json.loads(self.user_answers)
             for q in questions:
                 user_ans = user_answers.get(str(q.id), False)
-                if user_ans:
+                if user_ans or user_ans == '':
                     if isinstance(q, MCQuestion):
                         if (isinstance(user_ans, list)):
                             ans_temp = list(Answer.objects.filter(

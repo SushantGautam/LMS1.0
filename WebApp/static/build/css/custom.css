@@ -2702,3 +2702,9 @@ a.badge-dark:focus {
     right: 5%;
     z-index:100
 }
+
+.select-info {
+    float: right;
+    font-size: small;
+    margin-top: 10px;
+}

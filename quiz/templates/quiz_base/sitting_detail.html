@@ -42,11 +42,13 @@
 
 
 
+<button type="submit" class="btn btn-warning score_submit_multiple" style="float: right">{% trans "Change Score" %}</button>
 
 <table class="table table-bordered table-striped" id="MarkingDetail">
 
   <thead class="thead-light bg-primary">
   <tr>
+    <th></th>
     <th>{% trans "Question" %}</th>
     <th>{% trans "User answer" %}</th>
     <th>{% trans "Correct" %}</th>
@@ -61,6 +63,11 @@
 
     <tr>
       <td>
+          {% if question.is_saq %}
+            <input type="checkbox" class="changeScoreCheck" data-qid="{{ question.id }}">
+          {% endif %}
+      </td>
+      <td>
         {{ question.content }}
         {% if question.figure %}
           <div class="detail-page-images" style="max-width: 100px;"><img src="{{ question.figure.url }}"
@@ -70,7 +77,7 @@
 {#      <td style="overflow: scroll">{{ question|answer_choice_to_string:question.user_answer }}</td>#}
       <td>
             {{ question.user_answer }}
-         
+
       </td>
       <td>
         {% if not question.ans_correct %}
@@ -104,8 +111,9 @@
     </tr>
 
   {% endfor %}
-  
+  <tfoot>
   <tr>
+    <td></td>
     <td></td>
     <td></td>
     <td>Total</td>
@@ -113,6 +121,7 @@
     <td>{{ total_score_obtained }}</td>
     <td></td>
   </tr>
+  </tfoot>
   </tbody>
 
 </table>
