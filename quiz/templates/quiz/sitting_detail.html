@@ -16,7 +16,7 @@
     
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
   <script>
     $(".score_submit").click(function (e) {
         console.log(parseFloat($(`#score${this.id}`).html()));
@@ -33,4 +33,4 @@
       });
   </script>
 
-{% endblock %}
+{% endblock  %}
