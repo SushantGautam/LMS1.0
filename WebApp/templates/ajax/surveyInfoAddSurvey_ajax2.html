@@ -10,8 +10,8 @@
 
 
 <form id="categoryForm" action="
-              {% if "teachers" in request.path %}
-                {% if "retake" in request.path %}
+              {% if 'teachers' in request.path %}
+                {% if 'retake' in request.path %}
                   {% url 'teacher_surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
                   {% if category_name == 'live' %}
@@ -29,7 +29,7 @@
                   {% endif %}
                 {% endif %}
               {% else %}
-                {% if "retake" in request.path %}
+                {% if 'retake' in request.path %}
                   {% url 'surveyinfo_retake_ajax' pk=parent_pk %}?category_name={{ category_name }}
                 {% else %}
                   {% if update_form %}
@@ -38,8 +38,7 @@
                     {% url 'surveyinfo_ajax' %}?category_name={{ category_name }}
                    {% endif %}
                 {% endif %}
-              {% endif %}"
-      method="post">
+              {% endif %}" method="post">
     {% csrf_token %}
     <div id="smartwizard" class="sw-theme-dots">
         <ul>
@@ -47,25 +46,27 @@
         </ul>
         <div>
             <div id="step-1">
-                   <label class="control-label " style="display:block; text-align:left; font-size:1.3rem; font-weight:bold;" id="categoryTitle" for="first-name">{% trans 'Category' %} :
-                <span class="text text-black "  >{{ category_name }}</span>
-                  </label>
+                <label class="control-label "
+                    style="display:block; text-align:left; font-size:1.3rem; font-weight:bold;" id="categoryTitle"
+                    for="first-name">{% trans 'Category' %} :
+                    <span class="text text-black ">{{ category_name }}</span>
+                </label>
                 <br>
-                <h5 class="text-center" style="padding: 0em 0 !important;
-
-            ">{% trans 'Choose Type' %}:</h5>
+                <h5 class="text-center" style="padding: 0em 0 !important; ">{% trans 'Choose Type' %}:</h5>
                 <div class="col-xs-12">
                     <div class="col-md-12">
                         <div style="text-align: center">
                             <div class="selectQuestionType">
                                 <div class="btn-group" id="switchButtons" data-toggle="buttons"
-                                     style="    padding: 10px;">
+                                    style="    padding: 10px;">
                                     <label class="mcq_question btn btn-default btn-on btn-md active">
-                                        <input type="radio" value="1" name="multifeatured_module[module_id][switchButtons]"
-                                               checked="checked">{% trans 'Multiple Choice' %}</label>
+                                        <input type="radio" value="1"
+                                            name="multifeatured_module[module_id][switchButtons]" checked="checked">{%
+                                        trans 'Multiple Choice' %}</label>
                                     <label class="short_question btn btn-default btn-off btn-md ">
                                         <input type="radio" value="0"
-                                               name="multifeatured_module[module_id][switchButtons]">{% trans 'Short Answer' %}</label>
+                                            name="multifeatured_module[module_id][switchButtons]">{% trans 'Short
+                                        Answer' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -77,48 +78,48 @@
                                 <div class='qninfo_dynamic_append'>
                                     {% for questioninfo_form in questioninfo_formset.forms %}
 
-                                        <div class='qninfo_dynamic'>
+                                    <div class='qninfo_dynamic'>
 
-                                            <p style="position:relative; top:40px;">{{ forloop.counter}}</p>
-                                            {{ questioninfo_form|crispy }}
-
-
-                                            {% if questioninfo_form.nested %}
-                                                {{ questioninfo_form.nested.management_form }}
-                                                {{ questioninfo_form.nested.non_form_errors }}
-
-                                                <div id="option_dynamic{{ forloop.counter0 }}"
-                                                     class='opinfo_dynamic'
-                                                     style="margin-left:40px;">
-                                                    {% for option_form in questioninfo_form.nested.forms %}
+                                        <p style="position:relative; top:40px;">{{ forloop.counter}}</p>
+                                        {{ questioninfo_form|crispy }}
 
 
-                                                        <div class="op " style="display:flex;  ">
+                                        {% if questioninfo_form.nested %}
+                                        {{ questioninfo_form.nested.management_form }}
+                                        {{ questioninfo_form.nested.non_form_errors }}
+
+                                        <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic'
+                                            style="margin-left:40px;">
+                                            {% for option_form in questioninfo_form.nested.forms %}
 
 
-                                                             <p style="position:relative; margin-right:10px;"> {{forloop.counter|to_char }} </p>
-
-                                                            {{ option_form|crispy }}
+                                            <div class="op " style="display:flex;  ">
 
 
-                                                        </div>
+                                                <p style="position:relative; margin-right:10px;">
+                                                    {{forloop.counter|to_char }} </p>
 
-                                                    {% endfor %}
-                                                </div>
+                                                {{ option_form|crispy }}
 
-                                                <button
-                                                        onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                                        class="btn btn-sm btn-dark " style="margin-left: 50px;">{% trans 'New Option' %}
-                                                </button>
 
-                                            {% endif %}
+                                            </div>
+
+                                            {% endfor %}
                                         </div>
+
+                                        <button
+                                            onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
+                                            class="btn btn-sm btn-dark " style="margin-left: 50px;">{% trans 'New
+                                            Option' %}
+                                        </button>
+
+                                        {% endif %}
+                                    </div>
                                     {% endfor %}
                                 </div>
                                 <div style="text-align:center; padding: 20px;">
                                     <input class="add-mcq btn btn-md  btn-light" style="float:left" type="button"
-                                           value="{% trans 'New Question' %}"
-                                           id="add_more_qn">
+                                        value="{% trans 'New Question' %}" id="add_more_qn">
                                 </div>
                             </div>
 
@@ -128,12 +129,13 @@
                                     {{ questionansinfo_formset.non_form_errors }}
                                     <div class='qnansinfo_dynamic_append'>
                                         {% for questionansinfo_form in questionansinfo_formset.forms %}
-                                          <p style="position:relative; top:40px;">{{ forloop.counter}}</p>{{ questionansinfo_form|crispy }}
+                                        <p style="position:relative; top:40px;">{{ forloop.counter}}</p>{{
+                                        questionansinfo_form|crispy }}
                                         {% endfor %}
                                     </div>
                                 </div>
                                 <input class="add-mcq btn  btn-md btn-light" style="margin-left:20px;" type="button"
-                                       value="{% trans 'Add Question' %}" id="add_more_sa_qn">
+                                    value="{% trans 'Add Question' %}" id="add_more_sa_qn">
                             </div>
                             <div class="text-danger question_error"></div>
                         </div>
@@ -146,62 +148,63 @@
         <div class="row" style="margin-top:40px; text-align:center;">
 
             <div class="col-md-12 ">
-<!--                <button class="btn btn-amber-500 text-danger" style="" type="button" data-toggle="collapse"-->
-<!--                        data-target="#collapseExample"-->
-<!--                        aria-expanded="false" aria-controls="collapseExample">-->
-<!--                    Edit More Information-->
-<!--                </button>-->
+                <!--                <button class="btn btn-amber-500 text-danger" style="" type="button" data-toggle="collapse"-->
+                <!--                        data-target="#collapseExample"-->
+                <!--                        aria-expanded="false" aria-controls="collapseExample">-->
+                <!--                    Edit More Information-->
+                <!--                </button>-->
 
 
                 <div class="accordion custom-accordion">
-  <div class="accordion-row ">
-    <a href="#" class="accordion-header ">
-      <span style="margin:auto" >{% trans 'Edit More Information' %}</span>
-      <i class="accordion-status-icon close fa fa-chevron-up"></i>
-      <i class="accordion-status-icon open fa fa-chevron-down"></i>
-    </a>
-    <div class="accordion-body">
+                    <div class="accordion-row ">
+                        <a href="#" class="accordion-header ">
+                            <span style="margin:auto">{% trans 'Edit More Information' %}</span>
+                            <i class="accordion-status-icon close fa fa-chevron-up"></i>
+                            <i class="accordion-status-icon open fa fa-chevron-down"></i>
+                        </a>
+                        <div class="accordion-body">
 
 
-<!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
-<!--            ">Survey Information</h2>-->
-            <div class="col-xs-12">
-                <div class="col-md-12">
-                    {{ form|crispy }}
+                            <!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
+                            <!--            ">Survey Information</h2>-->
+                            <div class="col-xs-12">
+                                <div class="col-md-12">
+                                    {{ form|crispy }}
 
-                </div>
+                                </div>
 
-                <div class="text-danger survey_error"></div>
+                                <div class="text-danger survey_error"></div>
 
-            </div>
+                            </div>
 
-    </div>
-  </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-<!--        <div class="collapse" id="collapseExample">-->
+        <!--        <div class="collapse" id="collapseExample">-->
 
-<!--            <label class="control-label " id="categoryTitle" for="first-name">Category :-->
-<!--                <span class="text text-black">{{ category_name }}</span>-->
-<!--            </label>-->
-<!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
-<!--            ">Survey Information</h2>-->
-<!--            <div class="col-xs-12">-->
-<!--                <div class="col-md-12">-->
-<!--                 {#   {{ form|crispy }} #}-->
-<!--                </div>-->
+        <!--            <label class="control-label " id="categoryTitle" for="first-name">Category :-->
+        <!--                <span class="text text-black">{{ category_name }}</span>-->
+        <!--            </label>-->
+        <!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
+        <!--            ">Survey Information</h2>-->
+        <!--            <div class="col-xs-12">-->
+        <!--                <div class="col-md-12">-->
+        <!--                 {#   {{ form|crispy }} #}-->
+        <!--                </div>-->
 
-<!--                <div class="text-danger survey_error"></div>-->
+        <!--                <div class="text-danger survey_error"></div>-->
 
-<!--            </div>-->
-<!--        </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
         <br>
         <hr>
         <div class="row">
             <div class="col-md-12 text-right">
-                <button id= "survey_submit_button" class="btn  btn-md btn-primary" type="submit">{% trans 'Submit' %}</button>
+                <button id="survey_submit_button" class="btn  btn-md btn-primary" type="submit">{% trans 'Submit'
+                    %}</button>
             </div>
         </div>
 
@@ -221,7 +224,7 @@
         {{ questioninfo_formset.empty_form|crispy }}
         {{ questioninfo_formset.empty_form.nested.management_form }}
         {{ questioninfo_formset.empty_form.nested.non_form_errors }}
-        {#    {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
+        {# {{ questioninfo_formset.empty_form.nested.empty_form|crispy }}#}
 
         <div id="optionContainer_id" style="margin-left: 40px;">
 
@@ -238,296 +241,311 @@
 <script src=" {% static 'build/js/survey.js' %}"></script>
 <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
 {% block customjss %}
-    <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-    <script>
-        document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
-        document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
-        $('#id_Start_Date').datetimepicker();
-        $('#id_End_Date').datetimepicker();
-        $(document).ready(function () {
-            {#$("#smartwizard").smartWizard({selected: 0,});#}
-
-        });
-        {#$("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {#}
-        {#    if (stepNumber == 1) {#}
-        {#        if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {#}
-        {#            $(".survey_error").html("End Date must be greater than Start Date");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {#}
-        {#            $(".survey_error").html("End Date must be greater than Current Date");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if ($("#id_Survey_Title").val() === "") {#}
-        {#            $(".survey_error").html("Survey Title cannot be empty");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")) {#}
-        {#            $(".survey_error").html("Please Select a Course");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#        if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")) {#}
-        {#            $(".survey_error").html("Please Select a Session");#}
-        {#            e.preventDefault();#}
-        {#        }#}
-        {#    }#}
-        {#    if (stepNumber == 0) {#}
-        {#        var non_empty_count = 0;#}
-        {#        var non_empty_op_count = 0;#}
-        {#        for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {#}
-        {#            if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {#}
-        {#                non_empty_count++;#}
-        {#                for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {#}
-        {#                    if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {#}
-        {#                        non_empty_op_count++;#}
-        {#                    }#}
-        {#                }#}
-        {#                if (non_empty_op_count < 2) {#}
-        {#                    $(".question_error").html("Enter at least two option for each questions");#}
-        {#                    console.log("question op error: " + cnt);#}
-        {#                    e.preventDefault()#}
-        {#                }#}
-        {#                non_empty_op_count = 0;#}
-        {#            }#}
-        {#        }#}
-        {#        for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {#}
-        {#            if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {#}
-        {#                non_empty_count++;#}
-        {#            }#}
-        {#        }#}
-        {#        if (non_empty_count < 1) {#}
-        {#            $(".question_error").html("Please enter at least one question");#}
-        {#            e.preventDefault()#}
-        {#        }#}
-        {#    }#}
-        {##}
-
-    </script>
-    <script>
-        function cloneMore(selector, append_after, type) {
-            var newElement = $(selector).clone(true);
-            var total = $('#id_' + type + '-TOTAL_FORMS').val();
-            newElement.find(':input').each(function () {
-                var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
-                var id = 'id_' + name;
-                $(this).attr({'name': name, 'id': id}).removeAttr('checked');
-            });
-            newElement.find('label').each(function () {
-                var newFor = $(this).attr('for').replace('-' + (total - 1) + '-', '-' + total + '-');
-                $(this).attr('for', newFor);
-            });
-            total++;
-            $('#id_' + type + '-TOTAL_FORMS').val(total);
-            $(append_after).append(newElement);
-        }
-
-        function copyEmptyQuestion(selector, append_after, type, type2) {
-            var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
-            var str1 = String(type + '-' + questionId);
-            var str2 = String(type2 + '-' + 0);
-            var str3 = String('add_more_op_' + questionId);
-            var str4 = String('optionContainer_' + questionId);
-            var r1 = new RegExp(type + '\-__prefix__', 'g');
-            var r2 = new RegExp(type2 + '\-__prefix__', 'g');
-            var r3 = new RegExp('add_more_op_id', 'g');
-            var r4 = new RegExp('optionContainer_id', 'g');
-
-
-            $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3).replace(r4, str4));
-            $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-sm btn-dark" style="margin-left:50px;" >{% trans 'New Option' %}</button>`);
-
-            var newel_id = String(
-                '#div_id_questioninfo-' + questionId + '-Question_Name'
-            );
-
-
-            var question_counter = parseInt(questionId) + 1;
-
-            $('#abc' + questionId).click();
-            $('#abc' + questionId).click();
-
-            var counter_el = `<p>${question_counter}</p>`;
-            $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
-            $('#new_que_div' + questionId).prepend(counter_el);
-            questionId++;
-            {#$(newel_id).before(counter_el);       #}
-            $('#id_' + type + '-TOTAL_FORMS').val(questionId);
-            $(newel_id).css({"margin-left": "10px", "width": "100%"});
-        }
-
-        $('#add_more_qn').click(function () {
-            copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
-        });
-
-        function to_a(index) {
-            a = 'abcdefghijklmnopqrstuvwxyz';
-            return (a[index]);
-        }
-
-
-        function addOption(event, questionId, selector, append_after, type, type2) {
-            if (event) event.preventDefault();
-
-            var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
-            // console.log(optionId
-            var str1 = String(type + '-' + questionId);
-            var str2 = String(type2 + '-' + optionId);
-            var str3 = String('add_more_op_' + questionId);
-            var r1 = new RegExp(type + '\-__prefix__', 'g');
-            var r2 = new RegExp(type2 + '\-__prefix__', 'g');
-            var r3 = new RegExp('add_more_op_id', 'g');
-            $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3));
-            var newel_id = String(
-                '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
-            );
-            {#var option_counter = parseInt(optionId)+ 1;#}
-            // var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
-            var counter_el = `<p>  ${to_a(parseInt(optionId)) } </p>`;
-            {#$(newel_id).find('label').before(counter_el);#}
-            $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex; '></div>`);
-            console.log(optionId);
-            $('#new_op_div' + questionId + optionId).prepend(counter_el);
-
-            optionId++;
-            $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
-            $(newel_id).css({"margin-left": "10px", "width": "100%"});
-        }
-
-        function copyEmptyShortAnsQuestion(selector, append_after, type) {
-            var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
-            var str1 = String(type + '-' + questionId);
-            var r1 = new RegExp(type + '\-__prefix__', 'g');
-
-            $(append_after).append($(selector).html().replace(r1, str1));
-
-            var newel_id = String('#div_id_questionansinfo-' + questionId + '-Question_Name');
-            var sa_question_counter = parseInt(questionId) + 1;
-            var counter_saq_el = `<p>${sa_question_counter}</p>`;
-            {#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');#}
-            $(newel_id).wrap(`<div class='new_saq' id='new_sa_que_div${questionId}' style='display:flex;'></div>`);
-            {#console.log(${questionId});#}
-            $('#new_sa_que_div' + questionId).prepend(counter_saq_el);
-
-            questionId++;
-            $('#id_' + type + '-TOTAL_FORMS').val(questionId);
-            $(newel_id).css({"margin-left": "10px", "width": "100%"});
-        }
-
-        $('#add_more_sa_qn').click(function () {
-            copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
-        });
-
-        {#$('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({"display": "none"});#}
-
-        {#..............................................For MCQ ...........................................#}
-      //  $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
-       // $('#first_que_div').prepend(`<p>1</p>`);
-
-     //   $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "8px", "width": "100%"});
-        $("div[id$='Question_Name']").css({"margin-left": "18px", "width": "96%"});
-
-
-        {#..............................................For SAQ ...........................................#}
-      //  $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
-      //  $('#first_sa_que_div').prepend(`<p>1</p>`);
-       // $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
-
-        if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
-            $('#id_End_Time').durationPicker({
-                showSeconds: true,
-                showDays: false,
-                onChanged: function (newVal) {
-                }
-            });
-
-            $(".bdp-block:visible").addClass("col-md-4")
-        }
-
-        $("div[id$='Question_Type']").hide();
-
-        $("#categoryForm").submit(function (e) {
-            e.preventDefault();
-            var non_empty_count = 0;
-            var non_empty_op_count = 0;
-            for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
-                if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
-                    non_empty_count++;
-                    for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
-                        if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
-                            non_empty_op_count++;
-                        }
-                    }
-                    if (non_empty_op_count < 2) {
-                        $(".question_error").html("{% trans 'Enter at least two option for each questions' %}");
-                        console.log("question op error: " + cnt);
-                        return false;
-                    }
-                    non_empty_op_count = 0;
-                }
-            }
-            for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {
-                if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {
-                    non_empty_count++;
-                }
-            }
-            if (non_empty_count < 1) {
-                $(".question_error").html("{% trans 'Please enter at least one question' %}");
-                return false;
-            }
-
-            if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
-                $(".question_error").html("{% trans 'End Date must be greater than Start Date' %}");
-                return false;
-            }
-            if ($('#id_Start_Date').val() != "") {
-                $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
-            }
-            if ($('#id_End_Date').val() != "") {
-                $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
-            }
-            $.ajax({
-                //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: new FormData($(this)[0]),
-                url: $(this).prop("action"), // URL to your view that serves new info
-                //data: $(this).serialize(), // get the form data
-                type: $(this).attr('method'), // GET or POST
-                success: function (response) {
-                    survey_create_content(response);
-                },
-                error: function () {
-                    console.log('Error in posting form');
-                }
-            });
-        });
-
-    </script>
-
-    <script>
-        if ($('#id_questioninfo-0-Question_Name').val() === "") {
-            addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
-            addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
-        }
-    </script>
-
-    <script>
-        date = new Date();
-        var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
-        $('#id_Survey_Title').val('Survey ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
-    </script>
-
-
+<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
- {% for option_form in questioninfo_form.nested.forms %}
-    $('#div_id_questioninfo-{{forloop.counter}}-Question_Name').css({"display": "contents"});
- {%endfor%}
+    document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
+    document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
+    $('#id_Start_Date').datetimepicker();
+    $('#id_End_Date').datetimepicker();
+    $(document).ready(function () {
+        {#$("#smartwizard").smartWizard({ selected: 0, });# }
+
+    });
+    {#$("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {# }
+        { #    if(stepNumber == 1) {# }
+        {#        if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {# }
+            {#            $(".survey_error").html("End Date must be greater than Start Date");# }
+            {#            e.preventDefault();# }
+            {# }#
+        }
+        {#        if (new Date() >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {# }
+            {#            $(".survey_error").html("End Date must be greater than Current Date");# }
+            {#            e.preventDefault();# }
+            {# }#
+        }
+        {#        if ($("#id_Survey_Title").val() === "") {# }
+            {#            $(".survey_error").html("Survey Title cannot be empty");# }
+            {#            e.preventDefault();# }
+            {# }#
+        }
+        {#        if ($("#id_Course_Code").val() === "" && $("#id_Course_Code").prop("required")) {# }
+            {#            $(".survey_error").html("Please Select a Course");# }
+            {#            e.preventDefault();# }
+            {# }#
+        }
+        {#        if ($("#id_Session_Code").val() === "" && $("#id_Session_Code").prop("required")) {# }
+            {#            $(".survey_error").html("Please Select a Session");# }
+            {#            e.preventDefault();# }
+            {# }#
+        }
+        {# }#
+    }
+    {#    if (stepNumber == 0) {# }
+        {#        var non_empty_count = 0;# }
+        {#        var non_empty_op_count = 0;# }
+        {#        for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {# }
+            {#            if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {# }
+                {#                non_empty_count++;# }
+                {#                for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {# }
+                    {#                    if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {# }
+                        {#                        non_empty_op_count++;# }
+                        {# }#
+                    }
+                    {# }#
+                }
+                {#                if (non_empty_op_count < 2) {# }
+                    {#                    $(".question_error").html("Enter at least two option for each questions");# }
+                    {#                    console.log("question op error: " + cnt);# }
+                    {#                    e.preventDefault()# }
+                    {# }#
+                }
+                {#                non_empty_op_count = 0;# }
+                {# }#
+            }
+            {# }#
+        }
+        {#        for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {# }
+            {#            if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {# }
+                {#                non_empty_count++;# }
+                {# }#
+            }
+            {# }#
+        }
+        {#        if (non_empty_count < 1) {# }
+            {#            $(".question_error").html("Please enter at least one question");# }
+            {#            e.preventDefault()# }
+            {# }#
+        }
+        {# }#
+    }
+    {## }
+
+</script>
+<script>
+    function cloneMore(selector, append_after, type) {
+        var newElement = $(selector).clone(true);
+        var total = $('#id_' + type + '-TOTAL_FORMS').val();
+        newElement.find(':input').each(function () {
+            var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
+            var id = 'id_' + name;
+            $(this).attr({ 'name': name, 'id': id }).removeAttr('checked');
+        });
+        newElement.find('label').each(function () {
+            var newFor = $(this).attr('for').replace('-' + (total - 1) + '-', '-' + total + '-');
+            $(this).attr('for', newFor);
+        });
+        total++;
+        $('#id_' + type + '-TOTAL_FORMS').val(total);
+        $(append_after).append(newElement);
+    }
+
+    function copyEmptyQuestion(selector, append_after, type, type2) {
+        var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
+        var str1 = String(type + '-' + questionId);
+        var str2 = String(type2 + '-' + 0);
+        var str3 = String('add_more_op_' + questionId);
+        var str4 = String('optionContainer_' + questionId);
+        var r1 = new RegExp(type + '\-__prefix__', 'g');
+        var r2 = new RegExp(type2 + '\-__prefix__', 'g');
+        var r3 = new RegExp('add_more_op_id', 'g');
+        var r4 = new RegExp('optionContainer_id', 'g');
+
+
+        $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3).replace(r4, str4));
+        $(append_after).append(`<button id="abc${questionId}" onclick="addOption(event, ${questionId}, '#emptyOpInfoForm', '#optionContainer_${questionId}', 'questioninfo', 'optioninfo')" class="btn btn-sm btn-dark" style="margin-left:50px;" >{% trans 'New Option' %}</button>`);
+
+        var newel_id = String(
+            '#div_id_questioninfo-' + questionId + '-Question_Name'
+        );
+
+
+        var question_counter = parseInt(questionId) + 1;
+
+        $('#abc' + questionId).click();
+        $('#abc' + questionId).click();
+
+        var counter_el = `<p>${question_counter}</p>`;
+        $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
+        $('#new_que_div' + questionId).prepend(counter_el);
+        questionId++;
+        {#$(newel_id).before(counter_el);       # }
+        $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+        $(newel_id).css({ "margin-left": "10px", "width": "100%" });
+    }
+
+    $('#add_more_qn').click(function () {
+        copyEmptyQuestion('#emptyQnInfoForm', 'div.qninfo_dynamic_append', 'questioninfo', 'optioninfo');
+    });
+
+    function to_a(index) {
+        a = 'abcdefghijklmnopqrstuvwxyz';
+        return (a[index]);
+    }
+
+
+    function addOption(event, questionId, selector, append_after, type, type2) {
+        if (event) event.preventDefault();
+
+        var optionId = $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val();
+        // console.log(optionId
+        var str1 = String(type + '-' + questionId);
+        var str2 = String(type2 + '-' + optionId);
+        var str3 = String('add_more_op_' + questionId);
+        var r1 = new RegExp(type + '\-__prefix__', 'g');
+        var r2 = new RegExp(type2 + '\-__prefix__', 'g');
+        var r3 = new RegExp('add_more_op_id', 'g');
+        $(append_after).append($(selector).html().replace(r1, str1).replace(r2, str2).replace(r3, str3));
+        var newel_id = String(
+            '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
+        );
+        {#var option_counter = parseInt(optionId) + 1;# }
+        // var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
+        var counter_el = `<p>  ${to_a(parseInt(optionId))} </p>`;
+        {#$(newel_id).find('label').before(counter_el);# }
+        $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex; '></div>`);
+        console.log(optionId);
+        $('#new_op_div' + questionId + optionId).prepend(counter_el);
+
+        optionId++;
+        $('#id_' + type2 + '-' + type + '-' + questionId + '-' + type2 + '-TOTAL_FORMS').val(optionId);
+        $(newel_id).css({ "margin-left": "10px", "width": "100%" });
+    }
+
+    function copyEmptyShortAnsQuestion(selector, append_after, type) {
+        var questionId = $('#id_' + type + '-TOTAL_FORMS').val();
+        var str1 = String(type + '-' + questionId);
+        var r1 = new RegExp(type + '\-__prefix__', 'g');
+
+        $(append_after).append($(selector).html().replace(r1, str1));
+
+        var newel_id = String('#div_id_questionansinfo-' + questionId + '-Question_Name');
+        var sa_question_counter = parseInt(questionId) + 1;
+        var counter_saq_el = `<p>${sa_question_counter}</p>`;
+        {#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');# }
+        $(newel_id).wrap(`<div class='new_saq' id='new_sa_que_div${questionId}' style='display:flex;'></div>`);
+        {#console.log(${ questionId });# }
+        $('#new_sa_que_div' + questionId).prepend(counter_saq_el);
+
+        questionId++;
+        $('#id_' + type + '-TOTAL_FORMS').val(questionId);
+        $(newel_id).css({ "margin-left": "10px", "width": "100%" });
+    }
+
+    $('#add_more_sa_qn').click(function () {
+        copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
+    });
+
+    {#$('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({ "display": "none" });# }
+
+    {#..............................................For MCQ ...........................................# }
+    //  $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
+    // $('#first_que_div').prepend(`<p>1</p>`);
+
+    //   $('#div_id_questioninfo-0-Question_Name').css({"margin-left": "8px", "width": "100%"});
+    $("div[id$='Question_Name']").css({ "margin-left": "18px", "width": "96%" });
+
+
+    {#..............................................For SAQ ...........................................# }
+    //  $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
+    //  $('#first_sa_que_div').prepend(`<p>1</p>`);
+    // $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
+
+    if ("{{ category_name }}" === "live" || "{{ category_name }}" === "course") {
+        $('#id_End_Time').durationPicker({
+            showSeconds: true,
+            showDays: false,
+            onChanged: function (newVal) {
+            }
+        });
+
+        $(".bdp-block:visible").addClass("col-md-4")
+    }
+
+    $("div[id$='Question_Type']").hide();
+
+    $("#categoryForm").submit(function (e) {
+        e.preventDefault();
+        var non_empty_count = 0;
+        var non_empty_op_count = 0;
+        for (cnt = 0; cnt < $("#id_questioninfo-TOTAL_FORMS").val(); cnt++) {
+            if ($("#id_questioninfo-" + cnt + "-Question_Name").val().length > 0) {
+                non_empty_count++;
+                for (cnt2 = 0; cnt2 < $("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-TOTAL_FORMS").val(); cnt2++) {
+                    if ($("#id_optioninfo-questioninfo-" + cnt + "-optioninfo-" + cnt2 + "-Option_Name").val().length > 0) {
+                        non_empty_op_count++;
+                    }
+                }
+                if (non_empty_op_count < 2) {
+                    $(".question_error").html("{% trans 'Enter at least two option for each questions' %}");
+                    console.log("question op error: " + cnt);
+                    return false;
+                }
+                non_empty_op_count = 0;
+            }
+        }
+        for (cnt = 0; cnt < $("#id_questionansinfo-TOTAL_FORMS").val(); cnt++) {
+            if ($("#id_questionansinfo-" + cnt + "-Question_Name").val().length > 0) {
+                non_empty_count++;
+            }
+        }
+        if (non_empty_count < 1) {
+            $(".question_error").html("{% trans 'Please enter at least one question' %}");
+            return false;
+        }
+
+        if (new Date($("#id_Start_Date").val().replace(/-/g, '/')) >= new Date($("#id_End_Date").val().replace(/-/g, '/'))) {
+            $(".question_error").html("{% trans 'End Date must be greater than Start Date' %}");
+            return false;
+        }
+        if ($('#id_Start_Date').val() != "") {
+            $('#id_Start_Date').val(new Date($('#id_Start_Date').val()).toISOString())
+        }
+        if ($('#id_End_Date').val() != "") {
+            $('#id_End_Date').val(new Date($('#id_End_Date').val()).toISOString())
+        }
+        $.ajax({
+            //https://stackoverflow.com/questions/166221/how-can-i-upload-files-asynchronously
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: new FormData($(this)[0]),
+            url: $(this).prop("action"), // URL to your view that serves new info
+            //data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function (response) {
+                survey_create_content(response);
+            },
+            error: function () {
+                console.log('Error in posting form');
+            }
+        });
+    });
+
 </script>
 
 <script>
-    $("#div_id_Use_Flag").css("text-align","left");
-    $("#div_id_Publish_Result").css("text-align","left");
+    if ($('#id_questioninfo-0-Question_Name').val() === "") {
+        addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
+        addOption(event, 0, '#emptyOpInfoForm', '#option_dynamic0', 'questioninfo', 'optioninfo');
+    }
+</script>
+
+<script>
+    date = new Date();
+    var options = { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    $('#id_Survey_Title').val('Survey ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
+</script>
+
+
+<script>
+    {% for option_form in questioninfo_form.nested.forms %}
+    $('#div_id_questioninfo-{{forloop.counter}}-Question_Name').css({ "display": "contents" });
+    {% endfor %}
+</script>
+
+<script>
+    $("#div_id_Use_Flag").css("text-align", "left");
+    $("#div_id_Publish_Result").css("text-align", "left");
 </script>
 
 {% endblock customjss %}

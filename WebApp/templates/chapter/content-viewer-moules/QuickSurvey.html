@@ -12,7 +12,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="create_chapter_modal_title">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_survey_modal_title">
                     {% trans "Create Survey" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 </div>
 
 <div id="question_form_popup" class="modal fade" style="height: -webkit-fill-available;width: -webkit-fill-available">
@@ -61,9 +61,9 @@
     </div>
 </div>
 
-{# {% block quicksurvey_script %} #}
-{#
-<script src="/static/vendorsx/jquery/dist/jquery.min.js"></script>#}
+<!-- {% block quicksurvey_script %}  -->
+
+<!-- <script src="/static/vendorsx/jquery/dist/jquery.min.js"></script> -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -142,7 +142,7 @@
                 sendMessageWrittenToTeachers();
                 loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
             })
-*/
+            */
             $('#chat-message-input').val(response['quiz_id']);
             sendChatMessage({ 'message_link_type': 'survey' })
             //window.location.href = String(response['url']);
@@ -158,7 +158,7 @@
             console.log(response['student_url']);
             console.log(response['quiz_id']);
             close_quick_model("quiz_create_popup");
-            {% comment %}
+            /*
             $(".note-editable").append(`<a onclick="loadexam('/quiz/quiz${response['quiz_id']}/take/')">Take Quick Quiz</a>`);
 
             try {
@@ -168,7 +168,7 @@
             }
             $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
             sendMessageWrittenToTeachers();
-            {% endcomment %}
+            */
             $('#chat-message-input').val(response['quiz_id']);
             sendChatMessage({ 'message_link_type': 'quiz' })
             //loadexam("/quiz/markingfilter/" + response['quiz_id'] + "/", '_blank', 1);  //open popup#}
@@ -179,4 +179,4 @@
 
 </script>
 
-{# {% endblock %} #}
+<!-- {% endblock %} -->
