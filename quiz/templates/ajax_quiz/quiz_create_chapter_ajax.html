@@ -6,90 +6,85 @@
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
 <form method="post" id="quiz_form_post" onsubmit="return validateForm()"
-      action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
-    <div class="row">
+    action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">
+    {% csrf_token %}
+    {{ form.title|as_crispy_field }}
 
-        {{ form.title|as_crispy_field }}
-
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                           aria-expanded="false" aria-controls="collapseOne">
-                            <i class="fa fa-list"></i>
-                            Manage Multiple Choice Questions </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                        {{ form.mcquestion|as_crispy_field }}
-
-                    </div>
-                </div>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                        aria-expanded="false" aria-controls="collapseOne">
+                        <i class="fa fa-list"></i>
+                        Manage Multiple Choice Questions </a>
+                </h4>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingTwo">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            <i class="fa fa-bookmark "></i>
-                            Manage True/False Questions </a>
-                    </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                    <div class="panel-body">
-                        {{ form.tfquestion|as_crispy_field }}
+            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    {{ form.mcquestion|as_crispy_field }}
 
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingThree">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            <i class="fa fa-align-right  "></i>
-
-                            Manage Short Answer Type Questions
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                    <div class="panel-body">
-                        {{ form.saquestion|as_crispy_field }}
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingFour">
-                    <h4 class="panel-title">
-                        <a class="collapsed text-info" role="button" data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                            More Options </a>
-                    </h4>
-                </div>
-                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                    <div class="panel-body">
-                        {{ form.description|as_crispy_field }}
-                        {{ form.duration|as_crispy_field }}
-                        {{ form.pass_mark|as_crispy_field }}
-                        {{ form.negative_marking|as_crispy_field }}
-                        {{ form.negative_percentage|as_crispy_field }}
-                        {{ form.random_order|as_crispy_field }}                    </div>
                 </div>
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                        href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <i class="fa fa-bookmark "></i>
+                        Manage True/False Questions </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                    {{ form.tfquestion|as_crispy_field }}
 
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                        href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <i class="fa fa-align-right  "></i>
 
+                        Manage Short Answer Type Questions
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body">
+                    {{ form.saquestion|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingFour">
+                <h4 class="panel-title">
+                    <a class="collapsed text-info" role="button" data-toggle="collapse" data-parent="#accordion"
+                        href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        More Options </a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                <div class="panel-body">
+                    {{ form.description|as_crispy_field }}
+                    {{ form.duration|as_crispy_field }}
+                    {{ form.pass_mark|as_crispy_field }}
+                    {{ form.negative_marking|as_crispy_field }}
+                    {{ form.negative_percentage|as_crispy_field }}
+                    {{ form.random_order|as_crispy_field }} </div>
+            </div>
+        </div>
     </div>
     <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
 
 </form>
 <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
 <script>
-
 
     $(document).ready(function () {
         $("#div_id_negative_percentage").hide();

@@ -399,7 +399,7 @@ class Quiz(models.Model):
     mcquestion = models.ManyToManyField(
         MCQuestion,
         verbose_name=_("Multiple Choice Question"),
-        help_text=_("You can select multiple questions by holding  ctrl  key on Windows and Command⌘ key on MAC.")
+        help_text=_("You can select multiple questions by holding ctrl key on Windows and Command⌘ key on MAC.")
     )
     tfquestion = models.ManyToManyField(
         TF_Question,
@@ -486,7 +486,7 @@ class Quiz(models.Model):
         verbose_name=_("Exam Paper"))
 
     single_attempt = models.BooleanField(
-        blank=False, default=False,
+        blank=False, default=True,
         help_text=_("If yes, only one attempt by"
                     " a user will be permitted."
                     ),
@@ -520,6 +520,10 @@ class Quiz(models.Model):
         null=True, blank=True, default=0,
         help_text=_("Percentage of total marks to use for negative marking"),
         verbose_name=_("Negative Marking Percentage"))
+
+    mcquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    saquestion_order = models.CharField(max_length=1024, null=True, blank=True)
+    tfquestion_order = models.CharField(max_length=1024, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('quiz_update', args=(self.pk,))
@@ -564,6 +568,9 @@ class Quiz(models.Model):
     def get_tfquestions(self):
         return self.tfquestion_set.all()
 
+    def get_saquestions(self):
+        return self.saquestion.all()
+
     def has_mcqs(self):
         return (self.mcquestion.count() > 0)
 
@@ -572,6 +579,11 @@ class Quiz(models.Model):
 
     def has_saqs(self):
         return (self.saquestion.count() > 0)
+
+    def has_sittings(self):
+        if Sitting.objects.filter(quiz=self):
+            return True
+        return False
 
     # def get_questions(self):
     #    return self.question_set.all()
@@ -628,6 +640,7 @@ class Quiz(models.Model):
     #             user, self)
     #
     #     return self.sitting
+
 
 
 @python_2_unicode_compatible

@@ -61,12 +61,14 @@
                                     style="    padding: 10px;">
                                     <label class="mcq_question btn btn-default btn-on btn-md active">
                                         <input type="radio" value="1"
-                                            name="multifeatured_module[module_id][switchButtons]" checked="checked">{%
-                                        trans 'Multiple Choice' %}</label>
+                                            name="multifeatured_module[module_id][switchButtons]" checked="checked">
+                                            &nbsp;{%trans 'Multiple Choice' %}
+                                    </label>
                                     <label class="short_question btn btn-default btn-off btn-md ">
                                         <input type="radio" value="0"
-                                            name="multifeatured_module[module_id][switchButtons]">{% trans 'Short
-                                        Answer' %}</label>
+                                            name="multifeatured_module[module_id][switchButtons]">
+                                            &nbsp;{% trans 'Short Answer' %}
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -77,13 +79,9 @@
 
                                 <div class='qninfo_dynamic_append'>
                                     {% for questioninfo_form in questioninfo_formset.forms %}
-
                                     <div class='qninfo_dynamic'>
-
-                                        <p style="position:relative; top:40px;">{{ forloop.counter}}</p>
+                                        <p class="d-inline-block" style="position:relative; top:45px;">{{ forloop.counter}}</p>
                                         {{ questioninfo_form|crispy }}
-
-
                                         {% if questioninfo_form.nested %}
                                         {{ questioninfo_form.nested.management_form }}
                                         {{ questioninfo_form.nested.non_form_errors }}
@@ -91,26 +89,18 @@
                                         <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic'
                                             style="margin-left:40px;">
                                             {% for option_form in questioninfo_form.nested.forms %}
-
-
                                             <div class="op " style="display:flex;  ">
-
-
                                                 <p style="position:relative; margin-right:10px;">
                                                     {{forloop.counter|to_char }} </p>
-
                                                 {{ option_form|crispy }}
-
-
                                             </div>
-
                                             {% endfor %}
                                         </div>
 
                                         <button
                                             onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                            class="btn btn-sm btn-dark " style="margin-left: 50px;">{% trans 'New
-                                            Option' %}
+                                            class="btn btn-sm btn-dark " style="margin-left: 50px;" type="button">
+                                            {% trans 'New Option' %}
                                         </button>
 
                                         {% endif %}
@@ -118,7 +108,7 @@
                                     {% endfor %}
                                 </div>
                                 <div style="text-align:center; padding: 20px;">
-                                    <input class="add-mcq btn btn-md  btn-light" style="float:left" type="button"
+                                    <input class="add-mcq btn btn-secondary" style="float:left" type="button"
                                         value="{% trans 'New Question' %}" id="add_more_qn">
                                 </div>
                             </div>
@@ -129,12 +119,12 @@
                                     {{ questionansinfo_formset.non_form_errors }}
                                     <div class='qnansinfo_dynamic_append'>
                                         {% for questionansinfo_form in questionansinfo_formset.forms %}
-                                        <p style="position:relative; top:40px;">{{ forloop.counter}}</p>{{
-                                        questionansinfo_form|crispy }}
+                                        <p class="d-inline-block" style="position:relative; top:40px;">{{ forloop.counter}}</p>
+                                        {{ questionansinfo_form|crispy }}
                                         {% endfor %}
                                     </div>
                                 </div>
-                                <input class="add-mcq btn  btn-md btn-light" style="margin-left:20px;" type="button"
+                                <input class="add-mcq btn btn-secondary" style="margin-left:20px;" type="button"
                                     value="{% trans 'Add Question' %}" id="add_more_sa_qn">
                             </div>
                             <div class="text-danger question_error"></div>
@@ -163,19 +153,19 @@
                             <i class="accordion-status-icon open fa fa-chevron-down"></i>
                         </a>
                         <div class="accordion-body">
-
-
+                        
+                        
                             <!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
                             <!--            ">Survey Information</h2>-->
-                            <div class="col-xs-12">
-                                <div class="col-md-12">
-                                    {{ form|crispy }}
-
-                                </div>
-
-                                <div class="text-danger survey_error"></div>
-
+                            <!--<div class="col-xs-12">-->
+                            <div class="col-md-12">
+                                {{ form|crispy }}
+                        
                             </div>
+                        
+                            <div class="text-danger survey_error"></div>
+                        
+                            <!--</div>-->
 
                         </div>
                     </div>
@@ -203,8 +193,9 @@
         <hr>
         <div class="row">
             <div class="col-md-12 text-right">
-                <button id="survey_submit_button" class="btn  btn-md btn-primary" type="submit">{% trans 'Submit'
-                    %}</button>
+                <button id="survey_submit_button" class="btn  btn-md btn-primary" type="submit">
+                    {% trans 'Submit' %}
+                </button>
             </div>
         </div>
 
@@ -220,7 +211,7 @@
 <div style="display:none">
     <div id="emptyQnInfoForm">
         <hr>
-        </br>
+        <br>
         {{ questioninfo_formset.empty_form|crispy }}
         {{ questioninfo_formset.empty_form.nested.management_form }}
         {{ questioninfo_formset.empty_form.nested.non_form_errors }}
@@ -240,14 +231,15 @@
 
 <script src=" {% static 'build/js/survey.js' %}"></script>
 <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
-{% block customjss %}
+
+{% block javascript %}
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
 <script>
     document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")
     document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")
     $('#id_Start_Date').datetimepicker();
     $('#id_End_Date').datetimepicker();
-    $(document).ready(function () {
+   /* $(document).ready(function () {
         {#$("#smartwizard").smartWizard({ selected: 0, });# }
 
     });
@@ -318,7 +310,7 @@
         }
         {# }#
     }
-    {## }
+    {## } */
 
 </script>
 <script>
@@ -368,7 +360,7 @@
         $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
         $('#new_que_div' + questionId).prepend(counter_el);
         questionId++;
-        {#$(newel_id).before(counter_el);       # }
+        //{#$(newel_id).before(counter_el);       # }
         $('#id_' + type + '-TOTAL_FORMS').val(questionId);
         $(newel_id).css({ "margin-left": "10px", "width": "100%" });
     }
@@ -398,10 +390,10 @@
         var newel_id = String(
             '#div_id_optioninfo-questioninfo-' + questionId + '-optioninfo-' + optionId + '-Option_Name'
         );
-        {#var option_counter = parseInt(optionId) + 1;# }
+        //{#var option_counter = parseInt(optionId) + 1;# }
         // var counter_el = `<p>${parseInt(optionId) + 1}</p>`;
         var counter_el = `<p>  ${to_a(parseInt(optionId))} </p>`;
-        {#$(newel_id).find('label').before(counter_el);# }
+        // {#$(newel_id).find('label').before(counter_el);# }
         $(newel_id).wrap(`<div class='new' id='new_op_div${questionId}${optionId}' style='display:flex; '></div>`);
         console.log(optionId);
         $('#new_op_div' + questionId + optionId).prepend(counter_el);
@@ -421,9 +413,9 @@
         var newel_id = String('#div_id_questionansinfo-' + questionId + '-Question_Name');
         var sa_question_counter = parseInt(questionId) + 1;
         var counter_saq_el = `<p>${sa_question_counter}</p>`;
-        {#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');# }
+        //{#var newel_id = $('#div_id_questioninfo-' + questionId + '-Question_Name');# }
         $(newel_id).wrap(`<div class='new_saq' id='new_sa_que_div${questionId}' style='display:flex;'></div>`);
-        {#console.log(${ questionId });# }
+        //{#console.log(${ questionId });# }
         $('#new_sa_que_div' + questionId).prepend(counter_saq_el);
 
         questionId++;
@@ -435,9 +427,9 @@
         copyEmptyShortAnsQuestion('#emptyQnAnsInfoForm', 'div.qnansinfo_dynamic_append', 'questionansinfo');
     });
 
-    {#$('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({ "display": "none" });# }
+    //{#$('#div_id_optioninfo-questioninfo-0-optioninfo-0-Option_Name').css({ "display": "none" });# }
 
-    {#..............................................For MCQ ...........................................# }
+    //{#..............................................For MCQ ...........................................# }
     //  $('#div_id_questioninfo-0-Question_Name').wrap(`<div class='new' id='first_que_div' style='display:flex;'></div>`);
     // $('#first_que_div').prepend(`<p>1</p>`);
 
@@ -445,7 +437,7 @@
     $("div[id$='Question_Name']").css({ "margin-left": "18px", "width": "96%" });
 
 
-    {#..............................................For SAQ ...........................................# }
+    //{#..............................................For SAQ ...........................................# }
     //  $('#div_id_questionansinfo-0-Question_Name').wrap(`<div class='new' id='first_sa_que_div' style='display:flex;'></div>`);
     //  $('#first_sa_que_div').prepend(`<p>1</p>`);
     // $('#div_id_questionansinfo-0-Question_Name').css({"margin-left": "10px", "width": "100%"});
@@ -548,4 +540,4 @@
     $("#div_id_Publish_Result").css("text-align", "left");
 </script>
 
-{% endblock customjss %}
+{% endblock %}

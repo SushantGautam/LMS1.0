@@ -54,13 +54,7 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        {#document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")# }
-        {#document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")# }
-        {#$('#id_End_Date').datetimepicker();# }
-        {#$('#id_Start_Date').datetimepicker();# }
-    })
-
+  
     function inningMapDataLoad($element, sessionid, objectid, formaction) {
         if ($element.closest('tr').find('.start-date').text() != "") {
             document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")

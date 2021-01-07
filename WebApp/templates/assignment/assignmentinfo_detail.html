@@ -30,7 +30,7 @@
                     <i class="ti-close"></i>
                 </button>
             </div>
-            <div class="modal-body" id="editAssignmentModal_body">
+            <div class="modal-body" id="editAssignment_modal_body">
                 <form method="post" id="ajaxassignmentinfoform">
                     {% csrf_token %}
                     <div class="alert alert-danger form-errors" style="display: none">
@@ -40,7 +40,7 @@
                             {% trans "Assignment Topic" %} <span class="asteriskField">*</span>
                         </label>
                         <input type="text" name="Assignment_Topic" maxlength="500" class="form-control"
-                            id="id_Assignment_Topic_edit" value="{{ object.Assignment_Topic }}" required>
+                            id="id_Assignment_Topic_edit" valu e="{{ object.Assignment_Topic }}" required>
                     </div>
 
                     <div class="row">

@@ -20,6 +20,7 @@
 {% endblock %}
 {% block content %}
 {% include 'assignment/assignmentinfo_detail.html' %}
+{% include 'inning/inningmapFormModal.html' %}
 {% endblock %}
 
 {% block javascript %}
@@ -32,7 +33,7 @@
 
 <script>
 
-        {% comment %}
+      /*  {% comment %}
         $("#ajaxassignmentinfoform").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $.ajax({
@@ -61,8 +62,7 @@
 
             });
         });
-        {% endcomment %}
-        
+        {% endcomment %} */
         $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
             const result = document.querySelector('.result');
             var date = new Date();
@@ -234,7 +234,7 @@
                                 var percentVal = percentComplete + '%';
                                 percent.width(percentVal);
                                 percent.html(percentVal);
-                                {#$('#status').html('<b> Uploading -> ' + (Math.round(percentComplete * 100)) + '% </b>');# }
+                                // $('#status').html('<b> Uploading -> ' + (Math.round(percentComplete * 100)) + '% </b>');
                             }
                         }, false);
                         return xhr;
@@ -337,4 +337,5 @@
             inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
         })
 </script>
+
 {% endblock %}

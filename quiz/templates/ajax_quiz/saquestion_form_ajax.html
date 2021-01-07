@@ -8,7 +8,6 @@
 <form method="post" id="saq_form_post" enctype="multipart/form-data">
     {% csrf_token %}
 
-
     {{ form.content |as_crispy_field }}
 
     <div class="panel-group">
@@ -32,14 +31,13 @@
         </div>
     </div>
 
-
-
     {% if quiz_id %}
         <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
     {% endif %}
     <button class="btn btn-primary" type="submit">Submit</button>
 </form>
-{% block customjss %}
+
+{% block javascript %}
     <script>
         $("#saq_form_post").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -64,4 +62,4 @@
         $("#div_id_cent_code").hide();
         $("#id_cent_code").val('{{ request.user.Center_Code.id }}');
     </script>
-{% endblock customjss %}
+{% endblock %}

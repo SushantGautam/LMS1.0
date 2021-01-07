@@ -86,15 +86,15 @@
 
 <script>
     $('#exam_paper_popup').on('click', function () {
-        $.ajax({
-            type: "GET",
-            data: { 'course_id': '{{ object.id }}', 'test_type': 'exam_paper', },
-            url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
-            success: function (data) {
-                $("#quiz_form_ajax").html(data);
-            }
+            $.ajax({
+                type: "GET",
+                data: { 'course_id': '{{ object.id }}', 'test_type': 'exam_paper', },
+                url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#quiz_form_ajax").html(data);
+                }
+            });
         });
-    });
     $('#qn_close').on("click", function () {
         $("#quiz_create_popup").modal("show");
     });

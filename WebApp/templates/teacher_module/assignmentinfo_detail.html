@@ -31,11 +31,9 @@
             </div>
             <div class="modal-body" style="color: black;height: -webkit-fill-available;">
                 <div id="answercontent">
-
                 </div>
                 <hr>
                 <div id="StudentScore">
-
                 </div>
             </div>
         </div>
@@ -68,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-                    {% comment %}
+                    <!--{% comment %}
                     <div class="form-group has-feedback">
                         <div id="div_id_Assignment_Start_edit" class="form-group">
                             <label for="id_Assignment_Start_edit" class="control-label ">
@@ -93,13 +91,54 @@
                             </div>
                         </div>
                     </div>
-                    {% endcomment %}
+                    {% endcomment %}-->
                     <div>
                         <label>Publish</label><br>
-                        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
-                            {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} checked
-                            {% endif %}><br> <br>
+                        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" 
+                        {% if object.Use_Flag == False %} &nbsp; {% elif object.Use_Flag == True %} checked {% endif %}><br>
+                        <br>
                     </div>
+                    {% if assigned_session|length > 0 %}
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <table class="table" id="inning_dataTable">
+                            <tr>
+                                <th><input type="checkbox" name="sessiondataAll" class="inningInfoCheckAll" checked></th>
+                                <th>S.No</th>
+                                <th>Session Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                {# <th></th>#}
+                            </tr>
+                    
+                            {% for session in assigned_session %}
+                            {% if object %}
+                            {% getSessionMap object 'assignmentinfo' session as sessionmap %}
+                            {% endif %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="sessiondata" class="inningInfoCheckbox" checked>
+                                </td>
+                                <td class="counter">{{ forloop.counter }}</td>
+                                <td class="session_id"><input type="text" class="form-control" value="{{ session.Inning_Name }}"
+                                        data-value="{{ session.id }}" readonly required></td>
+                                <td class="session_start_date">
+                                    <input type="text" name="Start_Date" class="form-control" max="9999-12-31" autocomplete="off"
+                                        value="{{ sessionmap.0.Start_Date|date:'c' }}" required>
+                                </td>
+                                <td class="session_end_date">
+                                    <input type="text" name="End_Date" class="form-control" value="{{ sessionmap.0.End_Date|date:'c' }}"
+                                        max="9999-12-31" autocomplete="off" required>
+                                </td>
+                                {# <td title="Copy Date in all selected fields" class="date_copybtn"><i class="fa fa-copy"></i>#}
+                                    {# </td>#}
+                            </tr>
+                            {% endfor %}
+                    
+                        </table>
+                    </div>
+                    {% endif %}
+                    <div class="result text-center"></div>
+
 
                     <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
                         class="select form-control">
@@ -155,15 +194,12 @@
                 <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
             </form>
             {% else %}
-            <span>
-                <button type="button" class="btn btn-sm btn-outline-danger btn-floating">
-                    <a id="{{ object.pk }}" class="assignment-confirm-delete">
-                        <i class="fa fa-trash"></i>
-                    </a>
-                </button>
-            </span>
-            <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
-                id="deleteAssignment{{ object.pk }}">
+            <button type="button" class="btn btn-sm btn-outline-danger btn-floating">
+                <a id="{{ object.pk }}" class="assignment-confirm-delete">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </button>
+            <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}" id="deleteAssignment{{ object.pk }}">
                 {% csrf_token %}
                 <input type="hidden" value="{{ object.pk }}" name="assignment_id">
                 <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
@@ -222,19 +258,19 @@
                 {% endif %}
                 {% endif %}
             </td>
-            {#    {% getSessionMap object 'assignmentinfo' sessions as sessionmap %} #}
+            {% getSessionMap object 'assignmentinfo' sessions as sessionmap %}
             <td class="start-date dateconFullMonth">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
             <td class="end-date dateconFullMonth">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
             {% if '/students' not in request.path %}
             <td>
                 {% now "Y-m-d H:i" as todays_datewithtime %}
                 {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
-                <span class="badge badge-info">Upcoming</span>
-                {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
-                <span class="badge badge-danger">Expired</span>
-                {% else %}
-                <span class="badge badge-success">Active</span>
-                {% endif %}
+                    <span class="badge badge-info">Upcoming</span>
+                    {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                    <span class="badge badge-danger">Expired</span>
+                    {% else %}
+                    <span class="badge badge-success">Active</span>
+                    {% endif %}
             </td>
             {% endif %}
             {% if '/students' not in request.path %}
@@ -337,7 +373,7 @@
 
     <div class="answer-div collapse" id="answer-collapse-{{ question.id }}">
 
-        {% if  question.Question_Score %}
+        {% if question.Question_Score %}
         <div class="row">
             <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
                 Question Score :
@@ -348,7 +384,7 @@
         </div>
         {% endif %}
 
-        {% if  question.Question_Description %}
+        {% if question.Question_Description %}
         <div class="row">
             <div class=" col-md-4 col-sm-12 col-xs-12 no-padding">
                 Question Description :
@@ -374,7 +410,7 @@
             </div>
         </div>
         {% endif %}
-        {% if  question.Question_Media_File %}
+        {% if question.Question_Media_File %}
         <div class="row">
             <div class="col-md-4 col-sm-12 col-xs-12 no-padding">
                 Question Media :
@@ -475,11 +511,15 @@
 <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 
 <script>
+   /*  document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
+     document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")# }
+     $('#id_Assignment_Deadline_edit').datetimepicker();
+     $('#id_Assignment_Start_edit').datetimepicker(); */
 
     $("#ajaxassignmentinfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $.ajax({
-            url: "{% url 'assignmentinfo_edit_ajax' %}",  // URL to your view that serves new info
+            url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
                 "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
@@ -517,6 +557,36 @@
 
         }
         ;
+    });
+</script>
+<script>
+    $('#editAssignment-btn').on('click', function () {
+        $('#editAssignment_modal_body').empty();
+        $.ajax({
+            type: "GET",
+            url: "{% url 'assignmentinfo_edit_ajax_chapter_id' object.Chapter_Code.id object.pk %}",  // URL to your view that serves new info
+            success: function (response) {
+                let url = '/assignmentinfo/edit/{{ object.pk }}/ajax/';
+                $('#editAssignment_modal_body').append(response);
+                $('#ajaxassignmentinfoform').attr('action', url);
+                $('#editAssignment_modal_body').append(`
+                        <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Course_Code" id="id_Course_Code" value="{{ object.Course_Code.id }}"
+                               class="select form-control">
+                        <input type="hidden" name="Chapter_Code" id="id_Chapter_Code"
+                               value="{{ object.Chapter_Code.id }}" class="select form-control">
+                    `)
+
+                Switchery(document.querySelector('.js-switch'));
+            },
+            error: function () {
+                console.log('Error in generating assignment edit form')
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+            }
+        });
     });
 </script>
 <script>
@@ -725,47 +795,49 @@
 
 <script>
     $('table').on('click', '.showanswer', function () {
-        $('#StudentScore').empty()
-        $('#answercontent').empty()
-        $(this).addClass('clickedShowAnswer')
-        {% for answer in Answers %}
-        if (this.value == '{{ answer.id }}') {
-            $('#answercontent').html(`{{answer.Assignment_Answer|safe}}`)
+        $('#StudentScore').empty();
+        $('#answercontent').empty();
+        $(this).addClass('clickedShowAnswer');
+        let answer_id = this.value;
+        let question_score = this.dataset.question_score;
+        let short_answer = $(`#answer_${answer_id}`).html();
+        let file_answer = this.dataset.answer_file;
 
-            if ('{{ answer.Assignment_File }}') {
-                $('#answercontent').append(`
-                            <a href="/media/{{ answer.Assignment_File }}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
-                                <b>View File</b>
-                            </button>
-                            </a>
-                        `)
-            }
-            $('#StudentScore').html(`
-                        <form id="StudentScoreForm">
-                        <div>
-                            <p><b>FeedBack</b></p>
-                            <p>
-                                <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
-                            </p>
-                        </div>
-                        <div>
-                        <b>Score</b>
-                        <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
-                        value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
-                        max="{{ answer.Question_Code.Question_Score }}" >Full Score: <b>{{ answer.Question_Code.Question_Score }} </b><br><br>
-                            <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
-                        </div>
-                        </form>
-                         <input type="hidden" id="answerpk" value="{{ answer.pk }}">
-
-                    `);
-            $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
-            $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
+        if (short_answer) {
+            $('#answercontent').html(`${short_answer}`);
         }
-        {% endfor %}
+        if (file_answer) {
+            $('#answercontent').append(`
+                    <a href="/media/${file_answer}" target="_blank">   <button  class="btn btn-sm btn-info " style="text-align: center;color:black">
+                        <b>View File</b>
+                    </button>
+                    </a>
+                `)
+        }
+        $('#StudentScore').html(`
+                <form id="StudentScoreForm">
+                <div>
+                    <p><b>FeedBack</b></p>
+                    <p>
+                        <textarea name="assignment_feedback" class="form form-control" rows="5" id="assignment_feedback" style="resize: none; width: 100%"></textarea>
+                    </p>
+                </div>
+                <div>
+                <b>Score</b>
+                <input type="number" min="0" class="form form-control" id="studentScoresubmit" style="width:50%;"
+                value="${$(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score')}"
+                max="${question_score}" >Full Score: <b>${question_score} </b><br><br>
+                    <button type="submit" class="btn btn-sm btn-info " tyle="text-align: center;color:black">Submit Score</button>
+                </div>
+                </form>
+                    <input type="hidden" id="answerpk" value="${answer_id}">
+
+            `);
+        $('#studentScoresubmit').val($(this).closest('tr').find('.edit_assignment_score').attr('data-assignment_score'));
+        $('#assignment_feedback').val($(this).attr('data-assignment_feedback'));
     })
 
-    $('#create_session_modal').on('hidden.bs.modal', function () {
+    $('#exampleModal1').on('hidden.bs.modal', function () {
         $('.clickedShowAnswer').removeClass('clickedShowAnswer')
     })
 
@@ -836,10 +908,13 @@
                 $('#Score_' + answer_pk).css("animation", "glowing 5000ms 1");
 
                 if (!fromtd) {
-                    $('#create_session_modal').modal('toggle');
+                    $('#exampleModal1').modal('toggle');
                     $('.clickedShowAnswer').attr('data-assignment_feedback', feedback);
+                    var currentRow = $('.clickedShowAnswer').closest("tr");
+                    var data = $('.table-data').DataTable().row(currentRow).data();
+                    // Here data gives all the values of td in array. Feedback array index is 9 in datatable.
+                    data[9] = " " + feedback;
                 }
-                {#$('.clickedShowAnswer').attr('data-student_Score', stu_score);# }
             },
             error: function (e) {
                 console.log(e.responseText)
@@ -883,7 +958,7 @@
                     extend: 'csv',
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     exportOptions: {
-                        columns: [1, 2, 3, 4, 5, 6, 7]
+                        columns: [1, 2, 3, 4, 5, 6, 7, 9]
                     }
                 },
                 // {
@@ -894,7 +969,7 @@
             ],
             "columnDefs": [
                 {
-                    "targets": [1, 6],
+                    "targets": [1, 6, 9],
                     "visible": false,
                     "searchable": true,
                 },
@@ -928,27 +1003,27 @@
 
     $('.downloadallfiles').on('click', function () {
         let q_id = $(this).attr('data-question_id');
-        let answer_file_list = []
+        let answer_id_list = []
         {% for answer in Answers %}
         if (q_id == '{{ answer.Question_Code.id }}') {
             {% if answer.Assignment_File %}
-            answer_file_list.push('{{ answer.Assignment_File }}')
+            answer_id_list.push('{{ answer.id }}')
             {% endif %}
         }
         {% endfor %}
-        if (answer_file_list.length > 0) {
+        if (answer_id_list.length > 0) {
             $.ajax({
                 url: "{% url 'downloadAssignmentAnswers' %}",
                 type: 'POST',
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    'list_of_files': answer_file_list,
+                    'list_of_ids': answer_id_list,
                     'question_id': q_id,
                     'assignment_id': '{{ Assignment.pk }}',
                 },
                 success: function (response) {
                     window.open(response.link, '_blank');
-                    {% comment %}
+                   // {% comment %}
                     /*setTimeout(function () {
                         $.ajax({
                             url: "{% url 'deletedownloadAssignmentAnswers' %}",
@@ -962,8 +1037,11 @@
                             }
                         })
                     }, 3000)*/
-                    {% endcomment %}
+                   // {% endcomment %}
                 },
+                error: function (e) {
+                    console.log(e);
+                }
             });
         } else {
             alert('No Answers to download')

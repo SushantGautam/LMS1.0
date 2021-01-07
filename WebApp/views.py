@@ -1,3 +1,11 @@
+from django.apps import apps
+from django.contrib.admin.options import get_content_type_for_model
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth import authenticate, login as auth_login
+from quiz.views import Sitting
+import time
+import shutil
 import decimal
 import glob
 import json
@@ -251,7 +259,8 @@ def start(request):
             if Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(),
                                      status=True).exists():
                 notice = \
-                    Notice.objects.filter(Start_Date__lte=datetime.now(), End_Date__gte=datetime.now(), status=True)[0]
+                    Notice.objects.filter(Start_Date__lte=datetime.now(
+                    ), End_Date__gte=datetime.now(), status=True)[0]
                 if NoticeView.objects.filter(notice_code=notice, user_code=request.user).exists():
                     notice_view_flag = NoticeView.objects.filter(notice_code=notice, user_code=request.user)[
                         0].dont_show
@@ -620,7 +629,8 @@ def MemberInfoActivate(request, pk):
         obj.save()
         messages.success(request, 'Member is activated sucessfully')
     except:
-        messages.error(request, 'Cannot perform the action. Please try again later')
+        messages.error(
+            request, 'Cannot perform the action. Please try again later')
 
     if (request.POST['url']):
         return redirect(request.POST['url'])
@@ -708,7 +718,8 @@ def ImportCsvFile(request, *args, **kwargs):
                         raise Exception
 
                     try:
-                        birth_date = datetime.strptime(birth_date, "%m/%d/%Y").strftime('%Y-%m-%d')
+                        birth_date = datetime.strptime(
+                            birth_date, "%m/%d/%Y").strftime('%Y-%m-%d')
                     except:
                         birth_date = None
 
@@ -859,7 +870,8 @@ def ImportCourse(request, *args, **kwargs):
                 except Exception as e:
                     for j in saved_id:
                         CourseInfo.objects.filter(id=j).delete()
-                    msg = error + " Problem in " + str(i + 1) + "th row of data while uploading<br>"
+                    msg = error + " Problem in " + \
+                        str(i + 1) + "th row of data while uploading<br>"
                     return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
         else:
             error = "The uploaded excel has no data to register"
@@ -915,7 +927,8 @@ def ImportSession(request, *args, **kwargs):
                         # error = "Session Name <strong>" + session_name + """</strong> does not exists.
                         #                     Please register it from <a href='"""+ url +"""' target='_blank'>here</a>"""
                         # raise Exception
-                    session_name_code = SessionInfo.objects.get(Session_Name__iexact=session_name)
+                    session_name_code = SessionInfo.objects.get(
+                        Session_Name__iexact=session_name)
 
                     # Start date and End date Validation
                     if not start_date:
@@ -924,9 +937,11 @@ def ImportSession(request, *args, **kwargs):
                     start_date = str(start_date)
                     try:
                         # start_date = datetime.strptime(start_date, '%m/%d/%Y')
-                        start_date = parse(start_date)  # It accepts most of the standard date format
+                        # It accepts most of the standard date format
+                        start_date = parse(start_date)
                     except ValueError:
-                        error = "Start Date <strong>" + start_date + "</strong> is not valid. It must be in standard date format"
+                        error = "Start Date <strong>" + start_date + \
+                            "</strong> is not valid. It must be in standard date format"
                         raise Exception
                     if not end_date:
                         error = "End date is required"
@@ -936,7 +951,8 @@ def ImportSession(request, *args, **kwargs):
                         # end_date = datetime.strptime(end_date, '%m/%d/%Y')
                         end_date = parse(end_date)
                     except ValueError:
-                        error = "End Date <strong>" + end_date + "</strong> is not valid. It must be in standard date format"
+                        error = "End Date <strong>" + end_date + \
+                            "</strong> is not valid. It must be in standard date format"
                         raise Exception
                     if start_date >= end_date:
                         error = "Start Date can't be greater than End Date"
@@ -953,7 +969,8 @@ def ImportSession(request, *args, **kwargs):
                         error = "Student Group Name <strong>" + student_group + """</strong> does not exists.
                                             Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                         raise Exception
-                    student_group_code = GroupMapping.objects.get(GroupMapping_Name__iexact=student_group)
+                    student_group_code = GroupMapping.objects.get(
+                        GroupMapping_Name__iexact=student_group)
 
                     # Courses validation
                     if not courses:
@@ -984,7 +1001,8 @@ def ImportSession(request, *args, **kwargs):
                             error = "Teacher Course Allocation Name <strong>" + course + """</strong> does not exists.
                                                 Please register it from <a href='""" + url + """' target='_blank'>here</a>"""
                             raise Exception
-                        course_code = InningGroup.objects.get(InningGroup_Name__iexact=course)
+                        course_code = InningGroup.objects.get(
+                            InningGroup_Name__iexact=course)
                         obj.Course_Group.add(course_code)
 
                 except Exception as e:
@@ -1070,7 +1088,8 @@ def MemberInfoDeleteViewChecked(request):
     if request.method == 'POST':
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = MemberInfo.objects.filter(pk__in=request.POST.getlist('memberinfo_ids[]'))
+            Obj = MemberInfo.objects.filter(
+                pk__in=request.POST.getlist('memberinfo_ids[]'))
             Obj.delete()
             if '/inactive' in request.path:
                 return redirect('memberinfo_list_inactive')
@@ -1087,21 +1106,27 @@ def MemberInfoEditViewChecked(request):
     if request.method == 'POST':
         member_list = []
 
-        memberinfo_list = MemberInfo.objects.filter(pk__in=request.POST.get('member_ids[]').split(','))
+        memberinfo_list = MemberInfo.objects.filter(
+            pk__in=request.POST.get('member_ids[]').split(','))
         if request.POST.get('Member_Department') and request.POST.get('Member_Department') != '':
-            Member_Department = DepartmentInfo.objects.get(pk=request.POST.get('Member_Department'))
+            Member_Department = DepartmentInfo.objects.get(
+                pk=request.POST.get('Member_Department'))
 
         if request.POST.get('Member_Department'):
             memberinfo_list.update(Member_Department=Member_Department)
         if request.POST.get('Member_Position'):
-            memberinfo_list.update(Member_Position=request.POST.get('Member_Position'))
+            memberinfo_list.update(
+                Member_Position=request.POST.get('Member_Position'))
         if request.POST.get('Member_Gender'):
-            memberinfo_list.update(Member_Gender=request.POST.get('Member_Gender'))
+            memberinfo_list.update(
+                Member_Gender=request.POST.get('Member_Gender'))
         if request.POST.get('Is_Teacher'):
-            Is_Teacher = True if request.POST.get('Is_Teacher') == "1" else False
+            Is_Teacher = True if request.POST.get(
+                'Is_Teacher') == "1" else False
             memberinfo_list.update(Is_Teacher=Is_Teacher)
         if request.POST.get('Is_Student'):
-            Is_Student = True if request.POST.get('Is_Student') == "1" else False
+            Is_Student = True if request.POST.get(
+                'Is_Student') == "1" else False
             memberinfo_list.update(Is_Student=Is_Student)
         if request.POST.get('Use_Flag'):
             Use_Flag = True if request.POST.get('Use_Flag') == "1" else False
@@ -1124,7 +1149,8 @@ class CourseInfoGridView(ListView):
         return super(CourseInfoGridView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        qs = self.model.objects.filter(
+            Center_Code=self.request.user.Center_Code)
         if '/inactive/' in self.request.path:
             qs = qs.filter(Use_Flag=False)
         if '/active/' in self.request.path:
@@ -1134,8 +1160,10 @@ class CourseInfoGridView(ListView):
             query = query.strip()
             qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+                messages.error(
+                    self.request, 'Sorry no course found! Try with a different keyword')
+        # you don't need this if you set up your ordering on the model
+        qs = qs.order_by("-id")
         return qs
 
 
@@ -1151,7 +1179,8 @@ class CourseInfoListView(ListView):
         return super(CourseInfoListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = self.model.objects.filter(Center_Code=self.request.user.Center_Code)
+        qs = self.model.objects.filter(
+            Center_Code=self.request.user.Center_Code)
         if '/inactive/' in self.request.path:
             qs = qs.filter(Use_Flag=False)
         if '/active/' in self.request.path:
@@ -1161,8 +1190,10 @@ class CourseInfoListView(ListView):
             query = query.strip()
             qs = qs.filter(Course_Name__icontains=query)
             if not len(qs):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        qs = qs.order_by("-id")  # you don't need this if you set up your ordering on the model
+                messages.error(
+                    self.request, 'Sorry no course found! Try with a different keyword')
+        # you don't need this if you set up your ordering on the model
+        qs = qs.order_by("-id")
         return qs
 
 
@@ -1286,7 +1317,6 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         return JsonResponse({'errors': form.errors}, status=500)
 
 
-
 class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
     model = ChapterInfo
     form_class = ChapterInfoForm
@@ -1297,9 +1327,12 @@ class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
         cleaned_data = self.request.POST
         num = int(cleaned_data.get('Chapter_No'))
         name = cleaned_data.get('Chapter_Name')
-        course = get_object_or_404(CourseInfo, pk=cleaned_data.get('Course_Code'))
-        chapternum = ChapterInfo.objects.filter(Course_Code=course, Chapter_No=num)
-        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name=name)
+        course = get_object_or_404(
+            CourseInfo, pk=cleaned_data.get('Course_Code'))
+        chapternum = ChapterInfo.objects.filter(
+            Course_Code=course, Chapter_No=num)
+        chaptername = ChapterInfo.objects.filter(
+            Course_Code=course, Chapter_Name=name)
         if chapternum.exists():
             if chapternum.filter(pk=kwargs.get('kwargs')['pk'], Course_Code=course).exists():
                 if chapternum.get(pk=kwargs.get('kwargs')['pk']).Chapter_No == num:
@@ -1346,17 +1379,18 @@ class ChapterInfoDetailView(AdminAuthMxnCls, ChapterAuthMxnCls, DetailView):
         context = super().get_context_data(**kwargs)
         context['course'] = get_object_or_404(ChapterInfo, Course_Code=self.kwargs.get('course'),
                                               pk=self.kwargs.get('pk'))
-        context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk')).order_by('pk')
-        context['post_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), post_test=True)
-        context['pre_quizes'] = Quiz.objects.filter(chapter_code=self.kwargs.get('pk'), pre_test=True)
+        context['assignments'] = AssignmentInfo.objects.filter(
+            Chapter_Code=self.kwargs.get('pk')).order_by('pk')
+        context['post_quizes'] = Quiz.objects.filter(
+            chapter_code=self.kwargs.get('pk'), post_test=True)
+        context['pre_quizes'] = Quiz.objects.filter(
+            chapter_code=self.kwargs.get('pk'), pre_test=True)
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Course_Group__in=course_groups).distinct()
         return context
-
-
 
 
 class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
@@ -1379,7 +1413,6 @@ class ChapterInfoDeleteView(ChapterAuthMxnCls, DeleteView):
 class ChapterInfoDiscussionView(ChapterAuthMxnCls, DetailView):
     model = ChapterInfo
     template_name = 'WebApp/chapterdiscussion.html'
-
 
 
 def CourseForum(request, course):
@@ -1424,9 +1457,9 @@ class ChapterInfoUpdateView(ChapterAuthMxnCls, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
         return context
-
 
 
 class SessionInfoCreateViewPopup(CreateView):
@@ -1596,7 +1629,8 @@ def InningInfoDeleteViewChecked(request):
         print(request.POST.getlist('inning_id[]'))
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = InningInfo.objects.filter(pk__in=request.POST.getlist('inning_id[]'))
+            Obj = InningInfo.objects.filter(
+                pk__in=request.POST.getlist('inning_id[]'))
             Obj.delete()
             if '/inactive' in request.path:
                 return redirect('inninginfo_list_inactive')
@@ -1616,13 +1650,17 @@ def InningInfoEditViewChecked(request):
         student_groupObj = start_Date = end_Date = None
 
         if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
-            start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+            start_Date = datetime.strptime(
+                request.POST.get('start_Date'), "%Y-%m-%d")
         if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
-            end_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+            end_Date = datetime.strptime(
+                request.POST.get('end_Date'), "%Y-%m-%d")
 
-        inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        inninginfo_list = InningInfo.objects.filter(
+            pk__in=request.POST.get('inning_ids[]').split(','))
         if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
-            student_groupObj = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
+            student_groupObj = GroupMapping.objects.get(
+                pk=request.POST.get('Student_Group'))
         for inning in inninginfo_list:
             if start_Date and not end_Date:
                 if inning.End_Date.replace(tzinfo=None) < start_Date:
@@ -1661,7 +1699,8 @@ def InningInfoDeleteViewChecked(request):
         print(request.POST.getlist('inning_id[]'))
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = InningInfo.objects.filter(pk__in=request.POST.getlist('inning_id[]'))
+            Obj = InningInfo.objects.filter(
+                pk__in=request.POST.getlist('inning_id[]'))
             Obj.delete()
             if '/inactive' in request.path:
                 return redirect('inninginfo_list_inactive')
@@ -1681,13 +1720,17 @@ def InningInfoEditViewChecked(request):
         student_groupObj = start_Date = end_Date = None
 
         if request.POST.get('start_Date') and request.POST.get('start_Date') != '':
-            start_Date = datetime.strptime(request.POST.get('start_Date'), "%Y-%m-%d")
+            start_Date = datetime.strptime(
+                request.POST.get('start_Date'), "%Y-%m-%d")
         if request.POST.get('end_Date') and request.POST.get('end_Date') != '':
-            end_Date = datetime.strptime(request.POST.get('end_Date'), "%Y-%m-%d")
+            end_Date = datetime.strptime(
+                request.POST.get('end_Date'), "%Y-%m-%d")
 
-        inninginfo_list = InningInfo.objects.filter(pk__in=request.POST.get('inning_ids[]').split(','))
+        inninginfo_list = InningInfo.objects.filter(
+            pk__in=request.POST.get('inning_ids[]').split(','))
         if request.POST.get('Student_Group') and request.POST.get('Student_Group') != '':
-            student_groupObj = GroupMapping.objects.get(pk=request.POST.get('Student_Group'))
+            student_groupObj = GroupMapping.objects.get(
+                pk=request.POST.get('Student_Group'))
         for inning in inninginfo_list:
             if start_Date and not end_Date:
                 if inning.End_Date.replace(tzinfo=None) < start_Date:
@@ -1844,7 +1887,8 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
 
-        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        # delimiter=';|,', engine='python',
+        df = pd.read_csv(path, encoding='utf-8')
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
         center = request.user.Center_Code
@@ -1876,7 +1920,8 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                     if not CourseInfo.objects.filter(Course_Name__iexact=course_name, Center_Code=center).exists():
                         error = "Course Name <strong>" + course_name + "</strong> does not exists."
                         raise Exception
-                    course_name_code = CourseInfo.objects.get(Course_Name__iexact=course_name)
+                    course_name_code = CourseInfo.objects.get(
+                        Course_Name__iexact=course_name)
 
                     # Teachers validation
                     if not teachers:
@@ -1904,7 +1949,8 @@ def CourseAllocationCSVImport(request, *args, **kwargs):
                                                          Is_Teacher=True).exists():
                             error = "Teacher Username <strong>" + teacher + "</strong> does not exists."
                             raise Exception
-                        teacher_code = MemberInfo.objects.get(username__iexact=teacher)
+                        teacher_code = MemberInfo.objects.get(
+                            username__iexact=teacher)
                         obj.Teacher_Code.add(teacher_code)
 
                 except Exception as e:
@@ -1934,7 +1980,8 @@ def GroupMappingCSVImport(request, *args, **kwargs):
         filename = fs.save(new_file_name, media)
         path = os.path.join(path, filename)
 
-        df = pd.read_csv(path, encoding='utf-8')  # delimiter=';|,', engine='python',
+        # delimiter=';|,', engine='python',
+        df = pd.read_csv(path, encoding='utf-8')
         df = df.dropna(how='all')
         df = df.replace(pd.np.nan, '', regex=True)
         reg_agent = request.user.username
@@ -1954,7 +2001,8 @@ def GroupMappingCSVImport(request, *args, **kwargs):
             for i in range(len(groups)):
                 try:
                     group_name = str(groups[i])
-                    students = df[df['(*)Group Name'] == groups[i]].reset_index(drop=True)
+                    students = df[df['(*)Group Name'] ==
+                                  groups[i]].reset_index(drop=True)
 
                     if GroupMapping.objects.filter(GroupMapping_Name__iexact=group_name,
                                                    Center_Code=request.user.Center_Code).exists():
@@ -1975,10 +2023,12 @@ def GroupMappingCSVImport(request, *args, **kwargs):
                             raise Exception
                         student = str(student)
                         if MemberInfo.objects.filter(username=student, Center_Code=center, Is_Student=True).exists():
-                            obj_student = MemberInfo.objects.get(username=student)
+                            obj_student = MemberInfo.objects.get(
+                                username=student)
                             obj.Students.add(obj_student)
                         else:
-                            error = "Student Username <b>{}</b> not found<br>".format(student)
+                            error = "Student Username <b>{}</b> not found<br>".format(
+                                student)
                             raise Exception
 
                 except Exception as e:
@@ -2010,7 +2060,8 @@ class GroupMappingCreateView(CreateView):
         # Copy the dictionary so we don't accidentally change a mutable dict
         initial = initial.copy()
         if 'saveasnew' in self.request.path:
-            initial['Students'] = get_object_or_404(GroupMapping, pk=self.kwargs['pk']).Students.all()
+            initial['Students'] = get_object_or_404(
+                GroupMapping, pk=self.kwargs['pk']).Students.all()
         return initial
 
     def get_context_data(self, **kwargs):
@@ -2106,7 +2157,6 @@ class AssignmentInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
         return context
 
 
-
 class AssignmentInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
     model = AssignmentInfo
     context_object_name = 'Object'
@@ -2148,9 +2198,12 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Questions'] = AssignmentQuestionInfo.objects.filter(Assignment_Code=self.kwargs.get('pk'))
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Questions'] = AssignmentQuestionInfo.objects.filter(
+            Assignment_Code=self.kwargs.get('pk'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         context['datetime'] = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
@@ -2159,16 +2212,18 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, DetailView):
         return context
 
 
-
 class AssignmentInfoUpdateView(AssignmentInfoAuthMxnCls, UpdateView):
     model = AssignmentInfo
     form_class = AssignmentInfoForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['Course_Code'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
-        context['Chapter_No'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['Course_Code'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
+        context['Chapter_No'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         return context
+
 
 class AssignmentInfoDeleteView(DeleteView):
     model = AssignmentInfo
@@ -2177,7 +2232,8 @@ class AssignmentInfoDeleteView(DeleteView):
 
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = AssignmentInfo.objects.get(pk=self.request.POST['assignment_id'])
+            Obj = AssignmentInfo.objects.get(
+                pk=self.request.POST['assignment_id'])
             Obj.delete()
             return redirect('chapterinfo_detail', course=request.POST['course_id'], pk=request.POST['chapter_id'])
 
@@ -2282,7 +2338,7 @@ class QuestionInfoEditViewAjax(AjaxableResponseMixin, UpdateView):
                     name = (str(uuid.uuid4())).replace(
                         '-', '') + '.' + media.name.split('.')[-1]
                     fs = FileSystemStorage(location=path +
-                                                    '/Question_Media_Files/')
+                                           '/Question_Media_Files/')
                     filename = fs.save(name, media)
                     Obj.Question_Media_File = 'Question_Media_Files/' + name
             Obj.save()
@@ -2493,7 +2549,8 @@ def chapterpagebuilder(request, course, chapter):
                 return redirect('login')
     else:
         return redirect('login')
-    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
+    chapterlist = ChapterInfo.objects.filter(
+        Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     path = settings.MEDIA_ROOT
     server_name = settings.SERVER_NAME
@@ -2537,7 +2594,7 @@ def save_file(request):
                 request.user.pk) + '.' + media.name.split('.')[-1]
             # name = "".join(re.findall("[a-zA-Z0-9]+", name))
             fs = FileSystemStorage(location=path + '/chapterBuilder/' +
-                                            courseID + '/' + chapterID)
+                                   courseID + '/' + chapterID)
             filename = fs.save(name, media)
 
         return JsonResponse(data={"message": "success", "media_name": name})
@@ -2553,7 +2610,8 @@ def newChapterBuilder(request, course, chapter):
                 return redirect('login')
     else:
         return redirect('login')
-    chapterlist = ChapterInfo.objects.filter(Course_Code=CourseInfo.objects.get(id=course))
+    chapterlist = ChapterInfo.objects.filter(
+        Course_Code=CourseInfo.objects.get(id=course))
     chapterdetails = chapterlist.get(id=chapter)
     # Course name passed for tag
     course_name = CourseInfo.objects.get(id=course).Course_Name
@@ -2628,7 +2686,7 @@ def save_3d_file(request):
             # name = "".join(re.findall("[a-zA-Z]+", name))
             objname = name + '.' + obj.name.split('.')[-1]
             fs = FileSystemStorage(location=path + '/chapterBuilder/' +
-                                            courseID + '/' + chapterID)
+                                   courseID + '/' + chapterID)
             filename = fs.save(objname, obj)
             # if mtl is not None:
             #     mtlname = name + '.' + mtl.name.split('.')[-1]
@@ -2703,8 +2761,8 @@ def save_video(request):
                                        'application/vnd.vimeo.*+json;version=3.4',
                                    'Connection': 'keep-alive',
                                    'Upload-Offset': '0'
-                               },
-                               data=media.file)
+                },
+                    data=media.file)
 
                 if res.status_code == 204 or res.status_code == 200:
                     response = rs.head(r_responseText['upload']['upload_link'])
@@ -2724,12 +2782,14 @@ def save_video(request):
                                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
 
                     tags = rs.put(
-                        url='https://api.vimeo.com/' + r_responseText['uri'] + '/tags',
+                        url='https://api.vimeo.com/' +
+                            r_responseText['uri'] + '/tags',
                         headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                                  'Content-Type': 'application/json',
                                  'Accept': 'application/vnd.vimeo.*+json;version=3.4'},
                         data=json.dumps([
-                            {"name": "center_" + request.user.Center_Code.Center_Name.lower()},
+                            {"name": "center_" +
+                                request.user.Center_Code.Center_Name.lower()},
                             {"name": "userid_" + str(request.user.pk)},
                             {"name": "course_" + courseObj.Course_Name.lower()},
                             {"name": "chapterid_" + str(chapterObj.pk)},
@@ -2767,7 +2827,8 @@ def save_video(request):
                 public_id=name,
             )
             embedd_code = '<iframe src="' + response['secure_url'] + '"><video controls preload="none"><source src="' + \
-                          response['secure_url'] + '" type="video/mp4" autostart="false"></video></iframe>'
+                          response['secure_url'] + \
+                '" type="video/mp4" autostart="false"></video></iframe>'
             print(response)
 
             return JsonResponse({
@@ -2979,7 +3040,8 @@ def retrievechapterfile(request):
     except Exception as e:
         print(e)
     if settings.SERVER_NAME != "Indonesian_Server":
-        vimeo_videos = getVimeoMedias(chapterID, courseID, request.user, max_items)
+        vimeo_videos = getVimeoMedias(
+            chapterID, courseID, request.user, max_items)
     return JsonResponse({
         # 'images': images,
         # 'videos': videos,
@@ -2992,16 +3054,18 @@ def retrievechapterfile(request):
 def getVimeoMedias(chapterID, courseID, userObj, max_items):
     if settings.SERVER_NAME == "Korean_Server":
         a = requests.get(
-            url='https://api.vimeo.com/me/projects/1508982/videos/?per_page=' + str(max_items),
+            url='https://api.vimeo.com/me/projects/1508982/videos/?per_page=' +
+                str(max_items),
             headers={'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
                      'Content-Type': 'application/json',
                      'Accept': 'application/vnd.vimeo.*+json;version=3.4'}, ),
     elif settings.SERVER_NAME == "Vietnam_Server":
         a = requests.get(
-            url='https://api.vimeo.com/me/projects/1796938/videos/?per_page=' + str(max_items),
+            url='https://api.vimeo.com/me/projects/1796938/videos/?per_page=' +
+                str(max_items),
             headers={
                 'Authorization': 'bearer 3b42ecf73e2a1d0088dd677089d23e32',
-            }, ),
+                }, ),
     if a[0].status_code == 200:
         checkFlag = False
         video_list = []
@@ -3162,8 +3226,10 @@ class NewContentsView(TemplateView):
 
             if chapterObj.Use_Flag:
                 if '/students' in request.path:
-                    student_groups = GroupMapping.objects.filter(Students=self.request.user)
-                    course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
+                    student_groups = GroupMapping.objects.filter(
+                        Students=self.request.user)
+                    course_groups = InningGroup.objects.filter(
+                        Course_Code__pk=self.kwargs.get('course'))
                     assigned_session = InningInfo.objects.filter(Use_Flag=True,
                                                                  Start_Date__lte=datetime_now,
                                                                  End_Date__gte=datetime_now,
@@ -3179,12 +3245,14 @@ class NewContentsView(TemplateView):
                     self.chapters = active_chapters
 
                     if chapterObj not in active_chapters:
-                        messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                        messages.add_message(
+                            self.request, messages.WARNING, 'Chapter is not active.')
                         raise ObjectDoesNotExist
 
             else:
                 if '/students' in request.path:
-                    messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                    messages.add_message(
+                        self.request, messages.WARNING, 'Chapter is not active.')
                     raise ObjectDoesNotExist
         except Exception as e:
             print(e)
@@ -3199,16 +3267,20 @@ class NewContentsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course'] = get_object_or_404(CourseInfo, pk=self.kwargs.get('course'))
+        context['course'] = get_object_or_404(
+            CourseInfo, pk=self.kwargs.get('course'))
         if '/students' in self.request.path:
             context['chapterList'] = self.chapters
         else:
             context['chapterList'] = context['course'].chapterinfos.all()
-        context['chapterList'] = sorted(context['chapterList'], key=lambda t: t.Chapter_No)
-        context['chapter'] = get_object_or_404(ChapterInfo, pk=self.kwargs.get('chapter'))
+        context['chapterList'] = sorted(
+            context['chapterList'], key=lambda t: t.Chapter_No)
+        context['chapter'] = get_object_or_404(
+            ChapterInfo, pk=self.kwargs.get('chapter'))
         courseID = context['chapter'].Course_Code.id
         chapterID = self.kwargs.get('chapter')
-        context['chat_history'] = getChatMessageHistory(self.request, self.kwargs.get('chapter'))
+        context['chat_history'] = getChatMessageHistory(
+            self.request, self.kwargs.get('chapter'))
         context['connection_offline'] = False
         path = settings.MEDIA_ROOT
 
@@ -3223,8 +3295,6 @@ class NewContentsView(TemplateView):
         return context
 
 
-
-
 class OfflineContentsView(ContentsView):
     template_name = 'chapter/offlineviewer.html'
 
@@ -3232,10 +3302,6 @@ class OfflineContentsView(ContentsView):
         context = super().get_context_data(**kwargs)
         context['connection_offline'] = True
         return context
-
-
-import shutil
-import time
 
 
 def get_static_files_info(request, *args, **kwargs):
@@ -3317,7 +3383,7 @@ def make_zip_file(list_of_files):
                 os.makedirs(dstfolder)
         if os.path.isdir(settings.BASE_DIR + '/WebApp/' + src):
             if (os.path.exists(dst)
-            ):  # if folder exists already, removes it and copy again
+                ):  # if folder exists already, removes it and copy again
                 shutil.rmtree(dst)
             shutil.copytree(settings.BASE_DIR + '/WebApp/' + src, dst)
         else:
@@ -3327,9 +3393,6 @@ def make_zip_file(list_of_files):
 
 def get_static_files(request):
     return redirect(settings.MEDIA_URL + '/staticfiles.zip')
-
-
-from quiz.views import Sitting
 
 
 def AchievementPage_Student(request, student_id):
@@ -3448,7 +3511,8 @@ class SessionManagerUpdateView(UpdateView):
     def get_object(self):
         session_Manager = None
         if InningManager.objects.filter(sessioninfoobj__pk=self.kwargs.get('pk')).exists():
-            session_Manager = InningManager.objects.get(sessioninfoobj__pk=self.kwargs.get('pk'))
+            session_Manager = InningManager.objects.get(
+                sessioninfoobj__pk=self.kwargs.get('pk'))
         else:
             session_Manager = InningManager.objects.create(
                 sessioninfoobj=InningInfo.objects.get(pk=self.kwargs.get('pk')))
@@ -3457,7 +3521,8 @@ class SessionManagerUpdateView(UpdateView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
-            messages.add_message(self.request, messages.SUCCESS, 'Session Managers Updated.')
+            messages.add_message(
+                self.request, messages.SUCCESS, 'Session Managers Updated.')
             # return super().form_valid(form)
             return redirect('inninginfo_detail', self.kwargs.get('pk'))
 
@@ -3487,9 +3552,6 @@ def viewteacherAttendance(request, attend_date, courseid, teacherid):
             return JsonResponse(data)
     else:
         return HttpResponse("No attendance recorded", status=500)
-
-
-from django.contrib.auth import authenticate, login as auth_login
 
 
 def loginforappredirect(request, username, password):
@@ -3574,7 +3636,8 @@ def chapterProgressRecord(courseid, chapterid, studentid, fromcontents=False, cu
                           studytimeinseconds=None, createFile=True, isjson=False
                           ):
     jsondata = None
-    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", courseid, chapterid)
+    path = os.path.join(settings.MEDIA_ROOT,
+                        ".chapterProgressData", courseid, chapterid)
     try:
         os.makedirs(
             path)  # Creates the directories and subdirectories structure
@@ -3670,10 +3733,12 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             if studytimeprogresspercent > 100:
                 studytimeprogresspercent = 100
 
-            student_quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
+            student_quiz = Quiz.objects.filter(
+                chapter_code=chapter, draft=False)
             # If the quiz is taken by the student multiple times, then just get the latest attempted quiz.
 
-            student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)._clone()
+            student_result = Sitting.objects.order_by(
+                '-end').filter(user=x, quiz__in=student_quiz)._clone()
             # student_result = Sitting.objects.order_by('-end').filter(user=x, quiz__in=student_quiz)
 
             # Calculate QUiz progress %
@@ -3703,7 +3768,7 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
             if chapter.mustreadtime and jsondata:
                 if jsondata['contents']['totalstudytime']:
                     attendance = int(jsondata['contents'][
-                                         'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
+                        'totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100 if jsondata else False
                 else:
                     attendance = False
             else:
@@ -3715,16 +3780,16 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
                         'chapter': {
                             'chapterObj': chapter,
                             'laststudydate': datetime.strptime(jsondata['contents'][
-                                                                   'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
+                                'laststudydate'], "%m/%d/%Y %H:%M:%S").strftime(
                                 "%Y/%m/%d %H:%M:%S") if jsondata['contents']['laststudydate'] is not None else None,
                             'totalstudytime': timedelta(seconds=int(jsondata['contents']['totalstudytime'])) if
                             jsondata['contents']['totalstudytime'] is not None else "00:00:00",
                             'currentpagenumber': int(
                                 jsondata['contents']['currentpagenumber']) if jsondata['contents'][
-                                                                                  'currentpagenumber'] is not None else None,
+                                'currentpagenumber'] is not None else None,
                             'totalPage': int(
                                 jsondata['contents']['totalPage']) if jsondata['contents'][
-                                                                          'totalPage'] is not None else None,
+                                'totalPage'] is not None else None,
                             'progresspercent': math.floor(progresspercent),
                             'studytimeprogresspercent': math.floor(studytimeprogresspercent),
                             'attendance': attendance,
@@ -3777,16 +3842,19 @@ def getCourseProgress(courseObj, list_of_students, chapters_list, student_data=N
     return student_data
 
 
-
 def getChapterScore(user, chapterObj):
     data = getCourseProgress(chapterObj.Course_Code, [user, ], [chapterObj, ])
     if chapterObj.getChapterContent() != "":
-        dataScore = float(data[0]['chapter']['progresspercent']) if data != "" else 0
+        dataScore = float(data[0]['chapter']
+                          ['progresspercent']) if data != "" else 0
         if isinstance(data[0]['chapter']['totalstudytime'], timedelta):
-            totalstudytime = data[0]['chapter']['totalstudytime'].total_seconds()
+            totalstudytime = data[0]['chapter']['totalstudytime'].total_seconds(
+            )
         else:
-            h, m, s = data[0]['chapter']['totalstudytime'].split(':') if data != "" else '00:00:00'
-            totalstudytime = int(timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
+            h, m, s = data[0]['chapter']['totalstudytime'].split(
+                ':') if data != "" else '00:00:00'
+            totalstudytime = int(
+                timedelta(hours=int(h), minutes=int(m), seconds=int(s)).total_seconds())
         readtime = int(totalstudytime) if data != "" else 0
         if chapterObj.mustreadtime:
             if chapterObj.mustreadtime <= readtime:
@@ -3802,7 +3870,7 @@ def getChapterScore(user, chapterObj):
             chapterDurationScore = 100
         else:
             chapterDuration = (timezone.now() - chapterObj.Start_Date) if chapterObj.Start_Date else (
-                    timezone.now() - chapterObj.Register_DateTime)
+                timezone.now() - chapterObj.Register_DateTime)
             if chapterDuration < timedelta(days=30):
                 chapterDurationScore = 30
             elif chapterDuration > timedelta(days=30) and chapterDuration < timedelta(days=90):
@@ -3944,7 +4012,8 @@ def editStudentChapterProgressTime(request, chapterid, studentid):
             print(JSONDecodeError)
 
         if os.path.isfile(student_data_file):
-            jsondata['contents']['totalstudytime'] = int(request.POST.get('edit_progress_studytime_timeinput'))
+            jsondata['contents']['totalstudytime'] = int(
+                request.POST.get('edit_progress_studytime_timeinput'))
             with open(student_data_file, "w") as outfile:
                 json.dump(jsondata, outfile, indent=4)
             return JsonResponse({'message': 'success'}, status=200)
@@ -3958,11 +4027,13 @@ def loaderverifylink(request):
 
 def notice_view_create(request):
     if request.method == 'POST':
-        print(request.POST['user_code'], request.POST['notice_code'], request.POST['dont_show'])
+        print(request.POST['user_code'],
+              request.POST['notice_code'], request.POST['dont_show'])
         user_code = request.user
         notice_code = Notice.objects.get(id=request.POST['notice_code'])
         if NoticeView.objects.filter(user_code=user_code, notice_code=notice_code).exists():
-            obj = NoticeView.objects.get(user_code=user_code, notice_code=notice_code)
+            obj = NoticeView.objects.get(
+                user_code=user_code, notice_code=notice_code)
         else:
             obj = NoticeView()
             obj.user_code = user_code
@@ -3975,19 +4046,17 @@ def notice_view_create(request):
         return JsonResponse({'status': 'Success', 'msg': 'Added status'})
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-
-
 @api_view(['GET', ])
 @permission_classes((IsAuthenticated,))
 def getDirectURLOfMedias(request):
     if request.method == "GET":
         matchfound = False
         url = request.GET.get('url')
-        vimeoRegExp = re.search("\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
+        vimeoRegExp = re.search(
+            "\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
         if (vimeoRegExp):
-            vimeoID = re.split("\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
+            vimeoID = re.split(
+                "\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*", url)
             id = vimeoID[3]
             matchfound = True
             r = requests.get(url='https://api.vimeo.com/videos/' + id + '/',
@@ -4043,7 +4112,8 @@ def checkForMediaFiles(request):
         try:
             if os.path.exists(path + '/chapterBuilder/' + str(request.GET.get('courseID'))):
                 files = glob.glob(
-                    os.path.join(*[path, "chapterBuilder", str(request.GET.get('courseID'))]) + '/**/*.txt',
+                    os.path.join(
+                        *[path, "chapterBuilder", str(request.GET.get('courseID'))]) + '/**/*.txt',
                     recursive=True)
                 for eachfile in files:
                     try:
@@ -4058,11 +4128,13 @@ def checkForMediaFiles(request):
                                             elif filekey == 'video' or filekey == 'audio':
                                                 key_name = 'online_link'
                                             if data['pages'][page][0][filekey][itemnumber][
-                                                key_name].strip() == filelink:
+                                                    key_name].strip() == filelink:
                                                 # print(os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0])
                                                 chapterpk = \
-                                                    os.path.splitext(os.path.basename(os.path.basename(eachfile)))[0]
-                                                chapter = ChapterInfo.objects.get(pk=int(chapterpk))
+                                                    os.path.splitext(os.path.basename(
+                                                        os.path.basename(eachfile)))[0]
+                                                chapter = ChapterInfo.objects.get(
+                                                    pk=int(chapterpk))
                                                 if request.GET.get('teachers') == '1':
                                                     chapter_link = chapter.teacher_get_absolute_url() + 'newChapterBuilder'
                                                 else:
@@ -4106,7 +4178,8 @@ def getChatMessageHistory(request, chapterID):
     # messageRangeFrom => for pagination : 0 for latest message
     # numberofmessages => maximum 50 if not specified.
     page = int(request.GET.get('page')) if request.GET.get('page') else 1
-    numberofmessagesperpage = int(request.GET.get('per_page')) if request.GET.get('per_page') else 50
+    numberofmessagesperpage = int(request.GET.get(
+        'per_page')) if request.GET.get('per_page') else 50
     messageRangeFrom = (page - 1) * numberofmessagesperpage
 
     # Total Chat messages loaded at the time.
@@ -4190,7 +4263,8 @@ def MeetPublic(request, userid, meetcode):
 
 def get_study_time(course_id, chapter, student):
     jsondata = ''
-    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", str(course_id), str(chapter.id))
+    path = os.path.join(settings.MEDIA_ROOT, ".chapterProgressData", str(
+        course_id), str(chapter.id))
     student_data_file = os.path.join(path, str(student.id) + '.txt')
     progresspercent = 0
     study_time = 0
@@ -4223,7 +4297,8 @@ class TeacherReport(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['course_list'] = CourseInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['course_list'] = CourseInfo.objects.filter(
+            Center_Code=self.request.user.Center_Code)
         context['max_chapter_count'] = max([course.chapterinfos.count() for course in context['course_list']]
                                            ) if context['course_list'] else 0
 
@@ -4240,18 +4315,22 @@ class TeacherIndividualReport(TemplateView):
         context = super().get_context_data(**kwargs)
         teacher = get_object_or_404(MemberInfo, Is_Teacher=True,
                                     Center_Code=self.request.user.Center_Code, pk=self.kwargs.get('teacherpk'))
-        course = get_object_or_404(CourseInfo, Use_Flag=True, pk=self.kwargs.get('coursepk'))
-        course_groups = InningGroup.objects.filter(Teacher_Code=teacher, Course_Code=course, Use_Flag=True)
+        course = get_object_or_404(
+            CourseInfo, Use_Flag=True, pk=self.kwargs.get('coursepk'))
+        course_groups = InningGroup.objects.filter(
+            Teacher_Code=teacher, Course_Code=course, Use_Flag=True)
         if not course_groups:
             return HttpResponseNotFound("Teacher Course data doesn't match")
 
         chapters = ChapterInfo.objects.filter(Course_Code=course)
         teacher_course_session = teacher.get_teacher_courses()
-        assigned_sessions = teacher_course_session['session'].filter(Course_Group__in=course_groups).distinct()
+        assigned_sessions = teacher_course_session['session'].filter(
+            Course_Group__in=course_groups).distinct()
 
         for chapter in chapters:
             quiz = Quiz.objects.filter(chapter_code=chapter, draft=False)
-            assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter, Use_Flag=True)
+            assignments = AssignmentInfo.objects.filter(
+                Chapter_Code=chapter, Use_Flag=True)
             chapter.quiz_count = quiz.count()
             datest = dict()
             datend = dict()
@@ -4277,7 +4356,8 @@ class TeacherIndividualReport(TemplateView):
                     if p == 'Complete':
                         progressc[session.id] += 1
                     if quiz:
-                        s = Sitting.objects.filter(quiz__in=quiz, user=student, complete=True).distinct('quiz').count()
+                        s = Sitting.objects.filter(
+                            quiz__in=quiz, user=student, complete=True).distinct('quiz').count()
                         if s == quiz.count():
                             quizc[session.id] += 1
                     if assignments:
@@ -4307,6 +4387,7 @@ class TeacherIndividualReport(TemplateView):
         context['sessions'] = assigned_sessions
         return context
 
+
 def CourseProgressDownload(request, coursepk, sessionpk):
     course = CourseInfo.objects.get(pk=int(coursepk))
     session = InningInfo.objects.get(pk=int(sessionpk))
@@ -4328,29 +4409,34 @@ def CourseProgressDownload(request, coursepk, sessionpk):
         for assignemnt in assignments:
             assignment_total_score += assignemnt.get_total_score
         quiz_total_score = decimal.Decimal(round(quiz_total_score, 2))
-        assignment_total_score = decimal.Decimal(round(assignment_total_score, 2))
+        assignment_total_score = decimal.Decimal(
+            round(assignment_total_score, 2))
         score_dict[chapter.pk] = [quiz_total_score, assignment_total_score]
     cols = pd.MultiIndex.from_tuples(column_names)
     df = pd.DataFrame(columns=column_names)
 
     for i, student in enumerate(students):
-        new_row = {("Student Name", "Full Name"): student.get_full_name(), ("Username", "User ID"): student.username}
+        new_row = {("Student Name", "Full Name"): student.get_full_name(
+        ), ("Username", "User ID"): student.username}
         for chapter in chapters:
             chapter_name = chapter.Chapter_Name
 
             student_quiz_scores = []
             student_quiz_score = 0.0
-            quiz_sittings = Sitting.objects.filter(quiz__chapter_code=chapter, user=student, complete=True)
+            quiz_sittings = Sitting.objects.filter(
+                quiz__chapter_code=chapter, user=student, complete=True)
             for quiz_sitting in quiz_sittings:
                 student_quiz_scores.append(quiz_sitting.get_score_correct)
-            student_quiz_score = max(student_quiz_scores) if student_quiz_scores else 0
+            student_quiz_score = max(
+                student_quiz_scores) if student_quiz_scores else 0
             student_quiz_score = decimal.Decimal(round(student_quiz_score, 2))
 
             student_assignment_score = AssignAnswerInfo.objects.filter(
                 Question_Code__Assignment_Code__Chapter_Code=chapter, Student_Code=student).aggregate(
                 Sum('Assignment_Score'))['Assignment_Score__sum']
             if student_assignment_score:
-                student_assignment_score = decimal.Decimal(round(student_assignment_score, 2))
+                student_assignment_score = decimal.Decimal(
+                    round(student_assignment_score, 2))
             else:
                 student_assignment_score = 0
 
@@ -4371,14 +4457,16 @@ def CourseProgressDownload(request, coursepk, sessionpk):
         df.index += 1
         df.index.name = 'S.N.'
         sheet_name = str(course.Course_Name)
-        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)  # remove special characters
+        # remove special characters
+        sheet_name = re.sub('[^A-Za-z0-9_ .]+', '', sheet_name)
         if len(sheet_name) > 28:
             sheet_name = sheet_name[:27] + ' ..'
         df.to_excel(writer, sheet_name=sheet_name)
         writer.save()
         response = HttpResponse(b.getvalue(),
                                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8')
-        response['Content-Disposition'] = 'attachment; filename="' + 'StudentProgress_' + sheet_name + '.xlsx"'
+        response['Content-Disposition'] = 'attachment; filename="' + \
+            'StudentProgress_' + sheet_name + '.xlsx"'
         return response
 
 
@@ -4503,14 +4591,10 @@ def DepartmentInfoDeleteView(request, pk):
 # ==========================    End of Department Views =========================================
 
 
-from django.contrib.admin.options import get_content_type_for_model
-from django.apps import apps
-
-
 def InningInfoMappingView(model_name, request=None, **kwargs):
     if request:
         start_date, end_date, session_id, object_id = request.POST['Start_Date'], request.POST['End_Date'], \
-                                                      request.POST['sessionid'], request.POST['objectid']
+            request.POST['sessionid'], request.POST['objectid']
     else:
         start_date, end_date, session_id, object_id = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
             'session_id'), kwargs.get('object_id')
@@ -4551,7 +4635,8 @@ def InningInfoMappingView(model_name, request=None, **kwargs):
 
 def ChapterInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request=request, model_name='ChapterInfo')
+        requestStatus = InningInfoMappingView(
+            request=request, model_name='ChapterInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
@@ -4562,7 +4647,8 @@ def ChapterInningInfoMappingView(request):
 
 def AssignmentInningInfoMappingView(request):
     if request.method == "POST":
-        requestStatus = InningInfoMappingView(request=request, model_name='AssignmentInfo')
+        requestStatus = InningInfoMappingView(
+            request=request, model_name='AssignmentInfo')
         if requestStatus.status_code == 200:
             return JsonResponse({'message': 'success'}, status=200)
         else:
