@@ -729,7 +729,10 @@ class MCQuestionCreateView(AjaxableResponseMixin, CreateView):
         context = self.get_context_data()
         ans = context['answers_formset'][0]
         if context['quiz_id'] is not None:
-            get_object_or_404(Quiz, id=context['quiz_id']).mcquestion.add(self.object)
+            quiz_object = get_object_or_404(Quiz, id=context['quiz_id'])
+            quiz_object.mcquestion.add(self.object)
+            quiz_object.mcquestion_order = str(quiz_object.mcquestion_order) + ',' + str(self.object.id)
+            quiz_object.save()
         with transaction.atomic():
             for f in ans:
                 print("is changed: ", f.has_changed())
@@ -796,7 +799,10 @@ class TFQuestionCreateView(AjaxableResponseMixin, CreateView):
         new_tfq['new_tfq_content'] = self.object.content
         context = self.get_context_data()
         if context['quiz_id'] is not None:
-            get_object_or_404(Quiz, id=context['quiz_id']).tfquestion.add(self.object)
+            quiz_object = get_object_or_404(Quiz, id=context['quiz_id'])
+            quiz_object.tfquestion.add(self.object)
+            quiz_object.tfquestion_order = str(quiz_object.tfquestion_order) + ',' + str(self.object.id)
+            quiz_object.save()
         return JsonResponse(new_tfq)
 
     def get_context_data(self, **kwargs):
@@ -851,7 +857,10 @@ class SAQuestionCreateView(AjaxableResponseMixin, CreateView):
         new_saq['new_saq_content'] = self.object.content
         context = self.get_context_data()
         if context['quiz_id'] is not None:
-            get_object_or_404(Quiz, id=context['quiz_id']).saquestion.add(self.object)
+            quiz_object = get_object_or_404(Quiz, id=context['quiz_id'])
+            quiz_object.saquestion.add(self.object)
+            quiz_object.saquestion_order = str(quiz_object.saquestion_order) + ',' + str(self.object.id)
+            quiz_object.save()
         return JsonResponse(new_saq)
 
     def get_context_data(self, **kwargs):
