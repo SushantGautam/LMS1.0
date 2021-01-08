@@ -34,43 +34,53 @@
         });
 
         $(".score_submit_multiple").click(function (e) {
-            score_json = [];
+            let score_json = [];
+            let submitok = true;
             $('.changeScoreCheck:checked').each(function () {
                 var user_input = parseFloat($(`#input${$(this).attr('data-qid')}`).val());
                 var full_marks = parseFloat($(`#score${$(this).attr('data-qid')}`).html());
-                if (user_input > full_marks) {
+                if ($(`#input${$(this).attr('data-qid')}`).val() != '') {
+                    if (user_input > full_marks) {
+                        e.preventDefault();
+                        submitok = false;
+                        alert("Score cannot be greater than full marks!");
+                        return false
+                    }
+                    score_json.push({
+                        "q_id": $(this).attr('data-qid'),
+                        "new_score": user_input,
+                        "sitting_id": '{{ object.id }}'
+                    });
+                } else {
                     e.preventDefault();
-                    alert("Score cannot be greater than full marks!");
+                    submitok = false;
+                    alert("Error! Please make sure to input score in all checked fields");
                     return false
                 }
-                score_json.push({
-                    "q_id": $(this).attr('data-qid'),
-                    "new_score": user_input,
-                    "sitting_id": '{{ object.id }}'
-                });
             });
-            if ($('.changeScoreCheck:checked').length > 0) {
-                $.ajax({
-                type: "POST",
-                url: "{% url 'teacher_quiz_marking_multiple' %}",  // URL to your view that serves new info
-                data: {
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    'data': JSON.stringify(score_json)
-                },
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (request, status, error) {
-                    console.log(error)
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
-                },
-            });
-            } else {
-                alert('Please check at least one answer.')
+            if (submitok) {
+                if ($('.changeScoreCheck:checked').length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'teacher_quiz_marking_multiple' %}",  // URL to your view that serves new info
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            'data': JSON.stringify(score_json)
+                        },
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (request, status, error) {
+                            console.log(error)
+                        },
+                        complete: function () {
+                            $(".se-pre-con-ajax").fadeOut("fast");
+                        },
+                    });
+                } else {
+                    alert('Please check at least one answer.')
+                }
             }
-
         });
     </script>
     <script type="text/javascript">
