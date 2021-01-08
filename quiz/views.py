@@ -1091,7 +1091,11 @@ class RemoveMcqLink(View):
     def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
         if my_obj.question_count() > 1:
-            my_obj.mcquestion.remove(get_object_or_404(MCQuestion, id=self.kwargs['qn_id']))
+            mcq_obj = get_object_or_404(MCQuestion, id=self.kwargs['qn_id'])
+            my_obj.mcquestion.remove(mcq_obj)
+            new_mcqlist = my_obj.tfquestion_order.split(',')
+            new_mcqlist.remove(str(mcq_obj.pk))
+            my_obj.tfquestion_order = ','.join(new_mcqlist)
         else:
             messages.add_message(request, messages.ERROR,
                                  'At least one question must be available in quiz.')
@@ -1107,7 +1111,11 @@ class RemoveTfqLink(View):
     def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
         if my_obj.question_count() > 1:
-            my_obj.tfquestion.remove(get_object_or_404(TF_Question, id=self.kwargs['qn_id']))
+            tfq_obj = get_object_or_404(TF_Question, id=self.kwargs['qn_id'])
+            my_obj.tfquestion.remove(tfq_obj)
+            new_tfqlist = my_obj.tfquestion_order.split(',')
+            new_tfqlist.remove(str(tfq_obj.pk))
+            my_obj.tfquestion_order = ','.join(new_tfqlist)
         else:
             messages.add_message(request, messages.ERROR,
                                  'At least one question must be available in quiz.')
@@ -1123,7 +1131,12 @@ class RemoveSaqLink(View):
     def post(self, request, **kwargs):
         my_obj = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
         if my_obj.question_count() > 1:
-            my_obj.saquestion.remove(get_object_or_404(SA_Question, id=self.kwargs['qn_id']))
+            saq_obj = get_object_or_404(SA_Question, id=self.kwargs['qn_id'])
+            my_obj.saquestion.remove(saq_obj)
+            new_saqlist = my_obj.saquestion_order.split(',')
+            new_saqlist.remove(str(saq_obj.pk))
+            my_obj.saquestion_order = ','.join(new_saqlist)
+            my_obj.save()
         else:
             messages.add_message(request, messages.ERROR,
                                  'At least one question must be available in quiz.')
@@ -1311,6 +1324,9 @@ class QuizSAQChoosePrevious(AjaxableResponseMixin, UpdateView):
             'quiz_detail',
             kwargs={'pk': self.kwargs['pk']},
         )
+
+    # def form_valid(self, form):
+    #     return super().form_valid(form)
 
 
 def FilterMarkingForTeachers(request, Quiz_Id):
