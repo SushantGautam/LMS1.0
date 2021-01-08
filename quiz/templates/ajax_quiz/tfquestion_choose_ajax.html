@@ -23,6 +23,9 @@
         $("#tfq_select_form_post").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
             $('#id_tfquestion_to option').prop('selected', true);
+            var new_question_order = [];
+            $.each($('#id_tfquestion_to option'), function() {new_question_order.push(this.value)});
+            $("#id_tfquestion_order").val(new_question_order.toString());
             $.ajax({
                 url: "{% url 'choose_tfq' pk=object.pk %}", // URL to your view that serves new info
                 data: $(this).serialize(), // get the form data
