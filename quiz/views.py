@@ -1096,6 +1096,7 @@ class RemoveMcqLink(View):
             new_mcqlist = my_obj.mcquestion_order.split(',')
             new_mcqlist.remove(str(mcq_obj.pk))
             my_obj.mcquestion_order = ','.join(new_mcqlist)
+            my_obj.save()
         else:
             messages.add_message(request, messages.ERROR,
                                  'At least one question must be available in quiz.')
@@ -1116,6 +1117,7 @@ class RemoveTfqLink(View):
             new_tfqlist = my_obj.tfquestion_order.split(',')
             new_tfqlist.remove(str(tfq_obj.pk))
             my_obj.tfquestion_order = ','.join(new_tfqlist)
+            my_obj.save()
         else:
             messages.add_message(request, messages.ERROR,
                                  'At least one question must be available in quiz.')
