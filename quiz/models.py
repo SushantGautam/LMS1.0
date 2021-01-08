@@ -843,9 +843,9 @@ class Sitting(models.Model):
         """
 
         if not question_index:
-            first, _ = self.question_list.split(',', 1) if self.question_list != '' else (
-                self.question_order.split(',', 1) if self.question_order.split(
-                    ',')[-1] != '' else self.question_order.split(',')[-2], None)
+            first = str(self.question_list).split(',')[0] if str(self.question_list) != '' else (
+                str(self.question_order).split(',')[0] if str(self.question_order).split(
+                    ',')[-1] != '' else str(self.question_order).split(',')[-2])
         else:
             first = self.question_order.split(',')[question_index - 1]
         question_id = int(first)

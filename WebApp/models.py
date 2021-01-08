@@ -169,7 +169,7 @@ class MemberInfo(AbstractUser):
 
     def get_student_courses(self):
         innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
-                                            End_Date__gt=datetime.now())
+                                            End_Date__gt=datetime.now(), Use_Flag=True)
         courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
         return courses
 
