@@ -29,12 +29,16 @@
 </div>
 
 <div id="quiz_create_popup" class="modal fade"
-    style="height: -webkit-fill-available;     width: -webkit-fill-available;     z-index: 10000;">
+    style="height: -webkit-fill-available;  width: -webkit-fill-available; z-index: 10000;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Quiz</h4>
+                <h5 class="modal-title text-primary font-weight-bold" id="create_quiz_modal_title">
+                    {% trans "Create Quiz" %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
             </div>
             <div class="modal-body" id="quiz_form_ajax">
                 <div>
@@ -49,8 +53,12 @@
     <div class="modal-dialog modal-dialog-centered" style="width: -webkit-fit-content">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="question_model_title">Add Question</h4>
+                <h5 class="modal-title text-primary font-weight-bold" id="add_question_modal_title">
+                    {% trans "Add Question" %}
+                </h5>
+                <button type="button" class="close" id="qn_close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
             </div>
             <div class="modal-body" id="question_form_ajax">
                 <div>

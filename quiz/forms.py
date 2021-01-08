@@ -60,9 +60,7 @@ class QuizForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
         }
-        labels = {
-            "mcquestion": "Multiple Choice Questions",
-        }
+       
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }

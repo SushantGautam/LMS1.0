@@ -19,11 +19,12 @@
     </div>
 </div>
 
-<div id="quiz_create_popup" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content" style="height: 90vh;overflow: auto;">
+<div id="quiz_create_popup" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade"
+    style="height: -webkit-fill-available;    width: -webkit-fill-available; z-index:10000;">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document" >
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_quiz_modal_title">
                     {% trans "Create Quiz" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
