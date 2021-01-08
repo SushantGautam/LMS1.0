@@ -1093,9 +1093,9 @@ class RemoveMcqLink(View):
         if my_obj.question_count() > 1:
             mcq_obj = get_object_or_404(MCQuestion, id=self.kwargs['qn_id'])
             my_obj.mcquestion.remove(mcq_obj)
-            new_mcqlist = my_obj.tfquestion_order.split(',')
+            new_mcqlist = my_obj.mcquestion_order.split(',')
             new_mcqlist.remove(str(mcq_obj.pk))
-            my_obj.tfquestion_order = ','.join(new_mcqlist)
+            my_obj.mcquestion_order = ','.join(new_mcqlist)
         else:
             messages.add_message(request, messages.ERROR,
                                  'At least one question must be available in quiz.')
