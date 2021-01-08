@@ -1327,9 +1327,6 @@ class QuizSAQChoosePrevious(AjaxableResponseMixin, UpdateView):
             kwargs={'pk': self.kwargs['pk']},
         )
 
-    # def form_valid(self, form):
-    #     return super().form_valid(form)
-
 
 def FilterMarkingForTeachers(request, Quiz_Id):
     if QuizInfoAuth(request, Quiz_Id) != 1:  # if Quiz do not belong to the user center then redirect
