@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-Polls
+{% trans 'Polls' %}
 {% endblock %}
 {% block stylesheets %}
 <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item" aria-current="page"><a href="{% url 'question' %}">Survey</a></li>
-<li class="breadcrumb-item active" aria-current="page">Polls</li>
+<li class="breadcrumb-item" aria-current="page"><a href="{% url 'question' %}">{% trans 'Survey' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Polls' %}</li>
 {% endblock %}
 
 {% block content %}
@@ -21,7 +22,7 @@ Polls
 
         <div class="container">
 
-            <h2 class="pollTitle">Survey Title</h2>
+            <h2 class="pollTitle">{% trans 'Survey Title' %}</h2>
             <div class="horizontalBar"></div>
 
             <div class="viewSurveyTitle">
@@ -29,9 +30,9 @@ Polls
                     <li>
                         <div class="form-group">
                             <label class="control-label col-md-12 col-sm-12 col-xs-12" id="categoryTitle1"
-                                for="first-name">Category
+                                for="first-name">{% static 'Category' %}
                                 :
-                                <span class="generalLabel">General</span>
+                                <span class="generalLabel">{% trans 'General' %}</span>
                                 <!-- <span class="sessionLabel" style="display:none;">Session</span>
                                         <span class="courseLabel" style="display:none;">Course</span>
                                         <span class="systemLabel" style="display:none;">System</span> -->

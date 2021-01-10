@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -8,7 +9,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Student Group</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Student Group' %}</li>
 {% endblock %}
 {% block content %}
     <!-- Model for Import CSV file -->
@@ -17,7 +18,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+                    <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'CSV File Import' %}</b>
                         <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -26,29 +27,27 @@
                 <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
                     <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                         {% csrf_token %} <br><br>
-                        <label for="id_import_csv">Choose the CSV file to Import Student Group Data</label>
+                        <label for="id_import_csv">{% trans 'Choose the CSV file to Import Student Group Data' %}</label>
                         <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                         <a target="_blank" class="text-center" href="{% static 'importStudentGroup_sample.csv' %}"
                            style="padding-top: 2em;">
-                            <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                            <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
                         </a><br>
 
-                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
-                            Info...</b></span>
+                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>{% trans 'Read Detail Info' %}...</b></span>
                         <ul class="info-text" style="display:none;background:azure;">
-                            <li>- Username is Student username to be added to group (required)</li>
-                            <li>- Group is name of group where student will be added (required)</li>
-                            <li>- All Students account should have already been registered as Member</li>
-                            <li>- If error occur in one group only that group will not be created </li>
+                            <li>- {% trans 'Username is Student username to be added to group' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'Group is name of group where student will be added' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'All Students account should have already been registered as Member' %}</li>
+                            <li>- {% trans 'If error occur in one group only that group will not be created' %} </li>
                         </ul>
 
                         <div class="import-message"></div>
                         <div class="text-center">
-                            <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
-                                File
+                            <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">{% trans 'Submit File' %}
                             </button>
                             <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
-                                    style="margin:3em auto 2em auto">Close
+                                    style="margin:3em auto 2em auto">{% trans 'Close' %}
                             </button>
                         </div>
                     </form>
@@ -61,20 +60,20 @@
     <div class="groupmappingListClass">
 
         <hr class="header_hr">
-        <h2 class="tableHeader">Registered Student Groups</h2>
+        <h2 class="tableHeader">{% trans 'Registered Student Groups' %}</h2>
         <hr class="header_hr">
         <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'groupmapping_create' %}">Create New Group</a>
+            <a class="btn btn-success" href="{% url 'groupmapping_create' %}">{% trans 'Create New Group' %}</a>
         </div>
         <br><br><br>
         <div class="table-responsive">
             <table class="table table-striped table-bordered bg-white nowrap">
                 <thead class="thead-light bg-primary">
                 <tr>
-                    <td>ID</td>
-                    <td>Group Name</td>
-                    <td>No. of Student Enrolled</td>
-                    <td>Use Flag</td>
+                    <td>{% trans 'ID' %}</td>
+                    <td>{% trans 'Group Name' %}</td>
+                    <td>{% trans 'No. of Student Enrolled' %}</td>
+                    <td>{% trans 'Use Flag' %}</td>
 {#                    <td>Students</td>#}
                 </tr>
                 </thead>

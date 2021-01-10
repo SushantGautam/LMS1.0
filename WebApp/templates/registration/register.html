@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +8,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>LMS | Register</title>
+    <title>LMS | {% trans 'Register' %}</title>
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
@@ -36,14 +37,14 @@
         <div class="col-lg-6 col-md-6 col-xs-12">
 
             <form class="form-reg" method="POST" action="" id="registration-form">
-                <legend><h1 class="h2"> Register New User </h1></legend>
+                <legend><h1 class="h2"> {% trans 'Register New User' %} </h1></legend>
                 <hr>
 
                 {% csrf_token %}
 
                 <div id="div_id_username" class="form-group has-error">
                     <label for="id_username" class="control-label requiredField">
-                        Username*
+                        {% trans 'Username' %}*
                     </label>
                     <div class="controls ">
                         <input type="text" name="username" maxlength="150" autofocus="" id="id_username"
@@ -54,7 +55,7 @@
 
                 <div id="div_id_email" class="form-group">
                     <label for="id_email" class="control-label">
-                        Email address
+                        {% trans 'Email address' %}
                     </label>
                     <div class="controls ">
                         <input type="email" name="email" maxlength="254" id="id_email" class="emailinput form-control"
@@ -68,27 +69,27 @@
 
                 <div id="div_id_Member_Type" class="form-group">
                     <label for="id_Member_Type" class="control-label ">
-                        Member Type*
+                        {% trans 'Member Type' %}*
                     </label><br>
                     <div class="form-group" style="display: inline; float: left;">
                         <div id="div_id_Is_Student" class="checkbox">
                             <input type="radio" name="member_type" id="id_Is_Student" value="Is_Student"
                                    class="checkboxinput" checked>
-                            <label for="id_Is_Student">Student</label>
+                            <label for="id_Is_Student">{% trans 'Student' %}</label>
                         </div>
                     </div>
                     <div class="form-group" style="display: inline; float: left; margin-left: 2em;">
                         <div id="div_id_Is_Teacher" class="checkbox">
                             <input type="radio" name="member_type" id="id_Is_Teacher" value="Is_Teacher"
                                    class="checkboxinput">
-                            <label for="id_Is_Teacher">Teacher</label>
+                            <label for="id_Is_Teacher">{% trans 'Teacher' %}</label>
                         </div>
                     </div>
                     <br>
                 </div>
 
                 <div id="div_id_password1" class="form-group" style="clear: both;">
-                    <label for="id_password1" class="control-label requiredField"> Password* </label>
+                    <label for="id_password1" class="control-label requiredField"> {% trans 'Password' %}* </label>
                     <div class="controls ">
                         <input type="password" name="password1" id="id_password1"
                                class="textinput textInput form-control" required>
@@ -105,7 +106,7 @@
 
                 <div id="div_id_password2" class="form-group">
                     <label for="id_password2" class="control-label requiredField">
-                        Password confirmation<span class="asteriskField">*</span>
+                        {% trans 'Password confirmation' %}<span class="asteriskField">*</span>
                     </label>
                     <div class="controls ">
                         <input type="password" name="password2" id="id_password2"
@@ -118,13 +119,13 @@
                     <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="False" class="select form-control">
                 </div>
 
-                <small class="text-info">* are the required fields</small><br>
+                <small class="text-info">* {% trans 'are the required fields' %}</small><br>
 
-                <div>Already a member? <a href="{% url 'login' %}">Login</a></div>
+                <div>{% trans 'Already a member' %}? <a href="{% url 'login' %}">{% trans 'Login' %}</a></div>
                 <br>
 
                 <button class="btn btn-lg btn-success btn-block" type="submit">
-                    Register
+                    {% trans 'Register' %}
                 </button>
 
             </form>

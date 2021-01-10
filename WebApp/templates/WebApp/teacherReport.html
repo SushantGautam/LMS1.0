@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 
 {% block stylesheets %}
@@ -21,12 +22,12 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Teacher Report</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Teacher Report' %}</li>
 {% endblock %}
 {% block content %}
     <div class="inningInfoListClass">
         <hr class="header_hr">
-        <h2 class="tableHeader">Teacher Report</h2>
+        <h2 class="tableHeader">{% trans 'Teacher Report' %}</h2>
 
         <div class="col-md-12 col-sm-12 col-xs-12">
             <hr class="header_hr">
@@ -37,19 +38,19 @@
                 <table class="table table-striped table-bordered bg-white nowrap" id="inning_dataTable">
                     <thead class="thead-light bg-primary">
                     <tr class="tableTitleRow">
-                        <th rowspan="2">S.No</th>
-                        <th rowspan="2">Teacher Name</th>
-                        <th rowspan="2">Course Name</th>
+                        <th rowspan="2">{% trans 'S.No.' %}</th>
+                        <th rowspan="2">{% trans 'Teacher Name' %}</th>
+                        <th rowspan="2">{% trans 'Course Name' %}</th>
                         <th colspan="
                             {% if max_chapter_count > 0 %}
                                 {{ max_chapter_count }}
                             {% else %}
                                 1
                             {% endif %}
-                        ">Chapter
+                        ">{% trans 'Chapter' %}
                         </th>
-                        <th rowspan="2">Chapter Contents</th>
-                        <th rowspan="2">Total Chapter</th>
+                        <th rowspan="2">{% trans 'Chapter Contents' %}</th>
+                        <th rowspan="2">{% trans 'Total Chapter' %}</th>
                     </tr>
                     {% if max_chapter_count > 0 %}
                         <tr>
@@ -61,7 +62,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <th> No Chapters</th>
+                            <th> {% trans 'No Chapters' %}</th>
                         </tr>
                     {% endif %}
                     </thead>

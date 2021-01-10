@@ -1,13 +1,14 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 <style>
     .select2-container {
         width:200px !important;
     }
 </style>
 
-<small>Choose meaningful name and View Details on Assigned Courses Name List <b><a
-            href="{% url 'inninggroup_list' %}">here</a></b></small>
+<small>{% trans 'Choose meaningful name and View Details on Assigned Courses Name List' %} <b><a
+            href="{% url 'inninggroup_list' %}">{% trans 'here' %}</a></b></small>
 <br><br>
 
 <form method="post" id="ajaxgroupforms">
@@ -28,8 +29,10 @@
 
 
     <div class="col-md-12 col-sm-12 col-xs-12">
-        *You can select multiple teachers by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
-        MAC.
+        {% blocktrans %}
+            *You can select multiple teachers by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
+            MAC.
+        {% endblocktrans %}
     </div>
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
@@ -43,8 +46,8 @@
                class="select form-control">
     </div>
     <div class="submitButton col-md-12 text-center">
-        <button class="btn btn-success" type="submit">Submit</button>
-        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
+        <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
+        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">{% trans 'Close' %}</button>
     </div>
 </form>
 

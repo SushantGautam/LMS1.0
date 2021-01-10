@@ -1,8 +1,10 @@
 {% extends 'forum/base.html' %}
 
+{% load i18n %}
+
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Forum' %}</a></li>
 <li>
     <a href="{% url 'forum:nodegroup' pk=topic.node_group.pk %}">{{ topic.node_group.title }}</a>
 </li>

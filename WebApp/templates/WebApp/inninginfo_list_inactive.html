@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
     <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -8,18 +9,17 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Session</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Session' %}</li>
 {% endblock %}
 {% block content %}
     <div class="inningInfoListClass">
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Inactive Sessions</h2>
+        <h2 class="tableHeader">{% trans 'List of Inactive Sessions' %}</h2>
 
         <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
-            <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
-            <a id="tableButton" style="cursor: pointer">Table View</a></b>
-            <span style="float:right; padding-right: 10px;"><a href="{% url 'inninginfo_list' %}">View
-                Active Sessions</a>
+            <a id="cardButton" style="cursor: pointer">{% trans 'Card View' %}</a> &nbsp;
+            <a id="tableButton" style="cursor: pointer">{% trans 'Table View' %}</a></b>
+            <span style="float:right; padding-right: 10px;"><a href="{% url 'inninginfo_list' %}">{% trans 'View Active Sessions' %}</a>
         </span>
         </h5>
 
@@ -30,8 +30,7 @@
                 <div class="row">
                     {% if request.user.Is_CenterAdmin and '/mysessions' not in request.path %}
                         <div class="btn-createnew">
-                            <a class="btn btn-sm btn-success" href="{% url 'inninginfo_create' %}">Register New
-                                Session</a>
+                            <a class="btn btn-sm btn-success" href="{% url 'inninginfo_create' %}">{% trans 'Register New Session' %}</a>
                             <button class="btn btn-danger deleteCheckedInnings" type="submit"
                                     onclick="return confirm('Are you sure you want to delete ?')">
                                 <i class="fa fa-trash"></i>
@@ -52,13 +51,13 @@
                             <td>
                                 <input type="checkbox" class="inningInfoCheckAll">
                             </td>
-                            <td>ID</td>
-                            <td>Session Name</td>
-                            <td>Student Group</td>
-                            <td>No. of Courses</td>
-                            <td>Start Date</td>
-                            <td>End Date</td>
-                            <td>Action</td>
+                            <td>{% trans 'ID' %}</td>
+                            <td>{% trans 'Session Name' %}</td>
+                            <td>{% trans 'Student Group' %}</td>
+                            <td>{% trans 'No. of Courses' %}</td>
+                            <td>{% trans 'Start Date' %}</td>
+                            <td>{% trans 'End Date' %}</td>
+                            <td>{% trans 'Action' %}</td>
                         </tr>
                         </thead>
                         {% for object in object_list %}
@@ -77,7 +76,7 @@
                                 <td class="dateconFullMonth"
                                     style="vertical-align: middle;">{{ object.End_Date|date:"M d, Y h:i A" }}</td>
                                 <td class="text-center"><a class="btn btn-sm btn-info"
-                                                           href="{{ object.get_update_url }}">Edit</a>
+                                                           href="{{ object.get_update_url }}">{% trans 'Edit' %}</a>
                             </tr>
                         {% endfor %}
                     </table>
@@ -91,18 +90,18 @@
                         <div class="col-md-4 col-sm-6 col-xs-12 card-body" id="listCard">
 
                             <div class="card-header" style="background: white">
-                                <h5 class="card-title"><strong>Session : &nbsp;<a
+                                <h5 class="card-title"><strong>{% trans 'Session' %} : &nbsp;<a
                                         href="{{ object.get_absolute_url }}">{{ object.Inning_Name }}</a></strong>
                                 </h5>
-                                <h5 class="card-title"><b>Student Group &nbsp; : </b>&nbsp;{{ object.Groups }}</h5>
-                                <h5 class="card-title"><b><u>Courses :</u></b></h5>
+                                <h5 class="card-title"><b>{% trans 'Student Group' %} &nbsp; : </b>&nbsp;{{ object.Groups }}</h5>
+                                <h5 class="card-title"><b><u>{% trans 'Courses' %} :</u></b></h5>
                                 <span class="card-title"> {% for groups in object.Course_Group.all %}
                                     {{ groups.Course_Code }}
                                 {% endfor %}</span><br>
 
-                                <h5 class="card-title"><b>Start Date : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}
+                                <h5 class="card-title"><b>{% trans 'Start Date' %} : </b>&nbsp;{{ object.Start_Date|date:'Y M d' }}
                                 </h5>
-                                <h5 class="card-title"><b>End Date : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</h5>
+                                <h5 class="card-title"><b>{% trans 'End Date' %} : </b>&nbsp;{{ object.End_Date|date:'Y M d' }}</h5>
                             </div>
 
                         </div>
@@ -138,11 +137,11 @@
                 buttons: [
                     {
                         extend: 'csv',
-                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> {% trans 'Export to CSV' %} </span>'
                     },
                     {
                         extend: 'print',
-                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        text: '<span class="print"><i class="fa fa-print"></i> {% trans 'Print' %} </span>',
                         fieldSeparator: '\t'
                     }]
             });

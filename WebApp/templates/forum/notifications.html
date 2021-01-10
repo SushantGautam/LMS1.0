@@ -6,8 +6,8 @@
 {% block breadcrumb %}
 
 
-<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
-<li class="breadcrumb-item active"><a href="{% url 'teacher_notification' %}"> Notifications</a>
+<li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">{% trans 'Forum' %}</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'teacher_notification' %}"> {% trans 'Notifications' %}</a>
 </li>
 
 {% endblock %}
@@ -16,7 +16,7 @@
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
-            <h2><i class="fa fa-bell"></i>Notifications</h2>
+            <h2><i class="fa fa-bell"></i>{% trans 'Notifications' %}</h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content">

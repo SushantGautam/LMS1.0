@@ -1,13 +1,14 @@
 {% extends "teacher_module/base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {{ wizard.form.media }}
 
 {% block breadcrumb %} 
-<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}">QUIZ</a></li>
+<li class="breadcrumb-item"><a href="{% url 'teacher_quiz_list' %}" style="text-transform: uppercase;">{% trans 'Quiz' %}</a></li>
                 
  
-<li class="breadcrumb-item active" aria-current="page">Quiz Create</li> 
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Quiz Create' %}</li>
 {% endblock %} 
 {% block content %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
@@ -16,7 +17,7 @@
       <li>
         <a href="#step-1" class="selected" isdone="1" rel="1">
           <span class="step_no">1</span>
-          <span class="step_descr">Basic  Info</span>
+          <span class="step_descr">{% trans 'Basic Info' %}</span>
         </a>
       </li>
       <li>
@@ -28,7 +29,7 @@
       <li>
         <a href="#step-3" class="disabled" isdone="1" rel="3">
           <span class="step_no">3</span>
-          <span class="step_descr">Add  Question</span>
+          <span class="step_descr">{% trans 'Add Question' %}</span>
         </a>
       </li>
     </ul>
@@ -42,7 +43,7 @@
     <div class="col-md-12 submitforquiz">
       <div class="col-md-6"></div>
       <div class="col-md-6 text-right">
-        <button name="wizard_goto_step" class="add-mcq">Next</button>
+        <button name="wizard_goto_step" class="add-mcq">{% trans 'Next' %}</button>
       </div>
     </div>
   </form>

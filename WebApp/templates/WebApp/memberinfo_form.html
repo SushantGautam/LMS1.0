@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'memberinfo_list' %}">Member</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'memberinfo_list' %}">{% trans 'Member' %}</a></li>
     {% if object.username %}
         <li class="breadcrumb-item" aria-current="page"><a
                 href="{{ object.get_absolute_url }}">{{ object.username }}</a></li>
     {% endif %}
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/memberinfo/create/' == request.path %}
-            Create New Member
+            {% trans 'Create New Member' %}
         {% else %}
-            Edit Member Info
+            {% trans 'Edit Member Info' %}
         {% endif %}
     </li>
 {% endblock %}
@@ -23,9 +24,9 @@
     <div class="headerDiv">
         <h2 class="infoFormHeader">
             {% if '/memberinfo/create/' == request.path %}
-                Create New Member
+                {% trans 'Create New Member' %}
             {% else %}
-                Edit Member Info
+               {% trans 'Edit Member Info' %}
             {% endif %}
         </h2>
         <hr class="header_hr">

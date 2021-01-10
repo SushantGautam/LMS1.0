@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -8,7 +9,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Session</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Session' %}</li>
 {% endblock %}
 {% block content %}
 <!-- Model for Import CSV file -->
@@ -17,7 +18,7 @@ aria-hidden="true">
 <div class="modal-dialog" role="document">
    <div class="modal-content">
        <div class="modal-header text-center">
-           <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+           <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'CSV File Import' %}</b>
                <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                    <span aria-hidden="true">&times;</span>
                </button>
@@ -26,31 +27,30 @@ aria-hidden="true">
        <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
            <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                {% csrf_token %} <br><br>
-               <label for="id_import_csv">Choose the CSV file to Import Session Data</label>
+               <label for="id_import_csv">{% trans 'Choose the CSV file to Import Session Data' %}</label>
                <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                <a target="_blank" class="text-center" href="{% static 'importSession_sample.csv' %}"
                   style="padding-top: 2em;">
-                   <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                   <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
                </a><br>
 
-               <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
-                   Info...</b></span>
+               <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>{% trans 'Read Detail Info' %}...</b></span>
                <ul class="info-text" style="display:none;background:azure;">
-                   <li>- Session Name (required)</li>
-                   <li>- Start date and End date should be in excel date format (required)</li>
-                   <li>- Start date shouldn't be greater than end date</li>
-                   <li>- Student Group Name should already be registered (required) </li>
-                   <li>- Teacher Course Allocation Name should already be registered (required)</li>
-                   <li>- Teacher Course Allocation Name should be seperated by comma</li>
+                   <li>- {% trans 'Session Name' %} ({% trans 'required' %})</li>
+                   <li>- {% trans 'Start date and End date should be in excel date format' %} ({% trans 'required' %})</li>
+                   <li>- {% trans "Start date shouldn't be greater than end date" %}</li>
+                   <li>- {% trans 'Student Group Name should already be registered' %} ({% trans 'required' %}) </li>
+                   <li>- {% trans 'Teacher Course Allocation Name should already be registered' %} ({% trans 'required' %})</li>
+                   <li>- {% trans 'Teacher Course Allocation Name should be separated by comma' %}</li>
                </ul>
 
                <div class="import-message"></div>
                <div class="text-center">
                    <button class="btn btn-success" id="submitcsv" type="submit" style="margin:3em auto 2em auto">
-                       <span id="submitspinner"></span>Submit File
+                       <span id="submitspinner"></span>{% trans 'Submit File' %}
                    </button>
                    <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
-                           style="margin:3em auto 2em auto">Close
+                           style="margin:3em auto 2em auto">{% trans 'Close' %}
                    </button>
                </div>
            </form>

@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Assignments</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Assignments' %}</li>
 {% endblock %}
 {% block content %}
     {% include 'assignment/assignmentinfo_list.html' %}

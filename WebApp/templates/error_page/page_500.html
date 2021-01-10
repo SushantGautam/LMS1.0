@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,10 +7,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>LMS | Error: Internal Server Error</title>
+  <title>LMS | {% trans 'Error: Internal Server Error' %}</title>
 
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-  <link href="{% static 'css/error_page.css' %}" rel='stylesheet'></link>  
+  <link href="{% static 'css/error_page.css' %}" rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 
   <style>
@@ -20,13 +21,13 @@
 
 </head>
     <body>
-      <div id="error">Error</div>
+      <div id="error">{% trans 'Error' %}</div>
       <div class="error-num">500
       <div class="error-num__clip">500</div>
       </div>
       <div>
-          <h3 id="header">INTERNAL SERVER ERROR</h3>
-          <p id="desc">Oh, there seems to be a problem in the server now. <br> Please try again later or Contact Admin</p>
+          <h3 id="header" style="text-transform: uppercase;">{% trans 'Internal Server Error' %}</h3>
+          <p id="desc">{% trans 'Oh, there seems to be a problem in the server now. <br> Please try again later or Contact Admin' %}</p>
       </div>
       <script>
         "use strict";

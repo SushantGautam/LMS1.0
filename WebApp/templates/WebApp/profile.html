@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block title %}
-    | Profile
+    | {% trans 'Profile' %}
 {% endblock %}
 
 {% block stylesheets %}
@@ -10,7 +11,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Profile</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Profile' %}</li>
 {% endblock %}
 
 {% block content %}

@@ -1,4 +1,7 @@
-{% extends "base.html" %} {% load static %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
 
 
 <div class="container-fluid" id="onlineFriends">
@@ -7,7 +10,7 @@
 
       <div class="discussions">
         <div class="search-header">
-          <h4>Private chat</h4>
+          <h4>{% trans 'Private chat' %}</h4>
           <div id="form-btn">
             <input type="text" placeholder="Search.." name="search">&nbsp;&nbsp;
             <button type="submit"><i class="fa fa-search fa-lg"></i></button>

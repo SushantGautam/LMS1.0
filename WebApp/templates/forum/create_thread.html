@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Forum' %}</a></li>
 {% if fixed_nodegroup.0.title %}
 <li class="breadcrumb-item"><a href="{% url 'forum:nodegroup' fixed_nodegroup.0.pk %}">{{ fixed_nodegroup.0.title }}</a>
 </li>
@@ -12,7 +12,7 @@
 {% endif %}
 {% endif %}
 <li class="breadcrumb-item active"><a href="{% url 'forum:create_thread' %}"></a>
-    Create Thread
+    {% trans 'Create Thread' %}
     </a>
 </li>
 {% endblock %}
@@ -26,7 +26,7 @@
             {% csrf_token %}
 
             <div class=" x-title">
-                <h2>Create Thread</h2>
+                <h2>{% trans 'Create Thread' %}</h2>
 
 
             </div>
@@ -47,7 +47,7 @@
             {% else %}
             <div id="div_id_node_group" class="form-group">
                 <label for="id_node_group" class="control-label  requiredField">
-                    Category<span class="asteriskField">*</span> </label>
+                    {% trans 'Category' %}<span class="asteriskField">*</span> </label>
                 <input type="text" value="{{ fixed_nodegroup.0.title }}" required=""
                     class="textinput textInput form-control" maxlength="30" readonly>
                 <input name="node_group" id="id_node_group" required="" value="{{ fixed_nodegroup.0.pk }}" hidden></div>
@@ -56,7 +56,7 @@
             {% if not topic %}
 
             <div id="div_id_topic" class="form-group"><label for="id_topic" class="control-label  requiredField">
-                    SubCategory<span class="asteriskField">*</span> </label>
+                    {% trans 'SubCategory' %}<span class="asteriskField">*</span> </label>
                 <div class="controls"><select name="topic" id="id_topic" required="" class="select form-control">
                         {% if not fixed_nodegroup %}
                         <option value="" selected="">---------</option>
@@ -90,7 +90,7 @@
 
 
             <div id="div_id_title" class="form-group"><label for="id_title" class="control-label  requiredField">
-                    Title<span class="asteriskField">*</span> </label>
+                    {% trans 'Title' %}<span class="asteriskField">*</span> </label>
                 <div class="controls "><input type="text" autocomplete="off" name="title" id="id_title" required=""
                         class="textinput textInput form-control" maxlength="120"></div>
             </div>
@@ -101,7 +101,7 @@
 
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Description
+                    <h2>{% trans 'Description' %}
 
                     </h2>
 
@@ -123,17 +123,17 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a data-edit="fontSize 5">
-                                        <p style="font-size:17px">Huge</p>
+                                        <p style="font-size:17px">{% trans 'Huge' %}</p>
                                     </a>
                                 </li>
                                 <li>
                                     <a data-edit="fontSize 3">
-                                        <p style="font-size:14px">Normal</p>
+                                        <p style="font-size:14px">{% trans 'Normal' %}</p>
                                     </a>
                                 </li>
                                 <li>
                                     <a data-edit="fontSize 1">
-                                        <p style="font-size:11px">Small</p>
+                                        <p style="font-size:11px">{% trans 'Small' %}</p>
                                     </a>
                                 </li>
                             </ul>
