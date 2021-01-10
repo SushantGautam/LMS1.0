@@ -1,7 +1,7 @@
 {% load staticfiles %}
 {% load define_action %}
 {% load i18n %}
-
+{% load model_template_relation %}
 
 {% if  "teachers" in request.path %}
     {% define 1 as ifteacher %}
@@ -1889,7 +1889,9 @@
 <!-- Chapter Progress save feature -->
 {% if not connection_offline %}
     {% if '/students' in request.path %}
-        <script>
+        {% isCourseActive request.user course as iscourseactive %}
+        {% if iscourseactive %}
+            <script>
             var chapterProgress;
             var currentPageUpdateOnServer = 0;
 
@@ -1997,6 +1999,7 @@
                 StudentChapterLogUpdateAjax(0)
             }, false);
         </script>
+        {% endif %}
     {% endif %}
 
     <script>

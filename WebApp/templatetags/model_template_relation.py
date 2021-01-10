@@ -16,11 +16,6 @@ def getSurveyStatus(obj, user):
     return can_submit, datetimeexpired, options, questions
 
 
-# @register.simple_tag
-# def canTakeQuiz(obj, user):
-#     sitting = obj.can_take(user)
-#     return sitting
-
 @register.simple_tag
 def getTeacherStatusoOfAssignment(obj, user):
     result = obj.getTeachersAssignmentStatus(user)
@@ -102,6 +97,9 @@ def getAssignmentAnswer(assignmentObj, userObj, questionObj):
 def subtract(value, arg):
     return value - arg
 
+@register.simple_tag
+def isCourseActive(userObj, courseObj):
+    return courseObj in userObj.get_student_courses(activeCourse=True)['courses']
 
 @register.simple_tag
 def isAssignmentActive(assignmentObj):
