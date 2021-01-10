@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load model_template_relation %}
 
 {% block breadcrumb %}
@@ -9,10 +10,10 @@
     {% else %}
         {% url 'courseinfo_list_inactive' %}
     {% endif %}
-    ">Course</a></li>
+    ">{% trans 'Course' %}</a></li>
     <li class="breadcrumb-item"><a href="{{ object.Course_Code.get_absolute_url }}">{{ object.Course_Code }}</a></li>
     <li class="breadcrumb-item" aria-current="page"><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Discussion</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Discussion' %}</li>
 {% endblock %}
 
 {% block content %}
@@ -34,7 +35,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h3 class="detailListHeader">
-                    Discussion
+                    {% trans 'Discussion' %}
                 </h3>
                 <hr>
             </div>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="
@@ -14,9 +15,9 @@
     <li class="breadcrumb-item"><a href="{{ Assignment_Code.get_absolute_url }}">{{ Assignment_Code }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/create/' in request.path %}
-            Create New Question
+            {% trans 'Create New Question' %}
         {% else %}
-            Edit Question
+            {% trans 'Edit Question' %}
         {% endif %}
     </li>
 {% endblock %}
@@ -24,9 +25,9 @@
     <div class="headerDiv">
         <h2 class="infoFormHeader">
             {% if '/create/' in request.path %}
-                Create New Question
+                {% trans 'Create New Question' %}
             {% else %}
-                Edit Question
+                {% trans 'Edit Question' %}
             {% endif %}
         </h2>
         <hr class="header_hr">
@@ -47,7 +48,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                     <div id="div_id_Question_Description" class="form-group">
                         <label for="id_Question_Description" class="control-label ">
-                            Question Description
+                            {% trans 'Question Description' %}
                         </label>
                         <div class="controls ">
                     <textarea name="Question_Description" rows="1" cols="40" class="textarea form-control"
@@ -66,7 +67,7 @@
                 </div>
                 <div class="col-md-6 col-sm-12 col-xs-12 form-group has-feedback">
                     <label>
-                        Status
+                        {% trans 'Status' %}
                     </label><br>
                     <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag"
                             {% if object.Use_Flag == False %}
@@ -90,7 +91,7 @@
                 </div>
 
                 <div class="submitButton  col-md-12">
-                    <button class="btn btn-success" type="submit">Submit</button>
+                    <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
                 </div>
             </form>
         </div>

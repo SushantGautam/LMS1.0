@@ -1,12 +1,12 @@
 {% load static %}
-
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>LMS | Login</title>
+    <title>LMS | {% trans 'Login' %}</title>
 
     <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'css/bootstrap4.min.css' %}"/>
@@ -39,7 +39,7 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="alertModalLabel">Alert Message</h5>
+        <h5 class="modal-title" id="alertModalLabel">{% trans 'Alert Message' %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
         </button>
@@ -47,8 +47,8 @@
     <div class="modal-body">
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button style="display: none;" type="button" id="forcelogout" class="btn btn-warning">Force Logout & Continue</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+        <button style="display: none;" type="button" id="forcelogout" class="btn btn-warning">{% trans 'Force Logout & Continue' %}</button>
     </div>
     </div>
 </div>
@@ -77,21 +77,21 @@
         <div class="form-label-group">
             <input name="username" type="text" id="id_username" class="form-control" placeholder="Username" required
                    autofocus>
-            <label for="id_username">User Name</label>
+            <label for="id_username">{% trans 'User Name' %}</label>
         </div>
 
         <div class="form-label-group">
             <input name="password" type="password" id="id_password" class="form-control" placeholder="Password"
                    required>
-            <label for="id_password">Password</label>
+            <label for="id_password">{% trans 'Password' %}</label>
         </div>
 
         <div id="CreateAcc">
-            Not Registered Yet? <a href="{% url 'register' %}">&nbsp;Create an Account </a>
+            {% trans 'Not Registered Yet' %}? <a href="{% url 'register' %}">&nbsp;{% trans 'Create an Account' %} </a>
         </div>
 
         <button class="btn btn-lg btn-primary btn-block" id="signIn" type="submit">
-            Sign in
+            {% trans 'Sign in' %}
         </button>
     </div>
 

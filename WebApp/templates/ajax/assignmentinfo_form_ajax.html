@@ -1,6 +1,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load model_template_relation %}
+{% load i18n %}
 
 <div class="se-pre-con-ajax"></div>
 
@@ -11,7 +12,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
         <div id="div_id_Assignment_Topic" class="form-group">
             <label for="id_Assignment_Topic" class="control-label ">
-                Assignment Topic *
+                {% trans 'Assignment Topic' %} *
             </label>
             <div class="controls ">
                 <input type="text" name="Assignment_Topic" maxlength="500" id="id_Assignment_Topic"
@@ -25,14 +26,13 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12">
         <label>
-            Publish
+            {% trans 'Publish' %}
         </label><br>
         <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked><br> <br>
     </div>
     {% if assigned_session|length > 0 %}
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <h6 style="color: #5a0934"> Note: All checked session will have same dates as the first checked
-                session. </h6>
+            <h6 style="color: #5a0934"> {% trans 'Note' %}: {% trans 'All checked session will have same dates as the first checked session' %}. </h6>
 
             <h6 class="text-info"><span class="checkedsessionCount"></span> of {{ assigned_session|length }} selected
             </h6>
@@ -43,10 +43,10 @@
                    checked
                    {% endif %}
                     ></th>
-                    <th>S.No</th>
-                    <th>Session Name</th>
-                    <th>Start Date*</th>
-                    <th>End Date*</th>
+                    <th>{% trans 'S.No' %}</th>
+                    <th>{% trans 'Session Name' %}</th>
+                    <th>{% trans 'Start Date' %}*</th>
+                    <th>{% trans 'End Date' %}*</th>
                     {#                    <th></th>#}
                 </tr>
 
@@ -84,7 +84,7 @@
                class="select form-control">
     </div>
     <div class="submitButton text-center col-md-12">
-        <button class="btn btn-success" type="submit">Submit</button>
+        <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
     </div>
 
 </form>

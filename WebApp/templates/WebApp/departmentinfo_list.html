@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Departments</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Departments' %}</li>
 {% endblock %}
 {% block content %}
 
 
     <div class="centerInfoListClass">
 
-        <h2 class="tableHeader">List of Departments</h2>
+        <h2 class="tableHeader">{% trans 'List of Departments' %}</h2>
         <hr class="header_hr">
 
         <div class="btn-createnew">
             <button type="button" class="btn btn-success" id="create_department-btn" data-toggle="modal"
                     data-target="#department-modal">
-                Create New Department
+                {% trans 'Create New Department' %}
             </button>
             {#            <a class="btn btn-success" href="{% url 'departmentinfo_create' %}">Create new Department</a>#}
         </div>
@@ -26,12 +27,12 @@
             <table class="table table-striped table-bordered bg-white">
                 <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
-                    <td>ID</td>
-                    <td>Department Name</td>
-                    <td>Register Agent</td>
-                    <td>Register Date</td>
-                    <td>Updated Date</td>
-                    <td>Actions</td>
+                    <td>{% trans 'ID' %}</td>
+                    <td>{% trans 'Department Name' %}</td>
+                    <td>{% trans 'Register Agent' %}</td>
+                    <td>{% trans 'Register Date' %}</td>
+                    <td>{% trans 'Updated Date' %}</td>
+                    <td>{% trans 'Actions' %}</td>
                 </tr>
                 </thead>
                 {% for object in object_list %}

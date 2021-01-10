@@ -5,8 +5,8 @@
 {% block breadcrumb %}
 
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
-<li class="breadcrumb-item active"><a href="{% url 'forum:edit_topic' pk=form.instance.pk %}"> Edit Topic</a>
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Forum' %}</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'forum:edit_topic' pk=form.instance.pk %}"> {% trans 'Edit Topic' %}</a>
 </li>
 
 {% endblock %}

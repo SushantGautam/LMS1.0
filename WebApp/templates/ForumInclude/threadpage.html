@@ -107,7 +107,8 @@
                             <div class="byline">
 
 
-                                posted by <a href="
+                                {% trans 'posted by' %} <a href="
+
                                 {% if '/teachers' in request.path %}
                                 {% url 'teacher_info' pk=thread.user.pk %}
                                 {% elif '/students' in request.path %}

@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>LMS | Error: Bad Request</title>
+  <title>LMS | {% trans 'Error: Bad Request' %}</title>
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
   <link href="{% static 'css/error_page.css' %}" rel='stylesheet'></link>  
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
@@ -18,14 +19,14 @@
 
 </head>
     <body>
-        <div id="error">Error</div>
+        <div id="error">{% trans 'Error' %}</div>
         <div class="error-num">400
         <div class="error-num__clip">400</div>
         </div>
         <div>
-            <h3 id="header">BAD REQUEST</h3>
-            <p id="desc">Your request resulted in an error</p>
-            <p><a href="/">Go to Homepage</a></p>
+            <h3 id="header" style="text-transform: uppercase;">{% trans 'Bad Request' %}</h3>
+            <p id="desc">{% trans 'Your request resulted in an error' %}</p>
+            <p><a href="/">{% trans 'Go to Homepage' %}</a></p>
         </div>
         <script>
           "use strict";

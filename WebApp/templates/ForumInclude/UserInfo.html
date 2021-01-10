@@ -276,10 +276,8 @@
     {% for topic in topics %}
     <li class="list-group-item topic-entry">
         <div class="entry media">
-            <div class="media-body media-middle">topic:
+            <div class="media-body media-middle">{% trans 'topic' %}:
                 <a href="
-                
-                
                 {% if '/teachers' in request.path %}
                 {% url 'teacher_topic' pk=topic.pk %}
                         {% else %}

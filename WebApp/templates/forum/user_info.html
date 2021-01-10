@@ -1,13 +1,15 @@
 {% extends 'forum/base.html' %}
 
+{% load i18n %}
+
 
 
 {% block breadcrumb %}
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Forum' %}</a></li>
 
 <li class="breadcrumb-item active">
-    <a href="{% url 'forum:user_info' pk=user.pk %}">Profile</a>
+    <a href="{% url 'forum:user_info' pk=user.pk %}">{% trans 'Profile' %}</a>
 </li>
 
 

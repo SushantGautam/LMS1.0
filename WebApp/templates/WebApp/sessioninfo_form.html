@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {% block stylesheets %}
     {{ form.media }}
@@ -7,12 +8,12 @@
     {#    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>#}
 {% endblock stylesheets %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">Session Name</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'sessioninfo_list' %}">{% trans 'Session Name' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/sessioninfo/create/' == request.path %}
-        Create New Session Name
+        {% trans 'Create New Session Name' %}
         {% else %}
-        Edit Session Name
+        {% trans 'Edit Session Name' %}
         {% endif %}
     </li>
 {% endblock %}
@@ -22,9 +23,9 @@
     <div class="headerDiv">
         <h2 class="infoFormHeader">
             {% if '/sessioninfo/create/' == request.path %}
-                Create New Session Name
+                {% trans 'Create New Session Name' %}
             {% else %}
-                Edit Session Name
+                {% trans 'Edit Session Name' %}
             {% endif %}
         </h2>
         <hr class="header_hr">
@@ -87,7 +88,7 @@
             </div>
 
             <div class="submitButton">
-                <button class="btn btn-success" type="submit">Submit</button>
+                <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
             </div>
         </form>
     </div>

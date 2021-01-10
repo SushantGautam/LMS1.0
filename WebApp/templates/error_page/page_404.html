@@ -1,13 +1,14 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>LMS | Error: Page not found</title>
+  <title>LMS | {% trans 'Error: Page not found' %}</title>
   <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon"/>
-  <link href="{% static 'css/error_page.css' %}" rel='stylesheet'></link>  
+  <link href="{% static 'css/error_page.css' %}" rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 
   <style>
@@ -18,14 +19,14 @@
 
 </head>
     <body>
-        <div id="error">Error</div>
+        <div id="error">{% trans 'Error' %}</div>
         <div class="error-num">404
         <div class="error-num__clip">404</div>
         </div>
         <div>
-          <h3 id="header">PAGE NOT FOUND</h3>
-          <p id="desc"> OOPS! The page you requested couldn't be found</p>
-          <p><a href="/">Homepage</a></p>
+          <h3 id="header" style="text-transform: uppercase;">{% trans 'Page Not Found' %}</h3>
+          <p id="desc"> {% trans 'OOPS! The page you requested couldn't be found' %}</p>
+          <p><a href="/">{% trans 'Homepage' %}</a></p>
         </div>
         <script>
           "use strict";

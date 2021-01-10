@@ -1,15 +1,17 @@
+{% load i18n %}
+
 <title> UBL Meet </title>
 {% if meetcode %}
     <div height="100vh">
         <div id="UBL-meet" style="height: 100vh;"></div>
     </div>
     <span>
-        Meeting Room of {{ userobj }}  &nbsp; | &nbsp;
+        {% trans 'Meeting Room of' %} {{ userobj }}  &nbsp; | &nbsp;
     </span>
     <span>
         <input type="text" id="copy-link" readonly/>
         <button onclick="copyToClipBoard()">
-            Copy Invitation Link
+            {% trans 'Copy Invitation Link' %}
         </button>
 
     </span>
@@ -98,5 +100,5 @@
     </script>
 
 {% else %}
-    <h2> Sorry Your UBL Meet URL is Incorrect.</h2>
+    <h2> {% trans 'Sorry Your UBL Meet URL is Incorrect' %}.</h2>
 {% endif %}

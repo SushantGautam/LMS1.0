@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -114,10 +116,10 @@
         <div class="header-overlay"></div>
         <div class="header-content text-md-center">
             <img src="{% static 'images/logo_orange_trans.png' %}" alt="LMS LOGO" class="logo"/>
-            <h1>Welcome to U-LMS 2020</h1>
-            <p>Enter into the online Education System</p>
+            <h1>{% trans 'Welcome to U-LMS 2021' %}</h1>
+            <p>{% trans 'Enter into the online Education System' %}</p>
             <a class="btn" href="{% url 'login' %}">Login</a><br><br><br>
-            If you don't have an Account <br> <a class="btn-reg" href="{% url 'register' %}">Register Now</a>
+            {% trans "If you don't have an Account" %} <br> <a class="btn-reg" href="{% url 'register' %}">{% trans 'Register Now' %}</a>
         </div>
     </header>
 

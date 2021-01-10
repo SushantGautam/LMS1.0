@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block content %}
-<p><a class="btn btn-default" href="{% url 'profile_list' %}">Profile Listing</a></p>
+<p><a class="btn btn-default" href="{% url 'profile_list' %}">{% trans 'Profile Listing' %}</a></p>
 <table class="table">
 </table>
-<a class="btn btn-primary" href="{{object.get_update_url}}">Edit Profile</a>
+<a class="btn btn-primary" href="{{object.get_update_url}}">{% trans 'Edit Profile' %}</a>
 
 {% endblock %}

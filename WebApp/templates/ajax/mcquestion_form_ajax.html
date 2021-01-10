@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
  <!-- Bootstrap -->
  <link href="{% static 'vendorsx/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -26,7 +27,7 @@
 									<br>
 									<label for="id_answer_set-0-correct" class=""> <input type="checkbox" name="answer_set-0-correct"
 											class="checkboxinput" id="id_answer_set-0-correct">
-										Correct</label>
+										{% trans 'Correct' %}</label>
 								</div>
 							</li>
 							&nbsp; &nbsp;
@@ -35,7 +36,7 @@
 									<br>
 									<label for="id_answer_set-0-DELETE" class=""> <input type="checkbox" name="answer_set-0-DELETE"
 											class="checkboxinput" id="id_answer_set-0-DELETE">
-										Delete</label>
+										{% trans 'Delete' %}</label>
 								</div>
 							</li>
 						</ul>
@@ -44,11 +45,11 @@
 			</div>
 			{% endfor %}
 			<div class="add-more">
-				<a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more questions</a>
+				<a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>{% trans 'Add more questions' %}</a>
 			</div>
 			<hr>
 			<!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
-			<button class="btn btn-primary" type="submit">Submit</button>
+			<button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
 		</div>
 	</div>
 </form>

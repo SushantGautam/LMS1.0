@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
     <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -8,7 +9,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Members</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Members' %}</li>
 {% endblock %}
 
 {% block content %}
@@ -21,7 +22,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+                    <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'CSV File Import' %}</b>
                         <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -30,33 +31,32 @@
                 <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
                     <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                         {% csrf_token %} <br><br>
-                        <label for="id_import_csv">Choose the CSV file to Import Member Data</label>
+                        <label for="id_import_csv">{% trans 'Choose the CSV file to Import Member Data' %}</label>
                         <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                         <a target="_blank" class="text-center" href="{% static 'importcsv_sample1.csv' %}"
                            style="padding-top: 2em;">
-                            <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                            <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
                         </a><br>
 
-                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
-                            Info...</b></span>
+                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>{% trans 'Read Detail Info' %}...</b></span>
                         <ul class="info-text" style="display:none;background:azure;">
-                            <li>- Username must be unique for every member (required)</li>
-                            <li>- Gender value must be M or F (required)</li>
-                            <li>- Teacher column value should be 1 for teacher</li>
-                            <li>- Student column value should be 1 for student</li>
-                            <li>- If any problem occur in a row then no any member data will be created</li>
-                            <li>- Error message will show the number of row in which the problem occur</li>
-                            <li>- Default password will be 00000 for everyuser</li>
+                            <li>- {% trans 'Username must be unique for every member' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'Gender value must be M or F' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'Teacher column value should be 1 for teacher' %}</li>
+                            <li>- {% trans 'Student column value should be 1 for student' %}</li>
+                            <li>- {% trans 'If any problem occur in a row then no any member data will be created' %}</li>
+                            <li>- {% trans 'Error message will show the number of row in which the problem occur' %}</li>
+                            <li>- {% trans 'Default password will be 00000 for every user' %}</li>
                         </ul>
 
                         <div class="import-message"></div>
                         <div class="text-center">
                             <button class="btn btn-success" id="submitcsv" type="submit"
                                     style="margin:3em auto 2em auto">
-                                <span id="submitspinner"></span>Submit File
+                                <span id="submitspinner"></span>{% trans 'Submit File' %}
                             </button>
                             <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
-                                    style="margin:3em auto 2em auto">Close
+                                    style="margin:3em auto 2em auto">{% trans 'Close' %}
                             </button>
                         </div>
                     </form>
@@ -68,22 +68,21 @@
 
     <div class="memberDiv">
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Members</h2>
+        <h2 class="tableHeader">{% trans 'List of Members' %}</h2>
 
         <nav id="navbar_parent" class="navbar-light" style="background-color: grey">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #808080;">
                     <div class="col-md-8 col-sm-8 col-xs-7">
                         <ul class="nav navbar-nav navbar-center member-list">
-                            <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
-                            <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
-                            <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
+                            <li><a class="navbar-brand" id="all_button" href="#">{% trans 'All' %}</a></li>
+                            <li><a class="navbar-brand" id="teacher_button" href="#">{% trans 'Teacher' %}</a></li>
+                            <li><a class="navbar-brand" id="student_button" href="#">{% trans 'Student' %}</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-5 blocked-members">
                                 <span class="span-member" style="margin:2px"><a
-                                        href="{% url 'memberinfo_list_inactive' %}" style="color: white">View
-                                        Blocked Members</a></span>
+                                        href="{% url 'memberinfo_list_inactive' %}" style="color: white">{% trans 'View Blocked Members' %}</a></span>
                     </div>
 
                 </div>
@@ -98,7 +97,7 @@
             <nav id="navbar_parent" class="navbar-dark">
 
                 <div class="btn-createnew">
-                    <a class="btn btn-success" href="{% url 'memberinfo_create' %}">Create new Member</a>
+                    <a class="btn btn-success" href="{% url 'memberinfo_create' %}">{% trans 'Create new Member' %}</a>
                     <button class="btn btn-info editCheckedMembers" type="button" data-toggle="modal"
                             data-target="#edit_checked_details_modal">
                         <i class="fa fa-edit"></i>
@@ -123,23 +122,23 @@
                     <td>
                         <input type="checkbox" class="memberinfoCheckAll">
                     </td>
-                    <td class="text-center">S. No.</td>
-                    <td>Username</td>
-                    <td>Member ID</td>
-                    <td>Full Name</td>
-                    <td>First Name</td>
-                    <td>Last Name</td>
-                    <td>Email</td>
-                    <td>Department</td>
-                    <td>Phone</td>
-                    <td>Gender</td>
-                    <td>Student</td>
-                    <td>Teacher</td>
-                    <td>Temporary Address</td>
-                    <td>Permanent Address</td>
-                    <td>Birthdate</td>
-                    <td>Type</td>
-                    <td class="text-center">Action</td>
+                    <td class="text-center">{% trans 'S.No.' %}</td>
+                    <td>{% trans 'Username' %}</td>
+                    <td>{% trans 'Member ID' %}</td>
+                    <td>{% trans 'Full Name' %}</td>
+                    <td>{% trans 'First Name' %}</td>
+                    <td>{% trans 'Last Name' %}</td>
+                    <td>{% trans 'Email' %}</td>
+                    <td>{% trans 'Department' %}</td>
+                    <td>{% trans 'Phone' %}</td>
+                    <td>{% trans 'Gender' %}</td>
+                    <td>{% trans 'Student' %}</td>
+                    <td>{% trans 'Teacher' %}</td>
+                    <td>{% trans 'Temporary Address' %}</td>
+                    <td>{% trans 'Permanent Address' %}</td>
+                    <td>{% trans 'BirthDate' %}</td>
+                    <td>{% trans 'Type' %}</td>
+                    <td class="text-center">{% trans 'Action' %}</td>
                 </tr>
                 </thead>
                 <tbody></tbody>

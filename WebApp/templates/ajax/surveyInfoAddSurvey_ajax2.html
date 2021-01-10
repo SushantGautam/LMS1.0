@@ -4,6 +4,7 @@
 <link href="{% static 'vendorsx/jQuery-Smart-Wizard/styles/smart_wizard_theme_dots.css' %}" rel="stylesheet"/>
 
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 
 <form id="categoryForm" action="
@@ -46,7 +47,7 @@
             <div id="step-1">
                 <h4 class="text-center" style="padding: 0em 0 !important;
 
-            ">Choose Type:</h4>
+            ">{% trans 'Choose Type' %}:</h4>
                 <div class="col-xs-12">
                     <div class="col-md-12">
                         <div style="text-align: center">
@@ -55,11 +56,10 @@
                                      style="    padding: 10px;">
                                     <label class="mcq_question btn btn-default btn-on btn-md active">
                                         <input type="radio" value="1" name="multifeatured_ule[module_id][switchButtons]"
-                                               checked="checked">Multiple Choice</label>
+                                               checked="checked">{% trans 'Multiple Choice' %}</label>
                                     <label class="short_question btn btn-default btn-off btn-md ">
                                         <input type="radio" value="0"
-                                               name="multifeatured_module[module_id][switchButtons]">Short
-                                        Answer</label>
+                                               name="multifeatured_module[module_id][switchButtons]">{% trans 'Short Answer' %}</label>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
 
                                                 <button
                                                         onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                                        class="btn btn-success">Add option
+                                                        class="btn btn-success">{% trans 'Add option' %}
                                                 </button>
 
                                             {% endif %}
@@ -132,18 +132,18 @@
                 <button class="btn btn-amber-500" type="button" data-toggle="collapse"
                         data-target="#collapseExample"
                         aria-expanded="false" aria-controls="collapseExample">
-                    Edit More Information
+                    {% trans 'Edit More Information' %}
                 </button>
             </div>
         </div>
 
         <div class="collapse" id="collapseExample">
 
-            <label class="control-label " id="categoryTitle" for="first-name">Category :
+            <label class="control-label " id="categoryTitle" for="first-name">{% trans 'Category' %} :
                 <span class="text text-black">{{ category_name }}</span>
             </label>
             <h2 class="StepTitle text-center" style="padding: 0em 0 !important;
-            ">Survey Information</h2>
+            ">{% trans 'Survey Information' %}</h2>
             <div class="col-xs-12">
                 <div class="col-md-12">
                     {{ form|crispy }}
@@ -156,7 +156,7 @@
         <br>
         <div class="row">
             <div class="col-md-12 text-center">
-                <button id= "survey_submit_button" class="btn btn-primary" type="submit">Submit</button>
+                <button id= "survey_submit_button" class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
             </div>
         </div>
 
