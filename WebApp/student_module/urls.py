@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from WebApp.student_module import views
-from WebApp.views import ContentsView, NewContentsView
+from WebApp.views import NewContentsView
 from quiz import views as quizViews
 from survey import views as surveyViews
 
@@ -42,6 +42,10 @@ urlpatterns += (
     #          name='student_courseinfo_list'),
     path('courseinfo/mycourses/', views.MyCoursesListView.as_view(),
          name='student_mycourses_list'),
+    path('courseinfo/mycourses/active/', views.MyCoursesListView.as_view(),
+         name='student_mycourses_list_active'),
+    path('courseinfo/mycourses/inactive/', views.MyCoursesListView.as_view(),
+         name='student_mycourses_list_inactive'),
     path('courseinfo/detail/forum/<int:course>',
          views.CourseForum, name='Student_Course_Forum'),
     path('courseinfo/detail/<int:pk>/', views.CourseInfoDetailView.as_view(),

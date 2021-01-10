@@ -119,15 +119,6 @@
                 <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
                     <a id="cardButton" href="#card-view" style="cursor: pointer; color:black">Card View</a> &nbsp;
                     <a id="tableButton" href="#table-view" style="cursor: pointer">Table View</a></b>
-                    <!-- <span class="view-inactive" style="padding-right: 10px;"><a href="
-                                {% if '/mysessions' not in request.path %}
-                                    {% url 'inninginfo_list_inactive' %}
-                                {% else %}
-                                    {% url 'teachers_mysession_list_inactive' %}
-                                {% endif %}
-                                ">View
-                                        Inactive Sessions</a>
-                                </span> -->
                 </h5>
 
             </div>
@@ -149,22 +140,7 @@
                         {% endif %}
                     </div>
                 {% endif %}
-
             </div>
-
-            <!-- <span> <b>Show</b> </span>
-            <label>
-                <select name="QuizTable_length" aria-controls="QuizTable" class="form-control input-sm"
-                        id="paginate_courses">
-                    <option value="6">6</option>
-                    <option value="12">12</option>
-                    <option value="18">18</option>
-                    <option value="24">24</option>
-                    <option value="30">30</option>
-                    <option value="36">36</option>
-                </select>
-            </label>
-            <span> <b>Entries</b> </span> -->
         </div>
 
 
@@ -186,63 +162,9 @@
                         </button>
                     </form>
                 </div>
-                {% comment %}
-                {% if 'teachers' in request.path %}
-                    <div class="col-md-8 col-sm-6 col-xs-12">
-                        <form method="get" action="">
-                            <div class="col-md-4">
-                                <input type="text" name="teacher_coursequery" placeholder="Search Course"
-                                       value="{{ request.GET.query }}"
-                                       class="form-control"/>
-                            </div>
-                            <button class="btn btn-default" type="submit">
-                                <i class="fa fa-search"></i>&nbsp;Search
-                            </button>
-                        </form>
-                    </div>
-                {% elif 'students' in request.path %}
-                    <div class="col-md-8 col-sm-6 col-xs-12">
-                        <form method="get" action="">
-                            <div class="col-md-4">
-                                <input type="text" name="coursequery" placeholder="Search Course"
-                                       value="{{ request.GET.query }}"
-                                       class="form-control"/>
-                            </div>
-                            <button class="btn btn-default" type="submit">
-                                <i class="fa fa-search"></i>&nbsp;Search
-                            </button>
-                        </form>
-                    </div>
-                {% else %}
-                    <div class="col-md-8 col-sm-6 col-xs-12">
-                        <form method="get" action="">
-                            <div class="col-md-4">
-                                <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
-                                       class="form-control"/>
-                            </div>
-                            <button class="btn btn-default" type="submit">
-                                <i class="fa fa-search"></i>&nbsp;Search
-                            </button>
-                        </form>
-                    </div>
-                {% endif %}
-            {% endcomment %}
 
                 <div class="col-md-4 col-sm-6 col-xs-12 btn-createnew">
                     {% if 'students' not in request.path %}
-                        <!-- {% if '/active' in request.path %}
-                                <a href="{% url 'courseinfo_list_inactive' %}">
-                                    <button class="text-right btn btn-default btn-sm" style="float:right">
-                                        View <span style="color: rgb(219, 0, 0); ">  <b>Inactive</b>  </span>courses
-                                    </button>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'courseinfo_list_active' %}">
-                                    <button class="text-right btn btn-default btn-sm" style="float:right">
-                                        View <span style="color: rgb(48, 112, 55); ">  <b>Active</b>  </span>courses
-                                    </button>
-                                </a>
-                            {% endif %} -->
                         {% if '/active' in request.path %}
                             <a class="btn btn-success btn-sm" style="float: right;" href="
                         {% if '/teachers' in request.path %}

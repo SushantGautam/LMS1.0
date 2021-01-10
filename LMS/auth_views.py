@@ -90,12 +90,8 @@ class StudentCourseAuthMxnCls:
 
 
 def StudentCourseAuth(request, pk):
-    courselist = []
-    for x in request.user.get_student_courses():
-        for y in x:
-            courselist.append(y)
-    return 1 if get_object_or_404(CourseInfo, pk=pk).pk in courselist else returnResultFunc(
-        request)
+    return 1 if get_object_or_404(CourseInfo, pk=pk) in request.user.get_student_courses()[
+        'courses'] else returnResultFunc(request)
 
 
 class ChapterAuthMxnCls:

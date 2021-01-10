@@ -203,9 +203,7 @@ class MyCourseListView(ListView):
         if '/inactive/' in self.request.path:
             qsearch = self.request.user.get_teacher_courses(inactiveCourse=True)[
                 'courses']
-            # for x in teacheractivecourses:
-            #     if x in qsearch:
-            #         qsearch = qsearch.exclude(pk=x.pk)
+
         if '/active/' in self.request.path:
             qsearch = teacheractivecourses
             # qsearch = [x for x in qsearch if x.Use_Flag is True]

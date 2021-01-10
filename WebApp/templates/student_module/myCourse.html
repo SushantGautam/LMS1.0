@@ -2,27 +2,50 @@
 {% load static %}
 {% load i18n %}
 {% block title %}
-Course
+    Course
 {% endblock %}
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">{% trans 'My Courses' %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'My Courses' %}</li>
 {% endblock %}
 {% block content %}
     <div class="courseInfoListClass">
-        <h2 class="tableHeader">{% trans 'List of Courses' %}</h2>
-
-
-        <hr class="header_hr">
-        <div class="row">
+    <h2 class="tableHeader">
+        {% if '/active' in request.path %}
+            {% trans 'List of Courses' %}
+        {% else %}
+            {% trans 'List of Inactive Courses' %}
+        {% endif %}
+    </h2>
+    <hr class="header_hr">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="btn-createnew">
+                    {% if '/active' in request.path %}
+                        <a href="{% url 'student_mycourses_list_inactive' %}">
+                                    <span class="text-right " style="float:right;color:#5A738E">
+                                    <b>{% trans 'View Inactive Courses' %}</b>
+                                    </span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'student_mycourses_list_active' %}">
+                                    <span class="text-right " style="float:right;color:#5A738E">
+                                    <b> {% trans 'View Active Courses' %}</b>
+                                    </span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
             <div class="col-md-12 text-right">
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <!-- <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
                         <a id="cardButton" style="cursor: pointer; ">Card View</a> &nbsp;
                         <a id="tableButton" style="cursor: pointer">Table View</a></b>
-                     
+
                     </h5> -->
 
                 </div>
+
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <span> <b>{% trans 'Show' %}</b> </span>
                     <label>
@@ -39,7 +62,7 @@ Course
                     <span> <b>{% trans 'Entries' %}</b> </span>
 
                 </div>
-               
+
             </div>
         </div>
         <div class="col-md-8 col-sm-6 col-xs-12">
@@ -47,58 +70,60 @@ Course
                 <div class="col-md-4">
                     <input type="text" name="studentmycoursequery" placeholder="{% trans 'Search Course' %}"
                            value="{{ request.GET.studentmycoursequery }}" class="form-control">
-            </div>
-            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;{% trans 'Search' %}</button>
-        </form>
-    </div>
-    <br><br><br>
-    <div class="container" id="divID">
-        {% include 'WebApp/theme/alerts.html' %}
-     <div class="col-md-12" id="cardView">  
-        {% for courses in response %}
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
-            <div class="gridContentsList">
-                <div class="card-header">
-                    <a href="{{ courses.student_get_absolute_url }}">
-                        <img id="courseListImage" class="card-img-top" src="
+                </div>
+                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i>&nbsp;{% trans 'Search' %}
+                </button>
+            </form>
+        </div>
+        <br><br><br>
+        <div class="container" id="divID">
+            {% include 'WebApp/theme/alerts.html' %}
+            <div class="col-md-12" id="cardView">
+                {% for courses in response %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="listCard">
+                        <div class="gridContentsList">
+                            <div class="card-header">
+                                <a href="{{ courses.student_get_absolute_url }}">
+                                    <img id="courseListImage" class="card-img-top" src="
                             {% if courses.Course_Cover_File %}
                                 /media/{{ courses.Course_Cover_File }}
                             {% else %}
                                 {% static 'images/course.jpg' %}
                             {% endif %}" alt="Card image cap" width="100%" height="180px" style="object-fit: cover">
-                    </a>
-                </div>
-                <div class="card-body" id="cardInfo">
-                    <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; "><strong><a
-                            href="{{ courses.student_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
-                    </h2>
+                                </a>
+                            </div>
+                            <div class="card-body" id="cardInfo">
+                                <h2 class="card-title" style="height:45px; overflow: ;   overflow-wrap:break-word; ">
+                                    <strong><a
+                                            href="{{ courses.student_get_absolute_url }}">{{ courses.Course_Name|truncatechars:45 }}</a></strong>
+                                </h2>
 
 
 
-                    {% if courses.get_teachers_of_this_course %}
-                        <p style="height:45px ; padding: 10px; overflow:auto">
-                            Teacher(s): &nbsp;
-                            {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
+                                {% if courses.get_teachers_of_this_course %}
+                                    <p style="height:45px ; padding: 10px; overflow:auto">
+                                        Teacher(s): &nbsp;
+                                        {% for eachTeacher in courses.get_teachers_of_this_course|slice:":4" %}
 
 
-                                {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
+                                            {{ eachTeacher.getFullName|truncatechars:15 }}&nbsp;
 
-                            {% endfor %}
-                            {% if courses.get_teachers_of_this_course|length > 4 %}
-                                ....
+                                        {% endfor %}
+                                        {% if courses.get_teachers_of_this_course|length > 4 %}
+                                            ....
 
-            {% endif%}
+                                        {% endif %}
 
-          </p>
-          {% else %}
-                        <p style="height:30px ; padding: 10px; ">
-                            {% trans 'No Teacher Assigned' %}
-                        </p>
-                    {% endif %}
-                    <hr>
-                    <h5 class="courseDescription" style="padding-bottom: 10px;">
-                        {% if courses.Course_Description %}
-                            <p style="
+                                    </p>
+                                {% else %}
+                                    <p style="height:30px ; padding: 10px; ">
+                                        {% trans 'No Teacher Assigned' %}
+                                    </p>
+                                {% endif %}
+                                <hr>
+                                <h5 class="courseDescription" style="padding-bottom: 10px;">
+                                    {% if courses.Course_Description %}
+                                        <p style="
             padding-right: 10px;
             line-height: 1.5em;
             height: 3em;
@@ -106,10 +131,10 @@ Course
             overflow: hidden;
             white-space: normal;
             text-overflow: ellipsis;">
-                                {{ courses.Course_Description|truncatechars:70 }}
-                        </p>
-                        {% else %}
-                            <p style="
+                                            {{ courses.Course_Description|truncatechars:70 }}
+                                        </p>
+                                    {% else %}
+                                        <p style="
                         padding-right: 10px;
                         line-height: 1.5em;
                         height: 3em;
@@ -117,141 +142,154 @@ Course
                         overflow: hidden;
                         white-space: normal;
                         text-overflow: ellipsis;">
-                                {% trans 'No Description' %}
-                            </p>
-                        {% endif %}
-                    </h5>
+                                            {% trans 'No Description' %}
+                                        </p>
+                                    {% endif %}
+                                </h5>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                {% endfor %}
+                <div class=" col-md-12 col-sm-12 col-xs-12 text-center">
+                    {% if response.has_other_pages %}
+                        <div class=" text-center">
+                            <ul class="pagination">
+                                {% if response.has_previous %}
+                                    <li>
+                                        <a href="?page=
+
+
+                                                {{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled"><span>&laquo;</span></li>
+                                {% endif %}
+                                {% for i in response.paginator.page_range %}
+                                    {% if response.number == i %}
+                                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a href="?page=
+
+
+                                                    {{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if response.has_next %}
+                                    <li>
+                                        <a href="?page=
+
+
+                                                {{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled"><span>&raquo;</span></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
 
                 </div>
             </div>
-        </div>
-      
+            <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12">
+                <div class="table-responsive" style="display:none;padding: 0;" id="tableView">
 
-        {% endfor %}
-          <div class=" col-md-12 col-sm-12 col-xs-12 text-center">
-            {% if response.has_other_pages %}
-            <div class=" text-center">
-                <ul class="pagination">
-                    {% if response.has_previous %}
-                        <li>
-    <a href="?page={{ response.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a>
-                        </li>
-                    {% else %}
-                        <li class="disabled"><span>&laquo;</span></li>
-                    {% endif %}
-                    {% for i in response.paginator.page_range %}
-                        {% if response.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                        {% else %}
-                            <li>
-    <a href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                    {% if response.has_next %}
-                        <li>
-    <a href="?page={{ response.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a>
-                        </li>
-                    {% else %}
-                        <li class="disabled"><span>&raquo;</span></li>
-                    {% endif %}
-                </ul>
-            </div>
-        {% endif %}
+                    <br>
+                    <span class="checkboxCheckedLength"></span>
+                    <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable">
+                        <thead class="thead-light bg-primary">
+                        <tr class="tableTitleRow">
 
-        </div>
-     </div> 
-     <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12" >
-        <div class="table-responsive"  style="display:none;padding: 0;" id="tableView">
+                            <td>{% trans 'ID' %}</td>
+                            <td>{% trans 'Course Name' %}</td>
+                            <td>{% trans 'Teachers' %}</td>
 
-            <br>
-            <span class="checkboxCheckedLength"></span>
-            <table class="table table-striped table-bordered bg-white nowrap" id="course_dataTable">
-                <thead class="thead-light bg-primary">
-                <tr class="tableTitleRow">
-                   
-                    <td>{% trans 'ID' %}</td>
-                    <td>{% trans 'Course Name' %}</td>
-                    <td>{% trans 'Teachers' %}</td>
-                   
-                    <td>{% trans 'Course Provider' %}</td>
-                    <td>{% trans 'Course Level' %}</td>
+                            <td>{% trans 'Course Provider' %}</td>
+                            <td>{% trans 'Course Level' %}</td>
 
-                </tr>
-                </thead>
-                {% for object in object_list %}
-                    <tr>
-                        
-                        <td style="vertical-align: middle;">{{ forloop.counter }}</td>
-                        <td style="vertical-align: middle;">    <strong><a href="{% if '/students' in request.path %}
+                        </tr>
+                        </thead>
+                        {% for object in object_list %}
+                            <tr>
+
+                                <td style="vertical-align: middle;">{{ forloop.counter }}</td>
+                                <td style="vertical-align: middle;"><strong><a
+                                        href="{% if '/students' in request.path %}
                             {{ object.student_get_absolute_url }}
                         {% else %}
                             {{ object.get_absolute_url }}
                         {% endif %}">{{ object.Course_Name|truncatechars:70 }} </a></strong></td>
-                       
-                        <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
-                            <p style="height: 30px; overflow:auto"> 
-                            &nbsp;
-                            {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
-                            {{ eachTeacher.getFullName }}
-                            {% endfor%}
-            
-                            </p>
-                            {% else %}
-                            <p style="height: 30px; overflow:auto"> {% trans 'No Teacher' %} </p>
-            
-            
-                    
-                        {% endif %}</td>
-                        <td style="vertical-align: middle;">
-                            {{ object.Course_Provider }}
 
-                        </td>
-                        <td style="vertical-align: middle;">
-                            {{object.Course_Level}}
+                                <td style="vertical-align: middle;">     {% if object.get_teachers_of_this_course %}
+                                    <p style="height: 30px; overflow:auto">
+                                        &nbsp;
+                                        {% for eachTeacher in object.get_teachers_of_this_course %}&nbsp;
+                                            {{ eachTeacher.getFullName }}
+                                        {% endfor %}
 
-                        </td>
-                       
-                       
-                    </tr>
-                {% endfor %}
-            </table>
+                                    </p>
+                                {% else %}
+                                    <p style="height: 30px; overflow:auto"> {% trans 'No Teacher' %} </p>
+
+
+
+                                {% endif %}</td>
+                                <td style="vertical-align: middle;">
+                                    {{ object.Course_Provider }}
+
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    {{ object.Course_Level }}
+
+                                </td>
+
+
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+            </div>
+
         </div>
 
-     </div>
 
     </div>
 
 
-</div>
 
-
-  
 
 
 
 {% endblock %}
 
 {% block customjss %}
-<script>
-    document.querySelector("#cardButton").addEventListener('click', cardView);
-    document.querySelector("#tableButton").addEventListener('click', tableView);
-    function cardView() {
-        $("#cardButton").css('color', 'black');
-        $("#tableButton").css('color', 'grey');
-        document.querySelector('#cardView').style.display = "inline-block";
-        document.querySelector('#tableView').style.display = "none";
-    }
-    function tableView() {
-        $("#cardButton").css('color', 'grey');
-        $("#tableButton").css('color', 'black');
-        document.querySelector('#tableView').style.display = "block";
-        document.querySelector('#cardView').style.display = "none";
+    <script>
+        document.querySelector("#cardButton").addEventListener('click', cardView);
+        document.querySelector("#tableButton").addEventListener('click', tableView);
 
-    }
+        function cardView() {
+            $("#cardButton").css('color', 'black');
+            $("#tableButton").css('color', 'grey');
+            document.querySelector('#cardView').style.display = "inline-block";
+            document.querySelector('#tableView').style.display = "none";
+        }
+
+        function tableView() {
+            $("#cardButton").css('color', 'grey');
+            $("#tableButton").css('color', 'black');
+            document.querySelector('#tableView').style.display = "block";
+            document.querySelector('#cardView').style.display = "none";
+
+        }
 
 
-</script>
+    </script>
     <script>
         $(document).ready(function () {
             if ('{{ request.GET.paginate_by }}') {

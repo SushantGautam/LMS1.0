@@ -62,6 +62,7 @@ class CenterInfo(models.Model):
     def get_delete_url(self):
         return reverse('centerinfo_delete', args=(self.pk,))
 
+
 class DepartmentInfo(models.Model):
     Department_Name = CharField(max_length=500)
     Use_Flag = BooleanField(default=True)
@@ -91,6 +92,7 @@ class DepartmentInfo(models.Model):
 
     def get_delete_url(self):
         return reverse('departmentinfo_delete', args=(self.pk,))
+
 
 class MemberInfo(AbstractUser):
     Gender_Choices = (
@@ -167,11 +169,26 @@ class MemberInfo(AbstractUser):
         related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
     )
 
-    def get_student_courses(self):
-        innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
-                                            End_Date__gt=datetime.now(), Use_Flag=True)
-        courses = InningGroup.objects.filter(inninginfo__in=innings).values_list('Course_Code__pk')
-        return courses
+    def get_student_courses(self, courseFromExpiredSession=False, inactiveCourse=False, activeCourse=False):
+        datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students__id=self.pk)
+        all_sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True)
+        all_courses = CourseInfo.objects.filter(
+            pk__in=InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group', flat=True)))
+        active_sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+
+        courses = all_courses
+        sessions = all_sessions
+        if inactiveCourse:
+            sessions = all_sessions.filter(Groups__in=batches, Use_Flag=True,
+                                                 Start_Date__lte=datetime_now, End_Date__lt=datetime_now).distinct()
+            courses = all_courses.exclude(pk__in=InningGroup.objects.filter(pk__in=active_sessions.values_list('Course_Group', flat=True)))
+        if activeCourse:
+            sessions = active_sessions
+            courses = all_courses.filter(
+                pk__in=InningGroup.objects.filter(pk__in=active_sessions.values_list('Course_Group', flat=True)))
+        return {'courses': courses, 'session': sessions}
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = timezone.now().replace(microsecond=0)
@@ -213,6 +230,7 @@ class MemberInfo(AbstractUser):
             return "Teacher"
         elif self.Is_Student:
             return "Student"
+
     get_user_type.fget.short_description = _('User Type')
 
     @property
@@ -258,9 +276,11 @@ class MemberInfo(AbstractUser):
     #     extra_fields.setdefault('is_superuser', True)
     #     return self._create_user(username, email, password, **extra_fields)
 
+
 class UserSession(models.Model):
     user = models.ForeignKey(MemberInfo, on_delete=models.CASCADE)
     session = models.OneToOneField(Session, on_delete=models.CASCADE)
+
 
 @receiver(user_logged_in)
 def remove_other_sessions(sender, user, request, **kwargs):
@@ -276,6 +296,7 @@ def remove_other_sessions(sender, user, request, **kwargs):
             user=user,
             session=Session.objects.get(pk=request.session.session_key)
         )
+
 
 class CourseInfo(models.Model):
     Course_Name = CharField(max_length=240)
@@ -317,10 +338,10 @@ class CourseInfo(models.Model):
     def innings_of_this_course(self):
         innings = InningInfo.objects.filter(Use_Flag=True, Course_Group__in=self.inninggroups.all())
         return innings
-    
+
     def innings_active(self):
         innings = InningInfo.objects.filter(Use_Flag=True, Start_Date__lte=datetime.now(),
-                        End_Date__gte=datetime.now(), Course_Group__in=self.inninggroups.all())
+                                            End_Date__gte=datetime.now(), Course_Group__in=self.inninggroups.all())
         return innings
 
     def get_teachers_of_this_course(self):
@@ -441,9 +462,9 @@ class ChapterInfo(models.Model):
 
         return page_no
 
-    
     def has_content(self):
-        file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
+        file_path = os.path.join(settings.MEDIA_ROOT, 'chapterBuilder', str(self.Course_Code.pk), str(self.pk),
+                                 str(self.pk) + '.txt')
         return os.path.exists(file_path)
 
     # def quiz_count(self):
@@ -451,6 +472,7 @@ class ChapterInfo(models.Model):
 
     def assignment_count(self):
         return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
+
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
@@ -587,10 +609,11 @@ class AssignmentInfo(models.Model):
         if self.Assignment_Start and self.Assignment_Deadline:
             if self.Assignment_Start > self.Assignment_Deadline:
                 raise ValidationError("End date must be greater than start date")
-    
+
     @property
     def get_total_score(self):
-        score = AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))['Question_Score__sum']
+        score = AssignmentQuestionInfo.objects.filter(Assignment_Code=self).aggregate(Sum('Question_Score'))[
+            'Question_Score__sum']
         if score:
             return score
         else:

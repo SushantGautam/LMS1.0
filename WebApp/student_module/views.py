@@ -30,7 +30,6 @@ from textblob import TextBlob
 from LMS import settings
 from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAuthMxnCls, StudentChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls
-from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm, AssignAnswerInfoForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView, SessionMapInfo
@@ -295,54 +294,43 @@ def calendar(request):
 class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
+    paginate_by = 8
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.GET.get('paginate_by'):
+            self.paginate_by = self.request.GET.get('paginate_by')
+        return super(MyCoursesListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        datetime_now = timezone.now().replace(microsecond=0)
-        batches = GroupMapping.objects.filter(Students=self.request.user)
-        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
-        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
-        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                            Use_Flag=True).distinct()
-
-        filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
-        filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
-        if self.request.GET.get('paginate_by'):
-            paginate_by = self.request.GET.get('paginate_by')
-        else:
-            paginate_by = 8
-        paginator = Paginator(filtered_qs, paginate_by)
-        page = self.request.GET.get('page', 1)
-
+        courses = self.object_list
+        paginator = Paginator(courses, self.paginate_by)
+        page = self.request.GET.get('page')
         try:
             response = paginator.page(page)
         except PageNotAnInteger:
             response = paginator.page(1)
         except EmptyPage:
             response = paginator.page(paginator.num_pages)
-
         context['response'] = response
         return context
 
     def get_queryset(self):
-        datetime_now = timezone.now().replace(microsecond=0)
-        batches = GroupMapping.objects.filter(Students=self.request.user)
-        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
-        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
-        qset = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                         Use_Flag=True).distinct()
-        queryset = self.request.GET.get('studentmycoursequery')
-        if queryset:
-            queryset = queryset.strip()
-            qset = qset.filter(Course_Name__icontains=queryset)
-            if not len(qset):
-                messages.error(
-                    self.request, 'Sorry no courses found! Try with a different keyword')
-        # you don't need this if you set up your ordering on the model
-        qset = qset.order_by("-id")
-        return qset
+        if '/inactive/' in self.request.path:
+            qsearch = self.request.user.get_student_courses(inactiveCourse=True)['courses']
+        else:
+            qsearch = self.request.user.get_student_courses(activeCourse=True)['courses']
+        courses = []
+        query = self.request.GET.get('studentmycoursequery')
+        if query:
+            query = query.strip()
+            for course in qsearch:
+                if query in course.Course_Name.lower():
+                    courses.append(course)
+            if not len(courses):
+                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
+        else:
+            courses = qsearch
+        return courses
 
 
 class MyAssignmentsListView(ListView):

@@ -3385,8 +3385,7 @@ def CourseProgressView(request, coursepk, inningpk=None):
     if coursepk:
         if '/teachers' in request.path:
             inning_info = InningInfo.objects.filter(Course_Group__Teacher_Code__pk=request.user.pk,
-                                                    Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
-                                                    End_Date__gt=datetime.now()).distinct()
+                                                    Course_Group__Course_Code__pk=coursepk).distinct()
         else:
             inning_info = InningInfo.objects.filter(Course_Group__Course_Code__pk=coursepk, Use_Flag=True,
                                                     End_Date__gt=datetime.now()).distinct()
