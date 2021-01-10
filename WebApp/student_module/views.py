@@ -30,6 +30,7 @@ from textblob import TextBlob
 from LMS import settings
 from LMS.auth_views import CourseAuthMxnCls, StudentCourseAuthMxnCls, ChapterAuthMxnCls, StudentChapterAuthMxnCls, \
     AssignmentInfoAuthMxnCls, StudentAssignmentAuthMxnCls
+from WebApp.filters import MyCourseFilter
 from WebApp.forms import UserUpdateForm, AssignAnswerInfoForm
 from WebApp.models import CourseInfo, GroupMapping, InningInfo, ChapterInfo, AssignmentInfo, MemberInfo, \
     AssignmentQuestionInfo, AssignAnswerInfo, InningGroup, Notice, NoticeView, SessionMapInfo
@@ -112,7 +113,7 @@ def filter_active_assignments(chapters, sessions, filter_type="active"):  # It o
         latest_sessionmap = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                             object_id=assignment.id,
                                                             Session_Code__in=sessions).latest('End_Date')
-        assignment.startdate = latest_sessionmap.Start_Date                                                    
+        assignment.startdate = latest_sessionmap.Start_Date
         assignment.deadline = latest_sessionmap.End_Date
 
     return assignments
@@ -294,43 +295,54 @@ def calendar(request):
 class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
-    paginate_by = 8
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.GET.get('paginate_by'):
-            self.paginate_by = self.request.GET.get('paginate_by')
-        return super(MyCoursesListView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        courses = self.object_list
-        paginator = Paginator(courses, self.paginate_by)
-        page = self.request.GET.get('page')
+        datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
+        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                            Use_Flag=True).distinct()
+
+        filtered_qs = MyCourseFilter(self.request.GET, queryset=courses).qs
+        filtered_qs = filtered_qs.filter(pk__in=context['object_list'].values_list('pk'))
+        if self.request.GET.get('paginate_by'):
+            paginate_by = self.request.GET.get('paginate_by')
+        else:
+            paginate_by = 8
+        paginator = Paginator(filtered_qs, paginate_by)
+        page = self.request.GET.get('page', 1)
+
         try:
             response = paginator.page(page)
         except PageNotAnInteger:
             response = paginator.page(1)
         except EmptyPage:
             response = paginator.page(paginator.num_pages)
+
         context['response'] = response
         return context
 
     def get_queryset(self):
-        if '/inactive/' in self.request.path:
-            qsearch = self.request.user.get_student_courses(inactiveCourse=True)['courses']
-        else:
-            qsearch = self.request.user.get_student_courses(activeCourse=True)['courses']
-        courses = []
-        query = self.request.GET.get('studentmycoursequery')
-        if query:
-            query = query.strip()
-            for course in qsearch:
-                if query in course.Course_Name.lower():
-                    courses.append(course)
-            if not len(courses):
-                messages.error(self.request, 'Sorry no course found! Try with a different keyword')
-        else:
-            courses = qsearch
-        return courses
+        datetime_now = timezone.now().replace(microsecond=0)
+        batches = GroupMapping.objects.filter(Students=self.request.user)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'), Use_Flag=True).distinct()
+        qset = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+                                         Use_Flag=True).distinct()
+        queryset = self.request.GET.get('studentmycoursequery')
+        if queryset:
+            queryset = queryset.strip()
+            qset = qset.filter(Course_Name__icontains=queryset)
+            if not len(qset):
+                messages.error(
+                    self.request, 'Sorry no courses found! Try with a different keyword')
+        # you don't need this if you set up your ordering on the model
+        qset = qset.order_by("-id")
+        return qset
 
 
 class MyAssignmentsListView(ListView):
@@ -1356,13 +1368,11 @@ from django.db.models import F
 @permission_classes((IsAuthenticated,))
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
-        courses = request.user.get_student_courses().distinct()
+        student_courses = request.user.get_student_courses(activeCourse=True)
+        courses = student_courses['courses'].distinct()
         datetime_now = timezone.now().replace(microsecond=0)
 
-        batches = GroupMapping.objects.filter(Students__id=request.user.id, Center_Code=request.user.Center_Code)
-
-        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        sessions = student_courses['session']
 
         if request.GET.get("session"):
             if request.GET.get('session') == "active":
@@ -1428,21 +1438,21 @@ def singleUserHomePageJSON(request):
             submitsurvey__Student_Code__pk__in=[request.user.pk, ])
         courses_progress = {}
         for course in courses:
-            course_data = progress(request.user, course[0])
-            courses_progress[course[0]] = course_data
+            course_data = progress(request.user, course.pk)
+            courses_progress[course.pk] = course_data
         user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'username', 'Member_ID', 'first_name', 'last_name',
                                                                     'Member_Avatar', 'email', 'Member_Permanent_Address',
                                                                     'Member_Temporary_Address', 'Member_BirthDate', 'Member_Department__Department_Name',
                                                                     'Member_Phone', 'Use_Flag', 'Is_Teacher', 'Register_DateTime',
                                                                     'Is_Student', 'Is_CenterAdmin', 'Member_Gender', 'last_login',
                                                                     'Center_Code')
-        courses_list = courses.values(pk=F('Course_Code__pk'), Course_Name=F('Course_Code__Course_Name'),
-                                      Course_Description=F('Course_Code__Course_Description'),
-                                      Course_Cover_File=F('Course_Code__Course_Cover_File'),
-                                      Course_Level=F('Course_Code__Course_Level'),
-                                      Course_Info=F('Course_Code__Course_Info'), Use_Flag=F('Course_Code__Use_Flag'),
-                                      Center_Code=F('Course_Code__Center_Code'),
-                                      Register_Agent=F('Course_Code__Register_Agent'))
+        courses_list = courses.values('pk', 'Course_Name',
+                                      'Course_Description',
+                                      'Course_Cover_File',
+                                      'Course_Level',
+                                      'Course_Info', 'Use_Flag',
+                                      'Center_Code',
+                                      'Register_Agent')
 
         survey_list = survey_queryset.values('id', 'Survey_Title', 'Start_Date', 'End_Date', 'Survey_Cover', 'Use_Flag',
                                              'Retaken_From', 'Version_No', 'Center_Code', 'Category_Code',
