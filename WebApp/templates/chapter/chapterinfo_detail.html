@@ -88,6 +88,7 @@
                 {% trans "Chapter is inactive, therefore assignments are not assigned to students" %}.
             </p>
             {% endif %}
+
             {% for assignment in assignments %}
             <div class="accordion mb-4" id="assignmentList{{assignment.pk}}">
                 <div class="card shadow-none border">
@@ -123,6 +124,9 @@
                 </div>
             </div>
             {% endfor %}
+
+
+
         </div>
     </div>
     <div class="col-lg-4 col-md-12">

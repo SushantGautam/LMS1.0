@@ -117,7 +117,7 @@
                     {% endif %}
                 </div>
             </div>
-            {% for questions in Questions %}
+            {% for question in Questions %}
             <div class="accordion mb-4" id="questionList{{ question.pk }}">
                 <div class="card shadow-none border">
                     <div class="card-header justify-content-between" id="headingOne">
@@ -126,13 +126,13 @@
                                 <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
                             </figure>
                             <h5 class="text-secondary m-0 pl-3 cursor-pointer">
-                                {{ questions.Question_Title }}
+                                {{ question.Question_Title }}
                             </h5>
                         </div>
                         <div class="row d-flex align-items-center">
                             {% if '/students' in request.path %}
                             <button class="btn btn-sm btn-outline-primary answerButton mx-2" type="button"
-                                id="{{ questions.pk }}">{% trans "ANSWER" %} <i class="fa fa-arrow-right"></i>
+                                id="{{ question.pk }}">{% trans "ANSWER" %} <i class="fa fa-arrow-right"></i>
                             </button>
                             {% endif %}
                             {% if '/students' not in request.path %}
@@ -408,10 +408,10 @@
 
 
 
-             <div class="x_panel" id="answerContent{{ questions.pk }}" style="display: none">
+             <div class="x_panel" id="answerContent{{ question.pk }}" style="display: none">
                             <div class="x_content">
                                 {% for answer in Answers %}
-                                    {% if questions.id == answer.Question_Code.id %}
+                                    {% if question.id == answer.Question_Code.id %}
                                         {% if answer.Assignment_Answer != '' %}
                                             <div class="short_answer">
                                                 <p class="short_answer_p"
@@ -421,7 +421,7 @@
                                             {% if object.active %}
                                                 <button class="btn btn-info editanswer"
                                                         data-Student_Code="{{ request.user.id }}"
-                                                        data-Question_Code="{{ questions.id }}"
+                                                        data-Question_Code="{{ question.id }}"
                                                         data-Answer_Code="{{ answer.pk }}"
                                                         value="{{ answer.pk }}"
                                                         style="float: right; position:relative; bottom:60px; left:5px;" title="Edit Answer"><i class="fa fa-edit"
@@ -434,19 +434,19 @@
                                                 </button>
                                             {% endif %}
                                             <div class="assignment_update_form" style="display: none;">
-                                                <form class="form_{{ questions.id }}">
+                                                <form class="form_{{ question.id }}">
                                                     <div class="form-group">
                                                         {{ form.Assignment_Answer }}
                                                         <input type="hidden" value="{{ request.user.id }}"
                                                                name="Student_Code"
-                                                               id="id_Student_Code{{ questions.id }}">
-                                                        <input type="hidden" value="{{ questions.id }}"
+                                                               id="id_Student_Code{{ question.id }}">
+                                                        <input type="hidden" value="{{ question.id }}"
                                                                name="Question_Code"
-                                                               id="id_Question_Code{{ questions.id }}">
+                                                               id="id_Question_Code{{ question.id }}">
                                                     </div>
                                                     <div class="form-group text-center">
                                                         <button class="btn btn-sm btn-primary cancelBtn" type="button"
-                                                                id="cancelButton{{ questions.pk }}">
+                                                                id="cancelButton{{ question.pk }}">
                                                             {% trans 'Cancel' %}
                                                         </button>
                                                         <button class="btn btn-sm btn-primary resetBtn" type="reset">
@@ -455,8 +455,8 @@
 
                                                         <button type="button"
                                                                 class="btn btn-sm btn-success submitAnswer"
-                                                                id="answer{{ questions.id }}"
-                                                                data-id="{{ questions.id }}"
+                                                                id="answer{{ question.id }}"
+                                                                data-id="{{ question.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}?editanswer={{ answer.pk }}">
                                                             {% trans 'Submit' %}
                                                         </button>
@@ -480,19 +480,19 @@
                                 {% endfor %}
 
                                 {% for answer in notAnswered %}
-                                    {% if  questions.id == answer %}
-                                        <form class="form_{{ questions.id }}">
-                                            {% if questions.Answer_Type == 'S' %}
+                                    {% if  question.id == answer %}
+                                        <form class="form_{{ question.id }}">
+                                            {% if question.Answer_Type == 'S' %}
                                                 <div class="form-group">
                                                     {{ form.Assignment_Answer }}
                                                     <!-- <textarea type="hidden" name="Assignment_Answer"
-                                                     id="id_Assignment_Answer{{ questions.id }}"
+                                                     id="id_Assignment_Answer{{ question.id }}"
                                                      required></textarea> -->
                                                     <input type="hidden" value="{{ request.user.id }}"
                                                            name="Student_Code"
-                                                           id="id_Student_Code{{ questions.id }}">
-                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                           id="id_Question_Code{{ questions.id }}">
+                                                           id="id_Student_Code{{ question.id }}">
+                                                    <input type="hidden" value="{{ question.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ question.id }}">
 
                                                 </div>
 
@@ -501,7 +501,7 @@
                                                     {# {% if object.Assignment_Deadline|date:"Y-m-d H:i" >= todays_date and object.Assignment_Start|date:"Y-m-d H:i" <= todays_date %} #}
                                                     {# {% isAssignmentActive object as isanswerable %}#}
                                                     {% if object.active %}
-                                                        <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ questions.pk }}">
+                                                        <!-- <button class="btn btn-primary" type="button" id="cancelButton{{ question.pk }}">
                                                 Cancel
                                             </button> -->
                                                         <button class="btn btn-sm btn-primary" type="reset">{% trans 'Reset' %}
@@ -509,8 +509,8 @@
 
                                                         <button type="button"
                                                                 class="btn btn-sm btn-success submitAnswer"
-                                                                id="answer{{ questions.id }}"
-                                                                data-id="{{ questions.id }}"
+                                                                id="answer{{ question.id }}"
+                                                                data-id="{{ question.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}">
                                                             {% trans 'Submit' %}
                                                         </button>
@@ -519,22 +519,22 @@
                                                     {% endif %}
                                                 </div>
 
-                                            {% elif questions.Answer_Type == 'F' %}
+                                            {% elif question.Answer_Type == 'F' %}
 
                                                 <div class="form-group">
-                                                    <label for="id_Assignment_File{{ questions.id }}" class="">
+                                                    <label for="id_Assignment_File{{ question.id }}" class="">
                                                         <span style="font-size: 10px; color: #721c24">
                                                             {% trans 'Assignment File' %} ({% trans 'Max' %}: 10 MB) </span>
                                                     </label>
 
                                                     <input type="file" name="Assignment_File"
-                                                           id="id_Assignment_File{{ questions.id }}"
+                                                           id="id_Assignment_File{{ question.id }}"
                                                            required/>
                                                     <input type="hidden" value="{{ request.user.id }}"
                                                            name="Student_Code"
-                                                           id="id_Student_Code{{ questions.id }}">
-                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                           id="id_Question_Code{{ questions.id }}">
+                                                           id="id_Student_Code{{ question.id }}">
+                                                    <input type="hidden" value="{{ question.id }}" name="Question_Code"
+                                                           id="id_Question_Code{{ question.id }}">
                                                 </div>
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
@@ -542,14 +542,14 @@
                                                     {#  {% isAssignmentActive object as isanswerable %} #}
                                                     {% if object.active %}
                                                         <button class="btn btn-sm btn-primary" type="reset"
-                                                                id="cancelButton{{ questions.pk }}">
+                                                                id="cancelButton{{ question.pk }}">
                                                             {% trans 'Cancel' %}
                                                         </button>
 
                                                         <button type="button"
                                                                 class="btn btn-sm btn-success submitAnswer"
-                                                                id="answer{{ questions.id }}"
-                                                                data-id="{{ questions.id }}"
+                                                                id="answer{{ question.id }}"
+                                                                data-id="{{ question.id }}"
                                                                 data-url="{% url 'assignanswerinfo_create_ajax' %}">
                                                             {% trans 'Submit' %}
                                                         </button>
@@ -624,7 +624,7 @@
                             </tr>
                         {% endif %}
                     {% for sessions in assigned_session %}
-                       {% if "students" in request.get_full_path %}
+                     {#   {% if "students" in request.get_full_path %} #}
                             {% if sessions.is_active %}
                             <tr>
                                 <td class="custom-table-width">
@@ -661,8 +661,10 @@
 
 
                             </tr>
-                            {% endif %}
-                       {% else %}
+                         {#    {% endif %}  #}
+                   {% comment %}
+
+                   {% else %}
 
                             <tr>
                                 <td class="custom-table-width">
@@ -721,6 +723,9 @@
 
 
                        {% endif %}
+
+                       {% endcomment %}
+                          {% endif %}
                         {% endfor %}
 
                     </table>
@@ -753,7 +758,7 @@
                     <form method="post" action="{% url 'assignmentinfo_delete' pk=object.pk %}"
                         id="deleteAssignment{{ object.pk }}">
                         {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                        <!-- <input type="hidden" value="{{question.pk}}" name="question_id"> -->
                         <input type="hidden" value="{{ object.pk }}" name="assignment_id">
                         <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                         <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
