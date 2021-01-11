@@ -136,7 +136,7 @@
                             </button>
                             {% endif %}
                             {% if '/students' not in request.path %}
-                            <div class="modal fade" id="editQuestionModal{{ question.pk }}" tabindex="-1" role="dialog"
+                            <div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog"
                                 aria-labelledby="editQuestionLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                     <div class="modal-content">
@@ -155,7 +155,7 @@
                                 </div>
                             </div>
                             <button class="btn btn-sm btn-info btn-floating editquestion-btn mx-2" data-toggle="modal"
-                                data-target="#editQuestionModal{{ question.pk }}" id="editquestion-btn{{ question.pk }}"
+                                data-target="#editQuestionModal" id="editquestion-btn{{ question.pk }}"
                                 data-questionpk="{{ question.pk }}">
                                 <i class="fa fa-pencil"></i>
                             </button>
