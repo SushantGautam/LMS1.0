@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-29 14:33+0000\n"
+"POT-Creation-Date: 2021-01-11 03:59+0000\n"
 "PO-Revision-Date: 2020-12-02 04:27+0000\n"
 "Last-Translator: b'  <admin@example.org>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,9 @@ msgstr "Вьетнам хэл"
 
 #: Notifications/templates/Notifications/all_notifications.html:11
 #: Notifications/templates/Notifications/notification_list.html:5
-#: forum/views.py:496 forum/views.py:519
+#: WebApp/templates/forum/notifications.html:10
+#: WebApp/templates/forum/notifications.html:19 forum/views.py:496
+#: forum/views.py:519
 msgid "Notifications"
 msgstr "Мэдэгдэл"
 
@@ -90,13 +92,17 @@ msgstr "эхнийх"
 msgid "last"
 msgstr "сүүлийнх"
 
-#: WebApp/models.py:111
-#: WebApp/templates/attendance/course_attendance_list.html:165
+#: WebApp/models.py:111 WebApp/templates/WebApp/groupmapping_detail.html:56
+#: WebApp/templates/WebApp/memberinfo_detail.html:31
+#: WebApp/templates/WebApp/memberinfo_list.html:126
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:71
+#: WebApp/templates/attendance/course_attendance_list.html:161
 #: WebApp/templates/forum/login.html:16 WebApp/templates/forum/reg.html:16
+#: WebApp/templates/registration/register.html:47
 #: WebApp/templates/survey/common/details.html:295
 #: WebApp/templates/teacher_module/chapterProgress.html:237
 #: WebApp/templates/teacher_module/teacher_forum/reg.html:16
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:79
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:81
 #: quiz/templates/quiz_base/sitting_list.html:60
 msgid "Username"
 msgstr "Хэрэглэгчийн нэр"
@@ -165,17 +171,43 @@ msgid "User Type"
 msgstr "Хэрэглэгч"
 
 #: WebApp/student_module/forms.py:26 WebApp/teacher_module/forms.py:41
-#: forum/forms.py:22 forum/forms.py:36 forum/forms.py:53 forum/forms.py:72
-#: forum/forms.py:103 forum/forms.py:131 forum/forms.py:199 forum/forms.py:210
-#: quiz/models.py:23
+#: WebApp/templates/WebApp/teacherIndividualReport.html:72 forum/forms.py:22
+#: forum/forms.py:36 forum/forms.py:53 forum/forms.py:72 forum/forms.py:103
+#: forum/forms.py:131 forum/forms.py:199 forum/forms.py:210 quiz/models.py:23
 msgid "Content"
 msgstr "Агуулга"
 
 #: WebApp/student_module/forms.py:65 WebApp/teacher_module/forms.py:79
+#: WebApp/templates/WebApp/assignanswerinfo_form.html:51
+#: WebApp/templates/WebApp/assignassignmentinfo_form.html:43
+#: WebApp/templates/WebApp/assignquestioninfo_form.html:45
+#: WebApp/templates/WebApp/centerinfo_form.html:98
+#: WebApp/templates/WebApp/chapterbuilder.html:591
+#: WebApp/templates/WebApp/chapterbuilder.html:702
+#: WebApp/templates/WebApp/chapterbuilder.html:817
+#: WebApp/templates/WebApp/chapterbuilder.html:846
+#: WebApp/templates/WebApp/chapterbuilder.html:876
+#: WebApp/templates/WebApp/chapterbuilder.html:922
 #: WebApp/templates/WebApp/inninggroup_form.html:112
 #: WebApp/templates/WebApp/inninginfo_form.html:290
+#: WebApp/templates/WebApp/messageinfo_form.html:10
+#: WebApp/templates/WebApp/profile_form.html:10
+#: WebApp/templates/WebApp/questioninfo_form.html:94
+#: WebApp/templates/WebApp/sessioninfo_form.html:91
+#: WebApp/templates/WebApp/sessionmanager_form.html:53
 #: WebApp/templates/admin/import_export/export.html:31
-#: WebApp/templates/admin/import_export/import.html:53
+#: WebApp/templates/admin/import_export/import.html:54
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:87
+#: WebApp/templates/ajax/chapterinfo_form_ajax.html:52
+#: WebApp/templates/ajax/groupcreate_form_ajax.html:37
+#: WebApp/templates/ajax/inninggroup_form_ajax.html:49
+#: WebApp/templates/ajax/mcquestion_form_ajax.html:52
+#: WebApp/templates/ajax/questioninfo_form_ajax.html:36
+#: WebApp/templates/ajax/saquestion_form_ajax.html:12
+#: WebApp/templates/ajax/sessioncreate_form_ajax.html:35
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:159
+#: WebApp/templates/ajax/survey_update_limited_ajax.html:29
+#: WebApp/templates/ajax/tfquestion_form_ajax.html:12
 #: WebApp/templates/assignment/assignmentinfo_detail.html:408
 #: WebApp/templates/assignment/assignmentinfo_detail.html:462
 #: WebApp/templates/assignment/assignmentinfo_detail.html:501
@@ -211,35 +243,48 @@ msgstr "Оруулах"
 msgid "Password change"
 msgstr "Нууц үг солих"
 
-#: WebApp/student_module/views.py:844 WebApp/teacher_module/views.py:1680
+#: WebApp/student_module/views.py:844 WebApp/teacher_module/views.py:1668
 #: forum/views.py:96
 msgid "New Threads"
 msgstr "Шинэ threads"
 
-#: WebApp/student_module/views.py:845 WebApp/teacher_module/views.py:1681
+#: WebApp/student_module/views.py:845 WebApp/teacher_module/views.py:1669
 #: forum/views.py:97
 msgid "Index"
 msgstr "index"
 
-#: WebApp/student_module/views.py:871 forum/views.py:352
+#: WebApp/student_module/views.py:871
+#: WebApp/templates/forum/create_thread.html:15
+#: WebApp/templates/forum/create_thread.html:29 forum/views.py:352
 msgid "Create Thread"
 msgstr "Дасгал үүсгэх"
 
-#: WebApp/student_module/views.py:945 WebApp/teacher_module/views.py:1763
+#: WebApp/student_module/views.py:945 WebApp/teacher_module/views.py:1751
 #: forum/views.py:312
 msgid "Search: "
 msgstr "Хайх:"
 
-#: WebApp/student_module/views.py:1165 WebApp/teacher_module/views.py:1983
-#: WebApp/teacher_module/views.py:2002 forum/views.py:401
+#: WebApp/student_module/views.py:1165 WebApp/teacher_module/views.py:1971
+#: WebApp/teacher_module/views.py:1990 forum/views.py:401
 msgid "Editing is not allowed when thread has been replied"
 msgstr "Дасгал ажиллаж байх хугацаанд засварлахыг хориглоно"
 
-#: WebApp/student_module/views.py:1167 WebApp/teacher_module/views.py:1985
-#: WebApp/teacher_module/views.py:2004 forum/views.py:403 forum/views.py:421
+#: WebApp/student_module/views.py:1167 WebApp/teacher_module/views.py:1973
+#: WebApp/teacher_module/views.py:1992 forum/views.py:403 forum/views.py:421
 #: forum/views.py:439
 msgid "You are not allowed to edit other's thread"
 msgstr "Бусад дасгалыг засварлахыг хориглох"
+
+#: WebApp/templates/ForumInclude/LoadMoreAjax.html:69
+#: WebApp/templates/ForumInclude/threadpage.html:72
+#: WebApp/templates/ForumInclude/threadpage.html:256
+msgid "Hide"
+msgstr "Нуух"
+
+#: WebApp/templates/ForumInclude/LoadMoreAjax.html:83
+#, fuzzy
+msgid "UnHide"
+msgstr "Дасгалыг нуухгүй байх"
 
 #: WebApp/templates/ForumInclude/NodegroupList.html:14
 #, fuzzy
@@ -281,6 +326,7 @@ msgstr "Дараах"
 
 #: WebApp/templates/ForumInclude/NodegroupList.html:62
 #: WebApp/templates/ForumInclude/UserInfo.html:96
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:20
 #: WebApp/templates/teacher_module/teacher_forum/user_replies.html:9
 #: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:20
 #: comment/templates/comment/comments/comment_content.html:77
@@ -304,6 +350,8 @@ msgid "Search Results"
 msgstr "Хайх:"
 
 #: WebApp/templates/ForumInclude/Search.html:55
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:142
+#: WebApp/templates/forum/create_thread.html:50
 #: WebApp/templates/student_module/polls_student_view.html:32
 #: WebApp/templates/student_module/questions_student.html:59
 #: WebApp/templates/student_module/questions_student_detail.html:58
@@ -327,7 +375,7 @@ msgstr "Нийтэлсэн"
 #: WebApp/templates/ForumInclude/Search.html:99
 #: WebApp/templates/ForumInclude/SubcategoryList.html:116
 #: WebApp/templates/ForumInclude/UserInfo.html:77
-#: WebApp/templates/ForumInclude/UserInfo.html:308
+#: WebApp/templates/ForumInclude/UserInfo.html:306
 #: WebApp/templates/ForumInclude/UserReplies.html:144
 #: WebApp/templates/ForumInclude/UserThread.html:17
 #: WebApp/templates/ForumInclude/UserThread.html:103
@@ -350,6 +398,7 @@ msgid "TOP"
 msgstr ""
 
 #: WebApp/templates/ForumInclude/SubcategoryList.html:88
+#: WebApp/templates/forum/create_thread.html:59
 #, fuzzy
 #| msgid "Sub Category"
 msgid "SubCategory"
@@ -357,6 +406,7 @@ msgstr "Категори"
 
 #: WebApp/templates/ForumInclude/SubcategoryList.html:103
 #: WebApp/templates/ForumInclude/UserThread.html:86
+#: WebApp/templates/ForumInclude/threadpage.html:110
 #: WebApp/templates/forum/includes/list.html:72
 #, fuzzy
 #| msgid "Posted by"
@@ -365,7 +415,7 @@ msgstr "Нийтэлсэн"
 
 #: WebApp/templates/ForumInclude/SubcategoryList.html:136
 #: WebApp/templates/ForumInclude/UserThread.html:110
-#: WebApp/templates/ForumInclude/threadpage.html:237
+#: WebApp/templates/ForumInclude/threadpage.html:238
 #: WebApp/templates/forum/includes/list.html:86
 #: comment/templates/comment/comments/comment_content.html:79
 msgid "Reply"
@@ -410,6 +460,17 @@ msgstr ""
 "\n"
 "Хариулт өгсөн  %(username)s"
 
+#: WebApp/templates/ForumInclude/UserInfo.html:279
+#: WebApp/templates/ForumInclude/UserReplies.html:116 forum/models.py:75
+msgid "topic"
+msgstr "сэдэв"
+
+#: WebApp/templates/ForumInclude/UserReplies.html:127
+#, fuzzy
+#| msgid "nodegroup"
+msgid "node group"
+msgstr "зангилааны бүлэг"
+
 #: WebApp/templates/ForumInclude/UserThread.html:10
 msgid "Threads Created by"
 msgstr ""
@@ -437,6 +498,9 @@ msgid "There are no threads yet"
 msgstr "Асуулт хариулт байхгүй байна"
 
 #: WebApp/templates/ForumInclude/threadpage.html:31
+#: WebApp/templates/WebApp/departmentinfo_detail.html:45
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:79
+#: WebApp/templates/attendance/course_attendance_list.html:155
 #: WebApp/templates/course/courseinfo_list.html:540
 #: WebApp/templates/inning/inninginfo_list.html:88
 #: WebApp/templates/profile.html:120 WebApp/templates/profile.html:236
@@ -451,6 +515,20 @@ msgstr "Нээх"
 #: WebApp/templates/ForumInclude/threadpage.html:57
 #: WebApp/templates/WebApp/calendar.html:70
 #: WebApp/templates/WebApp/calendar.html:117
+#: WebApp/templates/WebApp/chapterbuilder.html:592
+#: WebApp/templates/WebApp/chapterbuilder.html:703
+#: WebApp/templates/WebApp/chapterbuilder.html:818
+#: WebApp/templates/WebApp/chapterbuilder.html:847
+#: WebApp/templates/WebApp/chapterbuilder.html:877
+#: WebApp/templates/WebApp/chapterbuilder.html:923
+#: WebApp/templates/WebApp/groupmapping_list.html:50
+#: WebApp/templates/WebApp/inninggroup_list.html:52
+#: WebApp/templates/WebApp/inninginfo_list.html:53
+#: WebApp/templates/WebApp/memberinfo_list.html:59
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:108
+#: WebApp/templates/ajax/groupcreate_form_ajax.html:38
+#: WebApp/templates/ajax/inninggroup_form_ajax.html:50
+#: WebApp/templates/ajax/sessioncreate_form_ajax.html:36
 #: WebApp/templates/course/courseinfo_list.html:97
 #: WebApp/templates/inning/inninginfo_form_common.html:71
 #: WebApp/templates/inning/inningmapFormModal.html:49
@@ -462,16 +540,11 @@ msgid "Close"
 msgstr "Хаах"
 
 #: WebApp/templates/ForumInclude/threadpage.html:65
-#: WebApp/templates/ForumInclude/threadpage.html:273
+#: WebApp/templates/ForumInclude/threadpage.html:274
 msgid "Unhide"
 msgstr "ил гаргах"
 
-#: WebApp/templates/ForumInclude/threadpage.html:72
-#: WebApp/templates/ForumInclude/threadpage.html:255
-msgid "Hide"
-msgstr "Нуух"
-
-#: WebApp/templates/ForumInclude/threadpage.html:138
+#: WebApp/templates/ForumInclude/threadpage.html:139
 #, fuzzy, python-format
 #| msgid ""
 #| " <i class=\"fa fa-eye\"></i>\n"
@@ -486,7 +559,7 @@ msgid ""
 "                                    "
 msgstr "%(view_count)s удаа үзсэн"
 
-#: WebApp/templates/ForumInclude/threadpage.html:145
+#: WebApp/templates/ForumInclude/threadpage.html:146
 #, fuzzy, python-format
 #| msgid ""
 #| "%(reply_count)s Reply\n"
@@ -501,16 +574,16 @@ msgid_plural ""
 msgstr[0] "%(reply_count)s хариулт"
 msgstr[1] "%(reply_count)s хариулт"
 
-#: WebApp/templates/ForumInclude/threadpage.html:149
-#: WebApp/templates/ForumInclude/threadpage.html:173
+#: WebApp/templates/ForumInclude/threadpage.html:150
+#: WebApp/templates/ForumInclude/threadpage.html:174
 msgid "No Replies"
 msgstr "Хариулт байхгүй"
 
-#: WebApp/templates/ForumInclude/threadpage.html:160
+#: WebApp/templates/ForumInclude/threadpage.html:161
 msgid "Post a Reply"
 msgstr "Хариу бичих"
 
-#: WebApp/templates/ForumInclude/threadpage.html:168
+#: WebApp/templates/ForumInclude/threadpage.html:169
 #, fuzzy, python-format
 #| msgid ""
 #| "\n"
@@ -527,72 +600,125 @@ msgid_plural ""
 msgstr[0] "Хариулт (%(reply_count)s)"
 msgstr[1] "Хариулт (%(reply_count)s)"
 
-#: WebApp/templates/ForumInclude/threadpage.html:295
+#: WebApp/templates/ForumInclude/threadpage.html:296
 msgid "Show Less"
 msgstr "Хураангуй харах"
 
-#: WebApp/templates/ForumInclude/threadpage.html:297
+#: WebApp/templates/ForumInclude/threadpage.html:298
 msgid "Show More"
 msgstr "Илүү харах"
 
-#: WebApp/templates/ForumInclude/threadpage.html:308
+#: WebApp/templates/ForumInclude/threadpage.html:309
 msgid "Post Reply"
 msgstr "Хариулах"
 
-#: WebApp/templates/ForumInclude/threadpage.html:331
+#: WebApp/templates/ForumInclude/threadpage.html:332
+#: WebApp/templates/forum/create_thread.html:126
+#: WebApp/templates/forum/edit_thread.html:60
 msgid "Huge"
 msgstr "Том"
 
-#: WebApp/templates/ForumInclude/threadpage.html:336
+#: WebApp/templates/ForumInclude/threadpage.html:337
+#: WebApp/templates/forum/create_thread.html:131
+#: WebApp/templates/forum/edit_thread.html:65
 msgid "Normal"
 msgstr "Энгийн "
 
-#: WebApp/templates/ForumInclude/threadpage.html:341
+#: WebApp/templates/ForumInclude/threadpage.html:342
+#: WebApp/templates/forum/create_thread.html:136
+#: WebApp/templates/forum/edit_thread.html:70
 msgid "Small"
 msgstr "Жижиг"
 
-#: WebApp/templates/ForumInclude/threadpage.html:521
+#: WebApp/templates/ForumInclude/threadpage.html:522
 msgid "Stick to Top"
 msgstr "Дээр очих"
 
-#: WebApp/templates/ForumInclude/threadpage.html:524
+#: WebApp/templates/ForumInclude/threadpage.html:525
 msgid "Level (1 - Highest)"
 msgstr "Түвшин (1- хамгийн өндөр)"
 
-#: WebApp/templates/ForumInclude/threadpage.html:529
-#: WebApp/templates/ForumInclude/threadpage.html:535
+#: WebApp/templates/ForumInclude/threadpage.html:530
+#: WebApp/templates/ForumInclude/threadpage.html:536
 msgid "Don't stick to stop"
 msgstr "Зогсохоо боль"
 
-#: WebApp/templates/ForumInclude/threadpage.html:546
+#: WebApp/templates/ForumInclude/threadpage.html:547
 msgid "Open thread"
 msgstr "Дасгал нээх"
 
-#: WebApp/templates/ForumInclude/threadpage.html:547
-#: WebApp/templates/ForumInclude/threadpage.html:554
-#: WebApp/templates/ForumInclude/threadpage.html:561
-#: WebApp/templates/ForumInclude/threadpage.html:568
-#: WebApp/templates/ForumInclude/threadpage.html:575
-#: WebApp/templates/ForumInclude/threadpage.html:582
+#: WebApp/templates/ForumInclude/threadpage.html:548
+#: WebApp/templates/ForumInclude/threadpage.html:555
+#: WebApp/templates/ForumInclude/threadpage.html:562
+#: WebApp/templates/ForumInclude/threadpage.html:569
+#: WebApp/templates/ForumInclude/threadpage.html:576
+#: WebApp/templates/ForumInclude/threadpage.html:583
 msgid "Please confirm your action"
 msgstr "Өөрийнхөө үйлдэлийг баталгаажуулна уу."
 
-#: WebApp/templates/ForumInclude/threadpage.html:553
+#: WebApp/templates/ForumInclude/threadpage.html:554
 msgid "Close thread"
 msgstr "Дасгалыг хаах"
 
-#: WebApp/templates/ForumInclude/threadpage.html:560
+#: WebApp/templates/ForumInclude/threadpage.html:561
 msgid "Hide thread"
 msgstr "Дасгалыг нуух"
 
-#: WebApp/templates/ForumInclude/threadpage.html:567
-#: WebApp/templates/ForumInclude/threadpage.html:574
+#: WebApp/templates/ForumInclude/threadpage.html:568
+#: WebApp/templates/ForumInclude/threadpage.html:575
 msgid "Hide Reply"
 msgstr "Хариултыг нуух"
 
-#: WebApp/templates/ForumInclude/threadpage.html:581
+#: WebApp/templates/ForumInclude/threadpage.html:582
 msgid "Unhide thread"
 msgstr "Дасгалыг ил болгох"
+
+#: WebApp/templates/WebApp/AchievementPage_All_Ajax.html:7
+#: WebApp/templates/WebApp/Achievement_all.html:65
+#: WebApp/templates/chapter/chapter_contents.html:333
+#: WebApp/templates/teacher_module/chapterProgress.html:8
+#: WebApp/templates/teacher_module/chapterProgress.html:155
+#: WebApp/templates/teacher_module/chapterProgress.html:245
+#: WebApp/templates/teacher_module/progressdetail.html:8
+#: quiz/templates/ajax_quiz/progress_list_history.html:10
+#: quiz/templates/student_quiz/progress.html:30
+msgid "Progress"
+msgstr "Ахиц дэвшил"
+
+#: WebApp/templates/WebApp/Achievement_all.html:11
+msgid "Filter by Innings"
+msgstr ""
+
+#: WebApp/templates/WebApp/Achievement_all.html:24
+#, fuzzy
+#| msgid "Course"
+msgid "Filter by Course"
+msgstr "Хичээл"
+
+#: WebApp/templates/WebApp/Achievement_all.html:63
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:46
+msgid "S.No"
+msgstr ""
+
+#: WebApp/templates/WebApp/Achievement_all.html:64
+#: WebApp/templates/WebApp/groupmapping_detail.html:93
+#: WebApp/templates/WebApp/groupmapping_detail.html:97
+#: WebApp/templates/WebApp/homepage.html:36
+#: WebApp/templates/WebApp/memberinfo_detail.html:118
+#: WebApp/templates/WebApp/memberinfo_list.html:80
+#: WebApp/templates/WebApp/memberinfo_list.html:135
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:27
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:78
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:104
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:108
+#: WebApp/templates/attendance/course_attendance_form.html:17
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:30
+#: WebApp/templates/profile.html:65
+#: WebApp/templates/registration/register.html:78
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:30
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:30
+msgid "Student"
+msgstr "Сурагч"
 
 #: WebApp/templates/WebApp/Student_Achievement.html:7
 #: quiz/templates/progress.html:6 quiz/templates/student_quiz/progress.html:6
@@ -604,6 +730,268 @@ msgstr "Хуудсыг ачаалах"
 #: quiz/templates/progress.html:7 quiz/templates/student_quiz/progress.html:7
 msgid "User Progress Page"
 msgstr "Хэрэглэгч хуудсыг ачаалах"
+
+#: WebApp/templates/WebApp/Student_Achievement.html:12
+#, fuzzy
+#| msgid "Quiz Achievement"
+msgid "Achievement Page"
+msgstr "Асуултын амжилт"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:5
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:11
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:36
+#: WebApp/templates/WebApp/assignanswerinfo_form.html:6
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:5
+#, fuzzy
+#| msgid "Assignments"
+msgid "Assignment Answer"
+msgstr "Даалгавар"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:16
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:22
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:23
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:21
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:19
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:21
+#: WebApp/templates/WebApp/questioninfo_detail.html:42
+#, fuzzy
+#| msgid "Assignment No"
+msgid "Assignment Code"
+msgstr "Даалгаварын дугаар"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:20
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:23
+#, fuzzy
+#| msgid "Assignment No"
+msgid "Assignment Score"
+msgstr "Даалгаварын дугаар"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:24
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:24
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:15
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:20
+#, fuzzy
+#| msgid "Question Count"
+msgid "Question Code"
+msgstr "Асуултын тоо"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:28
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:25
+#, fuzzy
+#| msgid "Student"
+msgid "Student Code"
+msgstr "Сурагч"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:32
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:26
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:15
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:24
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:27
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:23
+#: WebApp/templates/WebApp/groupmapping_list.html:76
+#: WebApp/templates/WebApp/questioninfo_list.html:32
+#: WebApp/templates/WebApp/sessioninfo_detail.html:33
+#: WebApp/templates/assignment/assignmentinfo_list.html:22
+#, fuzzy
+#| msgid "Flag"
+msgid "Use Flag"
+msgstr "Тэмдэглэгээ"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:41
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:32
+#: WebApp/templates/WebApp/assignassignmentinfo_form.html:11
+#: WebApp/templates/WebApp/assignassignmentinfo_form.html:21
+#: WebApp/templates/WebApp/assignmentinfo_form.html:20
+#: WebApp/templates/assignment/assignmentinfo_detail.html:48
+#: WebApp/templates/assignment/assignmentinfo_detail.html:545
+#: WebApp/templates/assignment/assignmentinfo_form.html:12
+#: WebApp/templates/teacher_module/assignmentinfo_form.html:13
+msgid "Edit Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignanswerinfo_detail.html:42
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:33
+#, fuzzy
+#| msgid "Edit Assignment"
+msgid "Delete Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignanswerinfo_form.html:10
+#: WebApp/templates/WebApp/assignanswerinfo_form.html:20
+#, fuzzy
+#| msgid "User Answers"
+msgid "Enter Answer"
+msgstr "Хэрэглэгчийн хариулт"
+
+#: WebApp/templates/WebApp/assignanswerinfo_form.html:12
+#: WebApp/templates/WebApp/assignanswerinfo_form.html:22
+#, fuzzy
+#| msgid "Show Answer"
+msgid "Edit Answer"
+msgstr "Хариултыг харах"
+
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:10
+#: WebApp/templates/assignment/assignmentinfo_list.html:5
+#, fuzzy
+#| msgid "List of My Assignments"
+msgid "List of Assignments"
+msgstr "Миний даалгаврын жагсаалт"
+
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:14
+#, fuzzy
+#| msgid "Show Answer"
+msgid "Assign new Answer"
+msgstr "Хариултыг харах"
+
+#: WebApp/templates/WebApp/assignanswerinfo_list.html:21
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:20
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:19
+#: WebApp/templates/WebApp/centerinfo_list.html:28
+#: WebApp/templates/WebApp/departmentinfo_list.html:30
+#: WebApp/templates/WebApp/groupmapping_list.html:73
+#: WebApp/templates/WebApp/inninggroup_list.html:81
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:54
+#: WebApp/templates/WebApp/profile_list.html:8
+#: WebApp/templates/WebApp/questioninfo_list.html:25
+#: WebApp/templates/WebApp/sessioninfo_list.html:28
+#: WebApp/templates/assignment/assignmentinfo_list.html:16
+#: WebApp/templates/attendance/attendance_list.html:10
+#: WebApp/templates/course/courseinfo_list.html:495
+#: WebApp/templates/inning/inninginfo_list.html:57
+#: WebApp/templates/inning/inninginfo_list_inactive.html:36
+#: WebApp/templates/student_module/myCourse.html:173
+#: WebApp/templates/survey/categoryinfo_list.html:8
+#: WebApp/templates/survey/optioninfo_list.html:8
+#: WebApp/templates/survey/questioninfo_list.html:8
+#: survey/templates/survey/categoryinfo_list.html:8
+#: survey/templates/survey/optioninfo_list.html:8
+#: survey/templates/survey/questioninfo_list.html:8
+msgid "ID"
+msgstr "ID"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:5
+#: WebApp/templates/WebApp/assignassignmentinfo_form.html:6
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:6
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:13
+#, fuzzy
+#| msgid "Edit Assignment"
+msgid "Assign Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:10
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:10
+#, fuzzy
+#| msgid "Edit Assignment"
+msgid "Assigned Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:19
+#, fuzzy
+#| msgid "Running Time"
+msgid "Inning Code"
+msgstr "Үргэлжлэх хугацаа"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_detail.html:27
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:23
+#, fuzzy
+#| msgid "Assignment No"
+msgid "Assigned By"
+msgstr "Даалгаварын дугаар"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_form.html:9
+#: WebApp/templates/WebApp/assignassignmentinfo_form.html:19
+#, fuzzy
+#| msgid "Edit Assignment"
+msgid "Enter Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:10
+#, fuzzy
+#| msgid "List of Active Assignments"
+msgid "List of Assigned Assignment"
+msgstr "Идэвхтэй даалгаврын жагсаалт"
+
+#: WebApp/templates/WebApp/assignassignmentinfo_list.html:22
+#, fuzzy
+#| msgid "Question"
+msgid "Session Code"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/assignmentinfo_form.html:18
+#: WebApp/templates/assignment/assignmentinfo_form.html:10
+#: WebApp/templates/chapter/chapterinfo_detail.html:39
+#: WebApp/templates/chapter/chapterinfo_detail.html:476
+#: WebApp/templates/teacher_module/assignmentinfo_form.html:11
+#, fuzzy
+#| msgid "Create New Member"
+msgid "Create New Assignment"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/WebApp/assignmentinfo_list.html:5
+#: WebApp/templates/chapter/chapterinfo_detail.html:468
+#: WebApp/templates/student_module/dashboard.html:184
+#: WebApp/templates/teacher_module/theme/sidebar.html:55
+msgid "Assignments"
+msgstr "Даалгавар"
+
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:5
+#: WebApp/templates/WebApp/assignquestioninfo_form.html:6
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:5
+#, fuzzy
+#| msgid "Edit Assignment"
+msgid "Question Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:23
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:22
+#: WebApp/templates/WebApp/centerinfo_detail.html:34
+#: WebApp/templates/WebApp/centerinfo_form.html:87
+#: WebApp/templates/WebApp/centerinfo_list.html:31
+#: WebApp/templates/WebApp/departmentinfo_detail.html:30
+#: WebApp/templates/WebApp/departmentinfo_list.html:32
+#: WebApp/templates/WebApp/groupmapping_detail.html:26
+#: WebApp/templates/WebApp/questioninfo_detail.html:47
+#: WebApp/templates/WebApp/questioninfo_list.html:31
+#: WebApp/templates/assignment/assignmentinfo_list.html:21
+#: WebApp/templates/inning/inninggroup_detail.html:29
+#: WebApp/templates/inning/inninginfo_detail.html:66
+#, fuzzy
+#| msgid "Register"
+msgid "Register Agent"
+msgstr "Бүртгэх"
+
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:32
+#, fuzzy
+#| msgid "Edit Assignment"
+msgid "Edit Question Assignment"
+msgstr "Даалгаврыг засах"
+
+#: WebApp/templates/WebApp/assignquestioninfo_detail.html:33
+#, fuzzy
+#| msgid "Create New Member"
+msgid "Delete Question Assignment"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/WebApp/assignquestioninfo_form.html:10
+#: WebApp/templates/WebApp/assignquestioninfo_form.html:21
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:12
+#, fuzzy
+#| msgid "Add Question"
+msgid "Assign Question"
+msgstr "Асуулт нэмэх"
+
+#: WebApp/templates/WebApp/assignquestioninfo_form.html:12
+#: WebApp/templates/WebApp/assignquestioninfo_form.html:23
+#, fuzzy
+#| msgid "Edit Question"
+msgid "Edit Assigned Question"
+msgstr "Асуулт засах"
+
+#: WebApp/templates/WebApp/assignquestioninfo_list.html:9
+#, fuzzy
+#| msgid "List of Active Assignments"
+msgid "List of Assigned Question"
+msgstr "Идэвхтэй даалгаврын жагсаалт"
 
 #: WebApp/templates/WebApp/calendar.html:11
 #: WebApp/templates/WebApp/calendar.html:21
@@ -624,6 +1012,7 @@ msgstr "Шинэ хуанлийн оруулга"
 
 #: WebApp/templates/WebApp/calendar.html:42
 #: WebApp/templates/WebApp/calendar.html:89
+#: WebApp/templates/forum/create_thread.html:93
 #: WebApp/templates/student_module/calendar.html:68
 #: WebApp/templates/teacher_module/survey.html:35 forum/forms.py:38
 #: forum/forms.py:87 quiz/models.py:445 quiz/templates/quiz/quiz_list.html:35
@@ -632,7 +1021,12 @@ msgid "Title"
 msgstr "Гарчиг"
 
 #: WebApp/templates/WebApp/calendar.html:48
-#: WebApp/templates/WebApp/calendar.html:95 WebApp/templates/profile.html:365
+#: WebApp/templates/WebApp/calendar.html:95
+#: WebApp/templates/WebApp/sessioninfo_detail.html:24
+#: WebApp/templates/WebApp/sessioninfo_list.html:30
+#: WebApp/templates/ajax/sessioncreate_form_ajax.html:17
+#: WebApp/templates/forum/create_thread.html:104
+#: WebApp/templates/forum/edit_thread.html:38 WebApp/templates/profile.html:365
 #: forum/forms.py:86 forum/forms.py:114 quiz/models.py:449
 msgid "Description"
 msgstr "Тодорхойлолт"
@@ -656,6 +1050,7 @@ msgstr "Дуусах"
 
 #: WebApp/templates/WebApp/calendar.html:71
 #: WebApp/templates/WebApp/calendar.html:118
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:109
 #: WebApp/templates/inning/inninginfo_form_common.html:72
 #: WebApp/templates/inning/inningmapFormModal.html:50
 msgid "Save changes"
@@ -665,7 +1060,879 @@ msgstr "Өөрчлөлтүүдийг хадгалах"
 msgid "Edit Calendar Entry"
 msgstr "Хуанлийн бичилтийг засах"
 
+#: WebApp/templates/WebApp/centerinfo_detail.html:7
+#: WebApp/templates/WebApp/centerinfo_form.html:9
+#: WebApp/templates/WebApp/centerinfo_list.html:12
+#: WebApp/templates/WebApp/theme/sidebar.html:114
+#: WebApp/templates/admin/import_export/base.html:10
+#: WebApp/templates/base.html:89 WebApp/templates/forum/includes/list.html:9
+#: WebApp/templates/registration/logout.html:9
+#: WebApp/templates/student_module/base.html:73
+#: WebApp/templates/student_module/theme/sidebar.html:59
+#: WebApp/templates/teacher_module/base.html:93
+#: WebApp/templates/teacher_module/makequery.html:14
+#: WebApp/templates/teacher_module/theme/sidebar.html:87
+msgid "Home"
+msgstr "Нүүр хуудас"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:8
+#: WebApp/templates/WebApp/centerinfo_form.html:10
+#: WebApp/templates/WebApp/centerinfo_list.html:13
+#: WebApp/templates/components/navbar.html:16
+#, fuzzy
+#| msgid "Center Name"
+msgid "Center"
+msgstr "Төвийн нэр"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:12
+#, fuzzy
+#| msgid "Contact Information"
+msgid "Center Information"
+msgstr "Холбогдох мэдээлэл"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:16
+#: WebApp/templates/WebApp/centerinfo_form.html:38
+#: WebApp/templates/WebApp/centerinfo_list.html:29
+#: WebApp/templates/profile.html:325
+msgid "Center Name"
+msgstr "Төвийн нэр"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:20
+#: WebApp/templates/WebApp/centerinfo_form.html:47
+#: WebApp/templates/WebApp/centerinfo_list.html:30
+#, fuzzy
+#| msgid "Center Code"
+msgid "Center Address"
+msgstr "Төвийн код"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:24
+#: WebApp/templates/WebApp/centerinfo_form.html:58
+#: WebApp/templates/WebApp/inninggroup_form.html:84
+#: WebApp/templates/WebApp/inninggroup_list.html:86
+#: WebApp/templates/WebApp/memberinfo_detail.html:81
+#: WebApp/templates/WebApp/memberinfo_detail.html:159
+#: WebApp/templates/WebApp/memberinfo_detail.html:194
+#: WebApp/templates/WebApp/memberinfo_detail.html:226
+#: WebApp/templates/WebApp/questioninfo_detail.html:51
+#: WebApp/templates/WebApp/questioninfo_form.html:70
+#: WebApp/templates/WebApp/sessioninfo_list.html:31
+#: WebApp/templates/assignment/assignmentinfo_detail.html:112
+#: WebApp/templates/attendance/course_attendance_form.html:19
+#: WebApp/templates/chapter/chapterinfo_detail.html:124
+#: WebApp/templates/course/courseinfo_detail.html:591
+#: WebApp/templates/course/courseinfo_form.html:102
+#: WebApp/templates/inning/inninggroup_detail.html:33
+#: WebApp/templates/inning/inninggroup_form.html:52
+#: WebApp/templates/inning/inninginfo_detail.html:70
+#: WebApp/templates/student_module/dashboard.html:206
+#: WebApp/templates/survey/common/details.html:61
+#: quiz/templates/quiz/quiz_list.html:41
+#: quiz/templates/quiz_base/exam_list.html:11
+#: quiz/templates/quiz_base/quiz_list.html:37
+msgid "Status"
+msgstr "Статус"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:27
+#: WebApp/templates/WebApp/departmentinfo_detail.html:23
+#: WebApp/templates/WebApp/inninggroup_list.html:98
+#: WebApp/templates/WebApp/memberinfo_detail.html:83
+#: WebApp/templates/WebApp/memberinfo_detail.html:174
+#: WebApp/templates/WebApp/memberinfo_detail.html:205
+#: WebApp/templates/WebApp/memberinfo_detail.html:241
+#: WebApp/templates/WebApp/question.html:34
+#: WebApp/templates/assignment/assignmentinfo_detail.html:143
+#: WebApp/templates/assignment/assignmentinfo_detail.html:165
+#: WebApp/templates/chapter/chapterinfo_detail.html:407
+#: WebApp/templates/chapter/chapterinfo_detail.html:426
+#: WebApp/templates/chapter/chapterinfo_detail.html:451
+#: WebApp/templates/course/courseinfo_detail.html:153
+#: WebApp/templates/inning/inninggroup_detail.html:35
+#: WebApp/templates/inning/inninginfo_detail.html:72
+#: WebApp/templates/student_module/myassignments_list.html:13
+#: WebApp/templates/student_module/questions_student.html:31
+#: WebApp/templates/survey/common/details.html:69
+#: WebApp/templates/teacher_module/makequery.html:31
+#: WebApp/templates/teacher_module/myassignments.html:22
+#: WebApp/templates/teacher_module/mycourses.html:44
+msgid "Active"
+msgstr "Идэвхтэй "
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:29
+#: WebApp/templates/WebApp/departmentinfo_detail.html:25
+msgid "Disable"
+msgstr ""
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:38
+#: WebApp/templates/WebApp/departmentinfo_detail.html:34
+#: WebApp/templates/WebApp/memberinfo_detail.html:103
+#: WebApp/templates/assignment/assignmentinfo_list.html:23
+#, fuzzy
+#| msgid "Register"
+msgid "Register DateTime"
+msgstr "Бүртгэх"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:42
+#: WebApp/templates/WebApp/departmentinfo_detail.html:38
+#: WebApp/templates/assignment/assignmentinfo_list.html:24
+#, fuzzy
+#| msgid "Completed Datetime"
+msgid "Updated DateTime"
+msgstr "Дууссан огноо"
+
+#: WebApp/templates/WebApp/centerinfo_detail.html:47
+#, fuzzy
+#| msgid "Chapter"
+msgid "Edit Center"
+msgstr "Бүлэг"
+
+#: WebApp/templates/WebApp/centerinfo_form.html:13
+#: WebApp/templates/WebApp/centerinfo_form.html:23
+#, fuzzy
+#| msgid "Create New Chapter"
+msgid "Create New Center"
+msgstr "Бүлэг үүсгэх"
+
+#: WebApp/templates/WebApp/centerinfo_form.html:15
+#: WebApp/templates/WebApp/centerinfo_form.html:25
+#, fuzzy
+#| msgid "Category"
+msgid "Edit Center Info"
+msgstr "Категори"
+
+#: WebApp/templates/WebApp/centerinfo_list.html:16
+#, fuzzy
+#| msgid "Chapter"
+msgid "List of Centers"
+msgstr "Бүлэг"
+
+#: WebApp/templates/WebApp/centerinfo_list.html:20
+#, fuzzy
+#| msgid "Create New Chapter"
+msgid "Create new Center"
+msgstr "Бүлэг үүсгэх"
+
+#: WebApp/templates/WebApp/centerinfo_list.html:32
+#: WebApp/templates/WebApp/departmentinfo_list.html:33
+#, fuzzy
+#| msgid "Register"
+msgid "Register Date"
+msgstr "Бүртгэх"
+
+#: WebApp/templates/WebApp/centerinfo_list.html:33
+#: WebApp/templates/WebApp/departmentinfo_list.html:34
+#, fuzzy
+#| msgid "Created Date"
+msgid "Updated Date"
+msgstr "Үүсгэсэн огноо"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:44
+#, fuzzy
+#| msgid "Course List"
+msgid "Course Builder"
+msgstr "Хичээлийн жагсаалт"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:397
+msgid "Media Items"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:404
+#: WebApp/templates/WebApp/chapterbuilder.html:412
+msgid "Images"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:405
+#: WebApp/templates/WebApp/chapterbuilder.html:420
+msgid "Videos"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:406
+#: WebApp/templates/WebApp/chapterbuilder.html:425
+msgid "PDF"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:416
+#: WebApp/templates/WebApp/chapterbuilder.html:421
+#: WebApp/templates/WebApp/chapterbuilder.html:426
+#: WebApp/templates/WebApp/chapterbuilder.html:431
+msgid "Nothing to show here"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:430
+msgid "Files"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:461
+#: WebApp/templates/admin/import_export/import.html:139
+#: WebApp/templates/forum/widgets/pagedown.html:9
+msgid "Preview"
+msgstr "Урьдчилж харах"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:463
+#: WebApp/templates/teacher_module/survey.html:72
+msgid "Save"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:467
+#: WebApp/templates/admin/import_export/change_list_import_item.html:5
+#: WebApp/templates/admin/import_export/import.html:12
+#: WebApp/templates/course/courseinfo_list.html:256
+#: WebApp/templates/course/courseinfo_list.html:463
+msgid "Import"
+msgstr "Импорт"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:471
+#: WebApp/templates/admin/import_export/change_list_export_item.html:5
+#: WebApp/templates/admin/import_export/export.html:7
+msgid "Export"
+msgstr "Экспорт"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:473
+msgid "Save and Exit"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:500
+#: WebApp/templates/chapter/newContentViewer.html:275
+msgid "Chapter Lists"
+msgstr "Бүлгийн жагсаалт"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:573
+msgid "Button"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:578
+#: WebApp/templates/WebApp/chapterbuilder.html:627
+#: WebApp/templates/WebApp/chapterbuilder.html:738
+#, fuzzy
+#| msgid "First Name"
+msgid "Display Name"
+msgstr "Өөрийн нэр"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:610
+#: WebApp/templates/WebApp/teacherIndividualReport.html:74
+#: WebApp/templates/WebApp/theme/sidebar.html:77
+#: WebApp/templates/chapter/chapterinfo_detail.html:566
+#: WebApp/templates/student_module/quizzes.html:10
+#: WebApp/templates/student_module/theme/sidebar.html:51
+#: WebApp/templates/teacher_module/chapterProgress.html:324
+#: WebApp/templates/teacher_module/chapterProgress.html:326
+#: WebApp/templates/wizard_teacher/step1.html:8 quiz/models.py:587
+#: quiz/models.py:793 quiz/templates/quiz/sitting_filter.html:34
+#: quiz/templates/quiz/sitting_list.html:22
+#: quiz/templates/quiz_base/exam_list.html:8
+#: quiz/templates/teacher_quiz/marking_list.html:23
+msgid "Quiz"
+msgstr "Асуулт хариулт"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:649
+#, fuzzy
+#| msgid "Create Quiz"
+msgid "Create New Quiz"
+msgstr "Асуулт хариулт үүсгэх"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:657
+msgid "Select Existing Quiz"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:665
+#, fuzzy
+#| msgid "Quiz Exam"
+msgid "Quiz Name"
+msgstr "сорих шалгалт"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:666
+#: WebApp/templates/WebApp/chapterbuilder.html:781
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:60
+#: WebApp/templates/WebApp/memberinfo_list.html:141
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:81
+#: WebApp/templates/assignment/assignmentinfo_detail.html:131
+#: WebApp/templates/chapter/chapterinfo_detail.html:396
+#: WebApp/templates/course/courseinfo_list.html:502
+#: WebApp/templates/inning/inninginfo_list.html:63
+#: WebApp/templates/inning/inninginfo_list_inactive.html:42
+#: WebApp/templates/teacher_module/assignment_answers.html:159
+#: quiz/templates/quiz/quiz_list.html:42
+#: quiz/templates/quiz_base/exam_list.html:12
+#: quiz/templates/quiz_base/quiz_list.html:38
+#: quiz/templates/quiz_base/sitting_detail.html:57
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:84
+msgid "Action"
+msgstr "Үйлдэл"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:684
+#, fuzzy
+#| msgid "Post Test Quiz"
+msgid "Chosen Quiz"
+msgstr "Сургалтын дараах асуулт хариулт бөглөх"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:721
+#: WebApp/templates/WebApp/homepage.html:134
+#: WebApp/templates/WebApp/polls.html:12
+#: WebApp/templates/WebApp/question.html:12
+#: WebApp/templates/WebApp/theme/sidebar.html:128
+#: WebApp/templates/course/courseinfo_detail.html:189
+#: WebApp/templates/student_module/polls_student.html:12
+#: WebApp/templates/student_module/polls_student_view.html:12
+#: WebApp/templates/student_module/questions_student.html:18
+#: WebApp/templates/student_module/questions_student_detail.html:17
+#: WebApp/templates/student_module/questions_student_detail_history.html:8
+#: WebApp/templates/student_module/theme/sidebar.html:64
+#: WebApp/templates/survey/surveyinfo_detail.html:13
+#: WebApp/templates/survey/surveylist.html:14
+#: WebApp/templates/teacher_module/makequery.html:15
+#: WebApp/templates/teacher_module/survey/question_teachers.html:17
+#: WebApp/templates/teacher_module/survey/surveyinfodetail.html:16
+#: WebApp/templates/teacher_module/theme/sidebar.html:92
+#: survey/templates/survey/surveyinfo_detail.html:8
+#: survey/templates/survey/surveylist.html:9
+msgid "Survey"
+msgstr "Судалгаа"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:764
+#, fuzzy
+#| msgid "Create Survey"
+msgid "Create New Survey"
+msgstr "Санал асуулга үүсгэх"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:772
+#, fuzzy
+#| msgid "Survey"
+msgid "Select Existing Survey"
+msgstr "Судалгаа"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:780
+#, fuzzy
+#| msgid "Course Name"
+msgid "Survey Name"
+msgstr "Хичээлийн нэр"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:799
+#, fuzzy
+#| msgid "Create Survey"
+msgid "Chosen Survey"
+msgstr "Санал асуулга үүсгэх"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:834
+#: WebApp/templates/WebApp/chapterbuilder.html:864
+#: WebApp/templates/WebApp/chapterbuilder.html:895
+#: WebApp/templates/WebApp/profile_list.html:8
+#: WebApp/templates/attendance/attendance_list.html:10
+#: WebApp/templates/survey/categoryinfo_list.html:9
+#: WebApp/templates/survey/optioninfo_list.html:9
+#: WebApp/templates/survey/questioninfo_list.html:9
+#: survey/templates/survey/categoryinfo_list.html:9
+#: survey/templates/survey/optioninfo_list.html:9
+#: survey/templates/survey/questioninfo_list.html:9
+msgid "Link"
+msgstr "Линк"
+
+#: WebApp/templates/WebApp/chapterbuilder.html:869
+msgid "Image Link"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:911
+msgid "For converting 3D files online"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterbuilder.html:913
+msgid "Click Here"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterdiscussion.html:13
+#: WebApp/templates/WebApp/courseinfo_form.html:10
+#: WebApp/templates/WebApp/courseinfo_list.html:10
+#: WebApp/templates/WebApp/teacherIndividualReport.html:43
+#: WebApp/templates/attendance/course_attendance_list.html:40
+#: WebApp/templates/components/navbar.html:19
+#: WebApp/templates/student_module/courseinfo_list.html:5
+#: WebApp/templates/student_module/myassignments_list.html:25
+#: WebApp/templates/student_module/myassignments_list.html:90
+#: WebApp/templates/student_module/quizzes.html:8
+#: WebApp/templates/student_module/theme/sidebar.html:43
+#: WebApp/templates/teacher_module/assignment_answers.html:78
+#: WebApp/templates/teacher_module/assignmentinfo_form.html:6
+#: WebApp/templates/teacher_module/courseinfo_list.html:8
+#: WebApp/templates/teacher_module/mycourses.html:6
+#: WebApp/templates/teacher_module/progressdetail.html:27 quiz/models.py:459
+#: quiz/templates/quiz/quiz_list.html:36
+#: quiz/templates/quiz_base/exam_list.html:9
+msgid "Course"
+msgstr "Хичээл"
+
+#: WebApp/templates/WebApp/chapterdiscussion.html:16
+#: WebApp/templates/WebApp/chapterdiscussion.html:38
+#: WebApp/templates/chapter/chapterinfo_detail.html:447
+#: WebApp/templates/chapter/chapterinfo_form.html:74
+msgid "Discussion"
+msgstr ""
+
+#: WebApp/templates/WebApp/chapterinfo_form.html:17
+#: WebApp/templates/chapter/chapterinfo_form.html:9
+#: WebApp/templates/chapter/chapterinfo_list.html:14
+#: WebApp/templates/course/courseinfo_detail.html:501
+#: WebApp/templates/teacher_module/chapterinfo_form.html:18
+msgid "Create New Chapter"
+msgstr "Бүлэг үүсгэх"
+
+#: WebApp/templates/WebApp/chapterinfo_form.html:19
+#: WebApp/templates/chapter/chapterinfo_detail.html:100
+#: WebApp/templates/chapter/chapterinfo_form.html:11
+#, fuzzy
+#| msgid "Chapter"
+msgid "Edit Chapter"
+msgstr "Бүлэг"
+
+#: WebApp/templates/WebApp/chapterinfo_list.html:6
+#: WebApp/templates/course/courseinfo_detail.html:484
+#: WebApp/templates/teacher_module/chapterinfo_list.html:5
+#, fuzzy
+#| msgid "Chapter"
+msgid "Chapters"
+msgstr "Бүлэг"
+
+#: WebApp/templates/WebApp/courseinfo_detail.html:6
+#, fuzzy
+#| msgid "Course Level"
+msgid "Course Detail"
+msgstr "Хичээлийн түвшин"
+
+#: WebApp/templates/WebApp/courseinfo_form.html:12
+#: WebApp/templates/WebApp/theme/sidebar.html:72
+#: WebApp/templates/course/courseinfo_form.html:18
+#: WebApp/templates/teacher_module/courseinfo_form.html:16
+msgid "Create New Course"
+msgstr "Шинэ хичээл үүсгэх"
+
+#: WebApp/templates/WebApp/courseinfo_form.html:16
+#: WebApp/templates/course/courseinfo_form.html:20
+#: WebApp/templates/teacher_module/courseinfo_form.html:18
+#, fuzzy
+#| msgid "CourseInfo"
+msgid "Edit Course Info"
+msgstr "Хичээлийн мэдээлэл"
+
+#: WebApp/templates/WebApp/courseinfo_list.html:6
+#: WebApp/templates/WebApp/homepage.html:63
+#: WebApp/templates/WebApp/homepage.html:95
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:97
+#: WebApp/templates/WebApp/theme/sidebar.html:67
+#: WebApp/templates/inning/inninginfo_detail.html:61
+#: WebApp/templates/inning/inninginfo_detail.html:162
+#: WebApp/templates/inning/inninginfo_list.html:108
+#: WebApp/templates/inning/inninginfo_list_inactive.html:86
+#: WebApp/templates/student_module/dashboard.html:62
+#: WebApp/templates/teacher_module/courseinfo_list.html:5
+#: WebApp/templates/teacher_module/homepage.html:60
+#: WebApp/templates/teacher_module/theme/sidebar.html:47
+msgid "Courses"
+msgstr "Хичээлүүд"
+
+#: WebApp/templates/WebApp/departmentinfo_detail.html:5
+#: WebApp/templates/WebApp/departmentinfo_list.html:7
+#, fuzzy
+#| msgid "Department"
+msgid "Departments"
+msgstr "Тэнхим"
+
+#: WebApp/templates/WebApp/departmentinfo_detail.html:11
+#, fuzzy
+#| msgid "Assignment Information"
+msgid "Department Information"
+msgstr "Бие даалтын мэдээлэл"
+
+#: WebApp/templates/WebApp/departmentinfo_detail.html:16
+#: WebApp/templates/WebApp/departmentinfo_list.html:31
+#, fuzzy
+#| msgid "Department"
+msgid "Department Name"
+msgstr "Тэнхим"
+
+#: WebApp/templates/WebApp/departmentinfo_detail.html:49
+#, fuzzy
+#| msgid "Department"
+msgid "Delete Department"
+msgstr "Тэнхим"
+
+#: WebApp/templates/WebApp/departmentinfo_form.html:14
+#: WebApp/templates/admin/import_export/import.html:160
+#: WebApp/templates/registration/editprofile.html:49
+#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:13
+msgid "Update"
+msgstr "Шинэчлэх"
+
+#: WebApp/templates/WebApp/departmentinfo_form.html:16
+#, fuzzy
+#| msgid "Created Date"
+msgid "Create"
+msgstr "Үүсгэсэн огноо"
+
+#: WebApp/templates/WebApp/departmentinfo_list.html:14
+#, fuzzy
+#| msgid "Department"
+msgid "List of Departments"
+msgstr "Тэнхим"
+
+#: WebApp/templates/WebApp/departmentinfo_list.html:20
+#, fuzzy
+#| msgid "Create New Member"
+msgid "Create New Department"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/WebApp/departmentinfo_list.html:35
+#, fuzzy
+#| msgid "Action"
+msgid "Actions"
+msgstr "Үйлдэл"
+
+#: WebApp/templates/WebApp/editprofile.html:6
+#: WebApp/templates/WebApp/profile.html:6
+#: WebApp/templates/WebApp/profile.html:14
+#: WebApp/templates/WebApp/theme/sidebar.html:116
+#: WebApp/templates/WebApp/theme/top_navigation.html:38
+#: WebApp/templates/forum/user_info.html:12
+#: WebApp/templates/registration/change_password.html:9
+#: WebApp/templates/student_module/change_password_student.html:6
+#: WebApp/templates/student_module/editprofile.html:6
+#: WebApp/templates/student_module/profile.html:6
+#: WebApp/templates/student_module/profile.html:14
+#: WebApp/templates/student_module/student_forum/user_info.html:10
+#: WebApp/templates/student_module/theme/top_navigation.html:41
+#: WebApp/templates/teacher_module/change_password_teacher.html:6
+#: WebApp/templates/teacher_module/editprofile.html:6
+#: WebApp/templates/teacher_module/profile.html:6
+#: WebApp/templates/teacher_module/profile.html:14
+#: WebApp/templates/teacher_module/teacher_forum/user_info.html:10
+#: WebApp/templates/teacher_module/theme/top_navigation.html:39
+msgid "Profile"
+msgstr "Профайл"
+
+#: WebApp/templates/WebApp/editprofile.html:7
+#: WebApp/templates/WebApp/profile_detail.html:8
+#: WebApp/templates/registration/editprofile.html:11
+#: WebApp/templates/student_module/editprofile.html:7
+#: WebApp/templates/teacher_module/editprofile.html:7
+msgid "Edit Profile"
+msgstr "Профайл засах"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:7
+#: WebApp/templates/WebApp/groupmapping_form.html:10
+#: WebApp/templates/WebApp/groupmapping_list.html:12
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:56
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:96
+#: WebApp/templates/WebApp/theme/sidebar.html:90
+#: WebApp/templates/inning/inninginfo_list.html:59
+#: WebApp/templates/inning/inninginfo_list.html:107
+#: WebApp/templates/inning/inninginfo_list_inactive.html:38
+#: WebApp/templates/inning/inninginfo_list_inactive.html:85
+msgid "Student Group"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:15
+#, fuzzy
+#| msgid "Contact Information"
+msgid "Group Mapping Information"
+msgstr "Холбогдох мэдээлэл"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:22
+#: WebApp/templates/WebApp/groupmapping_list.html:74
+#: WebApp/templates/WebApp/memberinfo_detail.html:192
+#: WebApp/templates/WebApp/memberinfo_detail.html:257
+#: WebApp/templates/teacher_module/groupmapping_detail.html:18
+#, fuzzy
+#| msgid "Course Name"
+msgid "Group Name"
+msgstr "Хичээлийн нэр"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:35
+#, fuzzy
+#| msgid "Save changes"
+msgid "Save as New"
+msgstr "Өөрчлөлтүүдийг хадгалах"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:36
+msgid "Edit Group Mapping"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:38
+msgid "Delete Group Mapping"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:48
+#: WebApp/templates/teacher_module/groupmapping_detail.html:23
+msgid "Enrolled Students"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:55
+#: WebApp/templates/WebApp/memberinfo_list.html:125
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:70
+#: WebApp/templates/WebApp/teacherIndividualReport.html:70
+#: WebApp/templates/WebApp/teacherReport.html:41
+#: WebApp/templates/teacher_module/assignment_answers.html:152
+#: WebApp/templates/teacher_module/assignment_answers.html:153
+msgid "S.No."
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:57
+#: WebApp/templates/WebApp/memberinfo_detail.html:27
+#: WebApp/templates/WebApp/memberinfo_list.html:127
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:72
+#: WebApp/templates/registration/change_password.html:20
+#: WebApp/templates/student_module/change_password_student.html:13
+#: WebApp/templates/teacher_module/change_password_teacher.html:13
+msgid "Member ID"
+msgstr "Хэрэглэгчийн ID"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:58
+#: WebApp/templates/WebApp/memberinfo_detail.html:36
+#: WebApp/templates/WebApp/memberinfo_list.html:128
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:73
+#: WebApp/templates/attendance/course_attendance_list.html:162
+#: WebApp/templates/survey/common/details.html:295
+#: quiz/templates/quiz_base/sitting_list.html:61
+msgid "Full Name"
+msgstr "Бүтэн нэр"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:59
+#: WebApp/templates/WebApp/memberinfo_list.html:129
+#: WebApp/templates/profile.html:131 WebApp/templates/profile.html:167
+msgid "First Name"
+msgstr "Өөрийн нэр"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:60
+#: WebApp/templates/WebApp/memberinfo_list.html:130
+#: WebApp/templates/profile.html:135 WebApp/templates/profile.html:175
+msgid "Last Name"
+msgstr "Овог"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:61
+#: WebApp/templates/WebApp/memberinfo_detail.html:40
+#: WebApp/templates/WebApp/memberinfo_list.html:131
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:74
+#: WebApp/templates/forum/reg.html:20
+#: WebApp/templates/teacher_module/teacher_forum/reg.html:20
+msgid "Email"
+msgstr "емайл хаяг"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:62
+#: WebApp/templates/WebApp/memberinfo_list.html:133
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:76
+msgid "Phone"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:63
+#: WebApp/templates/WebApp/memberinfo_list.html:134
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:77
+#: WebApp/templates/profile.html:143 WebApp/templates/profile.html:191
+msgid "Gender"
+msgstr "Хүйс"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:65
+#: WebApp/templates/WebApp/memberinfo_detail.html:59
+#: WebApp/templates/WebApp/memberinfo_list.html:137
+#: WebApp/templates/profile.html:255 WebApp/templates/profile.html:286
+msgid "Temporary Address"
+msgstr "Түр оршин суух хаяг"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:66
+#: WebApp/templates/WebApp/memberinfo_detail.html:55
+#: WebApp/templates/WebApp/memberinfo_list.html:138
+#: WebApp/templates/profile.html:259 WebApp/templates/profile.html:296
+msgid "Permanent Address"
+msgstr "Оршин суух хаяг"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:67
+#: WebApp/templates/WebApp/memberinfo_detail.html:63
+#: WebApp/templates/WebApp/memberinfo_list.html:139
+#, fuzzy
+#| msgid "Start Date"
+msgid "BirthDate"
+msgstr "Эхлэх огноо"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:68
+#: WebApp/templates/WebApp/memberinfo_list.html:140
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:80
+#: quiz/templates/quiz/quiz_list.html:38
+#: quiz/templates/quiz_base/quiz_list.html:35
+#: quiz/templates/teacher_quiz/marking_list.html:24
+msgid "Type"
+msgstr "Төрөл"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:93
+#: WebApp/templates/WebApp/groupmapping_detail.html:95
+#: WebApp/templates/WebApp/homepage.html:44
+#: WebApp/templates/WebApp/memberinfo_detail.html:115
+#: WebApp/templates/WebApp/memberinfo_list.html:79
+#: WebApp/templates/WebApp/memberinfo_list.html:136
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:26
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:79
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:104
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:106
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:28
+#: WebApp/templates/profile.html:62
+#: WebApp/templates/registration/register.html:85
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:28
+#: WebApp/templates/teacher_module/base.html:17
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:28
+msgid "Teacher"
+msgstr "Багш"
+
+#: WebApp/templates/WebApp/groupmapping_detail.html:99
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:110
+#, fuzzy
+#| msgid "No Teacher Assigned"
+msgid "Not Assigned"
+msgstr "Багш томилогдоогүй байна"
+
+#: WebApp/templates/WebApp/groupmapping_form.html:13
+#, fuzzy
+#| msgid "Student Group"
+msgid "Create Student Group"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/WebApp/groupmapping_form.html:15
+#, fuzzy
+#| msgid "Student Group"
+msgid "Save New Student Group"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/WebApp/groupmapping_form.html:17
+#, fuzzy
+#| msgid "Student Group"
+msgid "Edit Student Group"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:21
+#: WebApp/templates/WebApp/inninggroup_list.html:22
+#: WebApp/templates/WebApp/inninginfo_list.html:21
+#: WebApp/templates/WebApp/memberinfo_list.html:25
+#: WebApp/templates/course/courseinfo_list.html:67
+msgid "CSV File Import"
+msgstr "CSV файл импортлох"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:30
+msgid "Choose the CSV file to Import Student Group Data"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_list.html:34
+#: WebApp/templates/WebApp/inninggroup_list.html:35
+#: WebApp/templates/WebApp/inninginfo_list.html:34
+#: WebApp/templates/WebApp/memberinfo_list.html:38
+#: WebApp/templates/course/courseinfo_list.html:80
+msgid "Download Sample CSV"
+msgstr "CSV татаж авах"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:37
+#: WebApp/templates/WebApp/inninggroup_list.html:38
+#: WebApp/templates/WebApp/inninginfo_list.html:37
+#: WebApp/templates/WebApp/memberinfo_list.html:41
+#: WebApp/templates/course/courseinfo_list.html:83
+msgid "Read Detail Info"
+msgstr "Дэлгэрэнгүй мэдээллийг уншина уу"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:39
+msgid "Username is Student username to be added to group"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_list.html:39
+#: WebApp/templates/WebApp/groupmapping_list.html:40
+#: WebApp/templates/WebApp/inninggroup_list.html:40
+#: WebApp/templates/WebApp/inninggroup_list.html:41
+#: WebApp/templates/WebApp/inninggroup_list.html:42
+#: WebApp/templates/WebApp/inninginfo_list.html:39
+#: WebApp/templates/WebApp/inninginfo_list.html:40
+#: WebApp/templates/WebApp/inninginfo_list.html:42
+#: WebApp/templates/WebApp/inninginfo_list.html:43
+#: WebApp/templates/WebApp/memberinfo_list.html:43
+#: WebApp/templates/WebApp/memberinfo_list.html:44
+#: WebApp/templates/course/courseinfo_list.html:85
+#: WebApp/templates/course/courseinfo_list.html:87
+msgid "required"
+msgstr "шаардлагатай"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:40
+msgid "Group is name of group where student will be added"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_list.html:41
+msgid "All Students account should have already been registered as Member"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_list.html:42
+msgid "If error occur in one group only that group will not be created"
+msgstr ""
+
+#: WebApp/templates/WebApp/groupmapping_list.html:47
+#: WebApp/templates/WebApp/inninggroup_list.html:49
+#: WebApp/templates/WebApp/inninginfo_list.html:50
+#: WebApp/templates/WebApp/memberinfo_list.html:56
+#: WebApp/templates/course/courseinfo_list.html:94
+msgid "Submit File"
+msgstr "Файл оруулах"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:63
+#, fuzzy
+#| msgid "Student Group"
+msgid "Registered Student Groups"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:66
+#: WebApp/templates/WebApp/inninginfo_form.html:207
+#, fuzzy
+#| msgid "Create New Course"
+msgid "Create New Group"
+msgstr "Шинэ хичээл үүсгэх"
+
+#: WebApp/templates/WebApp/groupmapping_list.html:75
+#, fuzzy
+#| msgid "Student"
+msgid "No. of Student Enrolled"
+msgstr "Сурагч"
+
+#: WebApp/templates/WebApp/homepage.html:53
+#: WebApp/templates/WebApp/memberinfo_list.html:12
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:12
+#: WebApp/templates/WebApp/theme/sidebar.html:57
+msgid "Members"
+msgstr "Хэрэглэгч"
+
+#: WebApp/templates/WebApp/homepage.html:75
+#, fuzzy
+#| msgid "Session"
+msgid "Sessions"
+msgstr "улирал"
+
+#: WebApp/templates/WebApp/homepage.html:116
+#: WebApp/templates/WebApp/theme/sidebar.html:112
+#: WebApp/templates/course/courseinfo_detail.html:69
+#: WebApp/templates/forum/create_thread.html:6
+#: WebApp/templates/forum/create_topic.html:7
+#: WebApp/templates/forum/edit_thread.html:8
+#: WebApp/templates/forum/edit_topic.html:8
+#: WebApp/templates/forum/includes/thread_list.html:7
+#: WebApp/templates/forum/includes/topic_list.html:10
+#: WebApp/templates/forum/index.html:10
+#: WebApp/templates/forum/notifications.html:9
+#: WebApp/templates/forum/search.html:6 WebApp/templates/forum/thread.html:11
+#: WebApp/templates/forum/user_info.html:9
+#: WebApp/templates/student_module/dashboard.html:281
+#: WebApp/templates/student_module/student_forum/forumIndex.html:6
+#: WebApp/templates/student_module/student_forum/search.html:9
+#: WebApp/templates/student_module/student_forum/thread.html:11
+#: WebApp/templates/student_module/student_forum/user_info.html:7
+#: WebApp/templates/student_module/theme/sidebar.html:57
+#: WebApp/templates/teacher_module/homepage.html:115
+#: WebApp/templates/teacher_module/teacher_forum/includes/thread_list.html:9
+#: WebApp/templates/teacher_module/teacher_forum/includes/topic_list.html:9
+#: WebApp/templates/teacher_module/teacher_forum/search.html:9
+#: WebApp/templates/teacher_module/teacher_forum/thread.html:11
+#: WebApp/templates/teacher_module/teacher_forum/user_info.html:7
+#: WebApp/templates/teacher_module/teacher_forum/user_replies.html:6
+#: WebApp/templates/teacher_module/theme/sidebar.html:85
+msgid "Forum"
+msgstr "Форум"
+
+#: WebApp/templates/WebApp/inninggroup_detail.html:5
 #: WebApp/templates/WebApp/inninggroup_form.html:12
+#: WebApp/templates/WebApp/inninggroup_list.html:13
 #, fuzzy
 #| msgid "Teacher-Course Allocation"
 msgid "Course Allocation"
@@ -673,6 +1940,8 @@ msgstr "Багшийн хичээлийг зөвшөөрөх"
 
 #: WebApp/templates/WebApp/inninggroup_form.html:15
 #: WebApp/templates/WebApp/inninggroup_form.html:43
+#: WebApp/templates/WebApp/inninggroup_list.html:75
+#: WebApp/templates/WebApp/inninggroup_list.html:110
 #: WebApp/templates/inning/inninggroup_form.html:30
 msgid "Allocate Teacher to Course"
 msgstr ""
@@ -685,22 +1954,6 @@ msgstr ""
 msgid "Edit Course Allocation"
 msgstr "Багшийн хичээлийг зөвшөөрөх"
 
-#: WebApp/templates/WebApp/inninggroup_form.html:84
-#: WebApp/templates/assignment/assignmentinfo_detail.html:112
-#: WebApp/templates/attendance/course_attendance_form.html:16
-#: WebApp/templates/chapter/chapterinfo_detail.html:124
-#: WebApp/templates/course/courseinfo_detail.html:591
-#: WebApp/templates/course/courseinfo_form.html:102
-#: WebApp/templates/inning/inninggroup_detail.html:33
-#: WebApp/templates/inning/inninggroup_form.html:52
-#: WebApp/templates/student_module/dashboard.html:206
-#: WebApp/templates/survey/common/details.html:61
-#: quiz/templates/quiz/quiz_list.html:41
-#: quiz/templates/quiz_base/exam_list.html:11
-#: quiz/templates/quiz_base/quiz_list.html:37
-msgid "Status"
-msgstr "Статус"
-
 #: WebApp/templates/WebApp/inninggroup_form.html:104
 msgid ""
 "\n"
@@ -712,11 +1965,117 @@ msgid ""
 "            "
 msgstr ""
 
+#: WebApp/templates/WebApp/inninggroup_list.html:31
+msgid "Choose the CSV file to Import Course Teacher Allocation Data"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninggroup_list.html:40
+#: WebApp/templates/WebApp/inninggroup_list.html:82
+#: WebApp/templates/inning/inninggroup_detail.html:17
+#: WebApp/templates/inning/inninginfo_detail.html:159
+#, fuzzy
+#| msgid "Teacher-Course Allocation"
+msgid "Course Allocation Name"
+msgstr "Багшийн хичээлийг зөвшөөрөх"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:41
+#, fuzzy
+#| msgid "Course Name should be unique within the center"
+msgid "Course Name should be already registered"
+msgstr "Хичээлийн нэр нь тухайн төвд нэг байх ёстой"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:42
+msgid "At least 1 teacher username is required"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninggroup_list.html:43
+msgid "All Teachers account should have already been registered as Member"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninggroup_list.html:44
+msgid "Multiple Teachers name should be separated by comma"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninggroup_list.html:63
+#: WebApp/templates/WebApp/theme/sidebar.html:92
+msgid "Teacher-Course Allocation"
+msgstr "Багшийн хичээлийг зөвшөөрөх"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:66
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:20
+#: WebApp/templates/inning/inninginfo_list.html:15
+#: WebApp/templates/inning/inninginfo_list_inactive.html:15
+#, fuzzy
+#| msgid "View"
+msgid "Card View"
+msgstr "Харах"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:67
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:21
+#: WebApp/templates/inning/inninginfo_list.html:16
+#: WebApp/templates/inning/inninginfo_list_inactive.html:16
+#, fuzzy
+#| msgid "View"
+msgid "Table View"
+msgstr "Харах"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:83
+#: WebApp/templates/WebApp/memberinfo_detail.html:258
+#: WebApp/templates/WebApp/teacherReport.html:43
+#: WebApp/templates/course/courseinfo_form.html:46
+#: WebApp/templates/course/courseinfo_list.html:85
+#: WebApp/templates/course/courseinfo_list.html:496
+#: WebApp/templates/inning/inninggroup_detail.html:21
+#: WebApp/templates/student_module/myCourse.html:174
+msgid "Course Name"
+msgstr "Хичээлийн нэр"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:84
+#, fuzzy
+#| msgid "No Teacher"
+msgid "No. of Teachers"
+msgstr "Багш байхгүй"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:85
+#: WebApp/templates/course/courseinfo_detail.html:162
+#: WebApp/templates/course/courseinfo_list.html:497
+#: WebApp/templates/inning/inninginfo_detail.html:165
+#: WebApp/templates/student_module/myCourse.html:175
+msgid "Teachers"
+msgstr "Багш"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:100
+#: WebApp/templates/WebApp/memberinfo_detail.html:207
+#: WebApp/templates/WebApp/memberinfo_detail.html:243
+#: WebApp/templates/assignment/assignmentinfo_detail.html:146
+#: WebApp/templates/assignment/assignmentinfo_detail.html:159
+#: WebApp/templates/chapter/chapterinfo_detail.html:409
+#: WebApp/templates/chapter/chapterinfo_detail.html:453
+#: WebApp/templates/chapter/chapterinfo_detail.html:492
+#: WebApp/templates/course/courseinfo_detail.html:156
+#: WebApp/templates/course/courseinfo_detail.html:516
+#: WebApp/templates/inning/inninggroup_detail.html:35
+#: WebApp/templates/inning/inninginfo_detail.html:74
+#: WebApp/templates/teacher_module/myassignments.html:24
+#: WebApp/templates/teacher_module/myassignments.html:77
+#: WebApp/templates/teacher_module/myassignments.html:191
+#: WebApp/templates/teacher_module/mycourses.html:38
+#: quiz/templates/quiz_base/exam_list.html:45
+msgid "Inactive"
+msgstr "Идэвхгүй"
+
+#: WebApp/templates/WebApp/inninggroup_list.html:118
+#: WebApp/templates/WebApp/inninginfo_detail.html:5
 #: WebApp/templates/WebApp/inninginfo_form.html:30
+#: WebApp/templates/WebApp/inninginfo_list.html:12
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:12
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:93
 #: WebApp/templates/WebApp/theme/sidebar.html:86
 #: WebApp/templates/assignment/assignmentinfo_detail.html:126
+#: WebApp/templates/attendance/course_attendance_list.html:18
 #: WebApp/templates/chapter/chapterinfo_detail.html:391
 #: WebApp/templates/inning/inninginfo_list.html:104
+#: WebApp/templates/inning/inninginfo_list_inactive.html:82
 #: WebApp/templates/teacher_module/assignment_answers.html:82
 #: WebApp/templates/teacher_module/changestudentgroup_form.html:31
 #: WebApp/templates/teacher_module/chapterProgress.html:88
@@ -725,6 +2084,7 @@ msgid "Session"
 msgstr "улирал"
 
 #: WebApp/templates/WebApp/inninginfo_form.html:33
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:33
 #: WebApp/templates/inning/inninginfo_list.html:34
 #: WebApp/templates/teacher_module/changestudentgroup_form.html:34
 #, fuzzy
@@ -740,6 +2100,8 @@ msgstr "Асуулт"
 
 #: WebApp/templates/WebApp/inninginfo_form.html:37
 #: WebApp/templates/WebApp/inninginfo_form.html:47
+#: WebApp/templates/inning/inninginfo_detail.html:16
+#: WebApp/templates/inning/inninginfo_detail.html:28
 #: WebApp/templates/teacher_module/changestudentgroup_form.html:35
 #, fuzzy
 #| msgid "Edit Question"
@@ -842,12 +2204,6 @@ msgstr ""
 msgid "Choose Student Group for this Session"
 msgstr ""
 
-#: WebApp/templates/WebApp/inninginfo_form.html:207
-#, fuzzy
-#| msgid "Create New Course"
-msgid "Create New Group"
-msgstr "Шинэ хичээл үүсгэх"
-
 #: WebApp/templates/WebApp/inninginfo_form.html:215
 msgid ""
 "\n"
@@ -916,11 +2272,781 @@ msgid ""
 "                                    "
 msgstr ""
 
+#: WebApp/templates/WebApp/inninginfo_list.html:30
+msgid "Choose the CSV file to Import Session Data"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninginfo_list.html:39
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:55
+#: WebApp/templates/WebApp/memberinfo_detail.html:158
+#: WebApp/templates/WebApp/memberinfo_detail.html:225
+#: WebApp/templates/WebApp/sessioninfo_detail.html:5
+#: WebApp/templates/WebApp/sessioninfo_detail.html:20
+#: WebApp/templates/WebApp/sessioninfo_form.html:11
+#: WebApp/templates/WebApp/sessioninfo_list.html:12
+#: WebApp/templates/WebApp/sessioninfo_list.html:29
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:47
+#: WebApp/templates/inning/inninginfo_detail.html:43
+#: WebApp/templates/inning/inninginfo_list.html:58
+#: WebApp/templates/inning/inninginfo_list_inactive.html:37
+#, fuzzy
+#| msgid "Question"
+msgid "Session Name"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/inninginfo_list.html:40
+msgid "Start date and End date should be in excel date format"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninginfo_list.html:41
+msgid "Start date shouldn't be greater than end date"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninginfo_list.html:42
+msgid "Student Group Name should already be registered"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninginfo_list.html:43
+msgid "Teacher Course Allocation Name should already be registered"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninginfo_list.html:44
+msgid "Teacher Course Allocation Name should be separated by comma"
+msgstr ""
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:17
+#: WebApp/templates/inning/inninginfo_list_inactive.html:12
+#, fuzzy
+#| msgid "List of Active Assignments"
+msgid "List of Inactive Sessions"
+msgstr "Идэвхтэй даалгаврын жагсаалт"
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:22
+#: WebApp/templates/inning/inninginfo_list_inactive.html:24
+#, fuzzy
+#| msgid "View Inactive Courses"
+msgid "View Active Sessions"
+msgstr "Идэвхигүй курс харах"
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:57
+#: WebApp/templates/inning/inninginfo_list.html:60
+#: WebApp/templates/inning/inninginfo_list_inactive.html:39
+#, fuzzy
+#| msgid "List of Courses"
+msgid "No. of Courses"
+msgstr "Хичээлийн жагсаалт"
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:58
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:102
+#: WebApp/templates/WebApp/teacherIndividualReport.html:82
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:48
+#: WebApp/templates/assignment/assignmentinfo_detail.html:127
+#: WebApp/templates/chapter/chapterinfo_detail.html:392
+#: WebApp/templates/inning/inninginfo_detail.html:52
+#: WebApp/templates/inning/inninginfo_detail.html:241
+#: WebApp/templates/inning/inninginfo_form_common.html:47
+#: WebApp/templates/inning/inninginfo_list.html:61
+#: WebApp/templates/inning/inninginfo_list.html:116
+#: WebApp/templates/inning/inninginfo_list_inactive.html:40
+#: WebApp/templates/inning/inninginfo_list_inactive.html:92
+#: WebApp/templates/inning/inningmapFormModal.html:26
+#: WebApp/templates/student_module/calendar.html:70
+#: quiz/templates/ajax_quiz/progress_list_history.html:7
+msgid "Start Date"
+msgstr "Эхлэх огноо"
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:59
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:104
+#: WebApp/templates/WebApp/teacherIndividualReport.html:83
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:49
+#: WebApp/templates/assignment/assignmentinfo_detail.html:128
+#: WebApp/templates/chapter/chapterinfo_detail.html:393
+#: WebApp/templates/inning/inninginfo_detail.html:56
+#: WebApp/templates/inning/inninginfo_detail.html:242
+#: WebApp/templates/inning/inninginfo_form_common.html:59
+#: WebApp/templates/inning/inninginfo_list.html:62
+#: WebApp/templates/inning/inninginfo_list.html:118
+#: WebApp/templates/inning/inninginfo_list_inactive.html:41
+#: WebApp/templates/inning/inninginfo_list_inactive.html:93
+#: WebApp/templates/inning/inningmapFormModal.html:36
+#: quiz/templates/ajax_quiz/progress_list_history.html:8
+msgid "End Date"
+msgstr "Дуусах огноо"
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:140
+#: WebApp/templates/WebApp/questioninfo_list.html:75
+#: WebApp/templates/WebApp/sessioninfo_list.html:66
+#, fuzzy
+#| msgid "Export"
+msgid "Export to CSV"
+msgstr "Экспорт"
+
+#: WebApp/templates/WebApp/inninginfo_list_inactive.html:144
+#: WebApp/templates/WebApp/questioninfo_list.html:79
+#: WebApp/templates/WebApp/sessioninfo_list.html:70
+msgid "Print"
+msgstr ""
+
 #: WebApp/templates/WebApp/meet-include.html:10
+#: WebApp/templates/WebApp/meet-public.html:14
 msgid "Copy Invitation Link"
 msgstr ""
 
+#: WebApp/templates/WebApp/meet-public.html:9
+msgid "Meeting Room of"
+msgstr ""
+
+#: WebApp/templates/WebApp/meet-public.html:103
+msgid "Sorry Your UBL Meet URL is Incorrect"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:5
+#: WebApp/templates/WebApp/memberinfo_form.html:7
+#: WebApp/templates/components/navbar.html:22
+#: WebApp/templates/registration/change_password.html:7
+#, fuzzy
+#| msgid "Members"
+msgid "Member"
+msgstr "Хэрэглэгч"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:12
+#, fuzzy
+#| msgid "Contact Information"
+msgid "Member Information"
+msgstr "Холбогдох мэдээлэл"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:20
+#, fuzzy
+#| msgid "Members"
+msgid "Edit Member"
+msgstr "Хэрэглэгч"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:28
+#, fuzzy
+#| msgid "Assignments"
+msgid "Assigned by center"
+msgstr "Даалгавар"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:32
+#, fuzzy
+#| msgid "        Username for Login"
+msgid "Used for login"
+msgstr "Нэвтрэх ID"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:44
+#: WebApp/templates/WebApp/memberinfo_list.html:132
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:75
+#: WebApp/templates/profile.html:350
+msgid "Department"
+msgstr "Тэнхим"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:50
+#: WebApp/templates/profile.html:356
+msgid "Position"
+msgstr "Албан тушаал"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:67
+#, fuzzy
+#| msgid "Phone Number"
+msgid "Phone No"
+msgstr "Утасны дугаар"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:74
+#: WebApp/templates/profile.html:197
+msgid "Male"
+msgstr "Эрэгтэй"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:76
+#: WebApp/templates/profile.html:205
+msgid "Female"
+msgstr "Эмэгтэй"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:85
+#, fuzzy
+#| msgid "Deactivated"
+msgid "Deactivate"
+msgstr "идэвхгүй болгосон"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:91
+msgid "Blocked"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:93
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:116
+#, fuzzy
+#| msgid "Active"
+msgid "Activate"
+msgstr "Идэвхтэй "
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:109
+#: WebApp/templates/registration/register.html:72
+#, fuzzy
+#| msgid "User Type"
+msgid "Member Type"
+msgstr "Хэрэглэгч"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:112
+msgid "Admin"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:125
+#: WebApp/templates/WebApp/memberinfo_detail.html:132
+#: WebApp/templates/forum/login.html:20 WebApp/templates/forum/reg.html:24
+#: WebApp/templates/profile.html:418
+#: WebApp/templates/registration/login.html:86
+#: WebApp/templates/registration/register.html:92
+#: WebApp/templates/teacher_module/teacher_forum/reg.html:24
+msgid "Password"
+msgstr "Нууц үг"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:127
+#: WebApp/templates/profile.html:427
+#: WebApp/templates/registration/change_password.html:14
+#: WebApp/templates/registration/change_password.html:19
+#: WebApp/templates/student_module/change_password_student.html:7
+#: WebApp/templates/student_module/change_password_student.html:12
+#: WebApp/templates/teacher_module/change_password_teacher.html:7
+#: WebApp/templates/teacher_module/change_password_teacher.html:12
+msgid "Change Password"
+msgstr "Нууц үг солих"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:133
+#, fuzzy
+#| msgid "Password"
+msgid "Add New Password"
+msgstr "Нууц үг"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:141
+#, fuzzy
+#| msgid "Create New Member"
+msgid "Delete Member"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:142
+msgid "Note: Instead of deleting a member you can deactivate him/her instead"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:153
+#, fuzzy
+#| msgid "Progress List"
+msgid "Student Associated Sessions List"
+msgstr "Ахиц дэвшилийн жагсаалт"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:157
+#: WebApp/templates/WebApp/memberinfo_detail.html:191
+#: WebApp/templates/WebApp/memberinfo_detail.html:224
+#: WebApp/templates/WebApp/memberinfo_detail.html:256
+#: WebApp/templates/student_module/dashboard.html:215
+msgid "No"
+msgstr "Дугаар"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:176
+#: WebApp/templates/WebApp/memberinfo_detail.html:178
+#: WebApp/templates/assignment/assignmentinfo_detail.html:163
+#: WebApp/templates/chapter/chapterinfo_detail.html:424
+#: WebApp/templates/chapter/chapterinfo_detail.html:496
+#: WebApp/templates/student_module/myassignments_list.html:15
+#: WebApp/templates/student_module/myassignments_list.html:78
+#: WebApp/templates/student_module/myassignments_list.html:199
+#: WebApp/templates/student_module/questions_student.html:33
+#: WebApp/templates/survey/common/details.html:67
+#: WebApp/templates/survey/surveyinfo_list.html:16
+#: WebApp/templates/teacher_module/myassignments.html:75
+#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:15
+#: survey/templates/survey/surveyinfo_list.html:16
+msgid "Expired"
+msgstr "Хугацаа дууссан"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:187
+#, fuzzy
+#| msgid "Progress List"
+msgid "Student Associated Groups List"
+msgstr "Ахиц дэвшилийн жагсаалт"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:193
+#, fuzzy
+#| msgid "Student Group"
+msgid "Student Count"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:220
+#, fuzzy
+#| msgid "No Teacher Assigned"
+msgid "Teacher Associated Sessions List"
+msgstr "Багш томилогдоогүй байна"
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:252
+msgid "Teacher Associated Groups List"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_detail.html:259
+#, fuzzy
+#| msgid "Teacher Report"
+msgid "Teacher Count"
+msgstr "Багшийн тайлан"
+
+#: WebApp/templates/WebApp/memberinfo_form.html:14
+#: WebApp/templates/WebApp/memberinfo_form.html:27
+#: WebApp/templates/WebApp/theme/sidebar.html:62
+msgid "Create New Member"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/WebApp/memberinfo_form.html:16
+#: WebApp/templates/WebApp/memberinfo_form.html:29
+#, fuzzy
+#| msgid "Category"
+msgid "Edit Member Info"
+msgstr "Категори"
+
+#: WebApp/templates/WebApp/memberinfo_list.html:34
+msgid "Choose the CSV file to Import Member Data"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:43
+msgid "Username must be unique for every member"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:44
+msgid "Gender value must be M or F"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:45
+msgid "Teacher column value should be 1 for teacher"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:46
+msgid "Student column value should be 1 for student"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:47
+msgid "If any problem occur in a row then no any member data will be created"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:48
+msgid "Error message will show the number of row in which the problem occur"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:49
+msgid "Default password will be 00000 for every user"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:71
+#, fuzzy
+#| msgid "List of Exams"
+msgid "List of Members"
+msgstr "Шалгалтын жагсаалт"
+
+#: WebApp/templates/WebApp/memberinfo_list.html:78
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:25
+#: WebApp/templates/student_module/myassignments_list.html:14
+#: WebApp/templates/teacher_module/chapterProgress.html:132
+#: WebApp/templates/teacher_module/myassignments.html:23
+msgid "All"
+msgstr "Бүгд"
+
+#: WebApp/templates/WebApp/memberinfo_list.html:85
+msgid "View Blocked Members"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_list.html:100
+#, fuzzy
+#| msgid "Create New Member"
+msgid "Create new Member"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:18
+#, fuzzy
+#| msgid "List of complete exams"
+msgid "List of Blocked Members"
+msgstr "Дууссан шалгалтуудын жагсаалт"
+
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:32
+#, fuzzy
+#| msgid "View Active Courses"
+msgid "View Active Members"
+msgstr "Идэвхитэй курс харах"
+
+#: WebApp/templates/WebApp/memberinfo_list_inactive.html:123
+#: WebApp/templates/admin/import_export/import.html:158
+#: WebApp/templates/ajax/mcquestion_form_ajax.html:39
+#: WebApp/templates/assignment/assignmentinfo_detail.html:54
+#: WebApp/templates/assignment/assignmentinfo_detail.html:67
+#: WebApp/templates/assignment/assignmentinfo_detail.html:281
+#: WebApp/templates/assignment/assignmentinfo_detail.html:296
+#: WebApp/templates/chapter/chapterinfo_detail.html:103
+msgid "Delete"
+msgstr "Устгах"
+
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:11
+msgid "Edit Selected Members"
+msgstr ""
+
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:35
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:46
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:58
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:75
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:88
+#: WebApp/templates/WebApp/memberinfo_mass_option_form.html:100
+#: WebApp/templates/assignment/assignmentinfo_detail.html:183
+#: WebApp/templates/chapter/chapterinfo_detail.html:438
+#: WebApp/templates/inning/inninginfo_form_common.html:41
+#: WebApp/templates/inning/inninginfo_form_common.html:53
+#: WebApp/templates/inning/inninginfo_form_common.html:65
+msgid "Change"
+msgstr "Өөрчлөх"
+
+#: WebApp/templates/WebApp/messageinfo_form.html:6
+#, fuzzy
+#| msgid "Category list"
+msgid "MessageInfo Listing"
+msgstr "Ангиллын жагсаалт"
+
+#: WebApp/templates/WebApp/messageinfo_list.html:13
+#, fuzzy
+#| msgid "Create Chapter"
+msgid "Private chat"
+msgstr "Бүлэг үүсгэх"
+
+#: WebApp/templates/WebApp/polls.html:5 WebApp/templates/WebApp/polls.html:13
+#: WebApp/templates/WebApp/question.html:5
+#: WebApp/templates/student_module/polls_student.html:13
+#: WebApp/templates/student_module/polls_student_view.html:13
+#: WebApp/templates/teacher_module/makequery.html:5
+msgid "Polls"
+msgstr "Санал асуулга"
+
+#: WebApp/templates/WebApp/polls.html:25
+#: WebApp/templates/inning/inninginfo_detail.html:240
+#: WebApp/templates/student_module/polls_student.html:21
+#: WebApp/templates/student_module/polls_student_view.html:25
+msgid "Survey Title"
+msgstr "Судалгааны гарчиг"
+
+#: WebApp/templates/WebApp/polls.html:35
+#: WebApp/templates/student_module/polls_student_view.html:34
+msgid "General"
+msgstr "Ерөнхий"
+
+#: WebApp/templates/WebApp/profile_detail.html:5
+#: WebApp/templates/WebApp/profile_form.html:6
+#: WebApp/templates/WebApp/profile_list.html:5
+#, fuzzy
+#| msgid "Progress List"
+msgid "Profile Listing"
+msgstr "Ахиц дэвшилийн жагсаалт"
+
+#: WebApp/templates/WebApp/profile_list.html:16
+#, fuzzy
+#| msgid "Create new Course"
+msgid "Create new Profile"
+msgstr "Шинэ хичээл үүсгэх "
+
+#: WebApp/templates/WebApp/question.html:26
+#: WebApp/templates/course/courseinfo_list.html:185
+#: WebApp/templates/forum/search.html:7
+#: WebApp/templates/student_module/myCourse.html:51
+#: WebApp/templates/student_module/student_forum/search.html:10
+#: WebApp/templates/teacher_module/makequery.html:24
+#: WebApp/templates/teacher_module/mycourses.html:73
+#: WebApp/templates/teacher_module/teacher_forum/search.html:10
+msgid "Search"
+msgstr "Хайх"
+
+#: WebApp/templates/WebApp/question.html:36
+#: WebApp/templates/teacher_module/makequery.html:33
+#, fuzzy
+#| msgid "Expired"
+msgid "Expire"
+msgstr "Хугацаа дууссан"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:5 quiz/models.py:231
+#: quiz/models.py:258 quiz/models.py:675 quiz/templates/question.html:208
+#: quiz/templates/quiz_base/sitting_detail.html:52
+msgid "Question"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:11
+#, fuzzy
+#| msgid "Question List"
+msgid "Question Information"
+msgstr "Асуултын жагсаалт"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:16
+#: WebApp/templates/WebApp/questioninfo_list.html:26
+#, fuzzy
+#| msgid "Question List"
+msgid "Question Title"
+msgstr "Асуултын жагсаалт"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:20
+#: WebApp/templates/WebApp/questioninfo_list.html:27
+#: WebApp/templates/assignment/assignmentinfo_detail.html:315
+#: quiz/templates/student_quiz/progress_detail.html:83
+#: quiz/templates/student_quiz/progress_detail.html:180
+msgid "Question Score"
+msgstr "Асуултын оноо"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:24
+#: WebApp/templates/WebApp/questioninfo_form.html:51
+#: WebApp/templates/WebApp/questioninfo_list.html:28
+#: WebApp/templates/assignment/assignmentinfo_detail.html:323
+msgid "Question Description"
+msgstr "Асуултын тайлбар"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:28
+#: WebApp/templates/assignment/assignmentinfo_detail.html:331
+msgid "Answer Type"
+msgstr "Хариултын төрөл"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:31
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:62
+#: WebApp/templates/assignment/assignmentinfo_detail.html:337
+msgid "Short Answer"
+msgstr "Нөхөж бичих асуулт"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:33
+#: WebApp/templates/assignment/assignmentinfo_detail.html:339
+msgid "File Upload"
+msgstr "Файл оруулах"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:38
+#, fuzzy
+#| msgid "Question Media"
+msgid "Question Media File"
+msgstr "Асуултын медиа"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:57
+#: WebApp/templates/WebApp/questioninfo_form.html:20
+#: WebApp/templates/WebApp/questioninfo_form.html:30
+#: WebApp/templates/assignment/assignmentinfo_detail.html:249
+#: WebApp/templates/assignment/assignmentinfo_detail.html:264
+msgid "Edit Question"
+msgstr "Асуулт засах"
+
+#: WebApp/templates/WebApp/questioninfo_detail.html:58
+#, fuzzy
+#| msgid "Edit Question"
+msgid "Delete Question"
+msgstr "Асуулт засах"
+
+#: WebApp/templates/WebApp/questioninfo_form.html:18
+#: WebApp/templates/WebApp/questioninfo_form.html:28
+#, fuzzy
+#| msgid "Ask New Question"
+msgid "Create New Question"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/questioninfo_list.html:11
+#: WebApp/templates/assignment/assignmentinfo_detail.html:206
+#: WebApp/templates/student_module/dashboard.html:215
+#: WebApp/templates/student_module/questions_student_listView.html:52
+#: WebApp/templates/survey/common/surveyinfo_expireView.html:64
+#: WebApp/templates/teacher_module/survey.html:52
+#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:56
+#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:82
+#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:108
+#: quiz/models.py:259
+msgid "Questions"
+msgstr "Асуултууд"
+
+#: WebApp/templates/WebApp/questioninfo_list.html:15
+#, fuzzy
+#| msgid "No. of Questions"
+msgid "List of Questions"
+msgstr "Асуултын дугаар"
+
+#: WebApp/templates/WebApp/questioninfo_list.html:18
+#, fuzzy
+#| msgid "Ask New Question"
+msgid "Insert new Question"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/questioninfo_list.html:29
+#: WebApp/templates/assignment/assignmentinfo_detail.html:93
+#: WebApp/templates/assignment/assignmentinfo_list.html:19
+#: WebApp/templates/chapter/chapterinfo_detail.html:209
+msgid "Course Code"
+msgstr "Хичээлийн код"
+
+#: WebApp/templates/WebApp/questioninfo_list.html:30
+#: WebApp/templates/assignment/assignmentinfo_detail.html:97
+#: WebApp/templates/assignment/assignmentinfo_list.html:20
+msgid "Chapter Code"
+msgstr "Бүлгийн код"
+
+#: WebApp/templates/WebApp/sessioninfo_detail.html:13
+#, fuzzy
+#| msgid "Assignment Information"
+msgid "Session Information"
+msgstr "Бие даалтын мэдээлэл"
+
+#: WebApp/templates/WebApp/sessioninfo_detail.html:28
+#: WebApp/templates/inning/inninginfo_detail.html:39 quiz/models.py:253
+#: quiz/models.py:463
+msgid "Center Code"
+msgstr "Төвийн код"
+
+#: WebApp/templates/WebApp/sessioninfo_detail.html:52
+#: WebApp/templates/WebApp/sessioninfo_form.html:16
+#: WebApp/templates/WebApp/sessioninfo_form.html:28
+#, fuzzy
+#| msgid "Edit Question"
+msgid "Edit Session Name"
+msgstr "Асуулт засах"
+
+#: WebApp/templates/WebApp/sessioninfo_detail.html:54
+#, fuzzy
+#| msgid "Question"
+msgid "Delete Session Name"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/sessioninfo_form.html:14
+#: WebApp/templates/WebApp/sessioninfo_form.html:26
+#: WebApp/templates/WebApp/sessioninfo_list.html:21
+#, fuzzy
+#| msgid "Ask New Question"
+msgid "Create New Session Name"
+msgstr "Асуулт"
+
+#: WebApp/templates/WebApp/sessioninfo_list.html:18
+#, fuzzy
+#| msgid "List of Active Assignments"
+msgid "List of Session Names"
+msgstr "Идэвхтэй даалгаврын жагсаалт"
+
+#: WebApp/templates/WebApp/sessionmanager_form.html:31
+msgid "Manage Session Managers"
+msgstr ""
+
+#: WebApp/templates/WebApp/sessionmanager_form.html:46
+#: WebApp/templates/ajax/groupcreate_form_ajax.html:20
+#, fuzzy
+#| msgid ""
+#| "You can select multiple questions by holding ctrl key on Windows and "
+#| "Command⌘ key on MAC."
+msgid ""
+"\n"
+"            *You can select multiple students by holding <code> ctrl</code> "
+"key on Windows and <code> Command⌘</code> key on\n"
+"            MAC.\n"
+"        "
+msgstr ""
+"Та Windows дээр ctrl товчийг, MAC дээр Command⌘ товчийг дарж олон асуулт "
+"сонгох боломжтой."
+
+#: WebApp/templates/WebApp/splash_page.html:119
+msgid "Welcome to U-LMS 2021"
+msgstr ""
+
+#: WebApp/templates/WebApp/splash_page.html:120
+msgid "Enter into the online Education System"
+msgstr ""
+
+#: WebApp/templates/WebApp/splash_page.html:122
+msgid "If you don't have an Account"
+msgstr ""
+
+#: WebApp/templates/WebApp/splash_page.html:122
+#, fuzzy
+#| msgid "Register"
+msgid "Register Now"
+msgstr "Бүртгэх"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:26
+#: WebApp/templates/WebApp/teacherReport.html:25
+#: WebApp/templates/WebApp/teacherReport.html:30
+#: WebApp/templates/WebApp/theme/sidebar.html:103
+msgid "Teacher Report"
+msgstr "Багшийн тайлан"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:33
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "            Threads created by %(username)s\n"
+#| "            "
+msgid ""
+"\n"
+"                Teacher Report of %(teacher)s\n"
+"            "
+msgstr ""
+"\n"
+"Дасгалыг бүртгэгч  %(username)s"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:40
+#: WebApp/templates/WebApp/teacherReport.html:42
+#, fuzzy
+#| msgid "Teachers"
+msgid "Teacher Name"
+msgstr "Багш"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:71
+#, fuzzy
+#| msgid "Chapter No"
+msgid "Chapter Name"
+msgstr "Бүлгийн дугаар"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:73
+#: WebApp/templates/teacher_module/chapterProgress.html:240
+msgid "Running Time"
+msgstr "Үргэлжлэх хугацаа"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:75
+#: WebApp/templates/components/navbar.html:25
+#: WebApp/templates/teacher_module/assignment_answers.html:120
+#, fuzzy
+#| msgid "Assignments"
+msgid "Assignment"
+msgstr "Даалгавар"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:84
+#, fuzzy
+#| msgid "Chapter Code"
+msgid "Chapter Complete"
+msgstr "Бүлгийн код"
+
+#: WebApp/templates/WebApp/teacherIndividualReport.html:86
+#, fuzzy
+#| msgid "Assignment File"
+msgid "Assignment complete"
+msgstr "Бие даалтын файл"
+
+#: WebApp/templates/WebApp/teacherReport.html:50
+#: WebApp/templates/chapter/chapterinfo_detail.html:61
+#: WebApp/templates/teacher_module/assignment_answers.html:107
+#: WebApp/templates/teacher_module/chapterProgress.html:360
+#: WebApp/templates/teacher_module/myassignments.html:43
+#: WebApp/templates/teacher_module/myassignments.html:107
+#: WebApp/templates/teacher_module/myassignments.html:156
+#: WebApp/templates/teacher_module/progressdetail.html:28 quiz/models.py:487
+#: quiz/templates/quiz/quiz_list.html:36
+#: quiz/templates/quiz_base/exam_list.html:10
+msgid "Chapter"
+msgstr "Бүлэг"
+
+#: WebApp/templates/WebApp/teacherReport.html:52
+#, fuzzy
+#| msgid "Chapter Code"
+msgid "Chapter Contents"
+msgstr "Бүлгийн код"
+
+#: WebApp/templates/WebApp/teacherReport.html:53
+#, fuzzy
+#| msgid "Chapter"
+msgid "Total Chapter"
+msgstr "Бүлэг"
+
+#: WebApp/templates/WebApp/teacherReport.html:65
+#, fuzzy
+#| msgid "Chapter"
+msgid "No Chapters"
+msgstr "Бүлэг"
+
 #: WebApp/templates/WebApp/theme/alerts.html:10
+#: WebApp/templates/error_page/page_400.html:22
+#: WebApp/templates/error_page/page_403.html:22
+#: WebApp/templates/error_page/page_404.html:22
+#: WebApp/templates/error_page/page_500.html:24
 msgid "Error"
 msgstr "Алдаанууд"
 
@@ -954,10 +3080,6 @@ msgstr "Админ нүүр хуудас"
 msgid "Dashboard"
 msgstr "Дашбоард"
 
-#: WebApp/templates/WebApp/theme/sidebar.html:57
-msgid "Members"
-msgstr "Хэрэглэгч"
-
 #: WebApp/templates/WebApp/theme/sidebar.html:59
 msgid "Members List"
 msgstr "Хэрэглэгчдийн жагсаалт"
@@ -966,41 +3088,9 @@ msgstr "Хэрэглэгчдийн жагсаалт"
 msgid "Departments List"
 msgstr "Тэнхимийн жагсаалт"
 
-#: WebApp/templates/WebApp/theme/sidebar.html:62
-msgid "Create New Member"
-msgstr "Шинэ хэрэглэгч бүртгэх"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:67
-#: WebApp/templates/inning/inninginfo_list.html:108
-#: WebApp/templates/student_module/dashboard.html:62
-#: WebApp/templates/teacher_module/courseinfo_list.html:5
-#: WebApp/templates/teacher_module/homepage.html:60
-#: WebApp/templates/teacher_module/theme/sidebar.html:47
-msgid "Courses"
-msgstr "Хичээлүүд"
-
 #: WebApp/templates/WebApp/theme/sidebar.html:70
 msgid "Course List"
 msgstr "Хичээлийн жагсаалт"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:72
-#: WebApp/templates/course/courseinfo_form.html:18
-#: WebApp/templates/teacher_module/courseinfo_form.html:16
-msgid "Create New Course"
-msgstr "Шинэ хичээл үүсгэх"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:77
-#: WebApp/templates/chapter/chapterinfo_detail.html:566
-#: WebApp/templates/student_module/quizzes.html:10
-#: WebApp/templates/student_module/theme/sidebar.html:51
-#: WebApp/templates/teacher_module/chapterProgress.html:324
-#: WebApp/templates/teacher_module/chapterProgress.html:326 quiz/models.py:587
-#: quiz/models.py:793 quiz/templates/quiz/sitting_filter.html:34
-#: quiz/templates/quiz/sitting_list.html:22
-#: quiz/templates/quiz_base/exam_list.html:8
-#: quiz/templates/teacher_quiz/marking_list.html:23
-msgid "Quiz"
-msgstr "Асуулт хариулт"
 
 #: WebApp/templates/WebApp/theme/sidebar.html:80
 #: WebApp/templates/teacher_module/theme/sidebar.html:76
@@ -1015,87 +3105,6 @@ msgstr "сорих шалгалт"
 #: WebApp/templates/WebApp/theme/sidebar.html:89
 msgid "Session List"
 msgstr "Улиралын жагсаалт"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:90
-#: WebApp/templates/inning/inninginfo_list.html:59
-#: WebApp/templates/inning/inninginfo_list.html:107
-msgid "Student Group"
-msgstr "Сурагчдын грүүп"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:92
-msgid "Teacher-Course Allocation"
-msgstr "Багшийн хичээлийг зөвшөөрөх"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:103
-msgid "Teacher Report"
-msgstr "Багшийн тайлан"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:112
-#: WebApp/templates/course/courseinfo_detail.html:69
-#: WebApp/templates/student_module/dashboard.html:281
-#: WebApp/templates/student_module/student_forum/forumIndex.html:6
-#: WebApp/templates/student_module/student_forum/search.html:9
-#: WebApp/templates/student_module/student_forum/thread.html:11
-#: WebApp/templates/student_module/student_forum/user_info.html:7
-#: WebApp/templates/student_module/theme/sidebar.html:57
-#: WebApp/templates/teacher_module/homepage.html:115
-#: WebApp/templates/teacher_module/teacher_forum/includes/thread_list.html:9
-#: WebApp/templates/teacher_module/teacher_forum/includes/topic_list.html:9
-#: WebApp/templates/teacher_module/teacher_forum/search.html:9
-#: WebApp/templates/teacher_module/teacher_forum/thread.html:11
-#: WebApp/templates/teacher_module/teacher_forum/user_info.html:7
-#: WebApp/templates/teacher_module/teacher_forum/user_replies.html:6
-#: WebApp/templates/teacher_module/theme/sidebar.html:85
-msgid "Forum"
-msgstr "Форум"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:114
-#: WebApp/templates/admin/import_export/base.html:10
-#: WebApp/templates/base.html:89 WebApp/templates/forum/includes/list.html:9
-#: WebApp/templates/registration/logout.html:9
-#: WebApp/templates/student_module/base.html:73
-#: WebApp/templates/student_module/theme/sidebar.html:59
-#: WebApp/templates/teacher_module/base.html:93
-#: WebApp/templates/teacher_module/makequery.html:14
-#: WebApp/templates/teacher_module/theme/sidebar.html:87
-msgid "Home"
-msgstr "Нүүр хуудас"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:116
-#: WebApp/templates/WebApp/theme/top_navigation.html:38
-#: WebApp/templates/student_module/change_password_student.html:6
-#: WebApp/templates/student_module/editprofile.html:6
-#: WebApp/templates/student_module/profile.html:6
-#: WebApp/templates/student_module/profile.html:14
-#: WebApp/templates/student_module/student_forum/user_info.html:10
-#: WebApp/templates/student_module/theme/top_navigation.html:41
-#: WebApp/templates/teacher_module/change_password_teacher.html:6
-#: WebApp/templates/teacher_module/editprofile.html:6
-#: WebApp/templates/teacher_module/profile.html:6
-#: WebApp/templates/teacher_module/profile.html:14
-#: WebApp/templates/teacher_module/teacher_forum/user_info.html:10
-#: WebApp/templates/teacher_module/theme/top_navigation.html:39
-msgid "Profile"
-msgstr "Профайл"
-
-#: WebApp/templates/WebApp/theme/sidebar.html:128
-#: WebApp/templates/course/courseinfo_detail.html:189
-#: WebApp/templates/student_module/polls_student.html:12
-#: WebApp/templates/student_module/polls_student_view.html:12
-#: WebApp/templates/student_module/questions_student.html:18
-#: WebApp/templates/student_module/questions_student_detail.html:17
-#: WebApp/templates/student_module/questions_student_detail_history.html:8
-#: WebApp/templates/student_module/theme/sidebar.html:64
-#: WebApp/templates/survey/surveyinfo_detail.html:13
-#: WebApp/templates/survey/surveylist.html:14
-#: WebApp/templates/teacher_module/makequery.html:15
-#: WebApp/templates/teacher_module/survey/question_teachers.html:17
-#: WebApp/templates/teacher_module/survey/surveyinfodetail.html:16
-#: WebApp/templates/teacher_module/theme/sidebar.html:92
-#: survey/templates/survey/surveyinfo_detail.html:8
-#: survey/templates/survey/surveylist.html:9
-msgid "Survey"
-msgstr "Судалгаа"
 
 #: WebApp/templates/WebApp/theme/top_navigation.html:32
 #: WebApp/templates/teacher_module/theme/top_navigation.html:31
@@ -1161,24 +3170,14 @@ msgid "Log In"
 msgstr "Нэвтэрч орох"
 
 #: WebApp/templates/WebApp/theme/top_navigation.html:141
+#: WebApp/templates/registration/register.html:11
+#: WebApp/templates/registration/register.html:128
 #: WebApp/templates/student_module/theme/top_navigation.html:144
 #: WebApp/templates/teacher_module/theme/top_navigation.html:152
 msgid "Register"
 msgstr "Бүртгэх"
 
-#: WebApp/templates/admin/import_export/change_list_export_item.html:5
-#: WebApp/templates/admin/import_export/export.html:7
-msgid "Export"
-msgstr "Экспорт"
-
-#: WebApp/templates/admin/import_export/change_list_import_item.html:5
-#: WebApp/templates/admin/import_export/import.html:11
-#: WebApp/templates/course/courseinfo_list.html:256
-#: WebApp/templates/course/courseinfo_list.html:463
-msgid "Import"
-msgstr "Импорт"
-
-#: WebApp/templates/admin/import_export/import.html:21
+#: WebApp/templates/admin/import_export/import.html:22
 msgid ""
 "Below is a preview of data to be imported. If you are satisfied with the "
 "results, click 'Confirm import'"
@@ -1186,28 +3185,28 @@ msgstr ""
 "Импортлох өгөгдлийг урьдчилж харуулав. Хэрэв та үр дүндээ сэтгэл хангалуун "
 "байвал 'Импортыг баталгаажуулах' дээр дарна уу"
 
-#: WebApp/templates/admin/import_export/import.html:24
+#: WebApp/templates/admin/import_export/import.html:25
 msgid "Confirm import"
 msgstr "Импортыг баталгаажуулах"
 
-#: WebApp/templates/admin/import_export/import.html:32
+#: WebApp/templates/admin/import_export/import.html:33
 msgid "This importer will import the following fields: "
 msgstr "Энэхүү импортлогч дараахь талбаруудыг импортлох болно."
 
-#: WebApp/templates/admin/import_export/import.html:62
-#: WebApp/templates/admin/import_export/import.html:91
+#: WebApp/templates/admin/import_export/import.html:63
+#: WebApp/templates/admin/import_export/import.html:92
 msgid "Errors"
 msgstr "Алдаанууд"
 
-#: WebApp/templates/admin/import_export/import.html:73
+#: WebApp/templates/admin/import_export/import.html:74
 msgid "Line number"
 msgstr "Мөрийн дугаар"
 
-#: WebApp/templates/admin/import_export/import.html:83
+#: WebApp/templates/admin/import_export/import.html:84
 msgid "Some rows failed to validate"
 msgstr "Зарим мөрийг баталгаажуулж чадсангүй"
 
-#: WebApp/templates/admin/import_export/import.html:85
+#: WebApp/templates/admin/import_export/import.html:86
 msgid ""
 "Please correct these errors in your data where possible, then reupload it "
 "using the form above."
@@ -1215,66 +3214,146 @@ msgstr ""
 "Боломжтой бол эдгээр алдаануудыг өгөгдлөө арилгаж, дээрх маягтыг ашиглан "
 "дахин ачаална уу."
 
-#: WebApp/templates/admin/import_export/import.html:90
+#: WebApp/templates/admin/import_export/import.html:91
 msgid "Row"
 msgstr "эгнээ"
 
-#: WebApp/templates/admin/import_export/import.html:117
+#: WebApp/templates/admin/import_export/import.html:118
 msgid "Non field specific"
 msgstr "Талбайн онцлог шинж чанаргүй"
 
-#: WebApp/templates/admin/import_export/import.html:138
-#: WebApp/templates/forum/widgets/pagedown.html:9
-msgid "Preview"
-msgstr "Урьдчилж харах"
-
-#: WebApp/templates/admin/import_export/import.html:153
+#: WebApp/templates/admin/import_export/import.html:154
 msgid "New"
 msgstr "Шинэ"
 
-#: WebApp/templates/admin/import_export/import.html:155
+#: WebApp/templates/admin/import_export/import.html:156
 msgid "Skipped"
 msgstr "Алгассан"
 
-#: WebApp/templates/admin/import_export/import.html:157
-#: WebApp/templates/assignment/assignmentinfo_detail.html:54
-#: WebApp/templates/assignment/assignmentinfo_detail.html:67
-#: WebApp/templates/assignment/assignmentinfo_detail.html:281
-#: WebApp/templates/assignment/assignmentinfo_detail.html:296
-#: WebApp/templates/chapter/chapterinfo_detail.html:103
-msgid "Delete"
-msgstr "Устгах"
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:15
+#: WebApp/templates/assignment/assignmentinfo_detail.html:84
+#: WebApp/templates/assignment/assignmentinfo_detail.html:559
+#: WebApp/templates/assignment/assignmentinfo_list.html:17
+msgid "Assignment Topic"
+msgstr "Бие даалтын сэдэв"
 
-#: WebApp/templates/admin/import_export/import.html:159
-#: WebApp/templates/registration/editprofile.html:50
-#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:13
-msgid "Update"
-msgstr "Шинэчлэх"
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:29
+#: WebApp/templates/ajax/chapterinfo_form_ajax.html:38
+#: WebApp/templates/assignment/assignmentinfo_detail.html:597
+#: WebApp/templates/chapter/chapterinfo_form.html:66
+msgid "Publish"
+msgstr "Нийтлэх"
+
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:35
+msgid "Note"
+msgstr ""
+
+#: WebApp/templates/ajax/assignmentinfo_form_ajax.html:35
+msgid "All checked session will have same dates as the first checked session"
+msgstr ""
+
+#: WebApp/templates/ajax/chapterinfo_form_ajax.html:19
+#: WebApp/templates/chapter/chapterinfo_detail.html:118
+#: WebApp/templates/chapter/chapterinfo_form.html:43
+msgid "Summary"
+msgstr "Нэгтгэл"
+
+#: WebApp/templates/ajax/chapterinfo_form_ajax.html:42
+#, fuzzy
+#| msgid "Comment flagged"
+msgid "Comment"
+msgstr "Сэтгэгдлийг тэмдэглэсэн"
+
+#: WebApp/templates/ajax/groupcreate_form_ajax.html:5
+msgid "Choose meaningful name and View Details on Students Group List"
+msgstr ""
+
+#: WebApp/templates/ajax/groupcreate_form_ajax.html:6
+#: WebApp/templates/ajax/inninggroup_form_ajax.html:11
+#: WebApp/templates/ajax/sessioncreate_form_ajax.html:6
+msgid "here"
+msgstr ""
+
+#: WebApp/templates/ajax/inninggroup_form_ajax.html:10
+msgid "Choose meaningful name and View Details on Assigned Courses Name List"
+msgstr ""
+
+#: WebApp/templates/ajax/inninggroup_form_ajax.html:32
+#, fuzzy
+#| msgid ""
+#| "You can select multiple questions by holding ctrl key on Windows and "
+#| "Command⌘ key on MAC."
+msgid ""
+"\n"
+"            *You can select multiple teachers by holding <code> ctrl</code> "
+"key on Windows and <code> Command⌘</code> key on\n"
+"            MAC.\n"
+"        "
+msgstr ""
+"Та Windows дээр ctrl товчийг, MAC дээр Command⌘ товчийг дарж олон асуулт "
+"сонгох боломжтой."
+
+#: WebApp/templates/ajax/mcquestion_form_ajax.html:30 quiz/models.py:357
+#: quiz/models.py:686 quiz/templates/quiz_base/sitting_detail.html:54
+msgid "Correct"
+msgstr "Зөв"
+
+#: WebApp/templates/ajax/mcquestion_form_ajax.html:48
+#, fuzzy
+#| msgid "Add Question"
+msgid "Add more questions"
+msgstr "Асуулт нэмэх"
+
+#: WebApp/templates/ajax/questioninfo_form_ajax.html:33
+#: WebApp/templates/registration/register.html:122
+msgid "are the required fields"
+msgstr ""
+
+#: WebApp/templates/ajax/sessioncreate_form_ajax.html:5
+msgid ""
+"Please make sure that the name is not defined, before creating a new one"
+msgstr ""
+
+#: WebApp/templates/ajax/sessioncreate_form_ajax.html:6
+msgid "View Detail about Session Name List"
+msgstr ""
+
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:50
+#, fuzzy
+#| msgid "User Type"
+msgid "Choose Type"
+msgstr "Хэрэглэгч"
+
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:59
+#, fuzzy
+#| msgid "Multiple Choice Question"
+msgid "Multiple Choice"
+msgstr "Олон сонголттой асуулт"
+
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:94
+#: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:82
+#, fuzzy
+#| msgid "Add Question"
+msgid "Add option"
+msgstr "Асуулт нэмэх"
+
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:135
+#, fuzzy
+#| msgid "Contact Information"
+msgid "Edit More Information"
+msgstr "Холбогдох мэдээлэл"
+
+#: WebApp/templates/ajax/surveyInfoAddSurvey_ajax2.html:146
+#: WebApp/templates/ajax/survey_update_limited_ajax.html:16
+#: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:19
+#, fuzzy
+#| msgid "Contact Information"
+msgid "Survey Information"
+msgstr "Холбогдох мэдээлэл"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:36
 msgid "Assignment Information"
 msgstr "Бие даалтын мэдээлэл"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:48
-#: WebApp/templates/assignment/assignmentinfo_detail.html:545
-#: WebApp/templates/assignment/assignmentinfo_form.html:12
-#: WebApp/templates/teacher_module/assignmentinfo_form.html:13
-msgid "Edit Assignment"
-msgstr "Даалгаврыг засах"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:84
-#: WebApp/templates/assignment/assignmentinfo_detail.html:559
-msgid "Assignment Topic"
-msgstr "Бие даалтын сэдэв"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:93
-#: WebApp/templates/chapter/chapterinfo_detail.html:209
-msgid "Course Code"
-msgstr "Хичээлийн код"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:97
-msgid "Chapter Code"
-msgstr "Бүлгийн код"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:101
 #: WebApp/templates/chapter/chapterinfo_detail.html:200
@@ -1291,75 +3370,9 @@ msgstr "нийтэлсэн"
 msgid "Not Published"
 msgstr "Нийтэлсэнгүй"
 
-#: WebApp/templates/assignment/assignmentinfo_detail.html:127
-#: WebApp/templates/chapter/chapterinfo_detail.html:392
-#: WebApp/templates/inning/inninginfo_form_common.html:47
-#: WebApp/templates/inning/inninginfo_list.html:61
-#: WebApp/templates/inning/inninginfo_list.html:116
-#: WebApp/templates/inning/inningmapFormModal.html:26
-#: WebApp/templates/student_module/calendar.html:70
-#: quiz/templates/ajax_quiz/progress_list_history.html:7
-msgid "Start Date"
-msgstr "Эхлэх огноо"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:128
-#: WebApp/templates/chapter/chapterinfo_detail.html:393
-#: WebApp/templates/inning/inninginfo_form_common.html:59
-#: WebApp/templates/inning/inninginfo_list.html:62
-#: WebApp/templates/inning/inninginfo_list.html:118
-#: WebApp/templates/inning/inningmapFormModal.html:36
-#: quiz/templates/ajax_quiz/progress_list_history.html:8
-msgid "End Date"
-msgstr "Дуусах огноо"
-
 #: WebApp/templates/assignment/assignmentinfo_detail.html:129
 msgid "Assignment Status"
 msgstr "Даалгаврын төлөв"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:131
-#: WebApp/templates/chapter/chapterinfo_detail.html:396
-#: WebApp/templates/course/courseinfo_list.html:502
-#: WebApp/templates/inning/inninginfo_list.html:63
-#: WebApp/templates/teacher_module/assignment_answers.html:159
-#: quiz/templates/quiz/quiz_list.html:42
-#: quiz/templates/quiz_base/exam_list.html:12
-#: quiz/templates/quiz_base/quiz_list.html:38
-#: quiz/templates/quiz_base/sitting_detail.html:55
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:83
-msgid "Action"
-msgstr "Үйлдэл"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:143
-#: WebApp/templates/assignment/assignmentinfo_detail.html:165
-#: WebApp/templates/chapter/chapterinfo_detail.html:407
-#: WebApp/templates/chapter/chapterinfo_detail.html:426
-#: WebApp/templates/chapter/chapterinfo_detail.html:451
-#: WebApp/templates/course/courseinfo_detail.html:153
-#: WebApp/templates/inning/inninggroup_detail.html:35
-#: WebApp/templates/student_module/myassignments_list.html:13
-#: WebApp/templates/student_module/questions_student.html:31
-#: WebApp/templates/survey/common/details.html:69
-#: WebApp/templates/teacher_module/makequery.html:31
-#: WebApp/templates/teacher_module/myassignments.html:22
-#: WebApp/templates/teacher_module/mycourses.html:44
-msgid "Active"
-msgstr "Идэвхтэй "
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:146
-#: WebApp/templates/assignment/assignmentinfo_detail.html:159
-#: WebApp/templates/chapter/chapterinfo_detail.html:409
-#: WebApp/templates/chapter/chapterinfo_detail.html:453
-#: WebApp/templates/chapter/chapterinfo_detail.html:492
-#: WebApp/templates/course/courseinfo_detail.html:156
-#: WebApp/templates/course/courseinfo_detail.html:516
-#: WebApp/templates/inning/inninggroup_detail.html:35
-#: WebApp/templates/teacher_module/myassignments.html:24
-#: WebApp/templates/teacher_module/myassignments.html:77
-#: WebApp/templates/teacher_module/myassignments.html:191
-#: WebApp/templates/teacher_module/mycourses.html:38
-#: quiz/templates/quiz_base/exam_list.html:45
-msgid "Inactive"
-msgstr "Идэвхгүй"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:161
 #: WebApp/templates/chapter/chapterinfo_detail.html:422
@@ -1367,55 +3380,21 @@ msgstr "Идэвхгүй"
 msgid "Upcoming"
 msgstr "Удахгүй болох гэж буй"
 
-#: WebApp/templates/assignment/assignmentinfo_detail.html:163
-#: WebApp/templates/chapter/chapterinfo_detail.html:424
-#: WebApp/templates/chapter/chapterinfo_detail.html:496
-#: WebApp/templates/student_module/myassignments_list.html:15
-#: WebApp/templates/student_module/myassignments_list.html:78
-#: WebApp/templates/student_module/myassignments_list.html:199
-#: WebApp/templates/student_module/questions_student.html:33
-#: WebApp/templates/survey/common/details.html:67
-#: WebApp/templates/survey/surveyinfo_list.html:16
-#: WebApp/templates/teacher_module/myassignments.html:75
-#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:15
-#: survey/templates/survey/surveyinfo_list.html:16
-msgid "Expired"
-msgstr "Хугацаа дууссан"
-
 #: WebApp/templates/assignment/assignmentinfo_detail.html:170
 #: WebApp/templates/chapter/chapterinfo_detail.html:507
 msgid "Assignment End Date is greater than Chapter"
 msgstr "Даалгавар дуусах огноо нь хичээлийн огнооноос их байна"
 
-#: WebApp/templates/assignment/assignmentinfo_detail.html:183
-#: WebApp/templates/chapter/chapterinfo_detail.html:438
-#: WebApp/templates/inning/inninginfo_form_common.html:41
-#: WebApp/templates/inning/inninginfo_form_common.html:53
-#: WebApp/templates/inning/inninginfo_form_common.html:65
-msgid "Change"
-msgstr "Өөрчлөх"
-
 #: WebApp/templates/assignment/assignmentinfo_detail.html:198
 msgid "View Assignment Submissions"
 msgstr "Ажил даалгаврын талаархи мэдээллийг үзэх"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:206
-#: WebApp/templates/student_module/dashboard.html:215
-#: WebApp/templates/student_module/questions_student_listView.html:52
-#: WebApp/templates/survey/common/surveyinfo_expireView.html:64
-#: WebApp/templates/teacher_module/survey.html:52
-#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:56
-#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:82
-#: WebApp/templates/teacher_module/teacher_surveyFiltered.html:108
-#: quiz/models.py:259
-msgid "Questions"
-msgstr "Асуултууд"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:214
 #: WebApp/templates/chapter/chapterinfo_detail.html:604
 #: WebApp/templates/chapter/content-viewer-moules/QuickSurvey.html:56
 #: WebApp/templates/course/courseinfo_detail.html:700
 #: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:23
+#: WebApp/templates/wizard_teacher/step1.html:32
 msgid "Add Question"
 msgstr "Асуулт нэмэх"
 
@@ -1427,36 +3406,9 @@ msgstr "Q"
 msgid "ANSWER"
 msgstr "ХАРИУЛТ"
 
-#: WebApp/templates/assignment/assignmentinfo_detail.html:249
-#: WebApp/templates/assignment/assignmentinfo_detail.html:264
-msgid "Edit Question"
-msgstr "Асуулт засах"
-
 #: WebApp/templates/assignment/assignmentinfo_detail.html:254
 msgid "Show Answer"
 msgstr "Хариултыг харах"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:315
-#: quiz/templates/student_quiz/progress_detail.html:83
-#: quiz/templates/student_quiz/progress_detail.html:180
-msgid "Question Score"
-msgstr "Асуултын оноо"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:323
-msgid "Question Description"
-msgstr "Асуултын тайлбар"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:331
-msgid "Answer Type"
-msgstr "Хариултын төрөл"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:337
-msgid "Short Answer"
-msgstr "Нөхөж бичих асуулт"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:339
-msgid "File Upload"
-msgstr "Файл оруулах"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:344
 msgid "Question Media"
@@ -1470,6 +3422,7 @@ msgstr "Хавсаргасан файлыг үзэхийн тулд дарна �
 #: WebApp/templates/assignment/assignmentinfo_detail.html:493
 #: WebApp/templates/profile.html:215 WebApp/templates/profile.html:310
 #: WebApp/templates/profile.html:410
+#: WebApp/templates/registration/login.html:50
 msgid "Cancel"
 msgstr "Цуцлах"
 
@@ -1505,26 +3458,19 @@ msgstr "Даалгавар эхлэх"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:585
 #: WebApp/templates/assignment/assignmentinfo_form.html:27
+#: WebApp/templates/assignment/assignmentinfo_list.html:18
 msgid "Assignment Deadline"
 msgstr "Бие даалтын эцсийн хугацаа"
-
-#: WebApp/templates/assignment/assignmentinfo_detail.html:597
-#: WebApp/templates/chapter/chapterinfo_form.html:66
-msgid "Publish"
-msgstr "Нийтлэх"
 
 #: WebApp/templates/assignment/assignmentinfo_detail.html:599
 #: WebApp/templates/profile.html:203
 msgid "checked"
 msgstr "Шалгасан"
 
-#: WebApp/templates/assignment/assignmentinfo_form.html:10
-#: WebApp/templates/chapter/chapterinfo_detail.html:39
-#: WebApp/templates/chapter/chapterinfo_detail.html:476
-#: WebApp/templates/teacher_module/assignmentinfo_form.html:11
+#: WebApp/templates/assignment/assignmentinfo_list.html:9
 #, fuzzy
 #| msgid "Create New Member"
-msgid "Create New Assignment"
+msgid "Create new Assignment"
 msgstr "Шинэ хэрэглэгч бүртгэх"
 
 #: WebApp/templates/attendance/attendance_detail.html:6
@@ -1553,38 +3499,9 @@ msgstr ""
 msgid "Edit Attendance"
 msgstr "Ирц"
 
-#: WebApp/templates/attendance/attendance_list.html:10
-#: WebApp/templates/course/courseinfo_list.html:495
-#: WebApp/templates/inning/inninginfo_list.html:57
-#: WebApp/templates/student_module/myCourse.html:173
-#: WebApp/templates/survey/categoryinfo_list.html:8
-#: WebApp/templates/survey/optioninfo_list.html:8
-#: WebApp/templates/survey/questioninfo_list.html:8
-#: survey/templates/survey/categoryinfo_list.html:8
-#: survey/templates/survey/optioninfo_list.html:8
-#: survey/templates/survey/questioninfo_list.html:8
-msgid "ID"
-msgstr "ID"
-
-#: WebApp/templates/attendance/attendance_list.html:10
-#: WebApp/templates/survey/categoryinfo_list.html:9
-#: WebApp/templates/survey/optioninfo_list.html:9
-#: WebApp/templates/survey/questioninfo_list.html:9
-#: survey/templates/survey/categoryinfo_list.html:9
-#: survey/templates/survey/optioninfo_list.html:9
-#: survey/templates/survey/questioninfo_list.html:9
-msgid "Link"
-msgstr "Линк"
-
-#: WebApp/templates/attendance/course_attendance_form.html:14
-#: WebApp/templates/profile.html:65
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:30
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:30
-msgid "Student"
-msgstr "Сурагч"
-
-#: WebApp/templates/attendance/course_attendance_form.html:15
-#: WebApp/templates/attendance/course_attendance_list.html:167
+#: WebApp/templates/attendance/course_attendance_form.html:18
+#: WebApp/templates/attendance/course_attendance_list.html:8
+#: WebApp/templates/attendance/course_attendance_list.html:163
 #: WebApp/templates/chapter/chapter_contents.html:340
 #: WebApp/templates/course/courseinfo_detail.html:117
 #: WebApp/templates/teacher_module/attendance/course_attendance_form.html:12
@@ -1593,7 +3510,7 @@ msgstr "Сурагч"
 msgid "Attendance"
 msgstr "Ирц"
 
-#: WebApp/templates/attendance/course_attendance_form.html:37
+#: WebApp/templates/attendance/course_attendance_form.html:40
 #: quiz/templates/quiz/quiz_list.html:78
 #: quiz/templates/quiz/sitting_filter.html:70
 #: quiz/templates/quiz/sitting_list.html:52
@@ -1603,23 +3520,71 @@ msgstr "Ирц"
 msgid "View details"
 msgstr "Дэлгэрэнгүй мэдээллийг харах"
 
-#: WebApp/templates/attendance/course_attendance_list.html:164
+#: WebApp/templates/attendance/course_attendance_form.html:58
+#: WebApp/templates/attendance/course_attendance_list.html:108
+#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:30
+#, fuzzy
+#| msgid "Total Correct"
+msgid "Total Present"
+msgstr "Нийт зөв хариулт"
+
+#: WebApp/templates/attendance/course_attendance_form.html:59
+#: WebApp/templates/attendance/course_attendance_list.html:112
+#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:34
+#, fuzzy
+#| msgid "Total Correct"
+msgid "Total Absent"
+msgstr "Нийт зөв хариулт"
+
+#: WebApp/templates/attendance/course_attendance_form.html:60
+#: WebApp/templates/attendance/course_attendance_list.html:116
+#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:38
+#, fuzzy
+#| msgid "Student"
+msgid "Total Students"
+msgstr "Сурагч"
+
+#: WebApp/templates/attendance/course_attendance_list.html:73
+#, fuzzy
+#| msgid "Student"
+msgid "Choose Date"
+msgstr "Сурагч"
+
+#: WebApp/templates/attendance/course_attendance_list.html:84
+#: WebApp/templates/teacher_module/assignment_answers.html:132
+msgid "Go"
+msgstr ""
+
+#: WebApp/templates/attendance/course_attendance_list.html:99
+#, fuzzy
+#| msgid "Attendance"
+msgid "No Attendance"
+msgstr "Ирц"
+
+#: WebApp/templates/attendance/course_attendance_list.html:124
+#, fuzzy
+#| msgid "Attendance"
+msgid "Take Attendance"
+msgstr "Ирц"
+
+#: WebApp/templates/attendance/course_attendance_list.html:152
+#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:24
+#, fuzzy
+#| msgid "Attendance Date"
+msgid "Attendance List"
+msgstr "Оролцох өдөр"
+
+#: WebApp/templates/attendance/course_attendance_list.html:160
 msgid "S. No."
 msgstr "S. No."
 
-#: WebApp/templates/attendance/course_attendance_list.html:166
-#: WebApp/templates/survey/common/details.html:295
-#: quiz/templates/quiz_base/sitting_list.html:61
-msgid "Full Name"
-msgstr "Бүтэн нэр"
-
-#: WebApp/templates/attendance/course_attendance_list.html:169
+#: WebApp/templates/attendance/course_attendance_list.html:165
 #: quiz/templates/quiz/quiz_list.html:39
 #: quiz/templates/quiz_base/quiz_list.html:36
 msgid "Updated On"
 msgstr "Шинэчлэгдсэн"
 
-#: WebApp/templates/attendance/course_attendance_list.html:197
+#: WebApp/templates/attendance/course_attendance_list.html:193
 #: WebApp/templates/teacher_module/attendance/course_attendance_form.html:95
 msgid "There are no available attendance"
 msgstr "Ирц байхгүй байна"
@@ -1654,16 +3619,6 @@ msgstr "Багш томилогдоогүй байна"
 msgid "Speak"
 msgstr "Ярих"
 
-#: WebApp/templates/chapter/chapter_contents.html:333
-#: WebApp/templates/teacher_module/chapterProgress.html:8
-#: WebApp/templates/teacher_module/chapterProgress.html:155
-#: WebApp/templates/teacher_module/chapterProgress.html:245
-#: WebApp/templates/teacher_module/progressdetail.html:8
-#: quiz/templates/ajax_quiz/progress_list_history.html:10
-#: quiz/templates/student_quiz/progress.html:30
-msgid "Progress"
-msgstr "Ахиц дэвшил"
-
 #: WebApp/templates/chapter/chapter_contents.html:351
 #, fuzzy
 #| msgid "Content"
@@ -1689,18 +3644,6 @@ msgstr ""
 msgid "Send"
 msgstr "Илгээх"
 
-#: WebApp/templates/chapter/chapterinfo_detail.html:61
-#: WebApp/templates/teacher_module/assignment_answers.html:107
-#: WebApp/templates/teacher_module/chapterProgress.html:360
-#: WebApp/templates/teacher_module/myassignments.html:43
-#: WebApp/templates/teacher_module/myassignments.html:107
-#: WebApp/templates/teacher_module/myassignments.html:156
-#: WebApp/templates/teacher_module/progressdetail.html:28 quiz/models.py:487
-#: quiz/templates/quiz/quiz_list.html:36
-#: quiz/templates/quiz_base/exam_list.html:10
-msgid "Chapter"
-msgstr "Бүлэг"
-
 #: WebApp/templates/chapter/chapterinfo_detail.html:74
 #, fuzzy
 #| msgid "Content"
@@ -1713,18 +3656,6 @@ msgstr "Агуулга"
 #| msgid "Content"
 msgid "Content Builder"
 msgstr "Агуулга"
-
-#: WebApp/templates/chapter/chapterinfo_detail.html:100
-#: WebApp/templates/chapter/chapterinfo_form.html:11
-#, fuzzy
-#| msgid "Chapter"
-msgid "Edit Chapter"
-msgstr "Бүлэг"
-
-#: WebApp/templates/chapter/chapterinfo_detail.html:118
-#: WebApp/templates/chapter/chapterinfo_form.html:43
-msgid "Summary"
-msgstr "Нэгтгэл"
 
 #: WebApp/templates/chapter/chapterinfo_detail.html:215
 #, fuzzy
@@ -1797,17 +3728,6 @@ msgstr ""
 msgid "Chapter Status"
 msgstr "Бүлгийн төлөв"
 
-#: WebApp/templates/chapter/chapterinfo_detail.html:447
-#: WebApp/templates/chapter/chapterinfo_form.html:74
-msgid "Discussion"
-msgstr ""
-
-#: WebApp/templates/chapter/chapterinfo_detail.html:468
-#: WebApp/templates/student_module/dashboard.html:184
-#: WebApp/templates/teacher_module/theme/sidebar.html:55
-msgid "Assignments"
-msgstr "Даалгавар"
-
 #: WebApp/templates/chapter/chapterinfo_detail.html:484
 msgid ""
 "Note: Chapter is inactive, therefore assignments are not assigned to "
@@ -1843,13 +3763,6 @@ msgstr ""
 msgid "Create Quiz"
 msgstr "Асуулт хариулт үүсгэх"
 
-#: WebApp/templates/chapter/chapterinfo_form.html:9
-#: WebApp/templates/chapter/chapterinfo_list.html:14
-#: WebApp/templates/course/courseinfo_detail.html:501
-#: WebApp/templates/teacher_module/chapterinfo_form.html:18
-msgid "Create New Chapter"
-msgstr "Бүлэг үүсгэх"
-
 #: WebApp/templates/chapter/chapterinfo_list.html:5
 #: WebApp/templates/teacher_module/chapterProgress.html:122
 #, fuzzy
@@ -1863,6 +3776,7 @@ msgid "Chapter No"
 msgstr "Бүлгийн дугаар"
 
 #: WebApp/templates/chapter/content-viewer-moules/QuickSurvey.html:17
+#: WebApp/templates/inning/inninginfo_detail.html:286
 #: WebApp/templates/survey/common/details.html:409
 #: WebApp/templates/survey/surveyinfo_list.html:92
 #: survey/templates/survey/surveyinfo_list.html:92
@@ -1888,10 +3802,6 @@ msgstr ""
 msgid "Force Screen Sync"
 msgstr ""
 
-#: WebApp/templates/chapter/newContentViewer.html:275
-msgid "Chapter Lists"
-msgstr "Бүлгийн жагсаалт"
-
 #: WebApp/templates/chapter/newContentViewer.html:440
 #, fuzzy
 #| msgid "View"
@@ -1906,6 +3816,10 @@ msgstr "Харах"
 
 #: WebApp/templates/chapter/newContentViewer.html:492
 msgid "Online"
+msgstr ""
+
+#: WebApp/templates/components/navbar.html:29
+msgid "Dropdown"
 msgstr ""
 
 #: WebApp/templates/course/Course_Forum.html:59
@@ -1953,12 +3867,6 @@ msgstr ""
 #: WebApp/templates/student_module/myCourse.html:177
 msgid "Course Provider"
 msgstr "Хичээл заагч"
-
-#: WebApp/templates/course/courseinfo_detail.html:162
-#: WebApp/templates/course/courseinfo_list.html:497
-#: WebApp/templates/student_module/myCourse.html:175
-msgid "Teachers"
-msgstr "Багш"
 
 #: WebApp/templates/course/courseinfo_detail.html:173
 #, fuzzy
@@ -2049,13 +3957,6 @@ msgstr "Асуулт хариулт бөглөх"
 msgid "No Active Quizzes"
 msgstr "Бүх асуулт"
 
-#: WebApp/templates/course/courseinfo_detail.html:484
-#: WebApp/templates/teacher_module/chapterinfo_list.html:5
-#, fuzzy
-#| msgid "Chapter"
-msgid "Chapters"
-msgstr "Бүлэг"
-
 #: WebApp/templates/course/courseinfo_detail.html:490
 msgid ""
 "Note: Course is inactive, therefore chapters and assignments are not "
@@ -2106,46 +4007,14 @@ msgstr "Дууссан"
 msgid "Total"
 msgstr "Нийт"
 
-#: WebApp/templates/course/courseinfo_form.html:20
-#: WebApp/templates/teacher_module/courseinfo_form.html:18
-#, fuzzy
-#| msgid "CourseInfo"
-msgid "Edit Course Info"
-msgstr "Хичээлийн мэдээлэл"
-
-#: WebApp/templates/course/courseinfo_form.html:46
-#: WebApp/templates/course/courseinfo_list.html:85
-#: WebApp/templates/course/courseinfo_list.html:496
-#: WebApp/templates/inning/inninggroup_detail.html:21
-#: WebApp/templates/student_module/myCourse.html:174
-msgid "Course Name"
-msgstr "Хичээлийн нэр"
-
 #: WebApp/templates/course/courseinfo_form.html:88
 #: WebApp/templates/student_module/myCourse.html:178
 msgid "Course Level"
 msgstr "Хичээлийн түвшин"
 
-#: WebApp/templates/course/courseinfo_list.html:67
-msgid "CSV File Import"
-msgstr "CSV файл импортлох"
-
 #: WebApp/templates/course/courseinfo_list.html:76
 msgid "Choose the CSV file to Import Course Data"
 msgstr ""
-
-#: WebApp/templates/course/courseinfo_list.html:80
-msgid "Download Sample CSV"
-msgstr "CSV татаж авах"
-
-#: WebApp/templates/course/courseinfo_list.html:83
-msgid "Read Detail Info"
-msgstr "Дэлгэрэнгүй мэдээллийг уншина уу"
-
-#: WebApp/templates/course/courseinfo_list.html:85
-#: WebApp/templates/course/courseinfo_list.html:87
-msgid "required"
-msgstr "шаардлагатай"
 
 #: WebApp/templates/course/courseinfo_list.html:86
 msgid "Course Name should be unique within the center"
@@ -2154,10 +4023,6 @@ msgstr "Хичээлийн нэр нь тухайн төвд нэг байх ё�
 #: WebApp/templates/course/courseinfo_list.html:88
 msgid "Course Level should be between 1 and 5"
 msgstr "Хичээлийн түвшин 1-5 хооронд байх ёстой"
-
-#: WebApp/templates/course/courseinfo_list.html:94
-msgid "Submit File"
-msgstr "Файл оруулах"
 
 #: WebApp/templates/course/courseinfo_list.html:110
 #: WebApp/templates/student_module/myCourse.html:12
@@ -2176,15 +4041,6 @@ msgstr "Идэвхигүй курс харах"
 #: WebApp/templates/course/courseinfo_list.html:146
 msgid "View Active Courses"
 msgstr "Идэвхитэй курс харах"
-
-#: WebApp/templates/course/courseinfo_list.html:185
-#: WebApp/templates/student_module/myCourse.html:51
-#: WebApp/templates/student_module/student_forum/search.html:10
-#: WebApp/templates/teacher_module/makequery.html:24
-#: WebApp/templates/teacher_module/mycourses.html:73
-#: WebApp/templates/teacher_module/teacher_forum/search.html:10
-msgid "Search"
-msgstr "Хайх"
 
 #: WebApp/templates/course/courseinfo_list.html:274
 msgid "entries"
@@ -2227,23 +4083,110 @@ msgstr "Түвшин"
 msgid "No Courses has been Allocated"
 msgstr ""
 
+#: WebApp/templates/error_page/page_400.html:9
+msgid "Error: Bad Request"
+msgstr ""
+
+#: WebApp/templates/error_page/page_400.html:27
+msgid "Bad Request"
+msgstr ""
+
+#: WebApp/templates/error_page/page_400.html:28
+msgid "Your request resulted in an error"
+msgstr ""
+
+#: WebApp/templates/error_page/page_400.html:29
+msgid "Go to Homepage"
+msgstr ""
+
+#: WebApp/templates/error_page/page_403.html:9
+msgid "Error: Page Forbidden"
+msgstr ""
+
+#: WebApp/templates/error_page/page_403.html:27
+msgid "PAGE FORBIDDEN"
+msgstr ""
+
+#: WebApp/templates/error_page/page_403.html:28
+msgid "OOPS! The page you requested is forbidden you can"
+msgstr ""
+
+#: WebApp/templates/error_page/page_403.html:29
+#: WebApp/templates/error_page/page_404.html:29
+#, fuzzy
+#| msgid "Home"
+msgid "Homepage"
+msgstr "Нүүр хуудас"
+
+#: WebApp/templates/error_page/page_404.html:9
+msgid "Error: Page not found"
+msgstr ""
+
+#: WebApp/templates/error_page/page_404.html:27
+#, fuzzy
+#| msgid "No Results Found"
+msgid "Page Not Found"
+msgstr "Үр дүн"
+
+#: WebApp/templates/error_page/page_404.html:28
+msgid "OOPS! The page you requested couldn"
+msgstr ""
+
+#: WebApp/templates/error_page/page_500.html:10
+msgid "Error: Internal Server Error"
+msgstr ""
+
+#: WebApp/templates/error_page/page_500.html:29
+msgid "Internal Server Error"
+msgstr ""
+
+#: WebApp/templates/error_page/page_500.html:30
+msgid ""
+"Oh, there seems to be a problem in the server now. <br> Please try again "
+"later or Contact Admin"
+msgstr ""
+
 #: WebApp/templates/forum/Student_Base.html:77
 #: WebApp/templates/forum/Teacher_base.html:77
 #: WebApp/templates/forum/widgets/nodegroups.html:3
 msgid "Categories"
 msgstr "Категориуд"
 
+#: WebApp/templates/forum/create_topic.html:8
+#: WebApp/templates/forum/create_topic.html:25
+#, fuzzy
+#| msgid "Sub Category"
+msgid "Create SubCategory"
+msgstr "Категори"
+
+#: WebApp/templates/forum/edit_thread.html:9
+#, fuzzy
+#| msgid "Create Thread"
+msgid "Edit Thread"
+msgstr "Дасгал үүсгэх"
+
+#: WebApp/templates/forum/edit_thread.html:111
+#: WebApp/templates/profile.html:377
+#: WebApp/templates/registration/change_password.html:19
+#: WebApp/templates/survey/survey_list_base.html:34
+#: WebApp/templates/survey/surveyinfo_list.html:64
+#: survey/templates/survey/survey_list_base.html:34
+#: survey/templates/survey/surveyinfo_list.html:64
+msgid "Add"
+msgstr "Нэмэх"
+
+#: WebApp/templates/forum/edit_topic.html:9
+#, fuzzy
+#| msgid "Edit topic"
+msgid "Edit Topic"
+msgstr "Сэдвийг засах"
+
 #: WebApp/templates/forum/includes/list.html:13
+#: WebApp/templates/forum/user_threads.html:12
 #, fuzzy
 #| msgid "New Threads"
 msgid "Threads"
 msgstr "Шинэ threads"
-
-#: WebApp/templates/forum/login.html:20 WebApp/templates/forum/reg.html:24
-#: WebApp/templates/profile.html:418
-#: WebApp/templates/teacher_module/teacher_forum/reg.html:24
-msgid "Password"
-msgstr "Нууц үг"
 
 #: WebApp/templates/forum/notifications.html:35
 #: WebApp/templates/student_module/student_forum/notifications.html:35
@@ -2294,15 +4237,41 @@ msgstr ""
 "\n"
 "<strong>%(thread_title)s </strong>"
 
-#: WebApp/templates/forum/reg.html:20
-#: WebApp/templates/teacher_module/teacher_forum/reg.html:20
-msgid "Email"
-msgstr "емайл хаяг"
-
 #: WebApp/templates/forum/reg.html:28
 #: WebApp/templates/teacher_module/teacher_forum/reg.html:28
 msgid "Repeat Password"
 msgstr "Нууц үг дахин оруулах"
+
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:17
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:17
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:17
+msgid "Questions Asked"
+msgstr "Хариулсан асуултууд"
+
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:26
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:26
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:26
+msgid "Super User"
+msgstr "Супер хэрэглэгч"
+
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:32
+#: WebApp/templates/profile.html:59
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:32
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:32
+msgid "Center Admin"
+msgstr "Төвийн админ"
+
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:34
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:34
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:34
+msgid "Parent"
+msgstr "Эцэг эх"
+
+#: WebApp/templates/forum/widgets/authenticated_user_panel.html:41
+#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:41
+#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:41
+msgid "View Profile"
+msgstr "Профайл үзэх"
 
 #: WebApp/templates/forum/widgets/nodes.html:3
 msgid "Nodes"
@@ -2328,23 +4297,11 @@ msgstr "Reg"
 msgid "Course Allocation Information"
 msgstr "Холбогдох мэдээлэл"
 
-#: WebApp/templates/inning/inninggroup_detail.html:17
-#, fuzzy
-#| msgid "Teacher-Course Allocation"
-msgid "Course Allocation Name"
-msgstr "Багшийн хичээлийг зөвшөөрөх"
-
 #: WebApp/templates/inning/inninggroup_detail.html:25
 #, fuzzy
 #| msgid "Teachers"
 msgid "Teachers Name"
 msgstr "Багш"
-
-#: WebApp/templates/inning/inninggroup_detail.html:29
-#, fuzzy
-#| msgid "Register"
-msgid "Register Agent"
-msgstr "Бүртгэх"
 
 #: WebApp/templates/inning/inninggroup_detail.html:50
 #, fuzzy
@@ -2374,6 +4331,78 @@ msgstr ""
 "Та Windows дээр ctrl товчийг, MAC дээр Command⌘ товчийг дарж олон асуулт "
 "сонгох боломжтой."
 
+#: WebApp/templates/inning/inninginfo_detail.html:10
+#, fuzzy
+#| msgid "Session List"
+msgid "Session Detail"
+msgstr "Улиралын жагсаалт"
+
+#: WebApp/templates/inning/inninginfo_detail.html:15
+#, fuzzy
+#| msgid "Ask New Question"
+msgid "Save as new Session"
+msgstr "Асуулт"
+
+#: WebApp/templates/inning/inninginfo_detail.html:17
+#, fuzzy
+#| msgid "Question"
+msgid "Delete Session"
+msgstr "Асуулт"
+
+#: WebApp/templates/inning/inninginfo_detail.html:47
+#, fuzzy
+#| msgid "Student Group"
+msgid "Student Group Name"
+msgstr "Сурагчдын грүүп"
+
+#: WebApp/templates/inning/inninginfo_detail.html:79
+#, fuzzy
+#| msgid "Question"
+msgid "Session Managers"
+msgstr "Асуулт"
+
+#: WebApp/templates/inning/inninginfo_detail.html:84
+#, fuzzy
+#| msgid "Chapter"
+msgid "Edit Manager"
+msgstr "Бүлэг"
+
+#: WebApp/templates/inning/inninginfo_detail.html:106
+#, fuzzy
+#| msgid "Student"
+msgid "List of Students"
+msgstr "Сурагч"
+
+#: WebApp/templates/inning/inninginfo_detail.html:131
+#, fuzzy
+#| msgid "Change Score"
+msgid "Change Group"
+msgstr "Оноог өөрчлөх"
+
+#: WebApp/templates/inning/inninginfo_detail.html:154
+#, fuzzy
+#| msgid "Chapter"
+msgid "List of Teachers"
+msgstr "Бүлэг"
+
+#: WebApp/templates/inning/inninginfo_detail.html:223
+#, fuzzy
+#| msgid "List of Courses"
+msgid "List of Survey"
+msgstr "Хичээлийн жагсаалт"
+
+#: WebApp/templates/inning/inninginfo_detail.html:230
+#, fuzzy
+#| msgid "Ask New Question"
+msgid "Add Session Survey"
+msgstr "Асуулт"
+
+#: WebApp/templates/inning/inninginfo_detail.html:276
+#, fuzzy
+#| msgid "More threads from this user"
+msgid "No Survey Created for this session"
+msgstr "Хэрэглэгчээс ирсэн дасгалууд"
+
 #: WebApp/templates/inning/inninginfo_form_common.html:11
 #, fuzzy
 #| msgid "Edit Question"
@@ -2393,35 +4422,11 @@ msgstr "Сурагчдын грүүп"
 msgid "List of Active Sessions"
 msgstr "Идэвхтэй даалгаврын жагсаалт"
 
-#: WebApp/templates/inning/inninginfo_list.html:15
-#, fuzzy
-#| msgid "View"
-msgid "Card View"
-msgstr "Харах"
-
-#: WebApp/templates/inning/inninginfo_list.html:16
-#, fuzzy
-#| msgid "View"
-msgid "Table View"
-msgstr "Харах"
-
 #: WebApp/templates/inning/inninginfo_list.html:23
 #, fuzzy
 #| msgid "View Inactive Courses"
 msgid "View Inactive Sessions"
 msgstr "Идэвхигүй курс харах"
-
-#: WebApp/templates/inning/inninginfo_list.html:58
-#, fuzzy
-#| msgid "Question"
-msgid "Session Name"
-msgstr "Асуулт"
-
-#: WebApp/templates/inning/inninginfo_list.html:60
-#, fuzzy
-#| msgid "List of Courses"
-msgid "No. of Courses"
-msgstr "Хичээлийн жагсаалт"
 
 #: WebApp/templates/popUp.html:32
 msgid "Don't Show again"
@@ -2434,19 +4439,6 @@ msgstr ""
 #: WebApp/templates/popUp.html:40
 msgid "Dismiss"
 msgstr ""
-
-#: WebApp/templates/profile.html:59
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:32
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:32
-msgid "Center Admin"
-msgstr "Төвийн админ"
-
-#: WebApp/templates/profile.html:62
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:28
-#: WebApp/templates/teacher_module/base.html:17
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:28
-msgid "Teacher"
-msgstr "Багш"
 
 #: WebApp/templates/profile.html:71
 msgid "No description"
@@ -2462,32 +4454,13 @@ msgstr "Ерөнхий мэдээлэл"
 
 #: WebApp/templates/profile.html:127 WebApp/templates/profile.html:154
 #: WebApp/templates/profile.html:158
+#: WebApp/templates/registration/login.html:80
 msgid "User Name"
 msgstr "Хэрэглэгчийн нэр "
-
-#: WebApp/templates/profile.html:131 WebApp/templates/profile.html:167
-msgid "First Name"
-msgstr "Өөрийн нэр"
-
-#: WebApp/templates/profile.html:135 WebApp/templates/profile.html:175
-msgid "Last Name"
-msgstr "Овог"
 
 #: WebApp/templates/profile.html:139 WebApp/templates/profile.html:183
 msgid "Date of Birth"
 msgstr "Төрсөн огноо"
-
-#: WebApp/templates/profile.html:143 WebApp/templates/profile.html:191
-msgid "Gender"
-msgstr "Хүйс"
-
-#: WebApp/templates/profile.html:197
-msgid "Male"
-msgstr "Эрэгтэй"
-
-#: WebApp/templates/profile.html:205
-msgid "Female"
-msgstr "Эмэгтэй"
 
 #: WebApp/templates/profile.html:226
 msgid "Contact Information"
@@ -2501,21 +4474,9 @@ msgstr "Хувийн и-мэйл"
 msgid "Phone Number"
 msgstr "Утасны дугаар"
 
-#: WebApp/templates/profile.html:255 WebApp/templates/profile.html:286
-msgid "Temporary Address"
-msgstr "Түр оршин суух хаяг"
-
-#: WebApp/templates/profile.html:259 WebApp/templates/profile.html:296
-msgid "Permanent Address"
-msgstr "Оршин суух хаяг"
-
 #: WebApp/templates/profile.html:320
 msgid "Additional Information"
 msgstr "Нэмэлт мэдээлэл"
-
-#: WebApp/templates/profile.html:325
-msgid "Center Name"
-msgstr "Төвийн нэр"
 
 #: WebApp/templates/profile.html:329
 msgid "Member Enrollment ID"
@@ -2538,22 +4499,6 @@ msgstr "өмнө"
 msgid "Registered By"
 msgstr "Бүртгэгдсэн"
 
-#: WebApp/templates/profile.html:350
-msgid "Department"
-msgstr "Тэнхим"
-
-#: WebApp/templates/profile.html:356
-msgid "Position"
-msgstr "Албан тушаал"
-
-#: WebApp/templates/profile.html:377
-#: WebApp/templates/survey/survey_list_base.html:34
-#: WebApp/templates/survey/surveyinfo_list.html:64
-#: survey/templates/survey/survey_list_base.html:34
-#: survey/templates/survey/surveyinfo_list.html:64
-msgid "Add"
-msgstr "Нэмэх"
-
 #: WebApp/templates/profile.html:389
 msgid "Please Add Description about you"
 msgstr "Өөрийнхөө талаар оруулна уу"
@@ -2562,23 +4507,81 @@ msgstr "Өөрийнхөө талаар оруулна уу"
 msgid "Info About You"
 msgstr "Таны тухай мэдээлэл"
 
-#: WebApp/templates/profile.html:427
-#: WebApp/templates/student_module/change_password_student.html:7
-#: WebApp/templates/student_module/change_password_student.html:12
-#: WebApp/templates/teacher_module/change_password_teacher.html:7
-#: WebApp/templates/teacher_module/change_password_teacher.html:12
-msgid "Change Password"
-msgstr "Нууц үг солих"
+#: WebApp/templates/registration/error.html:7
+#, fuzzy
+#| msgid "You answered"
+msgid "You can"
+msgstr "Та хариулав"
 
-#: WebApp/templates/registration/editprofile.html:12
-#: WebApp/templates/student_module/editprofile.html:7
-#: WebApp/templates/teacher_module/editprofile.html:7
-msgid "Edit Profile"
-msgstr "Профайл засах"
+#: WebApp/templates/registration/error.html:10
+msgid "Please register to our forum to view this page"
+msgstr ""
+
+#: WebApp/templates/registration/login.html:9
+#: WebApp/templates/registration/register.html:124 forum/views.py:525
+msgid "Login"
+msgstr "Нэвтрэх"
+
+#: WebApp/templates/registration/login.html:42
+msgid "Alert Message"
+msgstr ""
+
+#: WebApp/templates/registration/login.html:51
+msgid "Force Logout & Continue"
+msgstr ""
+
+#: WebApp/templates/registration/login.html:90
+#, fuzzy
+#| msgid "Registered By"
+msgid "Not Registered Yet"
+msgstr "Бүртгэгдсэн"
+
+#: WebApp/templates/registration/login.html:90
+#, fuzzy
+#| msgid "Create new Course"
+msgid "Create an Account"
+msgstr "Шинэ хичээл үүсгэх "
+
+#: WebApp/templates/registration/login.html:94
+msgid "Sign in"
+msgstr ""
 
 #: WebApp/templates/registration/logout.html:18
 msgid "Log in again"
 msgstr "Дахин нэвтрэх"
+
+#: WebApp/templates/registration/register.html:40
+#, fuzzy
+#| msgid "Ask New Question"
+msgid "Register New User"
+msgstr "Асуулт"
+
+#: WebApp/templates/registration/register.html:58
+#, fuzzy
+#| msgid "email address"
+msgid "Email address"
+msgstr "Е-майл хаяг"
+
+#: WebApp/templates/registration/register.html:109
+#, fuzzy
+#| msgid "Basic Information"
+msgid "Password confirmation"
+msgstr "Ерөнхий мэдээлэл"
+
+#: WebApp/templates/registration/register.html:124
+#, fuzzy
+#| msgid "Create New Member"
+msgid "Already a member"
+msgstr "Шинэ хэрэглэгч бүртгэх"
+
+#: WebApp/templates/registration/registrationsuccessful.html:3
+#: WebApp/templates/registration/registrationsuccessful.html:5
+msgid "Registration Successful"
+msgstr ""
+
+#: WebApp/templates/registration/registrationsuccessful.html:16
+msgid "Great! You are now registered"
+msgstr ""
 
 #: WebApp/templates/student_module/assignmentinfo_detail.html:5
 #: WebApp/templates/student_module/chapterinfo_detail.html:5
@@ -2607,29 +4610,9 @@ msgstr "Оруулах сүүлийн хугацаа"
 msgid "View Details"
 msgstr "Дэлгэрэнгүй мэдээллийг харах "
 
-#: WebApp/templates/student_module/change_password_student.html:13
-#: WebApp/templates/teacher_module/change_password_teacher.html:13
-msgid "Member ID"
-msgstr "Хэрэглэгчийн ID"
-
 #: WebApp/templates/student_module/chapterinfo_detail.html:20
 msgid "Redirect Notice"
 msgstr "Дахин чиглүүлэх мэдэгдэл"
-
-#: WebApp/templates/student_module/courseinfo_list.html:5
-#: WebApp/templates/student_module/myassignments_list.html:25
-#: WebApp/templates/student_module/myassignments_list.html:90
-#: WebApp/templates/student_module/quizzes.html:8
-#: WebApp/templates/student_module/theme/sidebar.html:43
-#: WebApp/templates/teacher_module/assignment_answers.html:78
-#: WebApp/templates/teacher_module/assignmentinfo_form.html:6
-#: WebApp/templates/teacher_module/courseinfo_list.html:8
-#: WebApp/templates/teacher_module/mycourses.html:6
-#: WebApp/templates/teacher_module/progressdetail.html:27 quiz/models.py:459
-#: quiz/templates/quiz/quiz_list.html:36
-#: quiz/templates/quiz_base/exam_list.html:9
-msgid "Course"
-msgstr "Хичээл"
 
 #: WebApp/templates/student_module/dashboard.html:52
 msgid "Welcome to Student Portal"
@@ -2673,10 +4656,6 @@ msgstr "Идэвхтэй даалгаврын жагсаалт"
 #: WebApp/templates/student_module/dashboard.html:212
 msgid "Incomplete"
 msgstr "Дуусаагүй"
-
-#: WebApp/templates/student_module/dashboard.html:215
-msgid "No"
-msgstr "Дугаар"
 
 #: WebApp/templates/student_module/dashboard.html:218
 msgid "Deadline"
@@ -2722,12 +4701,6 @@ msgstr "Миний даалгавар"
 msgid "List of My Assignments"
 msgstr "Миний даалгаврын жагсаалт"
 
-#: WebApp/templates/student_module/myassignments_list.html:14
-#: WebApp/templates/teacher_module/chapterProgress.html:132
-#: WebApp/templates/teacher_module/myassignments.html:23
-msgid "All"
-msgstr "Бүгд"
-
 #: WebApp/templates/student_module/myassignments_list.html:45
 #: WebApp/templates/student_module/myassignments_list.html:110
 #: WebApp/templates/student_module/myassignments_list.html:172
@@ -2743,21 +4716,6 @@ msgstr "%(a.deadline|timeuntil)s үлдлээ"
 #: WebApp/templates/student_module/myassignments_list.html:191
 msgid "CONTINUE"
 msgstr "Үргэлжлүүлэх"
-
-#: WebApp/templates/student_module/polls_student.html:13
-#: WebApp/templates/student_module/polls_student_view.html:13
-#: WebApp/templates/teacher_module/makequery.html:5
-msgid "Polls"
-msgstr "Санал асуулга"
-
-#: WebApp/templates/student_module/polls_student.html:21
-#: WebApp/templates/student_module/polls_student_view.html:25
-msgid "Survey Title"
-msgstr "Судалгааны гарчиг"
-
-#: WebApp/templates/student_module/polls_student_view.html:34
-msgid "General"
-msgstr "Ерөнхий"
 
 #: WebApp/templates/student_module/polls_student_view.html:42
 #: WebApp/templates/student_module/questions_student_detail.html:64
@@ -2830,26 +4788,6 @@ msgstr ""
 "хариулахдаа чамайг дурдсан\n"
 "\n"
 "<strong>%(thread_title)s </strong>"
-
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:17
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:17
-msgid "Questions Asked"
-msgstr "Хариулсан асуултууд"
-
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:26
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:26
-msgid "Super User"
-msgstr "Супер хэрэглэгч"
-
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:34
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:34
-msgid "Parent"
-msgstr "Эцэг эх"
-
-#: WebApp/templates/student_module/student_forum/widgets/authenticated_user_panel.html:41
-#: WebApp/templates/teacher_module/teacher_forum/widgets/authenticated_user_panel.html:41
-msgid "View Profile"
-msgstr "Профайл үзэх"
 
 #: WebApp/templates/student_module/theme/footer.html:6
 msgid "Copyright ©"
@@ -3105,23 +5043,8 @@ msgstr ""
 msgid "All Sessions"
 msgstr "улирал"
 
-#: WebApp/templates/teacher_module/assignment_answers.html:120
-#, fuzzy
-#| msgid "Assignments"
-msgid "Assignment"
-msgstr "Даалгавар"
-
-#: WebApp/templates/teacher_module/assignment_answers.html:132
-msgid "Go"
-msgstr ""
-
 #: WebApp/templates/teacher_module/assignment_answers.html:146
 msgid "Download All Files"
-msgstr ""
-
-#: WebApp/templates/teacher_module/assignment_answers.html:152
-#: WebApp/templates/teacher_module/assignment_answers.html:153
-msgid "S.No."
 msgstr ""
 
 #: WebApp/templates/teacher_module/assignment_answers.html:154
@@ -3139,8 +5062,7 @@ msgstr "Бүрэн тэмдэг"
 
 #: WebApp/templates/teacher_module/assignment_answers.html:156
 #: quiz/templates/ajax_quiz/progress_list_history.html:9
-#: quiz/templates/quiz_base/sitting_detail.html:54
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:82
+#: quiz/templates/quiz_base/sitting_detail.html:56
 #: quiz/templates/student_quiz/progress.html:29
 #: quiz/templates/student_quiz/progress_detail.html:56
 msgid "Marks Obtained"
@@ -3170,30 +5092,6 @@ msgstr "Бүртгэсэн огноо"
 #| msgid "Show Answer"
 msgid "View Answer"
 msgstr "Хариултыг харах"
-
-#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:24
-#, fuzzy
-#| msgid "Attendance Date"
-msgid "Attendance List"
-msgstr "Оролцох өдөр"
-
-#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:30
-#, fuzzy
-#| msgid "Total Correct"
-msgid "Total Present"
-msgstr "Нийт зөв хариулт"
-
-#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:34
-#, fuzzy
-#| msgid "Total Correct"
-msgid "Total Absent"
-msgstr "Нийт зөв хариулт"
-
-#: WebApp/templates/teacher_module/attendance/course_attendance_form.html:38
-#, fuzzy
-#| msgid "Student"
-msgid "Total Students"
-msgstr "Сурагч"
 
 #: WebApp/templates/teacher_module/attendance/course_attendance_form.html:57
 msgid "Roll No."
@@ -3303,10 +5201,6 @@ msgstr "Бүтэн нэр"
 msgid "Chapter "
 msgstr "Бүлэг"
 
-#: WebApp/templates/teacher_module/chapterProgress.html:240
-msgid "Running Time"
-msgstr "Үргэлжлэх хугацаа"
-
 #: WebApp/templates/teacher_module/chapterProgress.html:241
 msgid "Last Visit"
 msgstr "Сүүлд нэвтэрсэн огноо"
@@ -3401,16 +5295,6 @@ msgstr "Хичээлийн код"
 msgid "Class Information"
 msgstr "Ерөнхий мэдээлэл"
 
-#: WebApp/templates/teacher_module/groupmapping_detail.html:18
-#, fuzzy
-#| msgid "Course Name"
-msgid "Group Name"
-msgstr "Хичээлийн нэр"
-
-#: WebApp/templates/teacher_module/groupmapping_detail.html:23
-msgid "Enrolled Students"
-msgstr ""
-
 #: WebApp/templates/teacher_module/homepage.html:21
 #, fuzzy
 #| msgid "Welcome to Student Portal"
@@ -3434,12 +5318,6 @@ msgstr "Миний даалгаврын жагсаалт"
 #| msgid "Session"
 msgid "My Sessions"
 msgstr "улирал"
-
-#: WebApp/templates/teacher_module/makequery.html:33
-#, fuzzy
-#| msgid "Expired"
-msgid "Expire"
-msgstr "Хугацаа дууссан"
 
 #: WebApp/templates/teacher_module/myassignments.html:51
 #: WebApp/templates/teacher_module/myassignments.html:115
@@ -3544,19 +5422,9 @@ msgstr "Асуулт хариултууд"
 msgid "Option"
 msgstr "Сонголт"
 
-#: WebApp/templates/teacher_module/survey.html:72
-msgid "Save"
-msgstr ""
-
 #: WebApp/templates/teacher_module/survey.html:75
 msgid "Save As New"
 msgstr ""
-
-#: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:19
-#, fuzzy
-#| msgid "Contact Information"
-msgid "Survey Information"
-msgstr "Холбогдох мэдээлэл"
 
 #: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:27
 #, fuzzy
@@ -3566,14 +5434,9 @@ msgstr "Дууссан огноо"
 
 #: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:39
 #: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:107
+#: WebApp/templates/wizard_teacher/step1.html:46
 msgid "Next"
 msgstr ""
-
-#: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:82
-#, fuzzy
-#| msgid "Add Question"
-msgid "Add option"
-msgstr "Асуулт нэмэх"
 
 #: WebApp/templates/teacher_module/teacherSurveyInfo_ajax.html:116
 #, fuzzy
@@ -3636,6 +5499,18 @@ msgstr "Сөрөг тэмдэглэгээ"
 #: WebApp/templates/teacher_module/theme/top_navigation.html:123
 msgid "Go Live"
 msgstr ""
+
+#: WebApp/templates/wizard_teacher/step1.html:11
+#, fuzzy
+#| msgid "Completed"
+msgid "Quiz Create"
+msgstr "Дууссан"
+
+#: WebApp/templates/wizard_teacher/step1.html:20
+#, fuzzy
+#| msgid "Basic Information"
+msgid "Basic Info"
+msgstr "Ерөнхий мэдээлэл"
 
 #: WebApp/views.py:125 WebApp/views.py:155
 msgid ""
@@ -3794,10 +5669,6 @@ msgstr "үзсэн тоо"
 msgid "reply count"
 msgstr "хариулсан тоо"
 
-#: forum/models.py:75
-msgid "topic"
-msgstr "сэдэв"
-
 #: forum/models.py:77 forum/models.py:172 forum/models.py:219
 #: forum/models.py:230
 msgid "published time"
@@ -3882,10 +5753,6 @@ msgstr "Хавсралт үүсгэх"
 #: forum/views.py:488
 msgid "Upload Avatar"
 msgstr "Аватар байршуулах"
-
-#: forum/views.py:525
-msgid "Login"
-msgstr "Нэвтрэх"
 
 #: forum/views.py:533
 msgid "Username and password cannot be empty"
@@ -3972,12 +5839,6 @@ msgstr "Зураг"
 msgid "Enter the question text that you want displayed"
 msgstr "Та харуулахыг хүссэн асуултын текстээ оруулна уу"
 
-#: quiz/models.py:231 quiz/models.py:258 quiz/models.py:675
-#: quiz/templates/question.html:208
-#: quiz/templates/quiz_base/sitting_detail.html:50
-msgid "Question"
-msgstr "Асуулт"
-
 #: quiz/models.py:235
 msgid "Full score for the question"
 msgstr "Асуултын нийт оноо"
@@ -3994,10 +5855,6 @@ msgstr "Асуултанд хариулсны дараа үзүүлэх тайл
 #: quiz/templates/result.html:127
 msgid "Explanation"
 msgstr "Тайлбар"
-
-#: quiz/models.py:253 quiz/models.py:463
-msgid "Center Code"
-msgstr "Төвийн код"
 
 #: quiz/models.py:289
 msgid "The order in which multichoice answer options are displayed to the user"
@@ -4018,11 +5875,6 @@ msgstr "Олон сонголттой асуултууд"
 #: quiz/models.py:354
 msgid "Tick this if the question is true. Leave it blank for false."
 msgstr "Хэрэв асуулт үнэн бол үүнийг тэмдэглээрэй. Худал бол хоосон орхино уу."
-
-#: quiz/models.py:357 quiz/models.py:686
-#: quiz/templates/quiz_base/sitting_detail.html:52
-msgid "Correct"
-msgstr "Зөв"
 
 #: quiz/models.py:385 quiz/models.py:434
 msgid "True/False Question"
@@ -4249,8 +6101,7 @@ msgid "Total Correct"
 msgstr "Нийт зөв хариулт"
 
 #: quiz/templates/progress.html:71
-#: quiz/templates/quiz_base/sitting_detail.html:53
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:81
+#: quiz/templates/quiz_base/sitting_detail.html:55
 #: quiz/templates/student_quiz/progress.html:28
 #: quiz/templates/student_quiz/progress_detail.html:51
 msgid "Full Marks"
@@ -4312,12 +6163,6 @@ msgstr "Асуултын жагсаалт"
 msgid "No. of Questions"
 msgstr "Асуултын дугаар"
 
-#: quiz/templates/quiz/quiz_list.html:38
-#: quiz/templates/quiz_base/quiz_list.html:35
-#: quiz/templates/teacher_quiz/marking_list.html:24
-msgid "Type"
-msgstr "Төрөл"
-
 #: quiz/templates/quiz/quiz_list.html:89
 #: quiz/templates/quiz_base/quiz_list.html:89
 msgid "There are no available quizzes"
@@ -4371,19 +6216,27 @@ msgstr "Үргэлжлэх"
 msgid "Course -> Chapter"
 msgstr "Курс -> Бүлэг"
 
-#: quiz/templates/quiz_base/sitting_detail.html:51
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:80
-msgid "User answer"
-msgstr "Хэрэглэгчийн хариулт"
-
-#: quiz/templates/quiz_base/sitting_detail.html:98
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:115
+#: quiz/templates/quiz_base/sitting_detail.html:45
+#: quiz/templates/quiz_base/sitting_detail.html:105
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:64
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:120
 msgid "Change Score"
 msgstr "Оноог өөрчлөх"
 
-#: quiz/templates/quiz_base/sitting_detail_SAQ.html:78
+#: quiz/templates/quiz_base/sitting_detail.html:53
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:82
+msgid "User answer"
+msgstr "Хэрэглэгчийн хариулт"
+
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:80
 msgid "S No."
 msgstr "S дугаар"
+
+#: quiz/templates/quiz_base/sitting_detail_SAQ.html:83
+#, fuzzy
+#| msgid "Marks Obtained"
+msgid "Marks Obtained (F.M. - "
+msgstr "Авсан тэмдэг"
 
 #: quiz/templates/quiz_base/sitting_list.html:62
 msgid "Start Datetime"
@@ -4647,15 +6500,8 @@ msgstr "Асуулт хариулт байхгүй байна"
 #~ msgstr "Тавтай морилно уу"
 
 #, fuzzy
-#~ msgid "UnHide"
-#~ msgstr "Дасгалыг нуухгүй байх"
-
-#, fuzzy
 #~ msgid "current"
 #~ msgstr "Одоогийн оноо"
 
 #~ msgid "teacher"
 #~ msgstr "багш"
-
-#~ msgid "        Username for Login"
-#~ msgstr "Нэвтрэх ID"
