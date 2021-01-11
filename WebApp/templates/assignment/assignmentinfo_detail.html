@@ -809,7 +809,56 @@
     <script src="{% static 'vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
 
 
-{% comment %}
+<script>
+ document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
+ document.getElementById('id_Assignment_Deadline_edit').value = new Date(document.getElementById('id_Assignment_Deadline_edit').value).toLocaleString("en-US")
+
+ $("#ajaxassignmentinfoform").submit(function (e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        $.ajax({
+            url: "{% url 'assignmentinfo_edit_ajax' object.pk %}",  // URL to your view that serves new info
+            data: {
+                "csrfmiddlewaretoken": '{{ csrf_token }}',
+                "Assignment_Topic": $('#id_Assignment_Topic_edit').val(),
+                "Assignment_Start": new Date($('#id_Assignment_Start_edit').val()).toISOString(),
+                "Assignment_Deadline": new Date($('#id_Assignment_Deadline_edit').val()).toISOString(),
+                "Use_Flag": $('#id_Use_Flag').is(":checked"),
+                "Course_Code": $('#id_Course_Code').val(),
+                "Chapter_Code": $('#id_Chapter_Code').val(),
+                "Register_Agent": $('#id_Register_Agent').val(),
+                "Assignment_ID": '{{ object.id }}'
+            },
+            // get the form data
+            type: $(this).attr('method'), // GET or POST
+            success: function (response) {
+                console.log('Success')
+                location.reload()
+            },
+            error: function (err) {
+                console.log('Error in posting assignment create form')
+                $('.form-errors').empty().append(err.responseJSON.Message).css('display', 'block')
+            }
+
+        });
+    });
+
+
+  $('#id_Assignment_Deadline_edit').on('dp.change', function (event) {
+        const result = document.querySelector('.result');
+        var date = new Date();
+        var deadline = new Date(event.target.value);
+        var remaining = dateDifference(deadline, date);
+        if (remaining < 0) {
+            result.textContent = `Days Remaining : Invalid`;
+
+        } else {
+            result.textContent = `Days Remaining : ${remaining}`;
+
+        }
+        ;
+    });
+
+</script>
 
 <script>
         $(".answerButton").click(function () {
@@ -1041,6 +1090,6 @@
         })
     </script>
 
-{% endcomment %}
+
 
 {% endblock %}

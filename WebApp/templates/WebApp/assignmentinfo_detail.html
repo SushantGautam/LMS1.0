@@ -24,13 +24,10 @@
 {% endblock %}
 
 
-
+{% comment %}
 
 {% block javascript %}
-<!-- <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-<script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
-<script src="{% static 'vendorsx/moment/min/moment.min.js' %}"></script>
-<script src="{% static 'vendorsx/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script> -->
+
 <script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
 
 <script>
@@ -163,7 +160,7 @@
 
 
     var submitted = false;
-    $(".qacontainer").on('click', '.submitAnswer', function (e) {
+    $('.submitAnswer').on('click', function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         if (submitted) {
             return false
@@ -292,3 +289,4 @@
 
 </script>
 {% endblock %}
+{% endcomment %}
