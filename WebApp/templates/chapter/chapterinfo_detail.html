@@ -45,7 +45,7 @@
             <input type="hidden" name="today_date" id="id_today_date" value="{{ datetime|date:"Y-m-d" }}"
                    class="select form-control">
             <div class="modal-body " id="create_assignment_modal_body">
-                
+
             </div>
         </div>
     </div>
@@ -62,17 +62,27 @@
                     : {{ object.Chapter_Name }} </h2>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 text-center" id="buttons">
-
-                <a class="btn-sm btn-info" href="
-                {% if '/teachers' in request.path %}
-                    {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
-                {% elif '/students' in request.path %}
-                    {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
+                {% if '/students' not in request.path %}
+                    <a class="btn-sm btn-info" href="
+                        {% if '/teachers' in request.path %}
+                            {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
+                        {% else %}
+                            {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
+                        {% endif %}" id="course-viewer" target="_self"
+                    >
+                        <i class="fa fa-laptop"></i> {% trans 'Content Viewer' %} &nbsp;
+                    </a>
                 {% else %}
-                    {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
-                {% endif %}" id="course-viewer" target="_self">
-                    <i class="fa fa-laptop"></i> {% trans 'Content Viewer' %} &nbsp;
-                </a>
+                    {% isChapterActive request.user object as chapteractive %}
+                    {% if chapteractive %}
+                        <a class="btn-sm btn-info"
+                           href="{% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}" id="course-viewer"
+                           target="_self"
+                        >
+                            <i class="fa fa-laptop"></i> {% trans 'Content Viewer' %} &nbsp;
+                        </a>
+                    {% endif %}
+                {% endif %}
 
                 {% if '/students' not in request.path %}
                     {% if '/teachers' in request.path %}
@@ -521,7 +531,8 @@
                                {{ o.get_absolute_url }}
                             {% endif %}">
                                 <button type="button" style="float: right;width:100px;height:25px;border: 1px solid #017a9b;color:#017a9b;background-color: white;border-radius: 4px;
-                                margin-top: 20px;margin-bottom: 10px; text-transform: uppercase;">{% trans 'Continue' %} <i class="fa fa-arrow-right"></i>
+                                margin-top: 20px;margin-bottom: 10px; text-transform: uppercase;">{% trans 'Continue' %}
+                                    <i class="fa fa-arrow-right"></i>
                                 </button>
                             </a>
                         </div>

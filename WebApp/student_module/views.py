@@ -315,10 +315,12 @@ class MyCoursesListView(ListView):
         return context
 
     def get_queryset(self):
-        if '/inactive/' in self.request.path:
+        if '/inactive' in self.request.path:
             qsearch = self.request.user.get_student_courses(inactiveCourse=True)['courses']
-        else:
+        elif '/active' in self.request.path:
             qsearch = self.request.user.get_student_courses(activeCourse=True)['courses']
+        else:
+            qsearch = self.request.user.get_student_courses()['courses']
         courses = []
         query = self.request.GET.get('studentmycoursequery')
         if query:
@@ -386,48 +388,8 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        datetime_now = timezone.now().replace(microsecond=0)
-        student_groups = GroupMapping.objects.filter(Students=self.request.user)
-        course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('pk'))
+        context['chapters'] = self.request.user.get_student_chapters(course=self.object)
 
-        assigned_session = InningInfo.objects.filter(Use_Flag=True,
-                                                     Start_Date__lte=datetime_now,
-                                                     End_Date__gte=datetime_now,
-                                                     Groups__in=student_groups,
-                                                     Course_Group__in=course_groups)
-
-        chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('pk'), Use_Flag=True)
-        active_chapters = []
-        for chapter in chapters:
-            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
-                                                        object_id=chapter.id,
-                                                        Session_Code__in=assigned_session)
-            if not session_map.exists():
-                active_chapters.append(chapter)
-            elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
-                    Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
-                active_chapters.append(chapter)
-        context['chapters'] = active_chapters
-
-        # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True,
-        #                                                  ).filter(
-        #     Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-        #         chapter_sessionmaps__Start_Date=None)) \
-        #     .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-        #     chapter_sessionmaps__End_Date=None)).filter(chapter_sessionmaps__Session_Code__Use_Flag=True,
-        #                                                 chapter_sessionmaps__Session_Code__Start_Date__lte=datetime_now,
-        #                                                 chapter_sessionmaps__Session_Code__End_Date__gte=datetime_now,
-        #                                                 chapter_sessionmaps__Session_Code__Groups__in=student_groups) \
-        #     .order_by('Chapter_No').distinct()
-
-        # context['chapters'] = ChapterInfo.objects.filter(Course_Code=self.kwargs.get('pk'), Use_Flag=True).filter(
-        #     Q(chapter_sessionmaps__Start_Date__lte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-        #         chapter_sessionmaps__Start_Date=None)) \
-        #     .filter(Q(chapter_sessionmaps__End_Date__gte=datetime.utcnow()) | Q(chapter_sessionmaps__isnull=True) | Q(
-        #     chapter_sessionmaps__End_Date=None)) \
-        #     .order_by('Chapter_No').distinct()
-
-        # print(context['chapters'])
         surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
         survey_ids = [s.id for s in surveys if s.can_submit(self.request.user)[1] != 1]

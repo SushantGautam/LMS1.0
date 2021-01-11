@@ -102,6 +102,10 @@ def isCourseActive(userObj, courseObj):
     return courseObj in userObj.get_student_courses(activeCourse=True)['courses']
 
 @register.simple_tag
+def isChapterActive(userObj, chapterObj):
+    return chapterObj.isStudentChapterActive(user=userObj)
+
+@register.simple_tag
 def isAssignmentActive(assignmentObj):
     inningmaps = assignmentObj.assignment_sessionmaps.all()
     isanswerable = False

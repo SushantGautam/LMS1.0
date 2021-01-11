@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db import models as models
 from django.db.models import ForeignKey, CharField, IntegerField, DateTimeField, TextField, BooleanField, ImageField, \
-    FileField, Sum
+    FileField, Sum, Q
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.urls import reverse
@@ -168,22 +168,34 @@ class MemberInfo(AbstractUser):
         'CenterInfo',
         related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
     )
+    datetime_now = timezone.now().replace(microsecond=0)
 
-    def get_student_courses(self, courseFromExpiredSession=False, inactiveCourse=False, activeCourse=False):
-        datetime_now = timezone.now().replace(microsecond=0)
-        batches = GroupMapping.objects.filter(Students__id=self.pk)
-        all_sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True)
+    def get_student_groups(self):
+        return GroupMapping.objects.filter(Students__id=self.pk)
+
+    def get_student_sessions(self, active=False, inactive=False):
+        batches = self.get_student_groups()
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True, Start_Date__lte=self.datetime_now)
+        if active:
+            sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
+                                       End_Date__gte=self.datetime_now).distinct()
+        if inactive:
+            sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
+                                       End_Date__lt=self.datetime_now).distinct()
+        return sessions
+
+    def get_student_courses(self, inactiveCourse=False, activeCourse=False):
+        all_sessions = self.get_student_sessions()
         all_courses = CourseInfo.objects.filter(
             pk__in=InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group', flat=True)))
-        active_sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now).distinct()
+        active_sessions = self.get_student_sessions(active=True)
 
         courses = all_courses
         sessions = all_sessions
         if inactiveCourse:
-            sessions = all_sessions.filter(Groups__in=batches, Use_Flag=True,
-                                                 Start_Date__lte=datetime_now, End_Date__lt=datetime_now).distinct()
-            courses = all_courses.exclude(pk__in=InningGroup.objects.filter(pk__in=active_sessions.values_list('Course_Group', flat=True)))
+            sessions = self.get_student_sessions(inactive=True)
+            courses = all_courses.exclude(
+                pk__in=InningGroup.objects.filter(pk__in=active_sessions.values_list('Course_Group', flat=True)))
         if activeCourse:
             sessions = active_sessions
             courses = all_courses.filter(
@@ -191,7 +203,7 @@ class MemberInfo(AbstractUser):
         return {'courses': courses, 'session': sessions}
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
-        datetime_now = timezone.now().replace(microsecond=0)
+        datetime_now = self.datetime_now
         course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True)
         all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
         if courseFromExpiredSession:
@@ -213,6 +225,32 @@ class MemberInfo(AbstractUser):
             courses = all_courses.exclude(pk__in=courses)
 
         return {'courses': courses, 'session': assigned_session}
+
+    def get_student_chapters(self, course, active=False, inactive=False):
+        assigned_session = self.get_student_sessions()
+
+        chapters = ChapterInfo.objects.filter(Course_Code__pk=course.id, Use_Flag=True)
+        active_chapters = []
+        inactive_chapters = []
+        for chapter in chapters:
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
+                                                        object_id=chapter.id,
+                                                        Session_Code__in=assigned_session)
+            if not session_map.exists():
+                active_chapters.append(chapter)
+            elif session_map.filter(Q(Start_Date__lte=self.datetime_now) | Q(Start_Date=None)).filter(
+                    Q(End_Date__gte=self.datetime_now) | Q(End_Date=None)).exists():
+                active_chapters.append(chapter)
+            elif session_map.filter(Q(Start_Date__gte=self.datetime_now)).exists():
+                chapters.exclude(chapter)
+            else:
+                inactive_chapters.append(chapter)
+        if active:
+            return active_chapters
+        elif inactive:
+            return inactive_chapters
+        else:
+            return chapters
 
     @property
     def get_user_type(self):
@@ -473,6 +511,12 @@ class ChapterInfo(models.Model):
     def assignment_count(self):
         return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
 
+    def isStudentChapterActive(self, user):
+        active_chapters = user.get_student_chapters(course=self.Course_Code, active=True)
+        status = False
+        if self.pk in [chapter.pk for chapter in active_chapters]:
+            status = True
+        return status
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
