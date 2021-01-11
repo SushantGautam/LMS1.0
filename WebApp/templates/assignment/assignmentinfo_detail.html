@@ -118,7 +118,7 @@
             <div class="accordion mb-4" id="questionList{{ question.pk }}">
                 <div class="card shadow-none border">
                     <div class="card-header justify-content-between" id="headingOne">
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center pr-3">
                             <figure class="avatar avatar-sm">
                                 <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
                             </figure>
@@ -126,75 +126,73 @@
                                 {{ question.Question_Title }}
                             </h5>
                         </div>
-                        <div class="row d-flex align-items-center">
-                            {% if '/students' in request.path %}
-                            <button class="btn btn-sm btn-outline-primary answerButton mx-2" type="button"
-                                id="{{ question.pk }}">{% trans "ANSWER" %} <i class="fa fa-arrow-right"></i>
-                            </button>
-                            {% endif %}
-                            {% if '/students' not in request.path %}
-                            <div class="modal fade" id="editQuestionModal{{ question.pk }}" tabindex="-1" role="dialog"
-                                aria-labelledby="editQuestionLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header text-center">
-                                            <h5 class="modal-title text-primary font-weight-bold"
-                                                id="editQuestionModal_title">{% trans "Edit Question" %}
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <i class="ti-close"></i>
-                                            </button>
-
-                                        </div>
-                                        <div class="modal-body modal-auto" id="edit_question_modal_body">
+                        <div class="d-flex" style="min-width: 120px;">
+                            <div class="row align-items-center">
+                                {% if '/students' in request.path %}
+                                <button class="btn btn-sm btn-outline-primary answerButton mx-2" type="button" id="{{ question.pk }}">{% trans
+                                    "ANSWER" %} <i class="fa fa-arrow-right"></i>
+                                </button>
+                                {% endif %}
+                                {% if '/students' not in request.path %}
+                                <div class="modal fade" id="editQuestionModal{{ question.pk }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="editQuestionLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header text-center">
+                                                <h5 class="modal-title text-primary font-weight-bold" id="editQuestionModal_title">{% trans
+                                                    "Edit Question" %}
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <i class="ti-close"></i>
+                                                </button>
+                        
+                                            </div>
+                                            <div class="modal-body modal-auto" id="edit_question_modal_body">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <button class="btn btn-sm btn-info btn-floating editquestion-btn mx-2" data-toggle="modal"
+                                    data-target="#editQuestionModal{{ question.pk }}" id="editquestion-btn{{ question.pk }}"
+                                    data-questionpk="{{ question.pk }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                {% if '/teachers' in request.path %}
+                                <button id="{{ question.pk }}" class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <form method="post" action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
+                                    id="deleteQuestion{{ question.pk }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ question.pk }}" name="question_id">
+                                    <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                                    <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                                    <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+                                </form>
+                                {% else %}
+                                <button id="{{ question.pk }}" class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <form method="post" action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=question.pk %}"
+                                    id="deleteQuestion{{ question.pk }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ question.pk }}" name="question_id">
+                                    <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                                    <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                                    <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+                                </form>
+                                {% endif %}
+                                {% endif %}
                             </div>
-                            <button class="btn btn-sm btn-info btn-floating editquestion-btn mx-2" data-toggle="modal"
-                                data-target="#editQuestionModal{{ question.pk }}" id="editquestion-btn{{ question.pk }}"
-                                data-questionpk="{{ question.pk }}">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            {% if '/teachers' in request.path %}
-                            <button id="{{ question.pk }}"
-                                class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            <form method="post"
-                                action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
-                                id="deleteQuestion{{ question.pk }}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ question.pk }}" name="question_id">
-                                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                            </form>
-                            {% else %}
-                            <button id="{{ question.pk }}"
-                                class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            <form method="post"
-                                action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=question.pk %}"
-                                id="deleteQuestion{{ question.pk }}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ question.pk }}" name="question_id">
-                                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                            </form>
-                            {% endif %}
-                            {% endif %}
+                            <a data-toggle="collapse" data-target="#question{{ question.pk }}" aria-expanded="true" aria-controls="collapseOne"
+                                href="javascript:void(0)" class="ml-4">
+                                <figure class="avatar avatar-sm">
+                                    <span class="avatar-title rounded-circle">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </span>
+                                </figure>
+                            </a>
                         </div>
-                        <a data-toggle="collapse" data-target="#question{{ question.pk }}" aria-expanded="true"
-                            aria-controls="collapseOne" href="javascript:void(0)">
-                            <figure class="avatar avatar-sm">
-                                <span class="avatar-title rounded-circle">
-                                    <i class="fa fa-chevron-down"></i>
-                                </span>
-                            </figure>
-                        </a>
                     </div>
                     <div id="question{{ question.pk }}" class="collapse show" aria-labelledby="headingOne"
                         data-parent="#questionList{{ question.pk }}">
