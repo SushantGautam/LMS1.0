@@ -659,6 +659,17 @@
                                     {% endfor %}
                                 </td>
 
+                                {% if not "students" in request.path %}
+                                      <td>
+                                        <button type="button" class="btn btn-sm btn-primary inningmap-btn"
+                                                data-toggle="modal"
+                                                data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                                                data-objectid="{{ object.id }}">
+                                            {% trans 'Change' %}
+                                        </button>
+                                    </td>
+                                {% endif %}
+
 
                             </tr>
                          {#    {% endif %}  #}

@@ -20,6 +20,7 @@
 {% endblock %}
 {% block content %}
 {% include 'assignment/assignmentinfo_detail.html' %}
+{% include 'inning/inningmapFormModal.html' %}
 {% endblock %}
 
 
@@ -284,5 +285,10 @@
         // $('input[type=datetime-local]').each(function () {
         //    $(this).val(`${newdate.getFullYear()}-${('0' + newdate.getMonth()).substr(-2)}-${('0' + newdate.getDate()).substr(-2)}T${('0' + newdate.getHours()).substr(-2)}:${('0' + newdate.getMinutes()).substr(-2)}`)
         // })
+
+ $('.inningmap-btn').on('click', function () {
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'assignmentinninginfomap' %}')
+        })
+
 </script>
 {% endblock %}
