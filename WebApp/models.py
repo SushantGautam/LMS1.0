@@ -242,7 +242,7 @@ class MemberInfo(AbstractUser):
                     Q(End_Date__gte=self.datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter)
             elif session_map.filter(Q(Start_Date__gte=self.datetime_now)).exists():
-                chapters.exclude(chapter)
+                chapters.exclude(pk=chapter.pk)
             else:
                 inactive_chapters.append(chapter)
         if active:
@@ -251,6 +251,33 @@ class MemberInfo(AbstractUser):
             return inactive_chapters
         else:
             return chapters
+
+    def get_student_assignments(self, chapter, active=False, inactive=False):
+        assigned_session = self.get_student_sessions()
+        assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter.pk, Use_Flag=True).exclude(
+            assignment_sessionmaps=None).order_by('pk')
+        active_assignments = []
+        inactive_assignments = []
+        pk_to_exclude = []
+        for assignment in assignments:
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                        object_id=assignment.id,
+                                                        Start_Date__lte=self.datetime_now,
+                                                        Session_Code__in=assigned_session
+                                                        ).filter(~Q(Start_Date=None, End_Date=None))
+            if session_map.exists():
+                if session_map.filter(End_Date__gte=self.datetime_now).exists():
+                    assignment.active = True
+                    active_assignments.append(assignment)
+                if session_map.filter(End_Date__lt=self.datetime_now).exists():
+                    inactive_assignments.append(assignment)
+
+        if active:
+            return active_assignments
+        elif inactive:
+            return inactive_assignments
+        else:
+            return assignments
 
     @property
     def get_user_type(self):
@@ -517,6 +544,7 @@ class ChapterInfo(models.Model):
         if self.pk in [chapter.pk for chapter in active_chapters]:
             status = True
         return status
+
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
