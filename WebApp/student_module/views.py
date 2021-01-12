@@ -425,7 +425,6 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
-                                                                End_Date__gte=datetime_now,
                                                                 Groups__in=student_groups,
                                                                 Course_Group__in=course_groups).distinct()
 
@@ -482,7 +481,6 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
             Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('chapter')).Course_Code)
         context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
                                                                 Start_Date__lte=datetime_now,
-                                                                End_Date__gte=datetime_now,
                                                                 Groups__in=student_groups,
                                                                 Course_Group__in=course_groups).distinct()
         AnsweredQuestion = set()
