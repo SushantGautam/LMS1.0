@@ -2,9 +2,6 @@
 {% load i18n %}
 {% load model_template_relation %}
 
-
-
-
 <div class="modal fade" id="add_question_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -187,41 +184,6 @@
                                 {% endif %}
                                 {% endif %}
                             </div>
-                            <button class="btn btn-sm btn-info btn-floating editquestion-btn mx-2" data-toggle="modal"
-                                data-target="#editQuestionModal" id="editquestion-btn{{ question.pk }}"
-                                data-questionpk="{{ question.pk }}">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            {% if '/teachers' in request.path %}
-                            <button id="{{ question.pk }}"
-                                class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            <form method="post"
-                                action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
-                                id="deleteQuestion{{ question.pk }}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ question.pk }}" name="question_id">
-                                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                            </form>
-                            {% else %}
-                            <button id="{{ question.pk }}"
-                                class="btn btn-sm btn-danger btn-floating confirm-delete mx-2">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            <form method="post"
-                                action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=question.pk %}"
-                                id="deleteQuestion{{ question.pk }}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ question.pk }}" name="question_id">
-                                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                            </form>
-                            {% endif %}
-                            {% endif %}
                         </div>
                     </div>
                     <div id="question{{ question.pk }}" class="collapse show" aria-labelledby="headingOne"
