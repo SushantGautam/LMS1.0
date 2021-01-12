@@ -34,6 +34,7 @@ class SAForm(forms.Form):
             widget=Textarea(attrs={'style': 'width:100%'}))
 
 
+
 class QuizForm(forms.ModelForm):
     # mcquestion = forms.ModelMultipleChoiceField(
     #     queryset=MCQuestion.objects.all(),
@@ -54,13 +55,12 @@ class QuizForm(forms.ModelForm):
         model = Quiz
         fields = ['mcquestion', 'tfquestion', 'saquestion', 'title', 'description', 'duration', 'pass_mark',
                   'negative_marking',
-                  'negative_percentage', 'random_order', ]
+                  'negative_percentage', 'random_order', 
+                  'mcquestion_order', 'saquestion_order', 'tfquestion_order']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, }),
         }
-        labels = {
-            "mcquestion": "Multiple Choice Questions",
-        }
+       
 
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',), }
@@ -73,7 +73,6 @@ class QuizForm(forms.ModelForm):
         mcqueryset = MCQuestion.objects.filter(course_code=course_id)
         tfqueryset = TF_Question.objects.filter(course_code=course_id)
         saqueryset = SA_Question.objects.filter(course_code=course_id)
-        
         super().__init__(*args, **kwargs)
         # self.fields['mcquestion'].required = False
         # self.fields['tfquestion'].required = False
@@ -81,12 +80,9 @@ class QuizForm(forms.ModelForm):
         # self.fields['mcquestion'].queryset = mcqueryset
         # self.fields['tfquestion'].queryset = tfqueryset
         # self.fields['saquestion'].queryset = saqueryset
-        self.fields[' negative_percentage'].initial = '1'
         self.fields['title'] = forms.CharField(
             initial=CourseInfo.objects.get(id=course_id).Course_Name + ": Quiz " + datetime.datetime.now().strftime(
                 '%D %H:%M'))
-        self.fields['negative_percentage'] = forms.IntegerField(
-            initial=1)        
 
         self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
             queryset=MCQuestion.objects.filter(course_code=course_id),

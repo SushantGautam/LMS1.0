@@ -4,92 +4,131 @@
 <!-- Bootstrap -->
 {{ form.media }}
 <script type="text/javascript" src="{% static 'build/js/SelectFilter2.js' %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<style>
+    .selector {
+        width: auto !important;
+    }
+
+    .selector-available,
+    .selector-chosen {
+        width: 280px !important;
+    }
+
+    .selector select {
+        width: 280px !important;
+    }
+
+    .selector .selector-available input {
+        width: 210px !important;
+    }
+
+    .selector .selector-chosen input {
+        width: 210px !important;
+    }
+
+    .title_div .control-label {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+</style>
 <form method="post" id="quiz_form_post" onsubmit="return validateForm()"
-      action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">{% csrf_token %}
-    <div class="row">
-
+    action="{% url 'quiz_create_ajax' %}?chapter_id={{ chapter_pk }}&course_id={{ course_id }}&test_type={{ test_type }}">
+    {% csrf_token %}
+    <div class="title_div mb-4">
         {{ form.title|as_crispy_field }}
-
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                           aria-expanded="false" aria-controls="collapseOne">
-                            <i class="fa fa-list"></i>
-                            Manage Multiple Choice Questions </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                        {{ form.mcquestion|as_crispy_field }}
-
-                    </div>
-                </div>
+    </div>
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header border-0" id="headingOne">
+                <h5 class="mb-0">
+                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                        aria-controls="collapseOne" type="button" class="text-dark">
+                        <i class="fa fa-list"></i>
+                        Manage Multiple Choice Questions
+                    </a>
+                </h5>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingTwo">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            <i class="fa fa-bookmark "></i>
-                            Manage True/False Questions </a>
-                    </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                    <div class="panel-body">
-                        {{ form.tfquestion|as_crispy_field }}
 
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingThree">
-                    <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            <i class="fa fa-align-right  "></i>
-
-                            Manage Short Answer Type Questions
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                    <div class="panel-body">
-                        {{ form.saquestion|as_crispy_field }}
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingFour">
-                    <h4 class="panel-title">
-                        <a class="collapsed text-info" role="button" data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                            More Options </a>
-                    </h4>
-                </div>
-                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                    <div class="panel-body">
-                        {{ form.description|as_crispy_field }}
-                        {{ form.duration|as_crispy_field }}
-                        {{ form.pass_mark|as_crispy_field }}
-                        {{ form.negative_marking|as_crispy_field }}
-                        {{ form.negative_percentage|as_crispy_field }}
-                        {{ form.random_order|as_crispy_field }}                    </div>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    {{ form.mcquestion|as_crispy_field }}
                 </div>
             </div>
         </div>
-
-
     </div>
-    <button id="quiz_submit_button" class="btn btn-success " type="submit">Submit</button>
+
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header border-0" id="headingTwo">
+                <h5 class="mb-0">
+                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+                        aria-controls="collapseTwo" type="button" class="text-dark">
+                        <i class="fa fa-bookmark "></i>
+                        Manage True/False Questions
+                    </a>
+                </h5>
+            </div>
+
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    {{ form.tfquestion|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header border-0" id="headingThree">
+                <h5 class="mb-0">
+                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseThree"
+                        aria-expanded="true" aria-controls="collapseThree" type="button" class="text-dark">
+                        <i class="fa fa-align-right"></i>
+                        Manage Short Answer Type Questions
+                    </a>
+                </h5>
+            </div>
+
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                <div class="card-body">
+                    {{ form.saquestion|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header border-0" id="headingFour">
+                <h5 class="mb-0">
+                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true"
+                        aria-controls="collapseFour" type="button" class="text-dark">
+                        <i class="fa fa-align-right"></i>
+                        More Options
+                    </a>
+                </h5>
+            </div>
+
+            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                <div class="card-body">
+                    {{ form.description|as_crispy_field }}
+                    {{ form.duration|as_crispy_field }}
+                    {{ form.pass_mark|as_crispy_field }}
+                    {{ form.negative_marking|as_crispy_field }}
+                    {{ form.negative_percentage|as_crispy_field }}
+                    {{ form.random_order|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-3 text-center">
+        <button id="quiz_submit_button" class="btn btn-success" type="submit">Submit</button>
+    </div>
 
 </form>
+
 <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
 <script>
-
 
     $(document).ready(function () {
         $("#div_id_negative_percentage").hide();
@@ -129,26 +168,26 @@
         $("#div_id_negative_percentage").hide();
     }
 
-    $("label[for='id_mcquestion']").after(`<button type="button" class="btn qts-button " id="mcq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup" style='float:right'>Add Multiple Choice Question
+    $("label[for='id_mcquestion']").after(`<button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="mcq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup">Add Multiple Choice Question
             </button>`);
-    $("#mcq_create_button, label[for='id_mcquestion']").wrapAll("<div class = 'col-md-12 col-sm-12 col-xs-12'></div>");
-    $("label[for='id_mcquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
-    $("#mcq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    $("#mcq_create_button, label[for='id_mcquestion']").wrap("<div class = 'col-md-12 col-sm-12 col-xs-12 text-center'></div>");
+    // $("label[for='id_mcquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    //$("#mcq_create_button").wrap("<div class='col-12'></div>");
 
-    $("label[for='id_tfquestion']").after(`<button type="button" class="btn qts-button " id="tfq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup" style='float:right'>Add True/False question
+    $("label[for='id_tfquestion']").after(`<button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="tfq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup">Add True/False question
             </button>`);
-    $("#tfq_create_button, label[for='id_tfquestion']").wrapAll("<div class = 'col-md-12 col-sm-12 col-xs-12'></div>");
-    $("label[for='id_tfquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
-    $("#tfq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    $("#tfq_create_button, label[for='id_tfquestion']").wrap("<div class = 'col-md-12 col-sm-12 col-xs-12 text-center'></div>");
+    // $("label[for='id_tfquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    // $("#tfq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
 
-    $("label[for='id_saquestion']").after(`<button type="button" class="btn qts-button " id="saq_create_button" data-toggle="modal"
-                    data-target="#question_form_popup" style='float:right'>Add Short Answer question
+    $("label[for='id_saquestion']").after(`<button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="saq_create_button" data-toggle="modal"
+                    data-target="#question_form_popup">Add Short Answer question
             </button>`);
-    $("#saq_create_button, label[for='id_saquestion']").wrapAll("<div class = 'col-md-12 col-sm-12 col-xs-12'></div>");
-    $("label[for='id_saquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
-    $("#saq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    $("#saq_create_button, label[for='id_saquestion']").wrap("<div class = 'col-md-12 col-sm-12 col-xs-12 text-center'></div>");
+    // $("label[for='id_saquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
+    // $("#saq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
 
     $('#mcq_create_button').on('click', function () {
         $.ajax({
@@ -299,6 +338,6 @@
 
 <script>
     date = new Date();
-    var options = {year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+    var options = { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     $('#id_title').val($('#id_title').val().split(':').slice(0, -2).join(':') + ': ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
 </script>

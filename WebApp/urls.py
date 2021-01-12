@@ -405,15 +405,17 @@ urlpatterns += (path(
 
 urlpatterns += (
     path('courseinfo/detail/<int:coursepk>/progress/',
-         views.CourseProgressView,
-         name='admin_course_progress'),
+         views.CourseProgressView, name='admin_course_progress'),
     path('courseinfo/detail/<int:coursepk>/inning/<inningpk>/progress/',
          views.CourseProgressView, name='admin_course_progress_withinning'),
     path('courseinfo/detail/<int:courseid>/progress/<int:chapterid>/<int:studentid>',
          views.StudentChapterProgressView, name='student_chapter_progress'),
     path('editstudentChapterProgressTime/<int:chapterid>/<int:studentid>/', views.editStudentChapterProgressTime,
          name="editStudentChapterProgressTime"),
+    path('courseinfo/detail/<int:coursepk>/<int:sessionpk>/download/', views.CourseProgressDownload,
+         name="progress_download")
 )
+
 
 # Notice URL
 

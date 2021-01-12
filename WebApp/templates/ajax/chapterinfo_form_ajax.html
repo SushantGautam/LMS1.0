@@ -1,11 +1,14 @@
 {% load static %}
 {% load i18n %}
+{% load crispy_forms_tags %}
+
 
 <div>
     <form method="post" id="ajaxchapterinfoform">
         {% csrf_token %}
         <div class="row">
             <div class="col-lg-4">
+                <!--{{ form.Chapter_No|as_crispy_field }}-->
                 <div class="form-group">
                     <label for="id_Chapter_No" class="font-weight-bold">{% trans "Chapter No" %}. *</label>
                     <input type="number" class="form-control" name="Chapter_No" id="id_Chapter_No"

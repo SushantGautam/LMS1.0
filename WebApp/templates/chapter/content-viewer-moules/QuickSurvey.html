@@ -1,184 +1,190 @@
+{% load static %}
+{% load i18n %}
 <style>
     .selector {
         width: auto !important;
         float: left !important;
     }
-
 </style>
 
 <div id="survey_content_modal" class="modal fade"
-     style="height: -webkit-fill-available;    width: -webkit-fill-available; z-index:10000; ">
-    <div class="modal-dialog">
-        <div class="modal-content" style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;">
+    style="height: -webkit-fill-available;    width: -webkit-fill-available; z-index:10000; ">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Survey</h4>
+                <h5 class="modal-title text-primary font-weight-bold" id="create_survey_modal_title">
+                    {% trans "Create Survey" %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
             </div>
             <div class="modal-body" id="survey_form_ajax">
                 <div>
                     <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
                 </div>
             </div>
-            <div class="modal-footer">
-            </div>
         </div>
     </div>
 </div>
 
 <div id="quiz_create_popup" class="modal fade"
-     style="height: -webkit-fill-available;     width: -webkit-fill-available;     z-index: 10000;">
-    <div class="modal-dialog" style="    width: 80%;">
-        <div class="modal-content"
-             style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
+    style="height: -webkit-fill-available;  width: -webkit-fill-available; z-index: 10000;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Create Quiz</h4>
+                <h5 class="modal-title text-primary font-weight-bold" id="create_quiz_modal_title">
+                    {% trans "Create Quiz" %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
             </div>
             <div class="modal-body" id="quiz_form_ajax">
                 <div>
                     <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
                 </div>
             </div>
-            <div class="modal-footer">
-            </div>
         </div>
     </div>
 </div>
 
 <div id="question_form_popup" class="modal fade" style="height: -webkit-fill-available;width: -webkit-fill-available">
-    <div class="modal-dialog" style="width: -webkit-fit-content">
-        <div class="modal-content"
-             style="height: -webkit-fill-available; overflow: auto; overflow-x: hidden;width: -webkit-fill-available">
+    <div class="modal-dialog modal-dialog-centered" style="width: -webkit-fit-content">
+        <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" id="qn_close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="question_model_title">Add Question</h4>
+                <h5 class="modal-title text-primary font-weight-bold" id="add_question_modal_title">
+                    {% trans "Add Question" %}
+                </h5>
+                <button type="button" class="close" id="qn_close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
             </div>
             <div class="modal-body" id="question_form_ajax">
                 <div>
                     <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
                 </div>
             </div>
-            <div class="modal-footer">
-            </div>
         </div>
     </div>
 </div>
 
-{% block quicksurvey_script %}
-    {#<script src="/static/vendorsx/jquery/dist/jquery.min.js"></script>#}
+<!-- {% block quicksurvey_script %}  -->
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            $('#QuickQuiz').click(function () {
-                $('.chatonly').hide();
-                $('#closechatopen').show();
+<!-- <script src="/static/vendorsx/jquery/dist/jquery.min.js"></script> -->
 
-                $.ajax({
-                    type: "GET",
-                    data: {
-                        'course_id': '{{ course.id }}',
-                        'chapter_id': '{{ chapter.id }}',
-                        'test_type': 'pre_test',
-                    },
-                    url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
-                    success: function (data) {
-                        $("#quiz_form_ajax").html(data);
-                        $("#id_title").val('#Quick-' + $("#id_title").val());
-                    }
-                });
-            });
-            $('#QuickSurvey').click(function () {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#QuickQuiz').click(function () {
+            $('.chatonly').hide();
+            $('#closechatopen').show();
 
-                $('.chatonly').hide();
-                $('#closechatopen').show();
-                console.log("survey_create");
-                $.ajax({
-                    type: "GET",
-                    data: {"category_name": "live", "course_code": "{{ course.id }}"},
-                    url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
-                    success: function (data) {
-                        $("#survey_form_ajax").html(data);
-                        $('#smartwizard').smartWizard("reset");
-                        $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
-                    }
-                });
-            });
-
-            $('#qn_close').on("click", function () {
-                $("#quiz_create_popup").modal("show");
-            });
-
-
-        }, false);
-
-        function close_quick_model(id) {
-            // get modal
-            const quick_modal = document.getElementById(id);
-
-            // change state like in hidden modal
-            quick_modal.classList.remove('show');
-            quick_modal.setAttribute('aria-hidden', 'true');
-            quick_modal.setAttribute('style', 'display: none');
-
-            // get modal backdrop
-            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
-
-            // remove opened modal backdrop
-            document.body.removeChild(modalBackdrops[0]);
-        }
-
-        function survey_create_content(response) {
-            if (response['url']) {
-                //location.reload();
-                console.log(response['url']);
-                console.log(response['teacher_url']);
-                console.log(response['student_url']);
-                close_quick_model("survey_content_modal");
-                /*
-                $(".note-editable").append(`<a onclick="loadexam('/students/questions_student_detail/detail/${response['quiz_id']}/')">Take Quick Survey</a>`);
-
-                console.log(response)
-                sendMessageWrittenToStudents();
-                $(".note-editable").append(`<a onclick="loadexam('/teachers/surveyinfodetail/detail/` + response['quiz_id'] + `', 1)">View Quick Survey Submissions</a>`);
-                setTimeout(function() {
-                    sendMessageWrittenToTeachers();
-                    loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
-                })
-*/
-                $('#chat-message-input').val(response['quiz_id']);
-                sendChatMessage({'message_link_type': 'survey'})
-                //window.location.href = String(response['url']);
-            }
-        }
-
-        function quiz_create_content(response) {
-            if (response['url']) {
-                console.log(response)
-                //location.reload();
-                console.log(response['url']);
-                console.log(response['teacher_url']);
-                console.log(response['student_url']);
-                console.log(response['quiz_id']);
-                close_quick_model("quiz_create_popup");
-                {% comment %}
-                $(".note-editable").append(`<a onclick="loadexam('/quiz/quiz${response['quiz_id']}/take/')">Take Quick Quiz</a>`);
-
-                try {
-                    sendMessageWrittenToStudents();
-                } catch (err) {
-                    location.reload();
+            $.ajax({
+                type: "GET",
+                data: {
+                    'course_id': '{{ course.id }}',
+                    'chapter_id': '{{ chapter.id }}',
+                    'test_type': 'pre_test',
+                },
+                url: "{% url 'quiz_create_ajax'%}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#quiz_form_ajax").html(data);
+                    $("#id_title").val('#Quick-' + $("#id_title").val());
                 }
-                $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
-                sendMessageWrittenToTeachers();
-                {% endcomment %}
-                $('#chat-message-input').val(response['quiz_id']);
-                sendChatMessage({'message_link_type': 'quiz'})
-                {#loadexam("/quiz/markingfilter/" + response['quiz_id'] + "/", '_blank', 1);  //open popup#}
+            });
+        });
+        $('#QuickSurvey').click(function () {
 
-            }
+            $('.chatonly').hide();
+            $('#closechatopen').show();
+            console.log("survey_create");
+            $.ajax({
+                type: "GET",
+                data: { "category_name": "live", "course_code": "{{ course.id }}" },
+                url: "{% url 'TeacherSurveyInfo_ajax' %}",  // URL to your view that serves new info
+                success: function (data) {
+                    $("#survey_form_ajax").html(data);
+                    $('#smartwizard').smartWizard("reset");
+                    $("#id_Survey_Title").val('#Quick-' + $("#id_Survey_Title").val());
+                }
+            });
+        });
+
+        $('#qn_close').on("click", function () {
+            $("#quiz_create_popup").modal("show");
+        });
+
+
+    }, false);
+
+    function close_quick_model(id) {
+        // get modal
+        const quick_modal = document.getElementById(id);
+
+        // change state like in hidden modal
+        quick_modal.classList.remove('show');
+        quick_modal.setAttribute('aria-hidden', 'true');
+        quick_modal.setAttribute('style', 'display: none');
+
+        // get modal backdrop
+        const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+
+        // remove opened modal backdrop
+        document.body.removeChild(modalBackdrops[0]);
+    }
+
+    function survey_create_content(response) {
+        if (response['url']) {
+            //location.reload();
+            console.log(response['url']);
+            console.log(response['teacher_url']);
+            console.log(response['student_url']);
+            close_quick_model("survey_content_modal");
+            /*
+            $(".note-editable").append(`<a onclick="loadexam('/students/questions_student_detail/detail/${response['quiz_id']}/')">Take Quick Survey</a>`);
+
+            console.log(response)
+            sendMessageWrittenToStudents();
+            $(".note-editable").append(`<a onclick="loadexam('/teachers/surveyinfodetail/detail/` + response['quiz_id'] + `', 1)">View Quick Survey Submissions</a>`);
+            setTimeout(function() {
+                sendMessageWrittenToTeachers();
+                loadexam('/teachers/surveyinfodetail/detail/' + response['quiz_id'], 1); //shows with close button 1
+            })
+            */
+            $('#chat-message-input').val(response['quiz_id']);
+            sendChatMessage({ 'message_link_type': 'survey' })
             //window.location.href = String(response['url']);
         }
+    }
 
-    </script>
+    function quiz_create_content(response) {
+        if (response['url']) {
+            console.log(response)
+            //location.reload();
+            console.log(response['url']);
+            console.log(response['teacher_url']);
+            console.log(response['student_url']);
+            console.log(response['quiz_id']);
+            close_quick_model("quiz_create_popup");
+            /*
+            $(".note-editable").append(`<a onclick="loadexam('/quiz/quiz${response['quiz_id']}/take/')">Take Quick Quiz</a>`);
 
-{% endblock %}
+            try {
+                sendMessageWrittenToStudents();
+            } catch (err) {
+                location.reload();
+            }
+            $(".note-editable").append(`<a onclick="loadexam('/quiz/markingfilter/` + response['quiz_id'] + `', 1)">View Quick Quiz Submissions</a>`);
+            sendMessageWrittenToTeachers();
+            */
+            $('#chat-message-input').val(response['quiz_id']);
+            sendChatMessage({ 'message_link_type': 'quiz' })
+            //loadexam("/quiz/markingfilter/" + response['quiz_id'] + "/", '_blank', 1);  //open popup#}
+
+        }
+        //window.location.href = String(response['url']);
+    }
+
+</script>
+
+<!-- {% endblock %} -->

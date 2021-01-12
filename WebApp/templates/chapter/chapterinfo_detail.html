@@ -5,7 +5,7 @@
 {# Loading the template tag #}
 
 <style>
-      .custom-table-width {
+    .custom-table-width {
         max-width: 40%;
 
     }
@@ -14,7 +14,7 @@
         max-width: 25%
     }
 
-    @media (min-width: 768px ) and (max-width: 991px) {
+    @media (min-width: 768px) and (max-width: 991px) {
         .custom-table-width {
             max-width: 38%;
         }
@@ -39,7 +39,66 @@
                 </button>
             </div>
             <div class="modal-body" id="create_assignment_modal_body">
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade custom-modal" id="quizmodal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content" style="height:100%">ur
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold">
+                    {% trans 'Quiz' %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+                <a data-toggle="tooltip" data-placement="right" title="" onclick="toggleFullScreen()"
+                    data-original-title="FullScreen" style="float:right ; padding-right:20px">
+                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                </a>
+
+            </div>
+            <div class="modal-body" id="quizmodalbody">
+                <p>{% trans 'Some text in the modal' %}.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="quiz_create_popup" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold">
+                   {% trans 'Create Quiz' %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
+                <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="question_form_popup" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="height: 80vh;overflow: auto;">
+            <div class="modal-header">
+                  <h5 class="modal-title text-primary font-weight-bold">
+                   {% trans 'Add Question' %}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="question_form_ajax">
+                <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
             </div>
         </div>
     </div>
@@ -49,8 +108,8 @@
     <div class="col-lg-8 col-md-12">
         <div class="page-header">
             <div class="page-title">
-                <h3 class="d-flex align-items-center"><span
-                        class="icon-block text-primary">{{ object.Chapter_No }}</span> &nbsp;
+                <h3 class="d-flex align-items-center"><span class="icon-block text-primary">
+                        {{ object.Chapter_No }}</span> &nbsp;
                     {{ object.Chapter_Name }}
                 </h3>
             </div>
@@ -133,27 +192,35 @@
         <div class="card">
             <div class="px-4 pt-4">
                 <h5 class="text-primary mb-3">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
+                {% if '/students' not in request.path %}
                 <p>
-                    {% trans "Status" %} :
-                    {% if object.Start_Date and todays_date < object.Start_Date|date:"Y-m-d" %}
-                    <span class="text-danger font-weight-bold">{% trans "Inactive" %}</span>
-                    {% elif object.End_Date and todays_date > object.End_Date|date:"Y-m-d" %}
-                    <span class="text-danger font-weight-bold">{% trans "Expired" %}</span>
-                    {% else %}
-                    <span class="text-success font-weight-bold">{% trans "Active" %}</span>
+                    {% trans "Status" %} : &nbsp;
+                    {% if object.Use_Flag is True %}
+                    <span class="badge badge-success">{% trans "Published" %}</span>
+                    {% elif object.Use_Flag is False %}
+                    <span class="badge badge-danger">{% trans "Not Published" %}</span>
                     {% endif %}
                 </p>
-                <p>
+                {% endif %}
+                <!--<p>
                     {% trans "Start Date" %} : {{ object.Start_Date|date:'m/d/Y' }}
                 </p>
                 <p>
                     {% trans "End Date" %} : {{ object.End_Date|date:'m/d/Y' }}
-                </p>
+                </p>-->
                 <p>
-                    {% trans "Course Time" %} : {{ object.mustreadtime }}
+                    {% trans "Course Time" %} : {{ object.mustreadtime }} {% trans "minutes" %}
                 </p>
                 <p>
                     {% trans "Register Agent" %} : {{ object.Register_Agent }}
+                </p>
+                <p>
+                    {% trans "Discussion" %} : &nbsp;
+                    {% if object.is_commentable %}
+                    <span class="badge badge-success">{% trans 'Active' %}</span>
+                    {% else %}
+                    <span class="badge badge-danger">{% trans 'Inactive' %}</span>
+                    {% endif %}
                 </p>
             </div>
             <ul class="text-center">
@@ -186,6 +253,136 @@
                 </li>
                 {% endif %}
             </ul>
+        </div>
+        <div class="card">
+            <div class="px-4 pt-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="text-primary">{% trans 'Pre Test Quiz' %}</h5>
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="pre_test_popup" data-toggle="modal"
+                        data-target="#quiz_create_popup">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    {% if 'students' in request.path %}
+                    {% for pre_quiz in pre_quizes %}
+                        <div> {{ pre_quiz.title }} </div>
+                        {% getUserQuizStatus pre_quiz.sitting_set.all user as student_quiz_status %}
+                        {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
+                        {% if pre_quiz.single_attempt %}
+                        <span class="text-success font-weight-bold">{% trans 'Completed' %}</span>
+                        {% else %}
+                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="qts-button " data-toggle="modal"
+                                data-target="#quizmodal" style="background-color: #65f665">
+                                {% trans 'Play Again' %}
+                            </button>
+                        </a>
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="qts-button " data-toggle="modal"
+                                data-target="#quizmodal">
+                                {% trans 'Play Quiz' %}
+                            </button>
+                        </a>
+                        {% endif %}
+                    {% empty %}
+                    <p>{% trans 'No Pre Quiz' %}</p>
+                    {% endfor %}
+                    {% else %}
+                    {% for pre_quiz in pre_quizes %}
+                    <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change" id="radiobtn{{ pre_quiz.id }}">
+                        {% csrf_token %}
+                        <a target="_blank" href="
+                                          {% if 'teachers' in request.path %}
+                                            {% url 'teacher_quiz_detail' pre_quiz.id %}
+                                          {% else %}
+                                            {% url 'quiz_detail' pre_quiz.id %}
+                                          {% endif %}
+                                        ">{{ pre_quiz.title }} </a><br>
+                        <div class="btn-group" id="status" data-toggle="buttons">
+                            <label class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
+                                id="ActiveButton" style="text-transform: uppercase;">
+                                <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio" 
+                                {% if pre_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
+                            </label>
+                            <label class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
+                                id="ExpireButton" style="text-transform: uppercase;">
+                                <input type="radio" value="0" name="pre-test-radio" {% if pre_quiz.draft == True %}checked{% endif %}>{%
+                                trans 'Off' %}
+                            </label>
+                        </div>
+                        <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
+                    </form>
+                    {% empty %}
+                    {% trans 'No pre quiz, Add new by clicking ' %}+
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="px-4 pt-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="text-primary">{% trans 'Post Test Quiz' %}</h5>
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="post_test_popup" data-toggle="modal"
+                        data-target="#quiz_create_popup">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    {% if 'students' in request.path %}
+                    {% for post_quiz in post_quizes %}
+                    <span> {{ post_quiz.title }} </span>
+                    {% getUserQuizStatus post_quiz.sitting_set.all user as student_quiz_status %}
+                    {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
+                    {% if post_quiz.single_attempt %}
+                    <span class="text-success font-weight-bold">{% trans 'Completed' %}</span>
+                    {% else %}
+                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button " data-toggle="modal"
+                            data-target="#quizmodal" style="background-color: #65f665">
+                            {% trans 'Play Again' %}
+                        </button>
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
+                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button " data-toggle="modal"
+                            data-target="#quizmodal">
+                            {% trans 'Play Quiz' %}
+                        </button>
+                    </a>
+                    {% endif %}
+                    {% empty %}
+                    <p>{% trans 'No Post Quiz' %}</p>
+                    {% endfor %}
+                    {% else %}
+                    {% for post_quiz in post_quizes %}
+                    <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change" id="radiobtn{{ post_quiz.id }}">
+                        {% csrf_token %}
+                        <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a><br>
+                        <div class="btn-group" id="status2" data-toggle="buttons">
+                            <label class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
+                                id="ActiveButton" style="text-transform: uppercase;">
+                                <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio" 
+                                {% if post_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
+                            </label>
+                            <label class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
+                                id="ExpireButton" style="text-transform: uppercase;">
+                                <input type="radio" value="0" name="post-test-radio" {% if post_quiz.draft == True %}checked{% endif %}>{%
+                                trans 'Off' %}
+                            </label>
+                        </div>
+                        <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
+                    </form>
+                    {% empty %}
+                    {% trans 'No post quiz, Add new by clicking ' %} +
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,0 +1,451 @@
+{% extends "teacher_module/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load getMemberFromPk %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">Attendance</li>
+
+{% endblock %}
+
+{% block content %}
+{% include 'WebApp/theme/alerts.html' %}
+<div class="container">
+    <div class="attendance-detail col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="session-detail">
+                <div style="font-size:18px"><b> Session: </b></div>
+                <select id="select_session">
+                    {% for x in session_list %}
+                    {% for session in x %}
+
+                    <option value="{{ session.pk }}" {% if session.pk==inning.pk %} selected {% endif %}> {{ session }}
+                    </option>
+                    {% endfor %}
+                    {% endfor %}
+
+                </select>
+                {% comment %} <span>{{inning}}</span> {% endcomment %}
+
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="course-name">
+
+                <span style="font-size:18px"> <b> Course: </b> </span>
+
+                <div>
+                    {% if not inning and course %}
+
+                    <select id="select_course">
+                        <option value="{{ course.pk }}" class="{{ course.pk }}" selected> {{ course }}</option>
+                    </select>
+                    {% else %}
+                    <select id="select_course">
+                        {% for s in session_course %}
+                        {% for eac in s.0.session %}
+                        <option value="{{ s.0.course.pk }}" class="{{ eac.pk }}" {% if s.0.course.pk==course.pk %}
+                            selected {% endif %}> {{ s.0.course }}</option>
+                        {% endfor %}
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="choose-date ">
+
+                <span style="font-size:18px"> <b> Choose Date: </b> </span>
+
+
+                <div class="controls ">
+                    <input type="date" name="Assignment_Deadline_edit" class="datetimeinput form-control"
+                        id="id_Assignment_Deadline_edit" value="{{ attend_date }}">
+                </div>
+
+
+            </div>
+            <div>
+                <button id="goBtn" class="btn btn-info" style="margin-top:15px">Go</button>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <hr class="header_hr">
+    </div>
+
+
+    {% if not attendance and not inning %}
+    <div class="no-attendance-display text-center">
+        <h3 style="font-size:24px; text-transform:uppercase;"><b>No Attendance!!</b>
+        </h3>
+
+
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="total-students text-center" style="margin-top: 30px; ">
+                    <div>
+                        <span style="font-size:16px; font-weight: 600">Total Present:- &nbsp;</span><span
+                            style="font-size:16px;" id="student_present"></span>
+                    </div>
+                    <div>
+                        <span style="font-size:16px; font-weight: 600">Total Absent:- &nbsp;</span><span
+                            style="font-size:16px;" id="student_absent"></span>
+                    </div>
+                    <div>
+                        <span style="font-size:16px; font-weight: 600">Total Students:- &nbsp;</span><span
+                            style="font-size:16px;">{{ attendance|length }}</span>
+                    </div>
+
+
+                </div>
+                <div class="take-attendance" style="margin-top: 70px;">
+                    {% if todays_date|date:"Y-m-d" == attend_date %}
+                    <p class="text-center"><a class="btn btn-default btn-success"
+                            href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">Take
+                            Attendance</a></p>
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+
+                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+                <input type="radio" name="mychart" class="mychart" id="column" value="column" onclick="chartfunc()"
+                    checked>Column &nbsp;
+                <input type="radio" name="mychart" class="mychart" id="bar" value="bar" onclick="chartfunc()">Bar
+                &nbsp;
+                <input type="radio" name="mychart" class="mychart" id="pie" value="pie" onclick="chartfunc()">Pie
+                &nbsp;
+                <input type="radio" name="mychart" class="mychart" id="line" value="line" onclick="chartfunc()">Line
+
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr class="header_hr">
+        </div>
+    </div>
+
+    <div id=" container attendance-table">
+        {% if attendance %}
+        <h3 class="detailListHeader2 ">Attendance List</h3>
+        <a class="btn btn-primary pull-right" href="   {% url 'course_attendance' inning.pk course.pk  attend_date %}">
+            Edit</a>
+
+        <table id="QuizTable" class="table table-striped table-bordered" style="width:100%">
+            <thead class="thead-light bg-primary">
+                <tr>
+                    <th>{% trans "S. No." %}</th>
+                    <th>{% trans "Username" %}</th>
+                    <th>{% trans "Full Name" %}</th>
+                    <th>{% trans "Attendance" %}</th>
+
+                    <th>{% trans "Updated On" %}</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+
+                {% for a in attendance %}
+
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    {# {% getMemberFromPk a.initial.member_code.pk 'Member_ID' %} #}
+                    <td> {{ a.initial.member_code.username }} </td>
+                    <td> {{ a.initial.member_code.get_full_name }} </td>
+                    <td
+                        style="background-color:{% if  a.initial.present %}     #29a329 {% else %} #cc2900 {% endif %}; color:white;  font-weight:700">
+                        {% if a.initial.present %} Present {% else %} Absent {% endif %} </td>
+                    <td class="attend_date" data-attend_date="{{ a.initial.updated|date:'m/d/Y h:i:s' }}"
+                        data-attend_datewithutc="{{ a.initial.updated|date:'m/d/Y h:i:s' }} UTC">
+                        {{ a.initial.updated|date:"m/d/Y h:i:s" }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+        {% else %}
+        <p>{% trans "There are no available attendance" %}.</p>
+        {% endif %}
+    </div>
+
+
+
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/highchart_data.js' %}"></script>
+
+<script>
+    var chart1;
+    if ($('#container').length > 0) {
+        $(function () {
+            // Create the chart
+            var options = {
+                chart: {
+                    events: {
+                        drilldown: function (e) {
+                            if (!e.seriesOptions) {
+
+                                var chart = this;
+
+
+                                // Show the loading label
+                                chart.showLoading('Loading ...');
+
+                                setTimeout(function () {
+                                    chart.hideLoading();
+                                    chart.addSeriesAsDrilldown(e.point, series);
+                                }, 1000);
+                            }
+
+                        }
+                    },
+                    plotBorderWidth: 0
+                },
+
+                title: {
+                    text: 'Student Attendance Record',
+                },
+                //
+
+                //
+                xAxis: {
+                    type: 'category',
+                    categories: ['Present', 'Absent'],
+
+                },
+                //
+                yAxis: {
+
+
+                    title: {
+                        margin: 10,
+                        text: 'Attendance'
+                    },
+                },
+                //
+                legend: {
+                    enabled: true,
+                },
+                //
+                plotOptions: {
+                    series: {
+                        pointPadding: 0.2,
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true
+                        }
+                    },
+                    pie: {
+                        plotBorderWidth: 0,
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        size: '100%',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}: <b>{point.y}</b>'
+                        }
+                    }
+                },
+                //
+                series: [{
+
+                    colorByPoint: true,
+                    data: [2, 2]
+                }],
+                //
+                drilldown: {
+                    series: []
+                }
+            };
+
+            // Column chart
+            options.chart.renderTo = 'container';
+            options.chart.type = 'column';
+            chart1 = new Highcharts.Chart(options);
+
+            chartfunc = function () {
+                var column = document.getElementById('column');
+                var bar = document.getElementById('bar');
+                var pie = document.getElementById('pie');
+                var line = document.getElementById('line');
+
+
+                if (column.checked) {
+
+                    options.chart.renderTo = 'container';
+                    options.chart.type = 'column';
+                    var chart1 = new Highcharts.Chart(options);
+                } else if (bar.checked) {
+                    options.chart.renderTo = 'container';
+                    options.chart.type = 'bar';
+                    var chart1 = new Highcharts.Chart(options);
+                } else if (pie.checked) {
+                    options.chart.renderTo = 'container';
+                    options.chart.type = 'pie';
+                    var chart1 = new Highcharts.Chart(options);
+                } else {
+                    options.chart.renderTo = 'container';
+                    options.chart.type = 'line';
+                    var chart1 = new Highcharts.Chart(options);
+                }
+
+            }
+
+
+        });
+        $(document).ready(function () {
+            chart1.update({
+                series: [{
+                    data: [present, absent]
+                }],
+            });
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".datetimeinput")[0].max = "9999-12-31";
+
+        $("#select_session").on("change", function () {
+            selectSessionOnChange();
+        });
+
+        $('.attend_date').each(function () {
+            if ($(this).attr('data-attend_date') != 'None' || $(this).attr('data-attend_date') != '') {
+                newdate = new Date($(this).attr('data-attend_datewithutc')).toLocaleString()
+                if (newdate != 'Invalid Date') {
+                    $(this).text(newdate)
+                }
+            }
+        })
+    });
+
+
+    $('#goBtn').on('click', function () {
+        changed_date = $('#id_Assignment_Deadline_edit').val()
+        c_date = new Date(changed_date)
+        now = new Date()
+        if (c_date > now) {
+            alert('Future date is not allowed')
+            return false
+        }
+        session = $('#select_session').val()
+        course = $('#select_course').val()
+        if (changed_date && session && course) {
+            if (params_base.get('iframe')) {
+                window.location.href = "/teachers/attendance/class-list/" + session + "/" + course + "/" + changed_date + '?iframe=1'
+            } else {
+                window.location.href = "/teachers/attendance/class-list/" + session + "/" + course + "/" + changed_date
+            }
+        } else {
+            alert('Please Select Course and Session')
+        }
+
+    })
+
+    var present = 0;
+    var absent = 0;
+
+
+
+    {% for x in attendance %}
+    {% if x.initial.present %}
+    present++;
+    {% else %}
+    absent++;
+    {% endif %}
+    {% endfor %}
+    $('#student_present').text(present)
+    $('#student_absent').text(absent)
+
+
+    function selectSessionOnChange() {
+        var levelClass = $("#select_session").find('option:selected').attr('value');
+        $('#select_course').val('')
+        $('#select_course option').each(function () {
+
+            var self = $(this);
+            self.removeAttr('selected');
+
+            if (self.hasClass(levelClass) || typeof (levelClass) == "undefined") {
+                self.show();
+                self.prop('selected', true);
+
+            } else {
+                self.hide();
+            }
+
+        });
+        // $("#select_course").val($("#select_course option:visible").val());
+
+    }
+    {% if not inning and course %}
+    {% else %}
+    selectSessionOnChange();
+    {% endif %}
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var table_main = $('#QuizTable').DataTable({
+            responsive: true,
+            stateSave: true,
+            dom: 'lBfrtip',
+
+            buttons: [
+                {
+                    title: 'Attendance List',
+                    extend: 'pdf',
+                    text: '<span class="exportcsv"><i class="fas fa-file-pdf"></i> Export to PDF </span>',
+                    exportOptions: {
+                        modifier: {
+                            page: 'visible'
+                        }
+                    }
+                },
+                {
+                    extend: 'csv',
+                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                },
+                {
+                    extend: 'print',
+                    text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                    fieldSeparator: '\t'
+                }
+            ],
+
+        });
+    });
+
+
+</script>
+{% endblock %}

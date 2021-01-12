@@ -19,18 +19,19 @@
     </div>
 </div>
 
-<div id="quiz_create_popup" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content" style="height: 90vh;overflow: auto;">
+<div id="quiz_create_popup" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade"
+    style="height: -webkit-fill-available;    width: -webkit-fill-available; z-index:10000;">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document" >
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_quiz_modal_title">
                     {% trans "Create Quiz" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
                 </button>
             </div>
-            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
+            <div class="modal-body modal-auto" id="quiz_form_ajax">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
 
             </div>
@@ -87,7 +88,24 @@
     <div class="col-lg-4 col-md-12">
         <div class="card">
             <div class="px-4 pt-4">
-                <h5 class="text-primary mb-3">{% trans "Course" %}</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="text-primary">{% trans "Course" %}</h5>
+                    <div class="d-inline-block dropdown">
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
+                            data-toggle="dropdown">
+                            <i class="ti-more-alt"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            {% if '/student' not in request.get_full_path %}
+                            <a class="dropdown-item text-primary" data-z="1" data-animated href="{% if '/teachers' in request.path %}
+                    /teachers{{ object.get_update_url }}
+                        {% else %}
+                            {{ object.get_update_url }}
+                        {% endif %}">{% trans "Edit Course" %}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
                 <p>
                     {% trans "Difficulty" %} :
                     {% for i in '12345'|make_list %}
@@ -133,14 +151,6 @@
             </div>
             {% if '/students' not in request.path %}
             <ul class="text-center">
-                <li class="p-2 border-top">
-                    <a class="btn btn-primary relative" data-z="1" data-animated href="{% if '/teachers' in request.path %}
-                    /teachers{{ object.get_update_url }}
-                        {% else %}
-                            {{ object.get_update_url }}
-                        {% endif %}">{% trans "Edit Course" %}</a>
-                </li>
-
                 <li class="p-2 border-top">
                     <button class="btn btn-success relative" data-z="1" data-toggle="modal"
                         data-target="#create_chapter_modal" data-animated id="add-newchapter-btn">
@@ -232,9 +242,7 @@
     {% if quizcount %}
     <tr class="course-info">
         <td style="border-top:0 ">
-            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
-width: -webkit-fill-available;
-">
+            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="width: -webkit-fill-available;">
 
                 <div class=" panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
 
@@ -327,9 +335,7 @@ width: -webkit-fill-available;
             {# {{ surveycount.count }}#}
             {# </td>#}
         <td style="border-top:0 ">
-            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="
-width: -webkit-fill-available;
-">
+            <div class="col-md-8 col-sm-8 col-xs-8 no-padding" style="width: -webkit-fill-available;">
 
                 <div class="panel-group" id="accordionmk" role="tablist" aria-multiselectable="true">
 
@@ -470,3 +476,5 @@ width: -webkit-fill-available;
     </tr>
 
 </table>
+
+{% include 'chapter/content-viewer-moules/QuickSurvey.html' %}

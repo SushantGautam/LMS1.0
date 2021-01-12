@@ -795,6 +795,7 @@ class CreateQuizAjax(CreateView):
         context = self.get_context_data()
         if form.is_valid():
             print("form valid")
+            print(form)
             self.object = form.save(commit=False)
             self.object.cent_code = self.request.user.Center_Code
             course_id = self.request.GET.get("course_id", None)
@@ -808,7 +809,7 @@ class CreateQuizAjax(CreateView):
             self.object.pre_test = True if self.request.GET.get("test_type", None) == 'pre_test' else False
             self.object.post_test = True if self.request.GET.get("test_type", None) == 'post_test' else False
             self.object.exam_paper = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
-            self.object.single_attempt = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
+            # self.object.single_attempt = True if self.request.GET.get("test_type", None) == 'exam_paper' else False
             self.object.save()
         self.object.url = 'quiz' + str(self.object.id)
         super().form_valid(form)
@@ -849,6 +850,7 @@ class CreateQuizAjax(CreateView):
         kwargs = super().get_form_kwargs()
         kwargs.update({'course_id': self.request.GET.get("course_id", None)})
         return kwargs
+
 
 
 class UpdateQuizBasicInfo(AdminAuthMxnCls, QuizInfoAuthMxnCls, UpdateView):

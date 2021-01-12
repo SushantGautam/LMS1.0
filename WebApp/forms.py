@@ -273,16 +273,10 @@ class CourseInfoForm(forms.ModelForm):
 
 class ChapterInfoForm(forms.ModelForm):
     mustreadtime = forms.CharField(label="Running Time (in minutes)", widget=forms.NumberInput(attrs={'min': '0'}))
-    Start_Date = forms.CharField(
-        required=False,
-    )
-    End_Date = forms.CharField(
-        required=False,
-    )
-
     class Meta:
         model = ChapterInfo
-        fields = '__all__'
+        fields = ['Chapter_No', 'Chapter_Name', 'Summary', 'Page_Num', 'mustreadtime', 'Use_Flag', 'Register_Agent',
+                  'is_commentable', 'Course_Code']
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -297,7 +291,7 @@ class ChapterInfoForm(forms.ModelForm):
         name = cleaned_data.get('Chapter_Name')
         course = cleaned_data.get('Course_Code')
         chapternum = ChapterInfo.objects.filter(Course_Code=course, Chapter_No=num)
-        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name=name)
+        chaptername = ChapterInfo.objects.filter(Course_Code=course, Chapter_Name__iexact=name)
         if chapternum.exists():
             if self.instance.id:
                 if chapternum.filter(pk=self.instance.id, Course_Code=course).exists():
@@ -315,6 +309,7 @@ class ChapterInfoForm(forms.ModelForm):
 
         if pass1 and pass2:
             return cleaned_data
+
 
 
 class SessionInfoForm(forms.ModelForm):
