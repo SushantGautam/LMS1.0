@@ -4,8 +4,8 @@
 {% load static %}
 {% block breadcrumb %}
 
-    <li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
-    <li class="breadcrumb-item active"><a href="{% url 'forum:create_topic' %}"> Create SubCategory</a>
+    <li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Forum' %}</a></li>
+    <li class="breadcrumb-item active"><a href="{% url 'forum:create_topic' %}"> {% trans 'Create SubCategory' %}</a>
     </li>
 
     <link rel="stylesheet" href="{% static 'vendorsx/select2/dist/css/select2.min.css' %}"/>
@@ -22,7 +22,7 @@
                 {% csrf_token %}
 
                 <div class="x-title">
-                    <h2>Create SubCategory</h2>
+                    <h2>{% trans 'Create SubCategory' %}</h2>
 
                 </div>
                 <div class="ln_solid"></div>

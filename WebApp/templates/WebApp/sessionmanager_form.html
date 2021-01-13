@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {% block stylesheets %}
 {{ form.media }}
@@ -27,7 +28,7 @@
 </style>
 <div class="headerDiv">
     <h2 class="infoFormHeader">
-        Manage Session Managers
+        {% trans 'Manage Session Managers' %}
     </h2>
     <hr class="header_hr">
 </div>
@@ -41,11 +42,15 @@
             {{ form }}
 
         </div>
+
+        {% blocktrans %}
+            *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
+            MAC.
+        {% endblocktrans %}
         
-        *You can select multiple students by holding <code> ctrl</code> key on Windows and <code> Command⌘</code> key on
-        MAC.<br><br>
+        <br><br>
         <div class="submitButton col-md-12">
-            <button class="btn btn-success" type="submit">Submit</button>
+            <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
         </div>
     </form>
 </div>

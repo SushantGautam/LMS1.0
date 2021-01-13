@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
     <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -8,28 +9,27 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Members</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Members' %}</li>
 {% endblock %}
 
 {% block content %}
     <div class="memberDiv">
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Blocked Members</h2>
+        <h2 class="tableHeader">{% trans 'List of Blocked Members' %}</h2>
 
         <nav id="navbar_parent" class="navbar-light" style="background-color: grey">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #808080;">
                     <div class="col-md-8 col-sm-8 col-xs-7">
                         <ul class="nav navbar-nav navbar-center member-list">
-                            <li><a class="navbar-brand" id="all_button" href="#">All</a></li>
-                            <li><a class="navbar-brand" id="teacher_button" href="#">Teacher</a></li>
-                            <li><a class="navbar-brand" id="student_button" href="#">Student</a></li>
+                            <li><a class="navbar-brand" id="all_button" href="#">{% trans 'All' %}</a></li>
+                            <li><a class="navbar-brand" id="teacher_button" href="#">{% trans 'Teacher' %}</a></li>
+                            <li><a class="navbar-brand" id="student_button" href="#">{% trans 'Student' %}</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-5 blocked-members">
                                 <span class="span-member" style="margin:2px"><a
-                                        href="{% url 'memberinfo_list' %}" style="color: white">View
-                                        Active Members</a></span>
+                                        href="{% url 'memberinfo_list' %}" style="color: white">{% trans 'View Active Members' %}</a></span>
                     </div>
 
                 </div>
@@ -67,18 +67,18 @@
                 <thead class="thead-light bg-primary">
                 <tr class="tableTitleRow">
                     <td><input type="checkbox" class="memberinfoCheckAll"></td>
-                    <td class="text-center">S. No.</td>
-                    <td>Username</td>
-                    <td>Member ID</td>
-                    <td>Full Name</td>
-                    <td>Email</td>
-                    <td>Department</td>
-                    <td>Phone</td>
-                    <td>Gender</td>
-                    <td>Student</td>
-                    <td>Teacher</td>
-                    <td>Type</td>
-                    <td class="text-center">Action</td>
+                    <td class="text-center">{% trans 'S.No.' %}</td>
+                    <td>{% trans 'Username' %}</td>
+                    <td>{% trans 'Member ID' %}</td>
+                    <td>{% trans 'Full Name' %}</td>
+                    <td>{% trans 'Email' %}</td>
+                    <td>{% trans 'Department' %}</td>
+                    <td>{% trans 'Phone' %}</td>
+                    <td>{% trans 'Gender' %}</td>
+                    <td>{% trans 'Student' %}</td>
+                    <td>{% trans 'Teacher' %}</td>
+                    <td>{% trans 'Type' %}</td>
+                    <td class="text-center">{% trans 'Action' %}</td>
                 </tr>
                 </thead>
                 {% for object in object_list %}
@@ -101,26 +101,26 @@
                             <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
                             <td>
                                 {% if object.Is_Teacher == True and object.Is_Student == True %}
-                                    Teacher, Student
+                                    {% trans 'Teacher' %}, {% trans 'Student' %}
                                 {% elif object.Is_Teacher == True %}
-                                    Teacher
+                                    {% trans 'Teacher' %}
                                 {% elif object.Is_Student == True %}
-                                    Student
+                                    {% trans 'Student' %}
                                 {% else %}
-                                    Not Assigned
+                                    {% trans 'Not Assigned' %}
                                 {% endif %}
                             </td>
                             <td class="text-center">
 
                                 <button class="btn btn-sm btn-success confirm-activate" id="{{ object.pk }}">
-                                    Activate
+                                    {% trans 'Activate' %}
                                 </button>
                                 <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
                                       id="activateForm-{{ object.pk }}">
                                     {% csrf_token %}
                                     <input type="hidden" value='memberinfo_list_inactive' name='url'>
                                 </form>
-                                <button class="btn btn-sm btn-danger confirm-delete" id="{{ object.pk }}">Delete
+                                <button class="btn btn-sm btn-danger confirm-delete" id="{{ object.pk }}">{% trans 'Delete' %}
                                 </button>
                                 <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
                                       id="delete_form-{{ object.pk }}">

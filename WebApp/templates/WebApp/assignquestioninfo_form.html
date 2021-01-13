@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'assignquestioninfo_list' %}">Question
-        Assignment</a>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'assignquestioninfo_list' %}">{% trans 'Question Assignment' %}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/create/' in request.path %}
-            Assign Question
+            {% trans 'Assign Question' %}
         {% else %}
-            Edit Assigned Question
+            {% trans 'Edit Assigned Question' %}
         {% endif %}
     </li>
 {% endblock %}
@@ -18,9 +18,9 @@
     <div class="headerDiv">
         <h2 class="infoFormHeader">
             {% if '/create/' in request.path %}
-                Assign Question
+                {% trans 'Assign Question' %}
             {% else %}
-                Edit Assigned Question
+                {% trans 'Edit Assigned Question' %}
             {% endif %}
         </h2>
         <hr class="header_hr">
@@ -42,7 +42,7 @@
         </div>
 
         <div class="submitButton  col-md-12">
-            <button class="btn btn-success" type="submit">Submit</button>
+            <button class="btn btn-success" type="submit">{% trans 'Submit' %}</button>
         </div>
     </form>
 {% endblock %}

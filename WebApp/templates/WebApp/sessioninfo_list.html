@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -8,26 +9,26 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page">Session Name</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans 'Session Name' %}</li>
 {% endblock %}
 {% block content %}
     <div class="groupmappingListClass">
 
         <hr class="header_hr">
-        <h2 class="tableHeader">List of Session Names</h2>
+        <h2 class="tableHeader">{% trans 'List of Session Names' %}</h2>
         <hr class="header_hr">
         <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'sessioninfo_create' %}">Create New Session Name</a>
+            <a class="btn btn-success" href="{% url 'sessioninfo_create' %}">{% trans 'Create New Session Name' %}</a>
         </div>
         <br><br><br>
         <div class="table-responsive">
             <table class="table table-striped table-bordered bg-white nowrap">
                 <thead class="thead-light bg-primary">
                 <tr>
-                    <td>ID</td>
-                    <td>Session Name</td>
-                    <td>Description</td>
-                    <td>Status</td>
+                    <td>{% trans 'ID' %}</td>
+                    <td>{% trans 'Session Name' %}</td>
+                    <td>{% trans 'Description' %}</td>
+                    <td>{% trans 'Status' %}</td>
                 </tr>
                 </thead>
                 {% for object in object_list %}
@@ -62,11 +63,11 @@
                 buttons: [
                     {
                         extend: 'csv',
-                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                        text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> {% trans 'Export to CSV' %} </span>'
                     },
                     {
                         extend: 'print',
-                        text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                        text: '<span class="print"><i class="fa fa-print"></i> {% trans 'Print' %} </span>',
                         fieldSeparator: '\t'
                     }]
             });

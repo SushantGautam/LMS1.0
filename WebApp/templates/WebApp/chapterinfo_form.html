@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="
         {% if object.Course_Code.Use_Flag %}
@@ -13,9 +14,9 @@
     </li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/create/' in request.path %}
-            Create New Chapter
+            {% trans 'Create New Chapter' %}
         {% else %}
-            Edit Chapter
+            {% trans 'Edit Chapter' %}
         {% endif %}
     </li>
 {% endblock %}

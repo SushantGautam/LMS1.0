@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
     | Course Form
 {% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'courseinfo_list_active' %}">Course</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'courseinfo_list_active' %}">{% trans 'Course' %}</a></li>
     {% if 'create' in request.path %}
-        <li class="breadcrumb-item active" aria-current="page">Create New Course</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Create New Course' %}</li>
     {% else %}
         <li class="breadcrumb-item" aria-current="page"><a
                 href="{{ object.get_absolute_url }}">{{ object.Course_Name }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Edit Course Info</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Edit Course Info' %}</li>
     {% endif %}
 
 

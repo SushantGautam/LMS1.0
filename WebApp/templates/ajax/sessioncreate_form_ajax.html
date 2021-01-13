@@ -1,8 +1,9 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-<small class="text-info">Please make sure that the name is not defined, before creating a new one.</small><br>
-<small>View Detail about Session Name List <b><a href="{% url 'sessioninfo_list' %}">here</a></b></small><br><br>
+<small class="text-info">{% trans 'Please make sure that the name is not defined, before creating a new one' %}.</small><br>
+<small>{% trans 'View Detail about Session Name List' %} <b><a href="{% url 'sessioninfo_list' %}">{% trans 'here' %}</a></b></small><br><br>
 <form method="post" id="ajaxsessionform">
     {% csrf_token %}
 
@@ -13,7 +14,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div id="div_id_Description" class="form-group">
             <label for="id_Description" class="control-label ">
-                Description
+                {% trans 'Description' %}
             </label>
             <div class="controls ">
                 <textarea name="Description" cols="40" id="id_Description" rows="6"
@@ -31,8 +32,8 @@
     </div>
 
     <div class="submitButton">
-        <button class="btn btn-success" id="ajaxsessionsubmit-btn">Submit</button>
-        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">Close</button>
+        <button class="btn btn-success" id="ajaxsessionsubmit-btn">{% trans 'Submit' %}</button>
+        <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal" id="close-btn">{% trans 'Close' %}</button>
     </div>
 </form>
 

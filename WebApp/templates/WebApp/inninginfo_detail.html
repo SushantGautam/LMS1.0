@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">Session</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'inninginfo_list' %}">{% trans 'Session' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ object.Inning_Name }}</li>
 {% endblock %}
 {% block content %}

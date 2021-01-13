@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load humanize %}
 {% load static %}
+{% load i18n %}
 {% block stylesheets %}
     <link rel='manifest' href='/manifest.webmanifest'>
     <style>
@@ -32,7 +33,7 @@
                 <div class="tile-stats" id="student_tile">
                     <div class="icon"><img src="/static/images/student_icon.png" id="student_icon"></div>
                     <div class="count">{{ studentcount }}</div>
-                    <h3>Student</h3>
+                    <h3>{% trans 'Student' %}</h3>
                     <p></p>
                 </div>
             </div>
@@ -40,7 +41,7 @@
                 <div class="tile-stats" id="teacher_tile">
                     <div class="icon"><img src="/static/images/teacher_icon.png" id="teacher_icon"></div>
                     <div class="count">{{ teachercount }}</div>
-                    <h3>Teacher</h3>
+                    <h3>{% trans 'Teacher' %}</h3>
                     <p></p>
                 </div>
             </div>
@@ -49,7 +50,7 @@
                     <div class="icon"><img src="/static/images/total_icon.png" id="total_icon"></div>
                     <div class="count">{{ totalcount }}</div>
                     <a href="{% url 'memberinfo_list' %}">
-                        <h3> Members</h3>
+                        <h3> {% trans 'Members' %}</h3>
                     </a>
                     <p></p>
                 </div>
@@ -59,7 +60,7 @@
                     <div class="icon"><img src="/static/images/courses.png" id="course_icon"></div>
                     <div class="count">{{ coursecount }}</div>
                     <a href="{% url 'courseinfo_list_active' %}">
-                        <h3>Courses</h3>
+                        <h3>{% trans 'Courses' %}</h3>
                     </a>
                     <p></p>
                 </div>
@@ -71,7 +72,7 @@
         <div class="col-md-6 col-sm-12 col-xs-12">
             <div class="panel panel-default">
                 <div class="title">
-                    <h2 style="font-size: 2em"><a href="{% url 'inninginfo_list' %}">&nbsp;<b>Sessions</b><span
+                    <h2 style="font-size: 2em"><a href="{% url 'inninginfo_list' %}">&nbsp;<b>{% trans 'Sessions' %}</b><span
                             class="thread">{{ sessioncount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">
@@ -91,7 +92,7 @@
             <div class="panel panel-default">
                 <div class="title">
                     <a href="{% url 'courseinfo_list_active' %}">
-                        <h2 style="font-size: 2em">&nbsp;<b>COURSES</b></h2>
+                        <h2 style="font-size: 2em">&nbsp;<b style="text-transform: uppercase;">{% trans 'Courses' %}</b></h2>
                     </a>
                 </div>
                 <ul class="list-group">
@@ -112,7 +113,7 @@
         <div class="col-md-6 col-sm-12 col-xs-12">
             <div class="panel panel-default">
                 <div class="title">
-                    <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b>FORUM</b><span
+                    <h2 style="font-size: 2em"><a href="{% url 'forum:index' %}">&nbsp;<b style="text-transform: uppercase;">{% trans 'Forum' %}</b><span
                             class="thread">{{ threadcount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">
@@ -130,7 +131,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="title">
-                    <h2 style="font-size: 2em"><a href="{% url 'surveyinfo_list' %}">&nbsp;<b>SURVEY</b><span
+                    <h2 style="font-size: 2em"><a href="{% url 'surveyinfo_list' %}">&nbsp;<b style="text-transform: uppercase;">{% trans 'Survey' %}</b><span
                             class="thread">{{ surveycount }}</span></a></h2>
                 </div>
                 <ul class="list-group" data-hover-z="0.5" data-animated="">

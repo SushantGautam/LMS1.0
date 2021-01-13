@@ -5,8 +5,8 @@
 {% block breadcrumb %}
 
 
-<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">Forum</a></li>
-<li class="breadcrumb-item active"><a href="{% url 'forum:edit_thread' pk=form.instance.pk %}"> Edit Thread</a>
+<li class="breadcrumb-item"><a href="{% url 'forum:index' %}">{% trans 'Forum' %}</a></li>
+<li class="breadcrumb-item active"><a href="{% url 'forum:edit_thread' pk=form.instance.pk %}"> {% trans 'Edit Thread' %}</a>
 </li>
 
 {% endblock %}
@@ -35,7 +35,7 @@
 
         <div class="x_panel">
             <div class="x_title">
-                <h2>Description
+                <h2>{% trans 'Description' %}
 
                 </h2>
 
@@ -57,17 +57,17 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a data-edit="fontSize 5">
-                                    <p style="font-size:17px">Huge</p>
+                                    <p style="font-size:17px">{% trans 'Huge' %}</p>
                                 </a>
                             </li>
                             <li>
                                 <a data-edit="fontSize 3">
-                                    <p style="font-size:14px">Normal</p>
+                                    <p style="font-size:14px">{% trans 'Normal' %}</p>
                                 </a>
                             </li>
                             <li>
                                 <a data-edit="fontSize 1">
-                                    <p style="font-size:11px">Small</p>
+                                    <p style="font-size:11px">{% trans 'Small' %}</p>
                                 </a>
                             </li>
                         </ul>
@@ -108,7 +108,7 @@
                                 class="fa fa-link"></i></a>
                         <div class="dropdown-menu input-append">
                             <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
-                            <button class="btn" type="button">Add</button>
+                            <button class="btn" type="button">{% trans 'Add' %}</button>
                         </div>
                         <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
                     </div>

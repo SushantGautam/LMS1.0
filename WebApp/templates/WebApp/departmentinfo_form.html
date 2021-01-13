@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load crispy_forms_tags %}
 
 <div class="x_content">
@@ -10,9 +11,9 @@
 
         <button type="submit" class="submit-btn btn btn-primary">
             {% if '/update' in request.path %}
-                Update
+                {% trans 'Update' %}
             {% else %}
-                Create
+                {% trans 'Create' %}
             {% endif %}
         </button>
 

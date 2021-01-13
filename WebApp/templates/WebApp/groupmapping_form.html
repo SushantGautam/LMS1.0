@@ -1,18 +1,20 @@
 {% extends base_file %}
 {% load static %}
+{% load i18n %}
 {% load crispy_forms_tags %}
+
 {% block stylesheets %}
     {{ form.media }}
 {% endblock stylesheets %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">Student Group</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'groupmapping_list' %}">{% trans 'Student Group' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">
         {% if '/groupmapping/create/' == request.path %}
-            Create Student Group
+            {% trans 'Create Student Group' %}
         {% elif '/saveasnew' in request.path %}
-            Save New Student Group
+            {% trans 'Save New Student Group' %}
         {% else %}
-            Edit Student Group
+            {% trans 'Edit Student Group' %}
         {% endif %}
     </li>
 {% endblock %}

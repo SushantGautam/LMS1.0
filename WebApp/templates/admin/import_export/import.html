@@ -3,6 +3,7 @@
 {% load admin_urls %}
 {% load import_export_tags %}
 {% load static %}
+{% load i18n %}
 
 {% block extrastyle %}{{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "import_export/import.css" %}"/>{% endblock %}
@@ -12,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-  <h2> Please Use <a class="red" href="/admin/WebApp/memberinfo/export/"> Exporter</a> to export before importing.</h2>
+    <h2> Please Use <a class="red" href="/admin/WebApp/memberinfo/export/"> Exporter</a> to export before importing.</h2>
     {% if confirm_form %}
         <form action="{% url opts|admin_urlname:"process_import" %}" method="POST">
             {% csrf_token %}

@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <head>
 
@@ -40,7 +41,7 @@
     </script>
 
 
-    <title>Course Builder</title>
+    <title>{% trans 'Course Builder' %}</title>
 </head>
 
 <style>
@@ -393,42 +394,41 @@
 
                 <section class="lower">
                     <div class="row" style="margin:auto">
-                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">Media
-                            Items </h3>
+                        <h3 class="media-content-builder text-center" style="margin-top:16px; font-size:15px">{% trans 'Media Items' %} </h3>
 
                     </div>
                     <div class="row" style="margin:auto">
                         <div class="media-items-tabs">
                             <!-- Tab links -->
                             <div class="tab">
-                                <button class="tablinks" onclick="openCity(event, 'image-gallery')">Images</button>
-                                <button class="tablinks" onclick="openCity(event, 'video-gallery')">Videos</button>
-                                <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">PDF</button>
+                                <button class="tablinks" onclick="openCity(event, 'image-gallery')">{% trans 'Images' %}</button>
+                                <button class="tablinks" onclick="openCity(event, 'video-gallery')">{% trans 'Videos' %}</button>
+                                <button class="tablinks" onclick="openCity(event, 'pdf-gallery')">{% trans 'PDF' %}</button>
                                 <button class="tablinks" onclick="openCity(event, '3d-gallery')">3D</button>
                             </div>
 
                             <!-- Tab content -->
                             <div id="image-gallery" class="tabcontent file-content">
-                                <h3>Images</h3>
+                                <h3>{% trans 'Images' %}</h3>
                                 <div class="individual-file">
 
                                 </div>
-                                <p>Nothing to show here...</p>
+                                <p>{% trans 'Nothing to show here' %}...</p>
                             </div>
 
                             <div id="video-gallery" class="tabcontent file-content">
-                                <h3>Videos</h3>
-                                <p>Nothing to show here...</p>
+                                <h3>{% trans 'Videos' %}</h3>
+                                <p>{% trans 'Nothing to show here' %}...</p>
                             </div>
 
                             <div id="pdf-gallery" class="tabcontent file-content">
-                                <h3>PDF</h3>
-                                <p>Nothing to show here...</p>
+                                <h3>{% trans 'PDF' %}</h3>
+                                <p>{% trans 'Nothing to show here' %}...</p>
                             </div>
 
                             <div id="3d-gallery" class="tabcontent file-content">
-                                <h3>3D Files</h3>
-                                <p>Nothing to show here...</p>
+                                <h3>3D {% trans 'Files' %}</h3>
+                                <p>{% trans 'Nothing to show here' %}...</p>
                             </div>
                         </div>
 
@@ -458,20 +458,19 @@
 
                 <nav class="navbar">
                     <a href="{% url 'previewcontentviewer' course chapter %}" id="previewBtn"><i
-                            class="fas fa-eye"></i><br>Preview</a>
+                            class="fas fa-eye"></i><br>{% trans 'Preview' %}</a>
 
-                    <a href="javascript:void(0)" id="SaveBtn"> <i class="fas fa-save"></i><br/>Save</a>
+                    <a href="javascript:void(0)" id="SaveBtn"> <i class="fas fa-save"></i><br/>{% trans 'Save' %}</a>
 
                     <input id="importzipfile" name="importfile" type="file"
                            accept="zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"/>
-                    <a href="javascript:void(0)" id="import_zip_link"><i class="fas fa-file-import"></i><br/>Import</a>
+                    <a href="javascript:void(0)" id="import_zip_link"><i class="fas fa-file-import"></i><br/>{% trans 'Import' %}</a>
 
                     <a href="{% url 'exportzip' course chapter %}" target="_blank"
                        onclick="return confirm('Have you saved the latest change?')"><i
-                            class="fas fa-file-export"></i><br/>Export</a>
+                            class="fas fa-file-export"></i><br/>{% trans 'Export' %}</a>
 
-                    <a href="javascript:void(0)" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br/>Save and
-                        Exit</a>
+                    <a href="javascript:void(0)" id="save-and-exit-btn"><i class="fas fa-door-open"></i><br/>{% trans 'Save and Exit' %}</a>
                 </nav>
             </div>
 
@@ -498,7 +497,7 @@
              style="padding:0px!important">
 
             <div class="chapter-select ">
-                <h3>Chapter Lists</h3>
+                <h3>{% trans 'Chapter Lists' %}</h3>
 
                 <div class="selection">
                     <select name="chapter-lists" id="chapterlist">
@@ -571,12 +570,12 @@
             <form id="btn-form">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Button</h4>
+                    <h4 class="modal-title">{% trans 'Button' %}</h4>
                 </div>
                 <div class="modal-body">
                     <!-- Modal Contents Here -->
                     <div class="col-md-12">
-                        <label>Display Name</label>
+                        <label>{% trans 'Display Name' %}</label>
                         <input type="text" name="btn-name" id="btn-name">
                         <br>
                         <label>Link</label>
@@ -589,8 +588,8 @@
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" id="button_id" value="">
-                    <button type="button" id="btn-submit" class="#">Submit</button>
-                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                    <button type="button" id="btn-submit" class="#">{% trans 'Submit' %}</button>
+                    <button type="button" class="#" data-dismiss="modal">{% trans 'Close' %}</button>
                 </div>
             </form>
         </div>
@@ -608,7 +607,7 @@
                 <div class="modal-header">
                     <div class="row">
                         <div class="col-md-11">
-                            <h4 class="modal-title">Quiz</h4>
+                            <h4 class="modal-title">{% trans 'Quiz' %}</h4>
 
                         </div>
                         <div class="col-md-1">
@@ -625,7 +624,7 @@
 
                     <div class="row">
                         <div class="col-md-4 col-sm-4 col-xs-12">
-                            <label class="control-label">Display Name</label>
+                            <label class="control-label">{% trans 'Display Name' %}</label>
 
                         </div>
 
@@ -647,8 +646,7 @@
                                 <a href="{% url 'chapterinfo_detail' course chapter %}?ifquiz=1" target="_blank"
                                    id="quiz_create_link">
                                     <h5> <span
-                                            style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
-                                                New Quiz </span></h5>
+                                            style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">{% trans 'Create New Quiz' %} </span></h5>
                                 </a>
 
 
@@ -656,7 +654,7 @@
                             <hr>
 
                             <div class="select-quiz text-left">
-                                <h5> Select Existing Quiz
+                                <h5> {% trans 'Select Existing Quiz' %}
                                 </h5>
                                 <input class="form-control" id="myInput" type="text" placeholder="Search..">
                             </div>
@@ -664,8 +662,8 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
-                                        <th>Quiz Name</th>
-                                        <th>Action</th>
+                                        <th>{% trans 'Quiz Name' %}</th>
+                                        <th>{% trans 'Action' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody id="myTable">
@@ -683,7 +681,7 @@
                             <div class="row">
 
                                 <div class="col-md-4">
-                                    <label>Chosen Quiz</label>
+                                    <label>{% trans 'Chosen Quiz' %}</label>
 
                                 </div>
                                 <div class="col-md-8">
@@ -701,8 +699,8 @@
                 </div>
                 <div class="modal-footer" style="border:none!important;">
                     <input type="hidden" id="quiz_id" value="">
-                    <button type="button" id="quiz-submit" class="#">Submit</button>
-                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                    <button type="button" id="quiz-submit" class="#">{% trans 'Submit' %}</button>
+                    <button type="button" class="#" data-dismiss="modal">{% trans 'Close' %}</button>
                 </div>
             </form>
         </div>
@@ -720,7 +718,7 @@
                 <div class="modal-header">
                     <div class="row">
                         <div class="col-md-11">
-                            <h4 class="modal-title">Survey</h4>
+                            <h4 class="modal-title">{% trans 'Survey' %}</h4>
 
                         </div>
                         <div class="col-md-1">
@@ -737,7 +735,7 @@
 
                     <div class="row">
                         <div class="col-md-4 col-sm-4 col-xs-12">
-                            <label class="control-label">Display Name</label>
+                            <label class="control-label">{% trans 'Display Name' %}</label>
 
                         </div>
 
@@ -763,8 +761,7 @@
                     {% endif %}"
                                    target="_blank">
                                     <h5> <span
-                                            style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">Create
-                                                New Survey </span></h5>
+                                            style="padding: 4px; background-color:#05678e;color:white; border-radius:5px">{% trans 'Create New Survey' %} </span></h5>
                                 </a>
 
 
@@ -772,7 +769,7 @@
                             <hr>
 
                             <div class="select-survey text-left">
-                                <h5> Select Existing Survey
+                                <h5> {% trans 'Select Existing Survey' %}
                                 </h5>
                                 <input class="form-control" id="mySurveyInput" type="text" placeholder="Search..">
                             </div>
@@ -780,8 +777,8 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
-                                        <th>Survey Name</th>
-                                        <th>Action</th>
+                                        <th>{% trans 'Survey Name' %}</th>
+                                        <th>{% trans 'Action' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody id="mySurveyTable">
@@ -799,7 +796,7 @@
                             <div class="row">
 
                                 <div class="col-md-4">
-                                    <label>Chosen Survey</label>
+                                    <label>{% trans 'Chosen Survey' %}</label>
 
                                 </div>
                                 <div class="col-md-8">
@@ -817,8 +814,8 @@
                 </div>
                 <div class="modal-footer" style="border:none!important;">
                     <input type="hidden" id="survey_id" value="">
-                    <button type="button" id="survey-submit" class="#">Submit</button>
-                    <button type="button" class="#" data-dismiss="modal">Close</button>
+                    <button type="button" id="survey-submit" class="#">{% trans 'Submit' %}</button>
+                    <button type="button" class="#" data-dismiss="modal">{% trans 'Close' %}</button>
                 </div>
             </form>
         </div>
@@ -834,7 +831,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
+                <h4 class="modal-title">{% trans 'Link' %}</h4>
             </div>
             <div class="modal-body">
                 <!-- Modal Contents Here -->
@@ -846,8 +843,8 @@
                     </span>
             </div>
             <div class=" modal-footer">
-                <button type="button" id="link-video-submit" class="#">Submit</button>
-                <button type="button" class="#" data-dismiss="modal">Close</button>
+                <button type="button" id="link-video-submit" class="#">{% trans 'Submit' %}</button>
+                <button type="button" class="#" data-dismiss="modal">{% trans 'Close' %}</button>
             </div>
         </div>
 
@@ -864,20 +861,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Link</h4>
+                <h4 class="modal-title">{% trans 'Link' %}</h4>
             </div>
             <div class="modal-body">
                 <!-- Modal Contents Here -->
 
-                <label>Image Link</label>
+                <label>{% trans 'Image Link' %}</label>
                 <span class="btnlink">
                         http://
                         <input type="text" name="link" id="image-link">
                     </span>
             </div>
             <div class="modal-footer">
-                <button type="button" id="link-image-submit" class="#">Submit</button>
-                <button type="button" class="#" data-dismiss="modal">Close</button>
+                <button type="button" id="link-image-submit" class="#">{% trans 'Submit' %}</button>
+                <button type="button" class="#" data-dismiss="modal">{% trans 'Close' %}</button>
             </div>
         </div>
 
@@ -895,7 +892,7 @@
             <div class="modal-header">
                 <div class="col-sm-12">
                     <div class="col-sm-6">
-                        <h4 class="modal-title">Link</h4>
+                        <h4 class="modal-title">{% trans 'Link' %}</h4>
                     </div>
                     <div class="col-sm-6">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -911,9 +908,9 @@
                     <label>Upload 3D file(.glb or .gltf)</label>
                     <input type="file" name="_3dfile" id="_3dfile-link" accept=".glb,.gltf"/>
                 </div>
-                <div>For converting 3D files online,
+                <div>{% trans 'For converting 3D files online' %},
                     <a href="https://blackthread.io/gltf-converter/" target="_blank">
-                        Click Here.
+                        {% trans 'Click Here' %}.
                     </a>
                 </div>
                 <!-- <div>
@@ -922,8 +919,8 @@
             </div> -->
             </div>
             <div class="modal-footer">
-                <button type="button" id="link-3d-submit" class="#">Submit</button>
-                <button type="button" class="#" data-dismiss="modal">Close</button>
+                <button type="button" id="link-3d-submit" class="#">{% trans 'Submit' %}</button>
+                <button type="button" class="#" data-dismiss="modal">{% trans 'Close' %}</button>
             </div>
         </div>
 

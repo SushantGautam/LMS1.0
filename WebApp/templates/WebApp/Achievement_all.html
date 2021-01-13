@@ -8,7 +8,7 @@
 
 <div class="form-row filter_list">
     <div class="form-group col-md-6">
-        <p><label for="id_Inningsfilter">Filter by Innings</label> <select class="form-control" name="Inningsfilter"
+        <p><label for="id_Inningsfilter">{% trans 'Filter by Innings' %}</label> <select class="form-control" name="Inningsfilter"
                 required="" id="id_Inningsfilter">
                 <option value="">---------</option>
                 {% for i in Inningsfilter %}
@@ -21,7 +21,7 @@
             </select></p>
     </div>
     <div class="form-group col-md-6">
-        <p><label for="id_CourseFilter">Filter by Course</label> <select class="form-control" name="CourseFilter"
+        <p><label for="id_CourseFilter">{% trans 'Filter by Course' %}</label> <select class="form-control" name="CourseFilter"
                 required="" id="id_CourseFilter">
                 <option value="">---------</option>
                 {% for i in CourseFilter %}
@@ -59,9 +59,9 @@
     <table id="AchievementTable" class="table table-striped table-bordered" style="width:100%">
         <thead class="thead-light bg-primary">
             <tr>
-                <th>S.No</th>
-                <th>Student</th>
-                <th>Progress</th>
+                <th>{% trans 'S.No' %}</th>
+                <th>{% trans 'Student' %}</th>
+                <th>{% trans 'Progress' %}</th>
             </tr>
         </thead>
 

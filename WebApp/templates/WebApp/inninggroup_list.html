@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block stylesheets %}
 <link href="{% static 'vendorsx/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">Course Allocation</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'Course Allocation' %}</li>
 {% endblock %}
 {% block content %}
 <!-- Model for Import CSV file -->
@@ -18,7 +19,7 @@ aria-hidden="true">
 <div class="modal-dialog" role="document">
    <div class="modal-content">
        <div class="modal-header text-center">
-           <h4 class="modal-title" id="exampleModalLabel"><b>CSV File Import</b>
+           <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'CSV File Import' %}</b>
                <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
                    <span aria-hidden="true">&times;</span>
                </button>
@@ -27,30 +28,28 @@ aria-hidden="true">
        <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
            <form method="POST" id="form_import_csv" enctype="multipart/form-data">
                {% csrf_token %} <br><br>
-               <label for="id_import_csv">Choose the CSV file to Import Course Teacher Allocation Data</label>
+               <label for="id_import_csv">{% trans 'Choose the CSV file to Import Course Teacher Allocation Data' %}</label>
                <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
                <a target="_blank" class="text-center" href="{% static 'importCourseTeacherAllo_sample.csv' %}"
                   style="padding-top: 2em;">
-                   <h4><i class="fa fa-download" aria-hidden="true"></i> Download Sample CSV</h4>
+                   <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
                </a><br>
 
-               <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>Read Detail
-                   Info...</b></span>
+               <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>{% trans 'Read Detail Info' %}...</b></span>
                <ul class="info-text" style="display:none;background:azure;">
-                   <li>- Course Allocation Name (required)</li>
-                   <li>- Course Name should be already registered (required)</li>
-                   <li>- At least 1 teacher username is required (required)</li>
-                   <li>- All Teachers account should have already been registered as Member</li>
-                   <li>- Multiple Teachers name should be seperated by comma</li>
+                   <li>- {% trans 'Course Allocation Name' %} ({% trans 'required' %})</li>
+                   <li>- {% trans 'Course Name should be already registered' %} ({% trans 'required' %})</li>
+                   <li>- {% trans 'At least 1 teacher username is required' %} ({% trans 'required' %})</li>
+                   <li>- {% trans 'All Teachers account should have already been registered as Member' %}</li>
+                   <li>- {% trans 'Multiple Teachers name should be separated by comma' %}</li>
                </ul>
 
                <div class="import-message"></div>
                <div class="text-center">
-                   <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">Submit
-                       File
+                   <button class="btn btn-success" type="submit" style="margin:3em auto 2em auto">{% trans 'Submit File' %}
                    </button>
                    <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
-                           style="margin:3em auto 2em auto">Close
+                           style="margin:3em auto 2em auto">{% trans 'Close' %}
                    </button>
                </div>
            </form>
@@ -61,11 +60,11 @@ aria-hidden="true">
 <!-- End of model -->
 <div class="inninggroupListClass">
     <hr class="header_hr">
-    <h2 class="tableHeader">Teacher-Course Allocation</h2>
+    <h2 class="tableHeader">{% trans 'Teacher-Course Allocation' %}</h2>
 
     <h5 class="text-left" style="padding-left: 10px; margin-bottom: 0;"><b>
-            <a id="cardButton" style="cursor: pointer">Card View</a> &nbsp;
-            <a id="tableButton" style="cursor: pointer">Table View</a></b>
+            <a id="cardButton" style="cursor: pointer">{% trans 'Card View' %}</a> &nbsp;
+            <a id="tableButton" style="cursor: pointer">{% trans 'Table View' %}</a></b>
 
     </h5>
     <hr class="header_hr">
@@ -73,18 +72,18 @@ aria-hidden="true">
 
     <div class="table-responsive" id="tableView">
         <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'inninggroup_create' %}">Allocate Teacher to Course</a>
+            <a class="btn btn-success" href="{% url 'inninggroup_create' %}">{% trans 'Allocate Teacher to Course' %}</a>
         </div>
         <br><br><br>
         <table class="table table-striped table-bordered bg-white nowrap">
             <thead class="thead-light bg-primary">
                 <tr>
-                    <td>ID</td>
-                    <td>Course Allocation Name</td>
-                    <td>Course Name</td>
-                    <td>No. of Teachers</td>
-                    <td>Teachers</td>
-                    <td>Status</td>
+                    <td>{% trans 'ID' %}</td>
+                    <td>{% trans 'Course Allocation Name' %}</td>
+                    <td>{% trans 'Course Name' %}</td>
+                    <td>{% trans 'No. of Teachers' %}</td>
+                    <td>{% trans 'Teachers' %}</td>
+                    <td>{% trans 'Status' %}</td>
                 </tr>
             </thead>
             {% for object in object_list %}
@@ -96,9 +95,9 @@ aria-hidden="true">
                 <td>{{ object.Teacher_Code.count }}</td>
                 <td> {% for teachers in object.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}</td>
                 <td>{% if  object.Use_Flag == True %}
-                    Active
+                    {% trans 'Active' %}
                     {% else %}
-                    Inactive
+                    {% trans 'Inactive' %}
                     {% endif %}
                 </td>
             </tr>
@@ -108,7 +107,7 @@ aria-hidden="true">
     <div id="cardView" style="display:none;padding: 0;" class="col-md-12 col-sm-12 col-xs-12">
 
         <div class="btn-createnew">
-            <a class="btn btn-success" href="{% url 'inninggroup_create' %}">Allocate Teacher to Course</a>
+            <a class="btn btn-success" href="{% url 'inninggroup_create' %}">{% trans 'Allocate Teacher to Course' %}</a>
         </div>
         <br><br><br>
         <div class="container" id="divID">
@@ -116,7 +115,7 @@ aria-hidden="true">
 
             <div class="col-md-4 col-sm-6 col-xs-12 card-body" id="listCard">
                 <div class="card-header" style="background: white">
-                    <h5 class="card-title"> <strong> Session : &nbsp;<a
+                    <h5 class="card-title"> <strong> {% trans 'Session' %} : &nbsp;<a
                                 href="{{ object.get_absolute_url }}">{{ object.Course_Code }}</a></strong></h5>
 
                     <!-- <h5 class="card-title">
