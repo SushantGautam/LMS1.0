@@ -790,7 +790,7 @@ class AssignAnswerInfo(models.Model):
     Assignment_Answer = TextField(null=True, blank=True)
     Assignment_File = FileField(upload_to=assignment_upload, null=True, blank=True, max_length=255)
     Assignment_Feedback = TextField(default='', blank=True, null=True)
-
+    Submission_Date = DateTimeField(null=True)
     # Relationship Fields
     Question_Code = ForeignKey(
         'AssignmentQuestionInfo',
@@ -1110,7 +1110,7 @@ class SessionMapInfo(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
-    object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
     target = GenericForeignKey('content_type', 'object_id')
     Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.CASCADE)
 
