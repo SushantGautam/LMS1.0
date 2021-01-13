@@ -268,7 +268,7 @@ class MemberInfo(AbstractUser):
                                                         object_id=assignment.id,
                                                         Start_Date__lte=self.datetime_now,
                                                         Session_Code__in=assigned_session
-                                                        ).filter(~Q(Start_Date=None, End_Date=None))
+                                                        ).exclude(Start_Date=None, End_Date=None)
             if session_map.exists():
                 if session_map.filter(End_Date__gte=self.datetime_now).exists():
                     assignment.active = True
