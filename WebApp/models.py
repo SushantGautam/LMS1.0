@@ -186,20 +186,24 @@ class MemberInfo(AbstractUser):
 
     def get_student_courses(self, inactiveCourse=False, activeCourse=False):
         all_sessions = self.get_student_sessions()
+        inning_group = InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group'))
         all_courses = CourseInfo.objects.filter(
-            pk__in=InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group', flat=True)))
-        active_sessions = self.get_student_sessions(active=True)
+            pk__in=[ig.Course_Code.pk for ig in
+                    inning_group])
+        active_sessions = all_sessions.filter(End_Date__gte=self.datetime_now)
 
         courses = all_courses
         sessions = all_sessions
         if inactiveCourse:
             sessions = self.get_student_sessions(inactive=True)
             courses = all_courses.exclude(
-                pk__in=InningGroup.objects.filter(pk__in=active_sessions.values_list('Course_Group', flat=True)))
+                pk__in=[ig.Course_Code.pk for ig in
+                        inning_group.filter(pk__in=active_sessions.values_list('Course_Group'))])
         if activeCourse:
             sessions = active_sessions
             courses = all_courses.filter(
-                pk__in=InningGroup.objects.filter(pk__in=active_sessions.values_list('Course_Group', flat=True)))
+                pk__in=[ig.Course_Code.pk for ig in
+                        inning_group.filter(pk__in=active_sessions.values_list('Course_Group'))])
         return {'courses': courses, 'session': sessions}
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
