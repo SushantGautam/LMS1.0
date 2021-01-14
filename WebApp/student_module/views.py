@@ -516,6 +516,7 @@ class submitAnswer(View):
             fs = FileSystemStorage(location=path + '/assignments/' + str(Assignment_Code.id))
             filename = fs.save(name, media)
             Obj.Assignment_File = 'assignments/' + str(Assignment_Code.id) + '/' + name
+        Obj.Submission_Date = timezone.now()
         Obj.save()
 
         return JsonResponse(
