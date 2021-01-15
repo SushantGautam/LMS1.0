@@ -121,16 +121,11 @@ def filter_active_assignments(chapters, sessions, filter_type="active"):  # It o
 def start(request):
     global courses, activeassignments, sessions, batches
     datetime_now = timezone.now().replace(microsecond=0)
+    sessions = request.user.get_student_sessions()
+    courses = request.user.get_student_courses(sessions=sessions, activeCourse=True)['courses']
+    chapters = request.user.get_student_chapters(active=True, courseList=courses.values_list('pk', flat=True))
 
-    batches = GroupMapping.objects.filter(Students=request.user)
-    sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                         Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
-    course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
-    courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                        Use_Flag=True)
-    chapters = student_active_chapters(courses, sessions)
-
-    activeassignments = filter_active_assignments(chapters, sessions)[:5]
+    activeassignments = request.user.get_student_assignments(active=True, chapterList=chapters.values_list('pk', flat=True))
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -178,7 +173,7 @@ def start(request):
         notice = None
 
     return render(request, 'student_module/dashboard.html',
-                  {'GroupName': batches, 'Group': sessions, 'Course': courses,
+                  {'Group': sessions, 'Course': courses,
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
                    'notice': notice,
@@ -388,7 +383,7 @@ class CourseInfoDetailView(CourseAuthMxnCls, StudentCourseAuthMxnCls, DetailView
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['chapters'] = self.request.user.get_student_chapters(course=self.object)
+        context['chapters'] = self.request.user.get_student_chapters(courseList=[self.object.pk])
 
         surveys = SurveyInfo.objects.filter(
             Course_Code=self.kwargs.get('pk'))
@@ -419,7 +414,7 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['assignments'] = self.request.user.get_student_assignments(chapter=self.object)
+        context['assignments'] = self.request.user.get_student_assignments(chapterList=[self.object.pk])
         # context['assignments'] = AssignmentInfo.objects.filter(Chapter_Code=self.kwargs.get('pk'),
         #                                                        Use_Flag=True).filter(
         #     Q(assignment_sessionmaps__Start_Date__lte=datetime.utcnow())).distinct()
