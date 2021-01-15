@@ -62,7 +62,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8 col-md-6 col-sm-12">
+    <div class="col-lg-6 col-md-6 col-sm-12">
         {% if 'teachers' in request.path %}
         <form method="get" action="" class="query_form">
             <div class="col-md-6 col-sm-6">
@@ -98,8 +98,15 @@
 
         {% endif %}
     </div>
+    <div class="col-lg-2 col-md-6 col-sm-12 text-right">
+        {% if 'inactive' in request.path %}
+            <a href="{% url 'courseinfo_grid_active' %}" class="btn">View Active Courses</a>
+            {% elif 'active' in request.path %}
+            <a href="{% url 'courseinfo_grid_inactive' %}" class="btn">View Inactive Courses</a>
+            {% endif %} 
+    </div>
     {% if 'students' not in request.path %}
-    <div class="col-lg-4 col-md-6 col-sm-12 btn-createnew">
+    <div class="col-lg-4 col-md-12 col-sm-12 btn-createnew">
         <a class="btn btn-primary pull-right" href="
             {% if '/teachers' in request.path %}
                 {% url 'teacher_courseinfo_create' %}

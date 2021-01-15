@@ -136,9 +136,9 @@
                 <ul class="row">
                     {% for eachTeacher in object.get_teachers_of_this_course %}
                     <li>
-                        <img class="img-circle" src="{{ eachTeacher.Avatar }}" alt="Profile_picture" width="20"
-                            height="22">
-                        {{ eachTeacher.getFullName }}
+                        <img class="rounded-circle" src="{{ eachTeacher.Avatar }}" alt="Profile_picture" width="20"
+                            height="20">
+                        {{ eachTeacher.getFullName }} &nbsp;&nbsp;
                     </li>
                     {% endfor %}
                 </ul>

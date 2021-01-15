@@ -260,29 +260,35 @@
 
     $('#changedepartment-btn').on('click', function () {
         toggleInput('#id_Member_Department')
+        $("#changedepartment-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changememberposition-btn').on('click', function () {
         toggleInput('#id_Member_Position')
+        $("#changememberposition-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changemembergender-btn').on('click', function () {
         toggleInput('#id_Member_Gender')
+        $("#changemembergender-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeisteacher-btn').on('click', function () {
         toggleInput('#id_Is_Teacher')
         toggleInput('#id_Is_Teacher_hidden')
+        $("#changeisteacher-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeisstudent-btn').on('click', function () {
         toggleInput('#id_Is_Student')
         toggleInput('#id_Is_Student_hidden')
+        $("#changeisstudent-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     $('#changeActive-btn').on('click', function () {
         toggleInput('#id_Use_Flag')
         toggleInput('#id_Use_Flag_hidden')
+        $("#changeActive-btn").toggleClass('btn-outline-primary btn-primary')
     });
 
     function toggleInput(inputID) {
