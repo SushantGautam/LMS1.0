@@ -69,17 +69,17 @@
 </div>
 
 <div id="quiz_create_popup" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="height: 80vh;overflow: auto;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary font-weight-bold">
-                   {% trans 'Create Quiz' %}
+                    {% trans 'Create Quiz' %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
                 </button>
             </div>
-            <div class="modal-body modal-auto" id="quiz_form_ajax" style="padding: 10%;">
+            <div class="modal-body modal-auto" id="quiz_form_ajax">
                 <img src="/static/images/uLMS2019_Loading_SVG.svg" alt="">
             </div>
         </div>
@@ -88,10 +88,10 @@
 
 <div id="question_form_popup" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="height: 80vh;overflow: auto;">
+        <div class="modal-content">
             <div class="modal-header">
-                  <h5 class="modal-title text-primary font-weight-bold">
-                   {% trans 'Add Question' %}
+                <h5 class="modal-title text-primary font-weight-bold">
+                    {% trans 'Add Question' %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="ti-close"></i>
@@ -191,7 +191,36 @@
     <div class="col-lg-4 col-md-12">
         <div class="card">
             <div class="px-4 pt-4">
-                <h5 class="text-primary mb-3">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="text-primary">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
+                    <div class="d-inline-block dropdown">
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
+                            data-toggle="dropdown">
+                            <i class="ti-more-alt"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            {% if '/student' not in request.get_full_path %}
+                            <a class="dropdown-item text-primary" data-z="1" data-animated href="{% if '/teachers' in request.path %}
+                            /teachers{{ object.get_update_url }}
+                            {% else %}
+                                {{ object.get_update_url }}
+                            {% endif %}">
+                                {% trans "Edit Chapter" %}
+                            </a>
+                            <a href="javascript:void(0)" class="dropdown-item text-danger chapter-confirm-delete" id="{{ object.pk }}">
+                                {% trans "Delete Chapter" %}
+                            </a>
+                            <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
+                                id="deleteChapter{{ object.pk }}">
+                                {% csrf_token %}
+                                <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
+                                <input type="hidden" value="{{ object.pk }}" name="chapter_id">
+                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
                 {% if '/students' not in request.path %}
                 <p>
                     {% trans "Status" %} : &nbsp;
@@ -202,14 +231,8 @@
                     {% endif %}
                 </p>
                 {% endif %}
-                <!--<p>
-                    {% trans "Start Date" %} : {{ object.Start_Date|date:'m/d/Y' }}
-                </p>
                 <p>
-                    {% trans "End Date" %} : {{ object.End_Date|date:'m/d/Y' }}
-                </p>-->
-                <p>
-                    {% trans "Course Time" %} : {{ object.mustreadtime }} {% trans "minutes" %}
+                    {% trans "Chapter Time" %} : {{ object.mustreadtime }} {% trans "minutes" %}
                 </p>
                 <p>
                     {% trans "Register Agent" %} : {{ object.Register_Agent }}
@@ -223,76 +246,57 @@
                     {% endif %}
                 </p>
             </div>
+            {% if '/students' not in request.path %}
             <ul class="text-center">
-                <li class="p-2 border-top">
-                    <a class="btn btn-primary relative" data-z="1" data-animated href="{% if '/teachers' in request.path %}
-                    /teachers{{ object.get_update_url }}
-                    {% else %}
-                        {{ object.get_update_url }}
-                    {% endif %}">
-                        {% trans "Edit Chapter" %}
-                    </a>
-                    &nbsp;
-                    <button class="btn btn-danger chapter-confirm-delete" id="{{ object.pk }}">
-                        {% trans "Delete Chapter" %}
-                    </button>
-                    <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
-                        id="deleteChapter{{ object.pk }}">
-                        {% csrf_token %}
-                        <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
-                        <input type="hidden" value="{{ object.pk }}" name="chapter_id">
-                        <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                    </form>
-                </li>
-                {% if '/students' not in request.path %}
                 <li class="p-2 border-top">
                     <button class="btn btn-success" data-toggle="modal" data-target="#create_assignment_modal"
                         id="add-newassignment-btn">
                         {% trans "Create New Assignment" %}
                     </button>
                 </li>
-                {% endif %}
             </ul>
+            {% endif %}
         </div>
         <div class="card">
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between mb-3">
                     <h5 class="text-primary">{% trans 'Pre Test Quiz' %}</h5>
-                    <button type="button" class="btn btn-primary btn-sm qts-button" id="pre_test_popup" data-toggle="modal"
-                        data-target="#quiz_create_popup">
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="pre_test_popup"
+                        data-toggle="modal" data-target="#quiz_create_popup">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     {% if 'students' in request.path %}
                     {% for pre_quiz in pre_quizes %}
-                        <div> {{ pre_quiz.title }} </div>
-                        {% getUserQuizStatus pre_quiz.sitting_set.all user as student_quiz_status %}
-                        {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
-                        {% if pre_quiz.single_attempt %}
-                        <span class="text-success font-weight-bold">{% trans 'Completed' %}</span>
-                        {% else %}
-                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="qts-button " data-toggle="modal"
-                                data-target="#quizmodal" style="background-color: #65f665">
-                                {% trans 'Play Again' %}
-                            </button>
-                        </a>
-                        {% endif %}
-                        {% else %}
-                        <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
-                            <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="qts-button " data-toggle="modal"
-                                data-target="#quizmodal">
-                                {% trans 'Play Quiz' %}
-                            </button>
-                        </a>
-                        {% endif %}
+                    <div> {{ pre_quiz.title }} </div>
+                    {% getUserQuizStatus pre_quiz.sitting_set.all user as student_quiz_status %}
+                    {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
+                    {% if pre_quiz.single_attempt %}
+                    <span class="text-success font-weight-bold">{% trans 'Completed' %}</span>
+                    {% else %}
+                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="qts-button "
+                            data-toggle="modal" data-target="#quizmodal" style="background-color: #65f665">
+                            {% trans 'Play Again' %}
+                        </button>
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <a href="{% url 'quiz_question' quiz_name=pre_quiz.url %}">
+                        <button id="feedbackbtn-quiz{{ pre_quiz.id }}" type="button" class="qts-button "
+                            data-toggle="modal" data-target="#quizmodal">
+                            {% trans 'Play Quiz' %}
+                        </button>
+                    </a>
+                    {% endif %}
                     {% empty %}
                     <p>{% trans 'No Pre Quiz' %}</p>
                     {% endfor %}
                     {% else %}
                     {% for pre_quiz in pre_quizes %}
-                    <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change" id="radiobtn{{ pre_quiz.id }}">
+                    <form method="post" action="{% url 'change_quiz_test' %}" class="pre_test_change"
+                        id="radiobtn{{ pre_quiz.id }}">
                         {% csrf_token %}
                         <a target="_blank" href="
                                           {% if 'teachers' in request.path %}
@@ -302,14 +306,17 @@
                                           {% endif %}
                                         ">{{ pre_quiz.title }} </a><br>
                         <div class="btn-group" id="status" data-toggle="buttons">
-                            <label class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
+                            <label
+                                class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
                                 id="ActiveButton" style="text-transform: uppercase;">
                                 <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio" 
                                 {% if pre_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
                             </label>
-                            <label class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
+                            <label
+                                class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
                                 id="ExpireButton" style="text-transform: uppercase;">
-                                <input type="radio" value="0" name="pre-test-radio" {% if pre_quiz.draft == True %}checked{% endif %}>{%
+                                <input type="radio" value="0" name="pre-test-radio" 
+                                {% if pre_quiz.draft == True %}checked{% endif %}>{%
                                 trans 'Off' %}
                             </label>
                         </div>
@@ -326,8 +333,8 @@
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between mb-3">
                     <h5 class="text-primary">{% trans 'Post Test Quiz' %}</h5>
-                    <button type="button" class="btn btn-primary btn-sm qts-button" id="post_test_popup" data-toggle="modal"
-                        data-target="#quiz_create_popup">
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="post_test_popup"
+                        data-toggle="modal" data-target="#quiz_create_popup">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
@@ -341,16 +348,16 @@
                     <span class="text-success font-weight-bold">{% trans 'Completed' %}</span>
                     {% else %}
                     <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button " data-toggle="modal"
-                            data-target="#quizmodal" style="background-color: #65f665">
+                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button "
+                            data-toggle="modal" data-target="#quizmodal" style="background-color: #65f665">
                             {% trans 'Play Again' %}
                         </button>
                     </a>
                     {% endif %}
                     {% else %}
                     <a href="{% url 'quiz_question' quiz_name=post_quiz.url %}">
-                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button " data-toggle="modal"
-                            data-target="#quizmodal">
+                        <button id="feedbackbtn-quiz{{ post_quiz.id }}" type="button" class=" qts-button "
+                            data-toggle="modal" data-target="#quizmodal">
                             {% trans 'Play Quiz' %}
                         </button>
                     </a>
@@ -360,18 +367,22 @@
                     {% endfor %}
                     {% else %}
                     {% for post_quiz in post_quizes %}
-                    <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change" id="radiobtn{{ post_quiz.id }}">
+                    <form method="post" action="{% url 'change_quiz_test' %}" class="post_test_change"
+                        id="radiobtn{{ post_quiz.id }}">
                         {% csrf_token %}
                         <a href="/quiz/detail/{{ post_quiz.id }}">{{ post_quiz.title }} </a><br>
                         <div class="btn-group" id="status2" data-toggle="buttons">
-                            <label class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
+                            <label
+                                class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
                                 id="ActiveButton" style="text-transform: uppercase;">
                                 <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio" 
                                 {% if post_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
                             </label>
-                            <label class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
+                            <label
+                                class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
                                 id="ExpireButton" style="text-transform: uppercase;">
-                                <input type="radio" value="0" name="post-test-radio" {% if post_quiz.draft == True %}checked{% endif %}>{%
+                                <input type="radio" value="0" name="post-test-radio" 
+                                {% if post_quiz.draft == True %}checked{% endif %}>{%
                                 trans 'Off' %}
                             </label>
                         </div>
