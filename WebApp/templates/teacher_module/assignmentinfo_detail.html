@@ -547,12 +547,31 @@
 
 
 <script>
-   // $(document).ready(function () {
+    $(document).ready(function () {
+
+          $(".start-date ").each(function(){
+           // console.log($(this).text());
+            $(this).text(new Date($(this).text()+ " UTC ").toLocaleString("en-US"))
+            //console.log($(this).text());
+            //console.log(new Date($(this).text() + " UTC "));
+
+
+        })
+
+        $(".end-date ").each(function(){
+           // console.log($(this).text());
+            $(this).text(new Date($(this).text()+ " UTC ").toLocaleString("en-US"))
+            //console.log($(this).text());
+            //console.log(new Date($(this).text() + " UTC "));
+
+
+        })
+
         {#document.getElementById('id_Start_Date').value = new Date(document.getElementById('id_Start_Date').value).toLocaleString("en-US")#}
         {#document.getElementById('id_End_Date').value = new Date(document.getElementById('id_End_Date').value).toLocaleString("en-US")#}
         {#$('#id_End_Date').datetimepicker();#}
         {#$('#id_Start_Date').datetimepicker();#}
-  //  })
+    })
 
     function inningMapDataLoad($element, sessionid, objectid, formaction) {
         if ($element.closest('tr').find('.start-date').text() != "") {
@@ -561,8 +580,36 @@
         if ($element.closest('tr').find('.end-date').text() != "") {
             document.getElementById('id_End_Date').value = new Date($element.closest('tr').find('.end-date').text()).toLocaleString("en-US")
         }
-        $('#id_End_Date').datetimepicker();
-        $('#id_Start_Date').datetimepicker();
+        //$('#id_End_Date').datetimepicker();
+       // $('#id_Start_Date').datetimepicker();
+
+
+        s = $("#id_Start_Date").val()
+             e = $("#id_End_Date").val()
+
+
+
+         $("#id_Start_Date").daterangepicker({
+             startDate: s,
+
+             singleDatePicker: true,
+             timePicker: true,
+              locale: {
+            format: 'M/DD/YYYY hh:mm A'
+            }
+
+        });
+
+           $("#id_End_Date").daterangepicker({
+                startDate: e,
+                singleDatePicker: true,
+                 timePicker: true,
+                locale: {
+                    format: 'M/DD/YYYY hh:mm A'
+                }
+
+           });
+
         $('#sessionid').val(sessionid)
         $('#objectid').val(objectid)
         $('#inningmapForm').attr('action', formaction)
