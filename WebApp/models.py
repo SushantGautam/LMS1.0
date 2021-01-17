@@ -170,10 +170,10 @@ class MemberInfo(AbstractUser):
     )
     datetime_now = timezone.now().replace(microsecond=0)
 
-    def get_student_groups(self):
+    def get_student_groups(self, itemCount=None):
         return GroupMapping.objects.filter(Students__id=self.pk)
 
-    def get_student_sessions(self, active=False, inactive=False):
+    def get_student_sessions(self, active=False, inactive=False, itemCount=None):
         batches = self.get_student_groups()
         sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True, Start_Date__lte=self.datetime_now)
         if active:
@@ -182,9 +182,9 @@ class MemberInfo(AbstractUser):
         if inactive:
             sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
                                        End_Date__lt=self.datetime_now).distinct()
-        return sessions
+        return sessions.all()[:itemCount]
 
-    def get_student_courses(self, sessions=None, inactiveCourse=False, activeCourse=False):
+    def get_student_courses(self, sessions=None, inactiveCourse=False, activeCourse=False, itemCount=None):
         if sessions:
             all_sessions = sessions
         else:
@@ -207,7 +207,7 @@ class MemberInfo(AbstractUser):
             courses = all_courses.filter(
                 pk__in=[ig.Course_Code.pk for ig in
                         inning_group.filter(pk__in=active_sessions.values_list('Course_Group'))])
-        return {'courses': courses, 'session': sessions}
+        return {'courses': courses.all()[:itemCount], 'session': sessions}
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = self.datetime_now
@@ -233,7 +233,7 @@ class MemberInfo(AbstractUser):
 
         return {'courses': courses, 'session': assigned_session}
 
-    def get_student_chapters(self, courseList=None, sessions=None, active=False, inactive=False):
+    def get_student_chapters(self, courseList=None, sessions=None, active=False, inactive=False, itemCount=None):
         # courseList - List of courseIDs
         if sessions:
             assigned_session = sessions
@@ -262,14 +262,17 @@ class MemberInfo(AbstractUser):
             else:
                 inactive_chapters.append(chapter.pk)
         if active:
-            return chapters.filter(pk__in=active_chapters)
+            return chapters.filter(pk__in=active_chapters)[:itemCount]
         elif inactive:
-            return chapters.filter(pk__in=inactive_chapters)
+            return chapters.filter(pk__in=inactive_chapters)[:itemCount]
         else:
-            return chapters
+            return chapters.all()[:itemCount]
 
-    def get_student_assignments(self, chapterList=None, active=False, inactive=False):
-        assigned_session = self.get_student_sessions()
+    def get_student_assignments(self, chapterList=None, sessions=None, active=False, inactive=False, itemCount=None):
+        if sessions:
+            assigned_session = sessions
+        else:
+            assigned_session = self.get_student_sessions()
 
         if chapterList:
             chapterIDs = chapterList
@@ -293,12 +296,13 @@ class MemberInfo(AbstractUser):
                 if session_map.filter(End_Date__lt=self.datetime_now).exists():
                     inactive_assignments.append(assignment.pk)
 
+        # if itemCount is None, then return all.
         if active:
-            return assignments.filter(pk__in=active_assignments)
+            return assignments.filter(pk__in=active_assignments)[:itemCount]
         elif inactive:
-            return assignments.filter(pk__in=inactive_assignments)
+            return assignments.filter(pk__in=inactive_assignments)[:itemCount]
         else:
-            return assignments
+            return assignments.all()[:itemCount]
 
     @property
     def get_user_type(self):

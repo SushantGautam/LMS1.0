@@ -110,8 +110,8 @@ def filter_active_assignments(chapters, sessions, filter_type="active"):  # It o
                 assignments = assignments.exclude(pk=assignment.pk)
     for assignment in assignments:
         latest_sessionmap = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                                            object_id=assignment.id,
-                                                            Session_Code__in=sessions).latest('End_Date')
+                                                          object_id=assignment.id,
+                                                          Session_Code__in=sessions).latest('End_Date')
         assignment.startdate = latest_sessionmap.Start_Date
         assignment.deadline = latest_sessionmap.End_Date
 
@@ -122,10 +122,13 @@ def start(request):
     global courses, activeassignments, sessions, batches
     datetime_now = timezone.now().replace(microsecond=0)
     sessions = request.user.get_student_sessions()
-    courses = request.user.get_student_courses(sessions=sessions, activeCourse=True)['courses']
-    chapters = request.user.get_student_chapters(active=True, courseList=courses.values_list('pk', flat=True))
+    courses = request.user.get_student_courses(sessions=sessions, activeCourse=True, itemCount=5)['courses']
+    chapters = request.user.get_student_chapters(active=True, courseList=courses.values_list('pk', flat=True),
+                                                 itemCount=5)
 
-    activeassignments = request.user.get_student_assignments(active=True, chapterList=chapters.values_list('pk', flat=True))
+    activeassignments = request.user.get_student_assignments(active=True,
+                                                             chapterList=chapters.values_list('pk', flat=True),
+                                                             itemCount=5)
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -145,7 +148,7 @@ def start(request):
             study_time = float(response['chapterProgress'][0]['chapter']['studytimeprogresspercent'])
             silde_progress = float(response['chapterProgress'][0]['chapter']['progresspercent'])
             chapter.overall_progress = float(response['chapterProgress'][0]['overall_progress'])
-            chapter.chapter_progress = round((study_time + silde_progress)/2, 2)
+            chapter.chapter_progress = round((study_time + silde_progress) / 2, 2)
             chapter.quiz = response['chapterProgress'][0]['quiz']
             if chapter.overall_progress < float(100):
                 chapters_list.append(chapter)
@@ -242,10 +245,10 @@ def calendar(request):
         datetime_now = timezone.now().replace(microsecond=0)
         batches = GroupMapping.objects.filter(Students=request.user)
         student_sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                            Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+                                                     Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
         course_group = InningGroup.objects.filter(pk__in=student_sessions.values_list('Course_Group'))
         student_courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                            Use_Flag=True)
+                                                    Use_Flag=True)
         chapters = student_active_chapters(student_courses, student_sessions)
         activeassignments = filter_active_assignments(chapters, student_sessions)
 
@@ -290,6 +293,7 @@ class MyCoursesListView(ListView):
     model = CourseInfo
     template_name = 'student_module/myCourse.html'
     paginate_by = 8
+
     def dispatch(self, request, *args, **kwargs):
         if self.request.GET.get('paginate_by'):
             self.paginate_by = self.request.GET.get('paginate_by')
@@ -328,7 +332,6 @@ class MyCoursesListView(ListView):
         else:
             courses = qsearch
         return courses
-
 
 
 class MyAssignmentsListView(ListView):
@@ -1293,11 +1296,12 @@ from django.db.models import F
 @permission_classes((IsAuthenticated,))
 def singleUserHomePageJSON(request):
     if request.user.Is_Student:
-        student_courses = request.user.get_student_courses(activeCourse=True)
+        sessions = request.user.get_student_sessions()
+        student_courses = request.user.get_student_courses(activeCourse=True, sessions=sessions)
         courses = student_courses['courses'].distinct()
         datetime_now = timezone.now().replace(microsecond=0)
 
-        sessions = student_courses['session']
+        # sessions = student_courses['session']
 
         if request.GET.get("session"):
             if request.GET.get('session') == "active":
@@ -1306,23 +1310,25 @@ def singleUserHomePageJSON(request):
 
                 response = {'sessions': list(session_list)}
                 return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
-        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
-        courses_list = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                                 Use_Flag=True)
-        chapters = student_active_chapters(courses_list, sessions)
+        # course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        # courses_list = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+        #                                          Use_Flag=True)
+        chapters = request.user.get_student_chapters(sessions=sessions, courseList=courses.values_list('pk', flat=True))
 
         if request.GET.get("assignment"):
             if request.GET.get('assignment') == "expired":
-                assignments = filter_active_assignments(chapters, sessions, filter_type="expired")[:5]
+                assignments = request.user.get_student_assignments(chapterList=chapters.values_list('pk', flat=True),
+                                                                   sessions=sessions, inactive=True, itemCount=5)
             elif request.GET.get('assignment') == "submitted":
                 answers = AssignAnswerInfo.objects.filter(Student_Code=request.user)[:5]
                 assignments = AssignmentInfo.objects.filter(
                     pk__in=[x.Question_Code.Assignment_Code.pk for x in answers])
             else:
-                assignments = filter_active_assignments(chapters, sessions)[:5]
+                assignments = request.user.get_student_assignments(chapterList=chapters.values_list('pk', flat=True),
+                                                                   sessions=sessions, active=True, itemCount=5)
         else:
-            assignments = filter_active_assignments(chapters, sessions)[:5]
-
+            assignments = request.user.get_student_assignments(chapterList=chapters.values_list('pk', flat=True),
+                                                               sessions=sessions, itemCount=5)
         assignments = AssignmentInfo.objects.filter(pk__in=[x.pk for x in assignments])
 
         assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
@@ -1342,18 +1348,18 @@ def singleUserHomePageJSON(request):
             response = {'assignments': list(assignments_list), }
             return JsonResponse(response, safe=False, json_dumps_params={'indent': 2})
 
-        student_group = request.user.groupmapping_set.all()
-        student_session = InningInfo.objects.filter(Groups__in=student_group)
-        active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
-        student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
+        # student_group = request.user.groupmapping_set.all()
+        # student_session = InningInfo.objects.filter(Groups__in=student_group)
+        # active_student_session = InningInfo.objects.filter(Groups__in=student_group, End_Date__gt=datetime_now)
+        # student_course = InningGroup.objects.filter(inninginfo__in=active_student_session).values("Course_Code")
 
         # Predefined category name "general, session, course, system"
         general_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="general",
                                                    Center_Code=request.user.Center_Code, Use_Flag=True)
         session_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="session",
-                                                   Session_Code__in=student_session, Use_Flag=True)
+                                                   Session_Code__in=sessions, Use_Flag=True)
         course_survey = SurveyInfo.objects.filter(Category_Code__Category_Name__iexact="course",
-                                                  Course_Code__in=student_course, Use_Flag=True)
+                                                  Course_Code__in=courses, Use_Flag=True)
         system_survey = SurveyInfo.objects.filter(Center_Code=None, Use_Flag=True)
 
         sitting_queryset = Sitting.objects.filter(user=request.user, complete=True).order_by('-end')[:5]
@@ -1365,11 +1371,16 @@ def singleUserHomePageJSON(request):
         for course in courses:
             course_data = progress(request.user, course.pk)
             courses_progress[course.pk] = course_data
-        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'username', 'Member_ID', 'first_name', 'last_name',
-                                                                    'Member_Avatar', 'email', 'Member_Permanent_Address',
-                                                                    'Member_Temporary_Address', 'Member_BirthDate', 'Member_Department__Department_Name',
-                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher', 'Register_DateTime',
-                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender', 'last_login',
+        user = MemberInfo.objects.filter(pk=request.user.pk).values('pk', 'username', 'Member_ID', 'first_name',
+                                                                    'last_name',
+                                                                    'Member_Avatar', 'email',
+                                                                    'Member_Permanent_Address',
+                                                                    'Member_Temporary_Address', 'Member_BirthDate',
+                                                                    'Member_Department__Department_Name',
+                                                                    'Member_Phone', 'Use_Flag', 'Is_Teacher',
+                                                                    'Register_DateTime',
+                                                                    'Is_Student', 'Is_CenterAdmin', 'Member_Gender',
+                                                                    'last_login',
                                                                     'Center_Code')
         courses_list = courses.values('pk', 'Course_Name',
                                       'Course_Description',
