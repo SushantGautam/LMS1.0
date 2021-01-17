@@ -422,7 +422,7 @@
 
                             <td>{{ answer.Assignment_Answer|safe }}</td>
                             <td>{% if answer %}
-                                Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
+                                Submitted on {{ answer.Register_DateTime|date:'M d, Y ' }}
                             {% elif not answer %}
                                 Not Submitted
                             {% endif %}
