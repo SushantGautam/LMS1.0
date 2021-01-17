@@ -9,7 +9,7 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h2 class="text-primary">{% trans "List of Inctive Members" %}</h2>
+        <h2 class="text-primary">{% trans "List of Inactive Members" %}</h2>
     </div>
     <!-- <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
         <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">Create new Member</a>
@@ -63,6 +63,7 @@
                     <th>{% trans "Type" %}</th>
                     <th class="text-center">{% trans "Action" %}</th>
                 </tr>
+
             </thead>
             {% for object in object_list %}
             {% if object.id != request.user.id %}
@@ -153,6 +154,8 @@
         $('#message').fadeOut('slow');
     }, 3000);
 
+    var tab_status = "all"
+
     $(document).ready(function () {
 
         var table_main = $('.table').DataTable({
@@ -160,13 +163,56 @@
             stateSave: true,
             responsive: true,
             buttons: [
+
+
                 {
                     extend: 'csv',
-                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>'
+                    title: function(){
+
+                        if (tab_status == "student")
+                        {
+                             return "Blocked Student Member List";
+                        }
+
+                        else if (tab_status == "teacher"){
+                             return "Blocked Teacher Member List";
+                        }
+                        else{
+                             return "Blocked Member List";
+
+                        }
+                    },
+
+                    text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
+                     exportOptions: {
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                    },
+
+
                 },
+
+
                 {
                     extend: 'print',
+                    title: function(){
+
+                        if (tab_status == "student")
+                        {
+                             return "Blocked Student Member List";
+                        }
+
+                        else if (tab_status == "teacher"){
+                             return "Blocked Teacher Member List";
+                        }
+                        else{
+                             return "Blocked Member List";
+
+                        }
+                    },
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                     exportOptions: {
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                    },
                     fieldSeparator: '\t'
                 }],
             "columnDefs": [
@@ -189,16 +235,18 @@
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
             table_main.column(9).search("True").draw();
+            tab_status = "student"
 
 
         });
         $("#teacher_button").bind("click", function () {
+
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "white");
             $("#all_button").css("color", "black");
             table_main.columns().search('').draw();
             table_main.column(10).search("True").draw();
-
+            tab_status = "teacher"
         });
 
         $("#all_button").bind("click", function () {
@@ -206,6 +254,7 @@
             $("#student_button").css("color", "black");
             $("#teacher_button").css("color", "black");
             table_main.columns().search('').draw();
+            tab_status = "all"
         });
     });
 </script>
