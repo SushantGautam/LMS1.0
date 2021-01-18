@@ -54,14 +54,25 @@
                     <th>{% trans "Username" %}</th>
                     <th>{% trans "Member ID" %}</th>
                     <th>{% trans "Full Name" %}</th>
+
+                    <th>{% trans "First Name" %}</th>
+                    <th>{% trans "Last Name" %}</th>
+
                     <th>{% trans "Email" %}</th>
                     <th>{% trans "Department" %}</th>
                     <th>{% trans "Phone" %}</th>
                     <th>{% trans "Gender" %}</th>
                     <th>{% trans "Student" %}</th>
                     <th>{% trans "Teacher" %}</th>
+
+                    <th>{% trans "Temporary Address" %}</th>
+                    <th>{% trans "Permanent Address" %}</th>
+                    <th>{% trans "Birthdate" %}</th>
+
                     <th>{% trans "Type" %}</th>
                     <th class="text-center">{% trans "Action" %}</th>
+
+
                 </tr>
 
             </thead>
@@ -75,6 +86,10 @@
                             href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
                 <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
                 <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+
+                <td> {{ object.first_name }} </td>
+                <td> &nbsp;{{ object.last_name }} </td>
+
                 <td>{{ object.email }}</td>
                 <td>{{ object.Member_Department }}</td>
                 <td>{{ object.Member_Phone }}</td>
@@ -83,6 +98,11 @@
                 </td>
                 <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
                 <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
+
+                <td> {{ object.Member_Temporary_Address }} </td>
+                <td> &nbsp;{{ object.Member_Permanent_Address }} </td>
+                <td>{{ object.Member_BirthDate }}</td>
+
                 <td>
                     {% if object.Is_Teacher == True and object.Is_Student == True %}
                     {% trans "Teacher" %}, {% trans "Student" %}
@@ -160,8 +180,9 @@
 
         var table_main = $('.table').DataTable({
             dom: 'lBfrtip',
-            stateSave: true,
+            stateSave: false,
             responsive: true,
+             order: [],
             buttons: [
 
 
@@ -185,7 +206,8 @@
 
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                      exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                       // columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                          columns: [1, 2, 3, 5, 6, 7,  9, 10, 11, 12, 13, 14, 15, 8 ]
                     },
 
 
@@ -211,11 +233,26 @@
                     },
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
                      exportOptions: {
-                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                      // columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                          columns: [1, 2, 3, 5, 6, 7,  9, 10, 11, 12, 13, 14, 15, 8 ]
                     },
                     fieldSeparator: '\t'
                 }],
-            "columnDefs": [
+
+
+             "columnDefs": [
+                {
+                    "targets": [4, 5, 9, 10, 11, 12, 13],
+                    "visible": false,
+                    "searchable": true,
+                },
+                {
+                    "orderable": false,
+                    "targets": [0, 3, 11, 12, 13, 14, 15]
+                },
+            ]
+
+        /*    "columnDefs": [
                 {
                     "targets": [9, 10],
                     "visible": false,
@@ -226,6 +263,8 @@
                     "targets": [0, 12]
                 },
             ]
+
+         */
         });
 
 
