@@ -116,6 +116,17 @@
                                     <label for="id_Is_Teacher">{% trans "Teacher" %}</label>
                                     <small id="membertype-error-message" class="input-error text-danger ml-5"></small>
                                 </div>
+
+                                 <div class="col-md-6">
+                                      <div class="form-group mb-1">
+                                        <label for="id_email">{% trans "Status" %} *</label>
+                                    </div>
+                                       <input type="checkbox" name="Use_Flag" id="id_use_flag"
+                                        {% if object.Use_Flag %} checked {% endif %} class="checkboxinput">
+                                        <label for="id_use_flag">{% trans "Active" %}</label>
+
+                                </div>
+
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -204,7 +215,7 @@
                 </div>
             </div>
 
-            <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="true">
+         {#    <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="true"> #}
             <div class="text-center mt-4">
                 <button class="btn btn-primary" type="submit">{% trans "Submit" %}</button>
             </div>
@@ -293,7 +304,31 @@
         }
     });
 
+
+
+
+
+
+
+
+       // $('#id_use_flag').change(function () {
+      //  if( $('#id_use_flag').attr('checked'))
+
+      //  {
+       //      $('#id_use_flag').attr('checked', false);
+      //  }else{
+       //      $('#id_use_flag').attr('checked', true);
+      //  }
+
+   // });
+
+
+
     $(document).ready(function () {
+
+
+
+
         if ($('#id_Is_Teacher').is(':checked')) {
             $(".positionField").show();
         }
