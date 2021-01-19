@@ -426,6 +426,8 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
 
+        context['assigned_session'] = self.request.user.get_student_sessions() 
+
         for q in context['post_quizes']:
             q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
 
