@@ -1,6 +1,7 @@
 {% load static %}
 {% load i18n %}
 {% load model_template_relation %}
+{# {% load comment_tags %} #}
 
 {# Loading the template tag #}
 
@@ -105,7 +106,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8 col-md-12">
+    <div class="col-lg-9 col-md-12">
         <div class="page-header">
             <div class="page-title">
                 <h3 class="d-flex align-items-center"><span class="icon-block text-primary">
@@ -113,82 +114,86 @@
                     {{ object.Chapter_Name }}
                 </h3>
             </div>
-            <p>{{ object.Summary }}</p>
         </div>
-        <div class="text-center my-4">
-            <a class="btn btn-lg btn-info" href="
-            {% if '/teachers' in request.path %}
-                {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
-            {% elif '/students' in request.path %}
-                {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
-            {% else %}
-                {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
-            {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i>
-                {% trans "Content Viewer" %}</a>
-            &nbsp;
-            {% if '/students' not in request.path %}
-            {% if '/teachers' in request.path %}
-            <a class="btn btn-lg btn-success"
-                href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}"> <i
-                    class="fa fa-pencil"></i>
-                {% trans "Content Builder" %}
-                &nbsp;</a>
-            {% else %}
-            <a class="btn btn-lg btn-success" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
-                <i class="fa fa-pencil"></i>
-                {% trans "Content Builder" %} &nbsp;</a>
-            {% endif %}
-            {% endif %}
-        </div>
-        <div class="my-5">
-            <h4 class="text-primary mb-4">{% trans "List of Assignments" %}</h4>
-            {% if object.Use_Flag is False %}
-            <p style="color:red">{% trans "Note" %} :
-                {% trans "Chapter is inactive, therefore assignments are not assigned to students" %}.
-            </p>
-            {% endif %}
-
-            {% for assignment in assignments %}
-            <div class="accordion mb-4" id="assignmentList{{assignment.pk}}">
-                <div class="card shadow-none border">
-                    <div class="card-header justify-content-between" id="headingOne">
-                        <div class="d-flex align-items-center">
-                            <figure class="avatar avatar-sm">
-                                <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
-                            </figure>
-                            <h5 data-toggle="collapse" data-target="#assignment{{assignment.pk}}" aria-expanded="true"
-                                aria-controls="collapseOne" class="text-secondary m-0 pl-3 cursor-pointer">
-                                {{ assignment.Assignment_Topic }}
-                            </h5>
-                        </div>
-                        <a class="btn btn-outline-info" type="button" href="
-                    {% if '/students' in request.path %}
-                        {{ assignment.student_get_absolute_url }}
-                    {% elif '/teachers' in request.path %}
-                        {{ assignment.teacher_get_absolute_url }}
+        <div class="row mb-3">
+            <div class="col-lg-5 col-md-12 col-sm-12 text-center">
+                <a class="btn btn-lg btn-info" href="
+                    {% if '/teachers' in request.path %}
+                        {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
+                    {% elif '/students' in request.path %}
+                        {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
                     {% else %}
-                       {{ assignment.get_absolute_url }}
-                    {% endif %}">
-                            {% trans "Continue" %} <i class="fa fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                    <div id="assignment{{assignment.pk}}" class="collapse show" aria-labelledby="headingOne"
-                        data-parent="#assignmentList{{assignment.pk}}">
-                        <div class="p-3">
-                            <p class="m-0">{% trans "Start Date" %} - {{ assignment.Assignment_Start }}</p>
-                            <p class="m-0">{% trans "Submission Deadline" %} -
-                                {{ assignment.Assignment_Deadline }}</p>
-                        </div>
-                    </div>
+                        {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
+                    {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i>
+                    {% trans "Content Viewer" %}</a>
+                &nbsp;
+                {% if '/students' not in request.path %}
+                {% if '/teachers' in request.path %}
+                <a class="btn btn-lg btn-success" href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}">
+                    <i class="fa fa-pencil"></i>
+                    {% trans "Content Builder" %}
+                    &nbsp;</a>
+                {% else %}
+                <a class="btn btn-lg btn-success" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
+                    <i class="fa fa-pencil"></i>
+                    {% trans "Content Builder" %} &nbsp;</a>
+                {% endif %}
+                {% endif %}
+                <div class="card p-3 mt-3">
+                <p>{{ object.Summary }}</p>
                 </div>
             </div>
-            {% endfor %}
-
-
-
+            <div class="col-lg-7 col-md-12 col-sm-12">
+                    <h4 class="text-primary mb-4">{% trans "List of Assignments" %}</h4>
+                    {% if object.Use_Flag is False %}
+                    <p style="color:red">{% trans "Note" %} :
+                        {% trans "Chapter is inactive, therefore assignments are not assigned to students" %}.
+                    </p>
+                    {% endif %}
+                    <div style="max-height: 30em; overflow-y :scroll">
+                        {% for assignment in assignments %}
+                        <div class="accordion" id="assignmentList{{assignment.pk}}">
+                            <div class="card shadow-none border">
+                                <div class="card-header justify-content-between" id="headingOne">
+                                    <div class="d-flex align-items-center">
+                                        <figure class="avatar avatar-sm">
+                                            <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
+                                        </figure>
+                                        <h5 data-toggle="collapse" data-target="#assignment{{assignment.pk}}" aria-expanded="true"
+                                            aria-controls="collapseOne" class="text-secondary m-0 pl-3 cursor-pointer">
+                                            {{ assignment.Assignment_Topic }}
+                                        </h5>
+                                    </div>
+                                    <a class="btn btn-outline-info" type="button" href="
+                                                                            {% if '/students' in request.path %}
+                                                                                {{ assignment.student_get_absolute_url }}
+                                                                            {% elif '/teachers' in request.path %}
+                                                                                {{ assignment.teacher_get_absolute_url }}
+                                                                            {% else %}
+                                                                               {{ assignment.get_absolute_url }}
+                                                                            {% endif %}">
+                                        {% trans "Continue" %} <i class="fa fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                                <div id="assignment{{assignment.pk}}" class="collapse show" aria-labelledby="headingOne"
+                                    data-parent="#assignmentList{{assignment.pk}}">
+                                    <div class="p-3">
+                                        <p class="m-0">{% trans "Start Date" %} - {{ assignment.Assignment_Start }}</p>
+                                        <p class="m-0">{% trans "Submission Deadline" %} -
+                                            {{ assignment.Assignment_Deadline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+            </div>
         </div>
+
+        
+
     </div>
-    <div class="col-lg-4 col-md-12">
+    <div class="col-lg-3 col-md-12">
         <div class="card">
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
