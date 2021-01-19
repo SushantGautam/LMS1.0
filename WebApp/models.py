@@ -170,10 +170,10 @@ class MemberInfo(AbstractUser):
     )
     datetime_now = timezone.now().replace(microsecond=0)
 
-    def get_student_groups(self):
+    def get_student_groups(self, itemCount=None):
         return GroupMapping.objects.filter(Students__id=self.pk)
 
-    def get_student_sessions(self, active=False, inactive=False):
+    def get_student_sessions(self, active=False, inactive=False, itemCount=None):
         batches = self.get_student_groups()
         sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True, Start_Date__lte=self.datetime_now)
         if active:
@@ -182,10 +182,13 @@ class MemberInfo(AbstractUser):
         if inactive:
             sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
                                        End_Date__lt=self.datetime_now).distinct()
-        return sessions
+        return sessions.all()[:itemCount]
 
-    def get_student_courses(self, inactiveCourse=False, activeCourse=False):
-        all_sessions = self.get_student_sessions()
+    def get_student_courses(self, sessions=None, inactiveCourse=False, activeCourse=False, itemCount=None):
+        if sessions:
+            all_sessions = sessions
+        else:
+            all_sessions = self.get_student_sessions()
         inning_group = InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group'))
         all_courses = CourseInfo.objects.filter(
             pk__in=[ig.Course_Code.pk for ig in
@@ -204,7 +207,7 @@ class MemberInfo(AbstractUser):
             courses = all_courses.filter(
                 pk__in=[ig.Course_Code.pk for ig in
                         inning_group.filter(pk__in=active_sessions.values_list('Course_Group'))])
-        return {'courses': courses, 'session': sessions}
+        return {'courses': courses.all()[:itemCount], 'session': sessions}
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
         datetime_now = self.datetime_now
@@ -230,10 +233,19 @@ class MemberInfo(AbstractUser):
 
         return {'courses': courses, 'session': assigned_session}
 
-    def get_student_chapters(self, course, active=False, inactive=False):
-        assigned_session = self.get_student_sessions()
+    def get_student_chapters(self, courseList=None, sessions=None, active=False, inactive=False, itemCount=None):
+        # courseList - List of courseIDs
+        if sessions:
+            assigned_session = sessions
+        else:
+            assigned_session = self.get_student_sessions()
 
-        chapters = ChapterInfo.objects.filter(Course_Code__pk=course.id, Use_Flag=True)
+        if courseList:
+            courseIDs = courseList
+        else:
+            courseIDs = self.get_student_courses(activeCourse=True)['courses'].values_list('pk', flat=True)
+
+        chapters = ChapterInfo.objects.filter(Course_Code__pk__in=courseIDs, Use_Flag=True)
         active_chapters = []
         inactive_chapters = []
         for chapter in chapters:
@@ -241,28 +253,36 @@ class MemberInfo(AbstractUser):
                                                         object_id=chapter.id,
                                                         Session_Code__in=assigned_session)
             if not session_map.exists():
-                active_chapters.append(chapter)
+                active_chapters.append(chapter.pk)
             elif session_map.filter(Q(Start_Date__lte=self.datetime_now) | Q(Start_Date=None)).filter(
                     Q(End_Date__gte=self.datetime_now) | Q(End_Date=None)).exists():
-                active_chapters.append(chapter)
+                active_chapters.append(chapter.pk)
             elif session_map.filter(Q(Start_Date__gte=self.datetime_now)).exists():
                 chapters.exclude(pk=chapter.pk)
             else:
-                inactive_chapters.append(chapter)
+                inactive_chapters.append(chapter.pk)
         if active:
-            return active_chapters
+            return chapters.filter(pk__in=active_chapters)[:itemCount]
         elif inactive:
-            return inactive_chapters
+            return chapters.filter(pk__in=inactive_chapters)[:itemCount]
         else:
-            return chapters
+            return chapters.all()[:itemCount]
 
-    def get_student_assignments(self, chapter, active=False, inactive=False):
-        assigned_session = self.get_student_sessions()
-        assignments = AssignmentInfo.objects.filter(Chapter_Code=chapter.pk, Use_Flag=True).exclude(
+    def get_student_assignments(self, chapterList=None, sessions=None, active=False, inactive=False, itemCount=None):
+        if sessions:
+            assigned_session = sessions
+        else:
+            assigned_session = self.get_student_sessions()
+
+        if chapterList:
+            chapterIDs = chapterList
+        else:
+            chapterIDs = self.get_student_chapters()
+
+        assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapterIDs, Use_Flag=True).exclude(
             assignment_sessionmaps=None).order_by('pk')
         active_assignments = []
         inactive_assignments = []
-        pk_to_exclude = []
         for assignment in assignments:
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                         object_id=assignment.id,
@@ -272,16 +292,17 @@ class MemberInfo(AbstractUser):
             if session_map.exists():
                 if session_map.filter(End_Date__gte=self.datetime_now).exists():
                     assignment.active = True
-                    active_assignments.append(assignment)
+                    active_assignments.append(assignment.pk)
                 if session_map.filter(End_Date__lt=self.datetime_now).exists():
-                    inactive_assignments.append(assignment)
+                    inactive_assignments.append(assignment.pk)
 
+        # if itemCount is None, then return all.
         if active:
-            return active_assignments
+            return assignments.filter(pk__in=active_assignments)[:itemCount]
         elif inactive:
-            return inactive_assignments
+            return assignments.filter(pk__in=inactive_assignments)[:itemCount]
         else:
-            return assignments
+            return assignments.all()[:itemCount]
 
     @property
     def get_user_type(self):
@@ -543,7 +564,7 @@ class ChapterInfo(models.Model):
         return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
 
     def isStudentChapterActive(self, user):
-        active_chapters = user.get_student_chapters(course=self.Course_Code, active=True)
+        active_chapters = user.get_student_chapters(courseList=[self.Course_Code.pk], active=True)
         status = False
         if self.pk in [chapter.pk for chapter in active_chapters]:
             status = True
@@ -622,6 +643,12 @@ class AssignmentInfo(models.Model):
 
     def has_questions(self):
         if AssignmentQuestionInfo.objects.filter(Assignment_Code=self).exists():
+            return True
+        else:
+            return False
+
+    def isStudentAssignmentActive(self, user):
+        if self.pk in user.get_student_assignments(active=True).values_list('pk', flat=True):
             return True
         else:
             return False
