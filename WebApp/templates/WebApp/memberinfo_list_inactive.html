@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<form method="post" action="{% url 'memberinfo_inactive_delete_checked' %}">
+{# <form method="post" action="{% url 'memberinfo_inactive_delete_checked' %}">  #}
     {% csrf_token %}
     <div class="text-right">
         <nav id="navbar_parent" class="navbar-dark">
@@ -120,9 +120,8 @@
                     </button>
                     <button class="btn btn-sm btn-danger confirm-delete ml-2" id="{{ object.pk }}">{% trans "Delete" %}
                     </button>
-                    <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"
-                        id="activateForm-{{ object.pk }}">
-                        {% csrf_token %}
+                    <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"id="activateForm-{{ object.pk }}">
+                       {% csrf_token %}
                         <input type="hidden" value='memberinfo_list_inactive' name='url'>
                     </form>
                     <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
@@ -135,9 +134,10 @@
             {% endif %}
             {% endfor %}
         </table>
+
         <span class="checkboxCheckedLength"></span>
     </div>
-</form>
+{# </form> #}
 
 {% include 'WebApp/memberinfo_mass_option_form.html' %}
 
@@ -146,15 +146,32 @@
 {% block javascript%}
 
 <script type="text/javascript">
-    $(document).on('click', '.confirm-activate', function (event) {
-        var id = event.target.id;
+  //  $(document).on('click', '.confirm-activate', function (event) {
+  //      var id = event.target.id;
+  //      console.log(id);
+  //      ans = confirm('Are you sure you want to activate this Member?');
+  //      if (ans == true) {
+  //          console.log(ans);
+  //          $(`#activateForm-${id}`).submit();
+  //      } else {
+  //          return false;
+  //      }
+  //  });
+
+
+    $(".confirm-activate").click(function(event){
+
+         var id = event.target.id;
+       // console.log(id);
         ans = confirm('Are you sure you want to activate this Member?');
         if (ans == true) {
+      //      console.log(ans);
             $(`#activateForm-${id}`).submit();
         } else {
             return false;
         }
     });
+
 
     $(document).on('click', '.confirm-delete', function () {
         ans = confirm('Are you sure you want to delete this Member?');

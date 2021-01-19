@@ -195,6 +195,11 @@ class MemberUpdateForm(forms.ModelForm):
                                css_class='row'),
 
                            Div(
+                               Field(
+                                   'Use_Flag', wrapper_class='col-md-6 col-sm-6 col-xs-12'),
+                               css_class='row'),
+
+                           Div(
                                Field('Is_Teacher', 'Is_Student',
                                      wrapper_class='col-md-3 col-sm-6 col-xs-12'),
                            ),
@@ -237,7 +242,7 @@ class MemberUpdateForm(forms.ModelForm):
         fields = 'Member_ID', 'first_name', 'last_name', 'Member_Gender', 'username', 'email', \
                  'Member_Permanent_Address', 'Member_Temporary_Address', 'Member_BirthDate', 'Member_Phone', \
                  'Member_Avatar', 'Member_Memo', 'Is_Teacher', 'Is_Student', 'Member_Department', \
-                 'Member_Position'
+                 'Member_Position', 'Use_Flag'
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
