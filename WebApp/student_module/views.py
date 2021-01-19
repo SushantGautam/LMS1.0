@@ -426,7 +426,15 @@ class ChapterInfoDetailView(ChapterAuthMxnCls, StudentChapterAuthMxnCls, DetailV
         context['pre_quizes'] = Quiz.objects.filter(
             chapter_code=self.kwargs.get('pk'), draft=False, pre_test=True)
 
-        context['assigned_session'] = self.request.user.get_student_sessions() 
+        datetime_now = timezone.now().replace(microsecond=0)
+        student_groups = GroupMapping.objects.filter(Students=self.request.user)
+        course_groups = InningGroup.objects.filter(
+            Course_Code=ChapterInfo.objects.get(pk=self.kwargs.get('pk')).Course_Code)
+        context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                Start_Date__lte=datetime_now,
+                                                                End_Date__gte=datetime_now,
+                                                                Groups__in=student_groups,
+                                                                Course_Group__in=course_groups).distinct()
 
         for q in context['post_quizes']:
             q.sitting_list = Sitting.objects.filter(quiz=q, user=self.request.user)
