@@ -148,6 +148,7 @@
 
 <script type="text/javascript">
     $("#all_button").css("color", "white");
+
     $("#student_button").css("color", "black");
     $("#teacher_button").css("color", "black");
     $(".button-info").click(function () {
@@ -227,6 +228,9 @@
             dt.ajax.reload();
         };
         //For Export Buttons available inside jquery-datatable "server side processing" - End
+
+
+
         var table_main = $('#members_list_table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
@@ -240,9 +244,28 @@
             order: [],
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
             buttons: [
+
+
                 {
                     extend: 'csv',
-                    title: 'Member List',
+
+                    title: function(){
+
+                        if (table_main.ajax.url().includes("onlystudents=true"))
+                        {
+                             return "Student Member List";
+                        }
+
+                        else if ( table_main.ajax.url().includes("onlyteachers=true")){
+                             return "Teacher Member List";
+                        }
+                        else{
+                             return "All Member List";
+
+                        }
+                    },
+
+
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     exportOptions: {
                         columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
@@ -250,13 +273,37 @@
                     action: newexportaction,
 
                 },
+
+
+
                 {
                     text: '<span class="exportcsv" data-toggle="modal" data-target="#import_csv_modal" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
                 },
                 {
                     extend: 'print',
-                    title: 'Member List',
+
+                    title: function(){
+
+                        if (table_main.ajax.url().includes("onlystudents=true"))
+                        {
+                             return "Student Member List";
+                        }
+
+                        else if ( table_main.ajax.url().includes("onlyteachers=true")){
+                             return "Teacher Member List";
+                        }
+                        else{
+                             return "All Member List";
+
+                        }
+                    },
+
+
+
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
+                     exportOptions: {
+                        columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+                    },
                     fieldSeparator: '\t',
                     action: newexportaction,
                 }],
@@ -274,11 +321,18 @@
         });
 
 
+
         $("#student_button").bind("click", function () {
+
             $("#student_button").css("color", "white");
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
+
+
+
             table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
+            //console.log(table_main.ajax.url().includes("onlystudents=true"));
+
         });
         $("#teacher_button").bind("click", function () {
             $("#student_button").css("color", "black");
@@ -339,6 +393,13 @@
     $('.closeImportCSV').click(function () {
         window.location.reload();
     })
+</script>
+
+
+<script>
+
+
+
 </script>
 
 <script type="text/javascript">
