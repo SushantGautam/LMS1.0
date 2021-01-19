@@ -129,19 +129,17 @@
                         <td>{{ object.Summary }}</td>
                     </tr>
 
-                    {% if '/students' not in request.path %}
-                        <tr>
-                            <td>{% trans 'Status' %}</td>
-                            <td>
-                                {% if object.Use_Flag is True %}
-                                    <span class="badge badge-success">{% trans 'Published' %}</span>
-                                {% elif object.Use_Flag is False %}
-                                    <span class="badge badge-danger">{% trans 'Not Published' %}</span>
-                                {% endif %}
+                    <tr>
+                        <td>{% trans 'Status' %}</td>
+                        <td>
+                            {% if object.Use_Flag is True %}
+                                <span class="badge badge-success">{% trans 'Published' %}</span>
+                            {% elif object.Use_Flag is False %}
+                                <span class="badge badge-danger">{% trans 'Not Published' %}</span>
+                            {% endif %}
 
-                            </td>
-                        </tr>
-                    {% endif %}
+                        </td>
+                    </tr>
 
 
                     <!-- Start/End Date from different session -->
