@@ -116,16 +116,17 @@
                                     <label for="id_Is_Teacher">{% trans "Teacher" %}</label>
                                     <small id="membertype-error-message" class="input-error text-danger ml-5"></small>
                                 </div>
-
+                                    {% if "update" in request.path %}
                                  <div class="col-md-6">
                                       <div class="form-group mb-1">
                                         <label for="id_email">{% trans "Status" %} *</label>
-                                    </div>
+                                      </div>
                                        <input type="checkbox" name="Use_Flag" id="id_use_flag"
                                         {% if object.Use_Flag %} checked {% endif %} class="checkboxinput">
                                         <label for="id_use_flag">{% trans "Active" %}</label>
 
                                 </div>
+                                {% endif %}
 
                             </div>
                             <div class="row">
@@ -214,8 +215,9 @@
                     </div>
                 </div>
             </div>
-
-         {#    <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="true"> #}
+                {% if 'create' in request.path %}
+             <input type="hidden" name="Use_Flag" id="id_Use_Flag" value="true">
+                {% endif %}
             <div class="text-center mt-4">
                 <button class="btn btn-primary" type="submit">{% trans "Submit" %}</button>
             </div>

@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 
-from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup, AssignmentInfo
+from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup, AssignmentInfo, ChapterInfo
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
 from survey.models import SurveyInfo, SubmitSurvey
@@ -64,8 +64,11 @@ class EventListView(ListView):
         context = super().get_context_data()
         datetime_now = timezone.now().replace(microsecond=0)
         users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
+        context['chapter_list'] = ChapterInfo.objects.all()
         context['user_list'] = users
         context['r_a'] = CalendarEvent.register_agent
+        context['ev_tp'] = CalendarEvent.event_type
+        print('Type:', context['ev_tp'])
 
         context['session'] = InningInfo.objects.filter(Use_Flag=True,
                                                        Start_Date__lte=datetime_now,

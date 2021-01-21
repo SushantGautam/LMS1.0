@@ -48,6 +48,10 @@
                             <i class="fa fa-circle text-secondary" data-icon="building"></i> {% trans "Survey" %}
                         </div>
                         {% endif %}
+                        <div class="list-group-item px-0 fc-event" data_val="CH">
+                            <i class="fa fa-circle text-warning" data-icon="building"></i> {% trans "Chapter" %}
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -92,7 +96,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">{% trans "Event type" %}</label>
+                            <label class="col-sm-3 col-form-label">{% trans "Event Type" %}</label>
                             <div class="col-sm-9">
                                 <div class="mt-2" id="event-type">
                                     <div class="custom-control custom-radio custom-control-inline">
@@ -115,6 +119,55 @@
                                                class="custom-control-input" value="EX">
                                         <label class="custom-control-label" for="customRadioInline4">{% trans "Examination" %}</label>
                                     </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="customRadioInline5" name="event_type"
+                                               class="custom-control-input" value="CH" checked>
+                                        <label class="custom-control-label" for="customRadioInline5">{% trans "Chapter" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row chapter_dynamic">
+                            <label class="col-sm-3 col-form-label">{% trans "Chapter List" %}</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="chapter_list">
+                                     <select name="chapters" class="form-control select2-example"
+                                            id="chapter_list_multiple" multiple>
+                                        {% for c in chapter_list %}
+                                             <option
+                                        value="{{ c.pk }}">{{ c.Chapter_Name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+{#                                 <input type="hidden" name="chapters" id="chapter_list_hidden" value="">#}
+                                </div>
+                            </div>
+                        </div>
+                         <div class="form-group row chapter_dynamic">
+                            <label class="col-sm-3 col-form-label">{% trans "Repeat Type" %}</label>
+                            <div class="col-sm-9">
+                                <div class="mt-2" id="repeat_order">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="repeatRadioInline1" name="repeat_type"
+                                               class="custom-control-input" value="DA" checked>
+                                        <label class="custom-control-label" for="repeatRadioInline1">{% trans "Daily" %}</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="repeatRadioInline2" name="repeat_type"
+                                               class="custom-control-input" value="WE">
+                                        <label class="custom-control-label" for="repeatRadioInline2">{% trans "Weekly" %}</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="repeatRadioInline3" name="repeat_type"
+                                               class="custom-control-input" value="MO">
+                                        <label class="custom-control-label" for="repeatRadioInline3">{% trans "Monthly" %}</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="repeatRadioInline4" name="repeat_type"
+                                               class="custom-control-input" value="WD">
+                                        <label class="custom-control-label" for="repeatRadioInline4">{% trans "Weekday" %}</label>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -338,6 +391,23 @@
                         </div>
                     </div>
                     <br><br>
+
+
+
+                    <div class="row chapter_info_dynamic">
+                        <div class="col-md-6" style="text-align:left;">
+                             <h6 class="chapter_class"> {% trans "Chapter Name" %}: </h6>
+                            <div class="class_chapter"></div>
+                        </div>
+                         <div class="col-md-6" style="text-align:left;">
+                              <h6 class="repeat_class"> {% trans "Repeat Type" %}: </h6>
+                            <div class="class_repeat"></div>
+                         </div>
+
+                    </div>
+
+
+
                     <div class="row">
 
                         <div class="col-md-6" style="text-align:left;">

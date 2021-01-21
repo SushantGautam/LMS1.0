@@ -349,6 +349,9 @@
                         {% elif event.event_type == "EX" %}
                             icon: "newspaper-o",
                             className: 'btn btn-primary',
+                        {% elif event.event_type == "CH" %}
+                            icon: "envelope-o",
+                            className: 'btn btn-warning',
                         {% else %}
                             // default values
                             icon: "diamond",
@@ -458,44 +461,51 @@
 
                          if (event.tp == "PR")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-primary btn-secondary btn-dark');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-success btn-primary btn-secondary btn-dark btn-warning');
                             modal.find('.event-type').addClass('btn btn-info');
 
 
                             }
                           if (event.tp == "HO")
                             {
-                            modal.find('.event-type').removeClass('btn btn-success btn-info btn-primary btn-secondary btn-dark');
+                            modal.find('.event-type').removeClass('btn btn-success btn-info btn-primary btn-secondary btn-dark btn-warning');
                             modal.find('.event-type').addClass('btn btn-danger');
 
                             }
                           if (event.tp == "ME")
                             {
-                            modal.find('.event-type').removeClass("btn btn-danger btn-info btn-primary btn-secondary btn-dark");
+                            modal.find('.event-type').removeClass("btn btn-danger btn-info btn-primary btn-secondary btn-dark btn-warning");
                             modal.find('.event-type').addClass("btn btn-success");
 
                             }
                           if (event.tp == "EX")
                             {
-                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-secondary btn-dark");
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-secondary btn-dark btn-warning");
                             modal.find('.event-type').addClass("btn btn-primary");
 
                             }
 
 
+
                           if (event.tp == "AS")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-secondary');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-secondary btn-warning');
                             modal.find('.event-type').addClass('btn btn-dark');
                             modal.find('.srv-cat').html("");
 
                             }
                           if (event.tp == "SR")
                             {
-                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-dark');
+                            modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-dark btn-warning');
                             modal.find('.event-type').addClass('btn btn-secondary');
                             // modal.find('.survey-category').text("Category:" + event.category);
                             modal.find('.srv-cat').html(`<span style='margin-left:18px;font-size:14px;'>{% trans 'Category' %}: &nbsp;</span><span class='survey-category btn btn-sm btn-dark' style='font-weight:normal; <fon></fon>t-size:14px; margin-left:15px;'> ${event.category}</span>` );
+
+                            }
+                          if (event.tp == "CH")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-primary btn-dark btn-secondary");
+                            modal.find('.event-type').addClass("btn btn-warning");
 
                             }
 

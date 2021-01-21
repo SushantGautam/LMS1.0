@@ -42,6 +42,7 @@
     <!-- Initialize Calendar -->
     <script>
         $(document).ready(function () {
+           //  $(".chapter_dynamic").hide();
 
        // $(".fc.fc-event").css("border", "dotted");
        // $(".fc.fc-event").css("border-radius", "5px");
@@ -73,10 +74,42 @@
                    }else if (event.tp === "EX")
                     {
                         modal.find("#customRadioInline4").prop( "checked", true );
+                   }else if (event.tp === "CH")
+                    {
+                        modal.find("#customRadioInline5").prop( "checked", true );
+
+
+                           id = [];
+                            console.log("ID", id);
+                           for (i=0; i<event.chapter_list.length; i++){
+
+                                id.push(event.chapter_list[i].id);
+                               // console.log(id);
+                          }
+                          console.log(id);
+                          $('#chapter_list_multiple').val(id);
+                          $('#chapter_list_multiple').trigger('change');
+
+
+
                    }
                    else{
                          modal.find("#customRadioInline1").prop( "checked", true );
                     }
+
+                   console.log("R_type:", event.r_type);
+                   if(event.r_type === "DA"){
+
+                        modal.find("#repeatRadioInline1").prop( "checked", true );
+
+                   }else if(event.r_type === "WE"){
+                         modal.find("#repeatRadioInline2").prop( "checked", true );
+
+                   }else if(event.r_type === "MO"){
+                          modal.find("#repeatRadioInline3").prop( "checked", true );
+                   }else{
+                           modal.find("#repeatRadioInline4").prop( "checked", true );
+                   }
 
 
 
@@ -232,6 +265,19 @@
                         end: '{{ event.get_end_date.isoformat }}',
                       //  allDay: false,
                         part: '{{ event.get_participation_type_display }}',
+                        chapter: '{% for c in event.get_chapters %} {{c.Chapter_Name}} {% endfor %}',
+                        chapter_list: [
+                            {% for ch in event.get_chapters %}
+                                {
+                                    id: '{{ ch.pk }}',
+                                    name: '{{ ch.Chapter_Name }}',
+                                },
+
+                            {% endfor %}
+                        ],
+                        repeat:'{{ event.get_repeat_type_display }}',
+                        r_type: '{{ event.repeat_type }}',
+
                         pt: '{{event.participation_type}}',
                         event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
                         event_part_list: [
@@ -274,6 +320,9 @@
                         {% elif event.event_type == "EX" %}
                             icon: "newspaper-o",
                             className: 'btn btn-primary',
+                        {% elif event.event_type == "CH" %}
+                            icon: "envelope-o",
+                            className: 'btn btn-warning',
                         {% else %}
                             // default values
                             icon: "diamond",
@@ -369,6 +418,7 @@
 
 
                  $("#id_participant_type_1").prop("checked", true);
+                 $(".chapter_dynamic").hide();
                  $("#id_is_all_day").prop("checked", true);
                  $(".participant_dynamic").hide();
                  $(".datetime_dynamic").hide();
@@ -411,12 +461,40 @@
                             modal.find('.event-type').addClass("btn btn-primary");
 
                             }
+                            if (event.tp == "CH")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-primary");
+                            modal.find('.event-type').addClass("btn btn-warning");
+
+                            }
 
 
                     // modal.find('.event-type').addClass(event.className);
                     modal.find('.event-type').html("<i class=' fa fa-" + event.icon + " '></i> &nbsp;" + event.type);
                     modal.find('.event-title').html("");
                     modal.find('.event-title').html(event.title);
+
+
+                    console.log("Event Type",  event.tp );
+
+                    if(event.tp === 'CH')
+                    {
+                        $(".chapter_info_dynamic").show();
+                         modal.find('.class_chapter').html("");
+                         modal.find('.class_chapter').html(event.chapter);
+                         modal.find('.class_repeat').html(event.repeat);
+                         $( ".chapter_info_dynamic" ).after( "<br><br>   " );
+
+                         console.log(event.chapter);
+
+                    }else{
+                        $(".chapter_info_dynamic").hide();
+
+                    }
+
+
+
+
 
                       let start = event.start;
                       start = start._d.toLocaleString();
@@ -587,6 +665,10 @@
                        $(".modal-title").text("{% trans 'Create Event' %}");
                        $("#id_title").val("");
 
+                       // console.log("D_Type:", event.d_type)
+
+                          $(".chapter_dynamic").hide();
+
 
 
                        if (event.d_type === "HO"){
@@ -601,6 +683,11 @@
                          }
                          if (event.d_type === "EX"){
                             $("#customRadioInline4").prop("checked", true);
+                         }
+                          if (event.d_type === "CH"){
+                            $("#customRadioInline5").prop("checked", true);
+                             $(".chapter_dynamic").show();
+
                          }
 
                        let start_date = iso_to_django(event.start._d);
@@ -845,7 +932,9 @@
                 }
             }
 
-
+              //   $("#chapter_list_hidden").val($("#chapter_list_multiple").val().toString());
+             //    console.log("Chapter_List", $( "#chapter_list_hidden").val());
+                // return  false
 
             if (!is_valid) {
                 e.preventDefault();
@@ -853,6 +942,9 @@
             }
         });
 
+
+
+        // Participation Type On Choose User Display User Selection Dropdown
         $("input[name='participation_type']").change(function () {
             let ch_val = $("input[name='participation_type']:checked").val();
             //console.log("part_type changed: ", ch_val, ch_val === "CH");
@@ -864,6 +956,20 @@
                 $(".select2-example").trigger("change");
             }
         });
+
+        // Chapter Event On Selection Display Chapter And Repeat Type
+         $('input[name="event_type"]').change(function () {
+              let c_val = $("input[name='event_type']:checked").val();
+                console.log("CH_VAL",c_val);
+                 if (c_val === "CH") {
+                $(".chapter_dynamic").show();
+            } else {
+                $(".chapter_dynamic").hide();
+                $(".select2-example").val("");
+                $(".select2-example").trigger("change");
+            }
+         });
+
 
         $(".create_event_button").click(function () {
 
@@ -893,6 +999,7 @@
 
 
             $("#id_participant_type_1").click();
+            $("#customRadioInline1").click();
             $("#id_filter_type_1").click();
         })
 

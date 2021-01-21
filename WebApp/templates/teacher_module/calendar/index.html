@@ -64,9 +64,14 @@
                    }else if (event.tp === "ME")
                     {
                         modal.find("#customRadioInline2").prop( "checked", true );
-                   }else{
+                   }else if (event.tp === "CH")
+                    {
+                        modal.find("#customRadioInline5").prop( "checked", true );
+                   }
+                   else{
                          modal.find("#customRadioInline1").prop( "checked", true );
                     }
+
 
 
 
@@ -269,6 +274,9 @@
                         {% elif event.event_type == "EX" %}
                             icon: "newspaper-o",
                             className: 'btn btn-primary',
+                        {% elif event.event_type == "CH" %}
+                            icon: "envelope-o",
+                            className: 'btn btn-warning',
                         {% else %}
                             // default values
                             icon: "diamond",
@@ -416,6 +424,12 @@
                             {
                             modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger");
                             modal.find('.event-type').addClass("btn btn-primary");
+
+                            }
+                           if (event.tp == "CH")
+                            {
+                            modal.find('.event-type').removeClass("btn btn-success btn-info btn-danger btn-primary");
+                            modal.find('.event-type').addClass("btn btn-warning");
 
                             }
 
@@ -616,6 +630,9 @@
                          }
                          if (event.d_type === "EX"){
                             $("#customRadioInline4").prop("checked", true);
+                         }
+                          if (event.d_type === "CH"){
+                            $("#customRadioInline5").prop("checked", true);
                          }
 
                        let start_date = iso_to_django(event.start._d);
@@ -949,7 +966,7 @@
             $("#createEventModal").trigger("change");
 
 
-
+             $("#customRadioInline1").click();
            // $("#id_participant_type_2").click();
            // $("#id_filter_type_1").click();
         })
