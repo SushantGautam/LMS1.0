@@ -380,7 +380,74 @@
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: events,
+
                 eventRender: function (event, element) {
+
+
+                  //  if( $("#ho_checkbox").is(':checked'))
+
+                     if( $("#ho_checkbox").is(':checked')){
+
+                         if (event.tp === "HO"){
+                              element[0].style.setProperty('display', 'block', 'important');
+                             }
+                     } else if (event.tp === "HO"){
+                             element[0].style.setProperty('display', 'none', 'important');
+                             }
+
+
+
+
+                   if( $("#ex_checkbox").is(':checked')){
+                         if (event.tp === "EX"){
+                             element[0].style.setProperty('display', 'block', 'important');
+                         }
+                     } else if (event.tp === "EX"){
+                             element[0].style.setProperty('display', 'none', 'important');
+                             }
+
+
+                     if( $("#me_checkbox").is(':checked')){
+                         if (event.tp === "ME"){
+
+                              element[0].style.setProperty('display', 'block', 'important');
+                         }
+                     }else if(event.tp === "ME") {
+                              element[0].style.setProperty('display', 'none', 'important');
+                         }
+
+
+
+                      if( $("#pr_checkbox").is(':checked')){
+                         if (event.tp === "PR"){
+                              element[0].style.setProperty('display', 'block', 'important');
+                         }
+                     }else if (event.tp === "PR"){
+                         element[0].style.setProperty('display', 'none', 'important');
+                         }
+
+
+
+
+
+                    if( $("#ch_checkbox").is(':checked')){
+                         if (event.tp === "CH"){
+                              element[0].style.setProperty('display', 'block', 'important');
+
+                         }
+
+                     }else  if (event.tp === "CH"){
+                         element[0].style.setProperty('display', 'none', 'important');
+                    }
+
+
+
+
+
+
+
+
+                    // element[0].style.setProperty('display', 'none', 'important');
                     if (event.icon) {
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
@@ -389,6 +456,7 @@
                          element[0].style.setProperty('border', '2px solid black', 'important');
                     }
                 },
+
                 dayClick: function (date, jsEvent, view) {
 
                     $('#createEventModal').modal();
@@ -1009,6 +1077,10 @@
             } else {
                 $(".datetime_dynamic").show();
             }
+        })
+
+         $(".event_filter").change(function () {
+           $("#calendar-demo").fullCalendar('rerenderEvents');
         })
 
 
