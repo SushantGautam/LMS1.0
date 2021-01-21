@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'Notifications',
     'comment',
     'easyaudit',
+    'log_viewer',
 ]
 
 MIDDLEWARE = [
@@ -308,3 +309,9 @@ LOGGING = {
         },
     },
 }
+
+LOG_VIEWER_FILES_PATTERN = '*.log'
+LOG_VIEWER_FILES_DIR = LOG_ROOT
+LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+LOG_VIEWER_PATTERNS = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
