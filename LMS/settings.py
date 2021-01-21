@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_summernote',
     'Notifications',
     'comment',
+    'easyaudit',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 ]
 
 ROOT_URLCONF = 'LMS.urls'
@@ -110,7 +112,7 @@ forum_SITE_NAME = "A lovely forum"
 WSGI_APPLICATION = 'LMS.wsgi.application'
 ASGI_APPLICATION = 'LMS.routing.application'
 
-CHANNEL_LAYERS = {    
+CHANNEL_LAYERS = {
     'default': {
         # Without Redis
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -122,7 +124,6 @@ CHANNEL_LAYERS = {
         # },
     },
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -266,3 +267,42 @@ PROFILE_MODEL_NAME = 'MemberInfo'  # letter case insensitive
 COMMENT_FLAGS_ALLOWED = 10
 
 COMMENT_SHOW_FLAGGED = True
+
+from datetime import datetime
+
+if not os.path.exists('log'):
+    os.makedirs('log')
+LOG_ROOT = os.path.join(BASE_DIR, 'log')
+LOG_FILE = datetime.utcnow().date().strftime('%Y%m%d')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_ROOT, '{}.log'.format(LOG_FILE)),
+            'formatter': 'verbose'
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
