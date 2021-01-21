@@ -26,31 +26,115 @@
                     <p class="text-muted">{% trans "Drag and drop your event" %}</p>
                     {%endif%}
                     <div class="list-group mb-3" id="external-events">
-                        <div class="list-group-item px-0 fc-event" data_val="HO">
-                            <i class="fa fa-circle text-danger" data-icon="car"></i> {% trans "Holiday" %}
+                        <div class="row">
+                            <div class="list-group-item px-0 fc-event col-sm-6" data_val="HO">
+                                <i class="fa fa-circle text-danger" data-icon="car"></i> {% trans "Holiday" %}
+                            </div>
+                             <div class="col-sm-6">
+                                <div class="mt-2" id="event_checkbox1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="checkbox_holiday" class="custom-control-input"
+                                               id="ho_checkbox" checked>
+                                        <label class="custom-control-label" for="ho_checkbox"></label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="list-group-item px-0 fc-event" data_val="EX">
-                            <i class="fa fa-circle text-primary" data-icon="building"></i> {% trans "Examination" %}
+
+                        <div class="row">
+                            <div class="list-group-item px-0 fc-event col-sm-6" data_val="EX">
+                                <i class="fa fa-circle text-primary" data-icon="building"></i> {% trans "Examination" %}
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mt-2" id="event_checkbox2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="checkbox_examination" class="custom-control-input"
+                                               id="ex_checkbox" checked>
+                                        <label class="custom-control-label" for="ex_checkbox"></label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+
                         {% if not "students" in request.get_full_path %}
-                        <div class="list-group-item px-0 fc-event" data_val="ME">
-                            <i class="fa fa-circle text-success" data-icon="users"></i> {% trans "Meeting" %}
+                         <div class="row">
+                            <div class="list-group-item px-0 fc-event col-sm-6" data_val="ME">
+                                <i class="fa fa-circle text-success" data-icon="users"></i> {% trans "Meeting" %}
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mt-2" id="event_checkbox3">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="checkbox_meeting" class="custom-control-input"
+                                               id="me_checkbox" checked>
+                                        <label class="custom-control-label" for="me_checkbox"></label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         {% endif %}
-                        <div class="list-group-item px-0 fc-event" data_val="PR">
-                            <i class="fa fa-circle text-info" data-icon="building"></i> {% trans "Program" %}
+                        <div class="row">
+                            <div class="list-group-item px-0 fc-event col-sm-6" data_val="PR">
+                                <i class="fa fa-circle text-info" data-icon="building"></i> {% trans "Program" %}
+                            </div>
+                             <div class="col-sm-6">
+                                <div class="mt-2" id="event_checkbox4">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="checkbox_program" class="custom-control-input"
+                                               id="pr_checkbox" checked>
+                                        <label class="custom-control-label" for="pr_checkbox"></label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         {% if "students" in request.get_full_path %}
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-dark" data-icon="building"></i> {% trans "Assignment" %}
+                        <div class="row">
+                            <div class="list-group-item px-0 fc-event col-sm-6">
+                                <i class="fa fa-circle text-dark" data-icon="building"></i> {% trans "Assignment" %}
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mt-2" id="event_checkbox5">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="checkbox_assignment" class="custom-control-input"
+                                               id="as_checkbox" checked>
+                                        <label class="custom-control-label" for="as_checkbox"></label>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="list-group-item px-0 fc-event">
-                            <i class="fa fa-circle text-secondary" data-icon="building"></i> {% trans "Survey" %}
+                        <div class="row">
+                            <div class="list-group-item px-0 fc-event col-sm-6">
+                                <i class="fa fa-circle text-secondary" data-icon="building"></i> {% trans "Survey" %}
+                            </div>
+                             <div class="col-sm-6">
+                                    <div class="mt-2" id="event_checkbox6">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="checkbox_survey" class="custom-control-input"
+                                                   id="sr_checkbox" checked>
+                                            <label class="custom-control-label" for="sr_checkbox"></label>
+                                        </div>
+                                    </div>
+                            </div>
                         </div>
+
                         {% endif %}
-                        <div class="list-group-item px-0 fc-event" data_val="CH">
+                    <div class="row">
+                        <div class="list-group-item px-0 fc-event col-sm-6" data_val="CH">
                             <i class="fa fa-circle text-warning" data-icon="building"></i> {% trans "Chapter" %}
                         </div>
+                         <div class="col-sm-6">
+                            <div class="mt-2" id="event_checkbox7">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="checkbox_chapter" class="custom-control-input"
+                                           id="ch_checkbox" checked>
+                                    <label class="custom-control-label" for="ch_checkbox"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     </div>
                 </div>
