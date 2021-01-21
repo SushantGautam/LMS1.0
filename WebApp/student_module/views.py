@@ -127,8 +127,7 @@ def start(request):
                                                  itemCount=5)
 
     activeassignments = request.user.get_student_assignments(active=True,
-                                                             chapterList=chapters.values_list('pk', flat=True),
-                                                             itemCount=5)
+                                                             chapterList=chapters.values_list('pk', flat=True))[:5]
     sittings = Sitting.objects.filter(user=request.user)
 
     # Wordcloud
@@ -342,18 +341,18 @@ class MyAssignmentsListView(ListView):
         context = super().get_context_data(**kwargs)
 
         datetime_now = timezone.now().replace(microsecond=0)
-        batches = GroupMapping.objects.filter(Students=self.request.user)
-        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
-                                             Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
-        course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
-        courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
-                                            Use_Flag=True)
-        chapters = student_active_chapters(courses, sessions)
+        # batches = GroupMapping.objects.filter(Students=self.request.user)
+        # sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True,
+        #                                      Start_Date__lte=datetime_now, End_Date__gte=datetime_now)
+        # course_group = InningGroup.objects.filter(pk__in=sessions.values_list('Course_Group'))
+        # courses = CourseInfo.objects.filter(pk__in=course_group.values_list('Course_Code'),
+        #                                     Use_Flag=True)
+        # chapters = student_active_chapters(courses, sessions)
 
         context['currentDate'] = datetime_now
-        context['Assignment'] = student_all_assignments(chapters, sessions)
-        context['activeAssignment'] = filter_active_assignments(chapters, sessions)
-        context['expiredAssignment'] = context['Assignment'].difference(context['activeAssignment'])
+        context['Assignment'] = self.request.user.get_student_assignments()
+        context['activeAssignment'] = self.request.user.get_student_assignments(active=True)
+        context['expiredAssignment'] = self.request.user.get_student_assignments(active=False)
 
         return context
 
@@ -1328,17 +1327,17 @@ def singleUserHomePageJSON(request):
         if request.GET.get("assignment"):
             if request.GET.get('assignment') == "expired":
                 assignments = request.user.get_student_assignments(chapterList=chapters.values_list('pk', flat=True),
-                                                                   sessions=sessions, inactive=True, itemCount=5)
+                                                                   sessions=sessions, active=False)[:5]
             elif request.GET.get('assignment') == "submitted":
                 answers = AssignAnswerInfo.objects.filter(Student_Code=request.user)[:5]
                 assignments = AssignmentInfo.objects.filter(
                     pk__in=[x.Question_Code.Assignment_Code.pk for x in answers])
             else:
                 assignments = request.user.get_student_assignments(chapterList=chapters.values_list('pk', flat=True),
-                                                                   sessions=sessions, active=True, itemCount=5)
+                                                                   sessions=sessions, active=True)[:5]
         else:
             assignments = request.user.get_student_assignments(chapterList=chapters.values_list('pk', flat=True),
-                                                               sessions=sessions, itemCount=5)
+                                                               sessions=sessions)[:5]
         assignments = AssignmentInfo.objects.filter(pk__in=[x.pk for x in assignments])
 
         assignments_list = assignments.values('id', 'Assignment_Topic', 'Use_Flag', 'Assignment_Deadline',
