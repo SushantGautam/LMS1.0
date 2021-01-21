@@ -268,6 +268,8 @@ COMMENT_FLAGS_ALLOWED = 10
 
 COMMENT_SHOW_FLAGGED = True
 
+DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = False
+
 from datetime import datetime
 
 if not os.path.exists('log'):
