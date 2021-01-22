@@ -119,7 +119,7 @@
 
 <div class="row mt-4">
     {% for object in object_list %}
-    <div class="col-lg-4 col-sm-6 col-xs-12">
+    <div class="col-lg-3 col-sm-6 col-xs-12">
         <div class="card">
             <a href="{{ object.get_absolute_url }}">
                 <img src="{% if object.Course_Cover_File %}
@@ -141,7 +141,7 @@
                 <hr>
                 <p class="card-text">
                     {% if object.Course_Description %}
-                    {{ object.Course_Description|truncatechars:130 }}
+                    {{ object.Course_Description|truncatechars:50 }}
                     {% else %}
                     {% trans "No description" %}
                     {% endif %}
