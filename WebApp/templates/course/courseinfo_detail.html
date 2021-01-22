@@ -49,25 +49,35 @@
         <hr/>
         <div class="row">
             <div class="col-lg-6 col-sm-12">
-                <div class="text-center">
+                <div class="text-center mb-3">
                     <h3 class="text-primary">{{ object.Course_Name }}</h3>
                 </div>
-                <div class="card p-4">
+                <div class="card p-4 card-scroll">
                     <div class="text-center">
                         <img src="{% if object.Course_Cover_File %}
                                                                 /media/{{ object.Course_Cover_File }}
                                                             {% else %}
                                                                 {% static '/media/image/course.jpg' %}
-                                                            {% endif %}" class="img-fluid rounded img-height-30" />
+                                                            {% endif %}" class="img-fluid rounded img-height-20" />
                     </div>
                     <hr>
-                    <p class="mb-0">
+                    <div class="mb-0">
+                        <p class="m-0 truncatedDescription d-block">
                         {{ object.Course_Description|truncatechars:170 }}
-                    </p>
+                        </p>
+                        <p class="m-0 fullDescription d-none">
+                        {{ object.Course_Description }}
+                        </p>
+                        <div class="text-center mt-1">
+                        {% if object.Course_Description|length > 170 %}
+                        <span class="info-text text-info cursor-pointer text-center"> Read More </span>
+                        {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 col-sm-12">
-                <div class="card p-3" style="height: 40em; overflow-y :scroll">
+                <div class="card p-3 card-scroll" style="height: 40em; overflow-y :scroll">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="text-primary m-2">{% trans "List of Chapters" %}</h4>
                         {% if '/students' not in request.path %}
@@ -101,203 +111,6 @@
                 </div>
             </div>
         </div>
-        <table class="table mt-3">
-            {% if quizcount %}
-            <tr class="course-info">
-                <td style="border-top:0 ">
-                    <div class="p-0">
-                        <div class=" panel-group" id="accordionm" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingTwobb">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionm"
-                                            href="#collapseTwoc" aria-expanded="false" aria-controls="collapseTwoc">
-                                            {% trans 'Exams' %}: ({{ quizcount.count }}) <i class="fa fa-angle-double-down"></i>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseTwoc" class="panel-collapse collapse" role="tabpanel"
-                                    aria-labelledby="headingTwobb">
-                                    <div class="panel-body custom-panel-body">
-                                        {% for eachquiz in quizcount %}
-                                        <br> {{ eachquiz.title }}
-                                        {% if "students" in request.path %}-
-                                        {% if not eachquiz.draft %}
-                                        {# {% getUserQuizStatus eachquiz.sitting_set.all_user as student_quiz_status %} #}
-        
-                                        {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
-                                        {% if eachquiz.single_attempt %}
-                                        <span style="color: limegreen; font-weight: bold">{% trans 'Completed' %}</span>
-                                        {% else %}
-                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
-                                            <span style="color: limegreen; font-weight: bold">
-                                                {% trans 'Take Exam Again' %}
-                                            </span></a>
-                                        {% endif %}
-                                        {% else %}
-                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
-                                            <span style="font-weight: bold; color: #721c24">{% trans 'Take Exam' %}</span>
-                                        </a>
-                                        {% endif %}
-                                        {% endif %}
-                                        {% elif "teachers" in request.path %}
-                                        <br> <a style="color: #0c83e4; font-size: large"
-                                            href="/teachers/quiz/detail/{{ eachquiz.pk }}/">{% trans 'Detail' %}</a>
-                                        <br>
-                                        <p style="color: #00A000">
-                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                        <p>
-                                            <hr>
-                                            {% else %}
-                                            <br> <a style="color: #0c83e4; font-size: large"
-                                                href="/quiz/detail/{{ eachquiz.pk }}/">{% trans 'Detail' %}</a><br>
-                                        <p style="color: #00A000">
-                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                        <p>
-                                            <hr>
-                                            {% endif %}
-                                            {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-        
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            {% trans 'No Active Exams' %}
-            <hr>
-            {% endif %}
-            {% if surveycount %}
-            <tr>
-                <td style="border-top:0 ">
-                    <div class="col-12 p-0">
-                        <div class="panel-group" id="accordionmk" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingTwobbv">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionmk"
-                                            href="#collapseTwocd" aria-expanded="false" aria-controls="collapseTwocd">
-                                            {% trans 'Surveys' %}: ({{ surveycount|length }}) <i
-                                                class="fa fa-angle-double-down"></i>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseTwocd" class="panel-collapse collapse" role="tabpanel"
-                                    aria-labelledby="headingTwobbv">
-                                    <div class="panel-body custom-panel-body">
-                                        {% for eachquiz in surveycount %}
-                                        <br> {{ eachquiz.Survey_Title }}
-                                        {% if "students" in request.path %}-
-                                        {% if not eachquiz.draft %}
-                                        <a target="_blank" href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">
-                                            {# {% getSurveyStatus eachquiz user as can_submit %} #}
-                                            {% if can_submit.0 %}
-                                            {% trans 'Participate' %}
-                                            {% else %}
-                                            <span style="color: green"> {% trans 'Completed' %} </span>
-                                            {% endif %}
-                                        </a>
-                                        {% endif %}
-                                        {% elif "teachers" in request.path %}
-                                        <br> <a style="color: #0c83e4; font-size: large"
-                                            href="/teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/">{% trans 'Detail' %}</a>
-                                        <br>
-                                        <p style="color: #00A000">
-                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                        <p>
-                                            <hr>
-                                            {% else %}
-                                            <br> <a style="color: #0c83e4; font-size: large"
-                                                href="/survey/surveyinfo/detail/{{ eachquiz.pk }}/">{% trans 'Detail' %}</a>
-                                            <br>
-                                        <p style="color: #00A000">
-                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                        <p>
-                                            <hr>
-                                            {% endif %}
-                                            {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-            
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            {% trans 'No Active Surveys' %}
-            <hr>
-            {% endif %}
-            <!--{% if numberOfQuizExclExams.count %}
-            <tr class="course-info">
-                <td>
-                    <div>
-                        <div class="panel-group" id="accordionmo" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingTwobbx">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordionmo"
-                                            href="#collapseTwocn" aria-expanded="false" aria-controls="collapseTwocn">
-                                            {% trans 'Quizzes' %}: ({{ numberOfQuizExclExams.count }}) <i
-                                                class="fa fa-angle-double-down"></i>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseTwocn" class="panel-collapse collapse" role="tabpanel"
-                                    aria-labelledby="headingTwobbx">
-                                    <div class="panel-body custom-panel-body">
-                                        {% for eachquiz in numberOfQuizExclExams %}
-                                        <br> {{ eachquiz.title }}
-                                        {% if "students" in request.path %}-
-                                        {# {% getUserQuizStatus eachquiz.sitting_set.all user as student_quiz_status %} #}
-            
-                                        {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
-                                        {% if eachquiz.single_attempt %}
-                                        <span style="color: limegreen; font-weight: bold">{% trans 'Completed' %}</span>
-                                        {% else %}
-                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
-                                            <span style="color: limegreen; font-weight: bold">
-                                                {% trans 'Take Quiz Again' %}
-                                            </span></a>
-                                        {% endif %}
-                                        {% else %}
-                                        <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
-                                            <span style="font-weight: bold; color: #721c24">{% trans 'Take Quiz' %}</span>
-                                        </a>
-                                        {% endif %}
-                                        {% elif "teachers" in request.path %}
-                                        <br> <a style="color: #0c83e4; font-size: large"
-                                            href="/teachers/quiz/detail/{{ eachquiz.pk }}/">{% trans 'Detail' %}</a>
-                                        <br>
-                                        <p style="color: #00A000">
-                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                        <p>
-            
-                                            <hr>
-                                            {% else %}
-                                            <br> <a style="color: #0c83e4; font-size: large"
-                                                href="/quiz/detail/{{ eachquiz.pk }}/">{% trans 'Detail' %}</a>
-                                            <br>
-                                        <p style="color: #00A000">
-                                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                                        <p>
-                                            <hr>
-                                            {% endif %}
-                                            {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            {% trans 'No Active Quizzes' %}
-            <hr>
-            {% endif %}-->
-        </table>
     </div>
     <div class="col-lg-3 col-md-12">
         <div class="card">
@@ -342,9 +155,6 @@
                     {% endif %}
 
                 </p>
-                <!-- <p><i class="fa fa-clock-o fa-fw"></i> &nbsp;
-                    <i class="fa fa-calendar fa-fw"></i>
-                </p> -->
                 <p>{% trans "Instructor" %} :
                     {% if object.get_teachers_of_this_course %}
                 <ul class="row">
@@ -360,70 +170,155 @@
                 &nbsp;{% trans "No Teachers Assigned Yet" %}
                 {% endif %}
                 </p>
-                <!-- <p>Max. students: 50</p> -->
-                <!-- <p>{% trans "Attending" %} : </p> -->
-            </div>
-           
-        </div>
-        <div class="card">
-            <ul class="text-center">
-                <li class="p-3">
+                <hr/>
+                <p class="text-center">
                     <a href="
-                    {% if ' /teachers' in request.path %}
-                    {% url 'course_progress' object.pk %} 
-                    {% elif '/students' or '/teachers' not in request.path %} 
-                    {% url 'admin_course_progress' object.pk %} 
-                    {% endif %} " class="text-success">
+                            {% if ' /teachers' in request.path %}
+                            {% url 'course_progress' object.pk %} 
+                            {% elif '/students' or '/teachers' not in request.path %} 
+                            {% url 'admin_course_progress' object.pk %} 
+                            {% endif %} " class="text-success">
                         <i class="fa fa-trophy"></i> &nbsp;
                         <b style="text-transform: uppercase;"> {% trans ' Achievement' %} </b>
                     </a>
                     {% if topic %}
                     <a target="_blank" href="
-                        {% if '/teachers' in request.path %}
-                        {% url 'Teacher_Course_Forum' object.pk %}
-                        {% elif '/students' in request.path %}
-                        {% url 'Student_Course_Forum' object.pk %}
-                        {% else %}
-                        {% url 'Course_Forum' object.pk %}
-                        {% endif %}" class="text-secondary ml-4">
+                                            {% if '/teachers' in request.path %}
+                                            {% url 'Teacher_Course_Forum' object.pk %}
+                                            {% elif '/students' in request.path %}
+                                            {% url 'Student_Course_Forum' object.pk %}
+                                            {% else %}
+                                            {% url 'Course_Forum' object.pk %}
+                                            {% endif %}" class="text-secondary ml-4">
                         <i class="fa fa-comment-o"></i>
                         <b style="text-transform: uppercase;"> {% trans 'Forum' %} </b>
                     </a>
                     {% else %}
                     {% if '/students' not in request.path %}
                     <a target="_blank" href="
-                        {% if '/teachers' in request.path %}
-                        {% url 'Teacher_Course_Forum' object.pk %}
-                        {% else %}
-                        {% url 'Course_Forum' object.pk %}
-                        {% endif %}" class="text-secondary ml-4">
+                                                                                    {% if '/teachers' in request.path %}
+                                                                                    {% url 'Teacher_Course_Forum' object.pk %}
+                                                                                    {% else %}
+                                                                                    {% url 'Course_Forum' object.pk %}
+                                                                                    {% endif %}" class="text-secondary ml-4">
                         <i class="fa fa-comment-o"></i> &nbsp; <b> {% trans 'Add Forum' %} </b></a>
                     {% endif %}
                     {% endif %}
-                </li>
-                <!--<li class="p-3 border-top">
-                    
-                </li>-->
-                {% if not "students" in request.path %}
-                <li class="p-3 border-top">
-                    <!-- Quick   Button -->
-                    <button type="button" class="btn btn-outline-info qts-button" id="new_survey_btn"
-                        data-toggle="modal" data-target="#survey_content_modal">
-                        <i class="fa fa-plus"></i> &nbsp;
-                        {% trans 'Survey' %}
-                    </button>
-                    <!-- End of Quick Survey Button -->
-
-                    <button type="button" class="btn btn-outline-secondary qts-button ml-4" id="exam_paper_popup"
-                        data-toggle="modal" data-target="#quiz_create_popup">
-                        <i class="fa fa-plus"></i> &nbsp;
-                        {% trans 'Exam' %}
-                    </button>
-                </li>
-                {% endif %}
-            </ul>
+                </p>
+            </div>
         </div>
 
+        {% if not "students" in request.path %}
+        <div class="card">
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="text-primary m-0">{% trans 'Survey' %} ({{ surveycount|length }})</h5>
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="new_survey_btn" data-toggle="modal"
+                        data-target="#survey_content_modal">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                {% if surveycount %}
+                <div>
+                    {% for eachquiz in surveycount %}
+                    {% if forloop.counter != 1 %}
+                    <hr class="m-0"/>
+                    {% endif %}
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                        <h6 class="m-0">
+                            <a href="{% if 'teachers' in request.path %}
+                                    /teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/
+                                    {% else %}
+                                    /survey/surveyinfo/detail/{{ eachquiz.pk }}/
+                                    {% endif %}
+                                    " class="text-info">
+                                {{ eachquiz.Survey_Title }}
+                            </a>
+                        </h6>
+                        {% if "students" in request.path %}-
+                        {% if not eachquiz.draft %}
+                        <a target="_blank" href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">
+                            {# {% getSurveyStatus eachquiz user as can_submit %} #}
+                            {% if can_submit.0 %}
+                            {% trans 'Participate' %}
+                            {% else %}
+                            <span class="text-success"> {% trans 'Completed' %} </span>
+                            {% endif %}
+                        </a>
+                        {% endif %}
+                        {% else %}
+                        <span class="text-success">
+                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                        <span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {% trans 'No Active Surveys' %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="text-primary m-0">{% trans 'Exam' %} ({{ quizcount.count }})</h5>
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="exam_paper_popup" data-toggle="modal"
+                        data-target="#quiz_create_popup">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                {% if quizcount %}
+                <div>
+                    {% for eachquiz in quizcount %}
+                     {% if forloop.counter != 1 %}
+                    <hr class="m-0"/>
+                    {% endif %}
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                    <h6 class="m-0">
+                        <a href="{% if 'teachers' in request.path %}
+                                                        /teachers/quiz/detail/{{ eachquiz.pk }}/
+                                                        {% else %}
+                                                        /quiz/detail/{{ eachquiz.pk }}/
+                                                        {% endif %}
+                                                        " class="text-info">
+                            {{ eachquiz.title }}
+                        </a>
+                    </h6>
+                    {% if "students" in request.path %}-
+                        {% if not eachquiz.draft %}
+                            {# {% getUserQuizStatus eachquiz.sitting_set.all_user as student_quiz_status %} #}
+                            {% if student_quiz_status.isExist and student_quiz_status.isComplete %}
+                                {% if eachquiz.single_attempt %}
+                                    <span class="text-success font-weight-bold">{% trans 'Completed' %}</span>
+                                {% else %}
+                                    <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
+                                        <span class="text-success font-weight-bold">
+                                            {% trans 'Take Exam Again' %}
+                                        </span>
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a target="_blank" href="/quiz/quiz{{ eachquiz.pk }}/take/">
+                                    <span class="text-warning font-weight-bold">{% trans 'Take Exam' %}</span>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <span class="text-success">
+                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                        </span>
+                    {% endif %}
+                    </div>
+                    {% endfor %}
+                 </div>
+                {% else %}
+                    {% trans 'No Active Exams' %}
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
 
         <div class="card">
             <div class="p-3">
