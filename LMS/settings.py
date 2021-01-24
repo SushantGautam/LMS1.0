@@ -273,10 +273,11 @@ DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = False
 
 from datetime import datetime
 
-if not os.path.exists('log'):
-    os.makedirs('log')
-LOG_ROOT = os.path.join(BASE_DIR, 'log')
-LOG_FILE = datetime.utcnow().date().strftime('%Y%m%d')
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+LOG_ROOT = os.path.join(BASE_DIR, 'logs')
+LOG_FILE = datetime.utcnow().strftime('%Y%m%d')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -293,9 +294,10 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'ERROR',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': os.path.join(LOG_ROOT, '{}.log'.format(LOG_FILE)),
-            'formatter': 'verbose'
+            'when': 'midnight',
+            'interval': 1,
         },
         'console': {
             'class': 'logging.StreamHandler',
@@ -313,5 +315,5 @@ LOGGING = {
 LOG_VIEWER_FILES_PATTERN = '*.log'
 LOG_VIEWER_FILES_DIR = LOG_ROOT
 LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
-LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page
+LOG_VIEWER_PAGE_LENGTH = 25  # total log lines per-page
 LOG_VIEWER_PATTERNS = [']OFNI[', ']GUBED[', ']GNINRAW[', ']RORRE[', ']LACITIRC[']
