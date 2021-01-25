@@ -70,7 +70,10 @@
                         </p>
                         <div class="text-center mt-1">
                         {% if object.Course_Description|length > 170 %}
-                        <span class="info-text text-info cursor-pointer text-center"> Read More </span>
+                        <span class="info-text text-info cursor-pointer text-center">{% trans "Read More" %} </span>
+                        {% endif %}
+                        {% if not object.Course_Description %}
+                        {% trans "No description" %}
                         {% endif %}
                         </div>
                     </div>
@@ -85,9 +88,8 @@
                         <button class="btn btn-sm btn-success" data-z="1" data-toggle="modal" data-target="#create_chapter_modal"
                             data-animated id="add-newchapter-btn">
                             {% trans "Add Chapter" %}</button>
-                
-                        {% endif %}
                         </div>
+                        {% endif %}
                     </div>
                     <ul>
                         <script> var lastchapter = 0;</script>
