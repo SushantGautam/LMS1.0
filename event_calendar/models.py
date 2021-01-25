@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db import models
 from django.utils.translation import gettext, ugettext_lazy as _
@@ -70,9 +70,11 @@ class CalendarEvent(models.Model):
     def get_end_date(self):
         if self.is_all_day:
             dt_string = str(self.date_end.date()) + " 23:59"
-            return datetime.strptime(dt_string, "%Y-%m-%d %H:%M")
+            # new_date = self.date_end + timedelta(hours=23, seconds=59)
+            # return new_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+            return self.date_end.strftime("%Y-%m-%dT%H:%M:%SZ")
         else:
-            return self.date_end
+            return self.date_end.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     class Meta:
         verbose_name = _("Calendar Event")

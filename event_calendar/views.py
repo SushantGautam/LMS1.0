@@ -67,8 +67,8 @@ class EventListView(ListView):
         context['chapter_list'] = ChapterInfo.objects.all()
         context['user_list'] = users
         context['r_a'] = CalendarEvent.register_agent
-        context['ev_tp'] = CalendarEvent.event_type
-        print('Type:', context['ev_tp'])
+        # context['ev_tp'] = CalendarEvent.event_type
+        # print('Type:', context['ev_tp'])
 
         context['session'] = InningInfo.objects.filter(Use_Flag=True,
                                                        Start_Date__lte=datetime_now,

@@ -267,31 +267,47 @@
                                 </div>
                             </div>
                         </div>
+
+
                         <div class="form-group row row-sm">
                             <label class="col-sm-3 col-form-label">{% trans "Start" %}</label>
                             <div class="col-sm-5">
                                 <input id="event-start-date" type="text"
                                        class="form-control create-event-datepicker"
-                                       placeholder="{% trans 'Date' %}">
+                                       placeholder="{% trans 'Start Date' %}">
                             </div>
+
+
                             <div class="col-sm-4 datetime_dynamic">
                                 <input id="event-start-time" type="text" class="form-control create-event-demo"
-                                       placeholder="{% trans 'Time' %}">
+                                       placeholder="{% trans 'Start Time' %}">
                             </div>
+
+
                             <input type="hidden" name="date_start" id="id_date_start">
                         </div>
+
+
+
                         <div class="form-group row row-sm">
                             <label class="col-sm-3 col-form-label">{% trans 'End' %}</label>
                             <div class="col-sm-5">
                                 <input id="event-end-date" type="text" class="form-control create-event-datepicker"
-                                       placeholder="{% trans 'Date' %}">
+                                       placeholder="{% trans 'End Date' %}">
                             </div>
+
+
                             <div class="col-sm-4 datetime_dynamic">
                                 <input id="event-end-time" type="text" class="form-control create-event-demo"
-                                       placeholder="{% trans 'Time' %}">
+                                       placeholder="{% trans 'End Time' %}">
                             </div>
+
+
                             <input type="hidden" name="date_end" id="id_date_end">
                         </div>
+
+
+
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">{% trans 'Participants Type' %}</label>
                             <div class="col-sm-9">
@@ -464,7 +480,7 @@
 
             <div class="modal-body" style="text-align:center">
 
-                <div class="container">
+                <div class="container modal_finder">
                     <div class="row">
                         <div class="col-md-10" style="float:left;text-align:left;">
                             <h6> {% trans "Event Type" %}:</h6>
@@ -478,7 +494,7 @@
 
 
 
-                    <div class="row chapter_info_dynamic">
+                    <div class="row chapter_info_dynamic mb-5" >
                         <div class="col-md-6" style="text-align:left;">
                              <h6 class="chapter_class"> {% trans "Chapter Name" %}: </h6>
                             <div class="class_chapter"></div>

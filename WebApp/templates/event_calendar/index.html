@@ -41,7 +41,26 @@
 
     <!-- Initialize Calendar -->
     <script>
+
+ //   $(window).on('load', function() {
+   // console.log("ASHJASJASAJ", $('#calendar-demo').fullCalendar('clientEvents', function(ev){return ev.allDay}));
+ //   let list_event = $('#calendar-demo').fullCalendar('clientEvents', function(ev){return ev.allDay});
+   // console.log(list_event);
+  //  for( ev of list_event  ){
+       // console.log("EV",ev);
+     //    if(ev.end){
+       //     let m_end = ev.end.toDate();
+           //  console.log("M End", m_end);
+       //      ev.end.set({h:23, m:59, s:59});
+          //   console.log("12121212121",ev.end);
+        //     $('#calendar-demo').fullCalendar('updateEvent', ev);
+
+           //     }
+ //   }
+ //   });
         $(document).ready(function () {
+
+
            //  $(".chapter_dynamic").hide();
 
        // $(".fc.fc-event").css("border", "dotted");
@@ -127,7 +146,14 @@
 
 
                   let start = event.start;
+                   console.log("Start_from_Update",start);
+                   sd = new Date()
+           // console.log("Start_from_Update",start);
+          //  console.log("Start_from_Update",start);
                   start = start._d.toLocaleString();
+                 // startutc = start._d.toUTCString();
+                //  console.log("Start_Locale",start);
+                 // console.log("Start_UTC",startutc);
                   let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
                   let start_time = start.split(' ')[1];
                   let st = start.split(' ')[2];
@@ -142,14 +168,17 @@
                   stime = sHours + ":" + sMinutes
 
 
-
-
-
+           // console.log("UpdateEND",end);
                   let end = event.end;
+                   console.log("End_from_Update",end);
                   if (!end)
                   {
                   end = event.start;
                   }
+                 //  if(event.allDay){
+                  //        end = end.subtract(1,"days");
+
+                  //    }
                   end = end._d.toLocaleString();
                   let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                   let end_time = end.split(' ')[1];
@@ -173,6 +202,12 @@
 
                 modal.find('#event-end-date').val( end_date);
                 modal.find('#event-end-time').val(etime);
+
+                    if(event.allDay){
+                         $("#event-start-time").val("00:00");
+                         $("#event-end-time").val("00:00");
+
+                          }
 
 
                 $("#event-start-date").daterangepicker({
@@ -262,7 +297,11 @@
                         r_a: '{{event.register_agent.pk}}',
                         start: '{{ event.date_start.isoformat}}',
                        // end: '{{ event.date_end.isoformat }}',
-                        end: '{{ event.get_end_date.isoformat }}',
+                       {% if event.is_all_day %}
+                        end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
+                           {% else %}
+                            end: $.fullCalendar.moment('{{ event.get_end_date }}'),
+                           {% endif %}
                       //  allDay: false,
                         part: '{{ event.get_participation_type_display }}',
                         chapter: '{% for c in event.get_chapters %} {{c.Chapter_Name}} {% endfor %}',
@@ -334,6 +373,8 @@
                 {% endfor %}
             ];
 
+            console.log('MomentTime:',moment('2021-01-29T18:15:00Z'));
+
             $('#external-events .fc-event').each(function () {
                 // store data so the calendar knows to render an event upon drop
                 $(this).data('event', {
@@ -383,17 +424,25 @@
 
                 eventRender: function (event, element) {
 
+                    if(event.allDay ){
+                        console.log("All_D End Date",event.end);
+                        if(event.end){
+                           //  event.end.setHours(23, 59, 59);
+                             event.end.set({h:23, m:59, s:59});
+                             // $('#calendar-demo').fullCalendar('updateEvent', event);
 
+                        }
+
+                    }
                   //  if( $("#ho_checkbox").is(':checked'))
 
                      if( $("#ho_checkbox").is(':checked')){
-
                          if (event.tp === "HO"){
                               element[0].style.setProperty('display', 'block', 'important');
                              }
                      } else if (event.tp === "HO"){
-                             element[0].style.setProperty('display', 'none', 'important');
-                             }
+                         element[0].style.setProperty('display', 'none', 'important');
+                         }
 
 
 
@@ -402,20 +451,18 @@
                          if (event.tp === "EX"){
                              element[0].style.setProperty('display', 'block', 'important');
                          }
-                     } else if (event.tp === "EX"){
-                             element[0].style.setProperty('display', 'none', 'important');
-                             }
+                   } else if (event.tp === "EX"){
+                         element[0].style.setProperty('display', 'none', 'important');
+                   }
 
 
                      if( $("#me_checkbox").is(':checked')){
                          if (event.tp === "ME"){
-
                               element[0].style.setProperty('display', 'block', 'important');
                          }
                      }else if(event.tp === "ME") {
-                              element[0].style.setProperty('display', 'none', 'important');
-                         }
-
+                         element[0].style.setProperty('display', 'none', 'important');
+                     }
 
 
                       if( $("#pr_checkbox").is(':checked')){
@@ -424,33 +471,22 @@
                          }
                      }else if (event.tp === "PR"){
                          element[0].style.setProperty('display', 'none', 'important');
-                         }
-
-
-
+                      }
 
 
                     if( $("#ch_checkbox").is(':checked')){
                          if (event.tp === "CH"){
                               element[0].style.setProperty('display', 'block', 'important');
-
                          }
-
                      }else  if (event.tp === "CH"){
                          element[0].style.setProperty('display', 'none', 'important');
                     }
 
-
-
-
-
-
-
-
-                    // element[0].style.setProperty('display', 'none', 'important');
+                     // List event with icon, Title
                     if (event.icon) {
                         element.find(".fc-title").prepend("<i class='mr-1 fa fa-" + event.icon + "'></i>");
                     }
+                      //Add border to the self created events.
                      if(event.r_a == '{{request.user.pk}}'){
                        //  element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
                          element[0].style.setProperty('border', '2px solid black', 'important');
@@ -502,7 +538,10 @@
                   eventClick: function (event, jsEvent, view) {
 
                     var modal = $('#viewEventModal');
-
+                  //  var brs = $(".modal_finder").find('br');
+                   //     while (brs.length) {
+                   //          brs[2].parentNode.removeChild(brs[0]);
+                    //        }
 
                         if (event.tp == "PR")
                             {
@@ -547,12 +586,25 @@
 
                     if(event.tp === 'CH')
                     {
-                        $(".chapter_info_dynamic").show();
-                         modal.find('.class_chapter').html("");
-                         modal.find('.class_chapter').html(event.chapter);
-                         modal.find('.class_repeat').html(event.repeat);
-                         $( ".chapter_info_dynamic" ).after( "<br><br>   " );
 
+                      //  $(".modal_finder br" ).css("display","none");
+                     //   $('.chapter_info_dynamic').after($("<br><br>")).remove();
+
+                        $(".chapter_info_dynamic").show();
+                        // modal.find('.class_chapter').html("");
+
+                      //   modal.find('.class_chapter').html(`<span class="btn btn-sm btn-warning"> ${event.chapter} </span>`,);
+                        let chapter_str = ""
+                        for( chapter of event.chapter_list){
+                            chapter_str += `<span class="btn btn-sm btn-warning mb-1"> ${chapter.name} </span>`
+                        }
+
+                         modal.find('.class_chapter').html(chapter_str);
+                         modal.find('.class_repeat').html(event.repeat);
+                       //  $( ".chapter_info_dynamic" ).after( "<br><br>" );
+
+
+                         //
                          console.log(event.chapter);
 
                     }else{
@@ -586,9 +638,13 @@
                       {
                       end = event.start;
                       }
-                   //   console.log(end);
+                       console.log(event.end);
+                      if(event.allDay){
+                          end = end.subtract(1,"days");
+                      }
+
                       end = end._d.toLocaleString();
-                      console.log(end);
+                      console.log(event.end);
                       let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                       let end_time = end.split(' ')[1];
                       let et = end.split(' ')[2];
@@ -841,6 +897,7 @@
                 console.log("et_create",event_type);
                 if (event.end) {
                     end_date = iso_to_django(event.end._d);
+
                 } else {
                     end_date = start_date;
                 }
@@ -925,17 +982,21 @@
         $("#calendar_event_form").submit(function (e) {
 
 
-            console.log("Clicked")
+           // console.log("Clicked")
 
             //// Convert date and time inputs to UTC and required format for django:
 
             let d_end = new Date($("#event-end-date").val() + " " + $("#event-end-time").val());
+           // console.log("Date_End",d_end );
             let d_start = new Date($("#event-start-date").val() + " " + $("#event-start-time").val());
+           // console.log("Date_Start",d_start );
 
             //// Using one of django's default format: '%Y-%m-%d %H:%M', '2006-10-25 14:30':
             $("#id_date_end").val(iso_to_django(d_end));
+          //  console.log("New Date End", $("#id_date_end").val(iso_to_django(d_end)));
             $("#id_date_start").val(iso_to_django(d_start));
-
+           // console.log("New Date Start",  $("#id_date_start").val(iso_to_django(d_start)));
+           // return false;
             //// Validation Here:
             let is_valid = true;
 
@@ -947,8 +1008,8 @@
              let et = $("#event-end-time").val();
              let is_ad = $("#createEventModal #id_is_all_day").is(':checked');
              let is_custom = $("#createEventModal #id_participant_type_4").is(':checked');
-             let p_l = $(".select2-selection__rendered > li").length;
-
+            // let p_l = $(".select2-selection__rendered > li").length;
+            // let ch_l = $("#chapter_list_multiple .select2-selection__rendered > li").length;
 
 
              $("span.text-danger").remove();
@@ -956,6 +1017,14 @@
                  $("#createEventModal #id_title").after('<span class="text-danger">This field is required</span>');
                 is_valid = false;
 
+             }
+             let ch = $("#customRadioInline5").is(':checked');
+             v = $("#chapter_list_multiple").val();
+             if(ch){
+                 if(v.length < 1){
+                      $("#chapter_list_multiple").after('<span class="text-danger">This field is required</span>');
+                      is_valid = false;
+                 }
              }
               if (sd === ""){
                  $("#event-start-date").after('<span class="text-danger">This field is required</span>');
@@ -992,8 +1061,9 @@
                 }
 
              }
+             let pt_ls = $("#id_participants").val();
             if(is_custom){
-                if( p_l < 2 ){
+                if( pt_ls.length < 1 ){
                      $("#id_participants").after('<span class=" text-danger">This field is required</span>');
                      is_valid = false;
 
@@ -1083,6 +1153,14 @@
            $("#calendar-demo").fullCalendar('rerenderEvents');
         })
 
+
+          $("#id_is_all_day").change(function () {
+             if ($(this).is(':checked')){
+                 $("#event-start-time").val("00:00");
+                 $("#event-end-time").val("00:00");
+
+             }
+        })
 
 
     </script>
