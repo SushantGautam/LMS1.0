@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'decorator_include',
     'django_summernote',
     'pwa',
+    'comment',
 ]
 
 MIDDLEWARE = [
