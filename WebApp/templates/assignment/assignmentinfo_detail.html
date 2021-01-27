@@ -226,7 +226,7 @@
                                 <p>
                                     {% trans "Answer Type" %} : {% if question.Answer_Type == 'S' %}
                                     {% trans "Short Answer" %}
-                                    {% else %}
+                                    {% elif question.Answer_Type == 'F' %}
                                     {% trans "File Upload" %}
                                     {% endif %}
                                 </p>
@@ -375,7 +375,6 @@
                             </div>
                             {% endif %}
                         </form>
-
                     {% endif %}
                     {% endfor %}
                 </div>
@@ -457,7 +456,9 @@
                             <form class="form_{{ question.id }}">
                                 {% if question.Answer_Type == 'S' %}
                                     <div class="form-group">
+                                        <div class="border">
                                         {{ form.Assignment_Answer }}
+                                        </div>
                                         <!-- <textarea type="hidden" name="Assignment_Answer"
                                             id="id_Assignment_Answer{{ question.id }}"
                                             required></textarea> -->
@@ -466,7 +467,6 @@
                                                 id="id_Student_Code{{ question.id }}">
                                         <input type="hidden" value="{{ question.id }}" name="Question_Code"
                                                 id="id_Question_Code{{ question.id }}">
-
                                     </div>
 
                                     <div class="form-group text-center">
@@ -544,15 +544,14 @@
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="text-primary">{% trans "Assignment Information" %}</h5>
+                    {% if '/student' not in request.get_full_path %}
                     <div class="d-inline-block dropdown">
-                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
-                            data-toggle="dropdown">
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
                             <i class="ti-more-alt"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            {% if '/student' not in request.get_full_path %}
-                            <a href="javascipt:void(0)" class="dropdown-item text-primary" data-toggle="modal" data-target="#editAssignmentModal"
-                            id="editAssignment-btn">
+                            <a href="javascipt:void(0)" class="dropdown-item text-primary" data-toggle="modal"
+                                data-target="#editAssignmentModal" id="editAssignment-btn">
                                 {% trans "Edit Assignment" %}
                             </a>
                             {% if '/teachers' in request.path %}
@@ -578,9 +577,10 @@
                                 <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
                             </form>
                             {% endif %}
-                            {% endif %}
                         </div>
                     </div>
+                    {% endif %}
+                
                 </div>
                 <p>
                    {# {% trans "Assignment Start Date" %} : {{ object.Assignment_Start|date:'d M, Y h:i A' }} #}

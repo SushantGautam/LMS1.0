@@ -49,10 +49,10 @@
         <hr/>
         <div class="row">
             <div class="col-lg-6 col-sm-12">
-                <div class="text-center mb-3">
-                    <h3 class="text-primary">{{ object.Course_Name }}</h3>
-                </div>
-                <div class="card p-4 card-scroll">
+                <div class="card p-4 card-scroll" style="min-height: 40em;">
+                    <div class="text-center">
+                        <h3 class="text-primary">{{ object.Course_Name }}</h3>
+                    </div>
                     <div class="text-center">
                         <img src="{% if object.Course_Cover_File %}
                                                                 /media/{{ object.Course_Cover_File }}
@@ -119,21 +119,21 @@
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="text-primary">{% trans "Course" %}</h5>
+                    {% if '/student' not in request.get_full_path %}
                     <div class="d-inline-block dropdown">
-                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
-                            data-toggle="dropdown">
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
                             <i class="ti-more-alt"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            {% if '/student' not in request.get_full_path %}
+                
                             <a class="dropdown-item text-primary" data-z="1" data-animated href="{% if '/teachers' in request.path %}
-                    /teachers{{ object.get_update_url }}
-                        {% else %}
-                            {{ object.get_update_url }}
-                        {% endif %}">{% trans "Edit Course" %}</a>
-                            {% endif %}
+                                    /teachers{{ object.get_update_url }}
+                                        {% else %}
+                                            {{ object.get_update_url }}
+                                        {% endif %}">{% trans "Edit Course" %}</a>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
                 <p>
                     {% trans "Difficulty" %} :
@@ -211,58 +211,7 @@
         </div>
 
         {% if not "students" in request.path %}
-        <div class="card">
-            <div class="p-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="text-primary m-0">{% trans 'Survey' %} ({{ surveycount|length }})</h5>
-                    <button type="button" class="btn btn-primary btn-sm qts-button" id="new_survey_btn" data-toggle="modal"
-                        data-target="#survey_content_modal">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </div>
-                {% if surveycount %}
-                <div>
-                    {% for eachquiz in surveycount %}
-                    {% if forloop.counter != 1 %}
-                    <hr class="m-0"/>
-                    {% endif %}
-                    <div class="d-flex align-items-center justify-content-between py-2">
-                        <h6 class="m-0">
-                            <a href="{% if 'teachers' in request.path %}
-                                    /teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/
-                                    {% else %}
-                                    /survey/surveyinfo/detail/{{ eachquiz.pk }}/
-                                    {% endif %}
-                                    " class="text-info">
-                                {{ eachquiz.Survey_Title }}
-                            </a>
-                        </h6>
-                        {% if "students" in request.path %}-
-                        {% if not eachquiz.draft %}
-                        <a target="_blank" href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">
-                            {# {% getSurveyStatus eachquiz user as can_submit %} #}
-                            {% if can_submit.0 %}
-                            {% trans 'Participate' %}
-                            {% else %}
-                            <span class="text-success"> {% trans 'Completed' %} </span>
-                            {% endif %}
-                        </a>
-                        {% endif %}
-                        {% else %}
-                        <span class="text-success">
-                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
-                        <span>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {% trans 'No Active Surveys' %}
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="card">
+         <div class="card">
             <div class="p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="text-primary m-0">{% trans 'Exam' %} ({{ quizcount.count }})</h5>
@@ -320,6 +269,58 @@
                 {% endif %}
             </div>
         </div>
+        <div class="card">
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="text-primary m-0">{% trans 'Survey' %} ({{ surveycount|length }})</h5>
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="new_survey_btn" data-toggle="modal"
+                        data-target="#survey_content_modal">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                {% if surveycount %}
+                <div>
+                    {% for eachquiz in surveycount %}
+                    {% if forloop.counter != 1 %}
+                    <hr class="m-0"/>
+                    {% endif %}
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                        <h6 class="m-0">
+                            <a href="{% if 'teachers' in request.path %}
+                                    /teachers/surveyinfodetail/detail/{{ eachquiz.pk }}/
+                                    {% else %}
+                                    /survey/surveyinfo/detail/{{ eachquiz.pk }}/
+                                    {% endif %}
+                                    " class="text-info">
+                                {{ eachquiz.Survey_Title }}
+                            </a>
+                        </h6>
+                        {% if "students" in request.path %}-
+                        {% if not eachquiz.draft %}
+                        <a target="_blank" href="/students/questions_student_detail/detail/{{ eachquiz.pk }}">
+                            {# {% getSurveyStatus eachquiz user as can_submit %} #}
+                            {% if can_submit.0 %}
+                            {% trans 'Participate' %}
+                            {% else %}
+                            <span class="text-success"> {% trans 'Completed' %} </span>
+                            {% endif %}
+                        </a>
+                        {% endif %}
+                        {% else %}
+                        <span class="text-success">
+                            {{ eachquiz.draft|yesno:"Inactive, Active" }}
+                        <span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {% trans 'No Active Surveys' %}
+                {% endif %}
+            </div>
+        </div>
+
+       
         {% endif %}
 
         <div class="card">

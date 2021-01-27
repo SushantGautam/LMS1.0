@@ -115,46 +115,48 @@
         <hr/>
         <div class="row mb-3">
             <div class="col-lg-5 col-md-12 col-sm-12 text-center">
-                <div class="text-center mb-3">
-                    <h3 class="text-primary">Chapter {{ object.Chapter_No }} . {{ object.Chapter_Name }}</h3>
-                </div>
-                <a class="btn btn-info" href="
-                    {% if '/teachers' in request.path %}
-                        {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
-                    {% elif '/students' in request.path %}
-                        {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
-                    {% else %}
-                        {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
-                    {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i>
-                    {% trans "Content Viewer" %}</a>
-                &nbsp;
-                {% if '/students' not in request.path %}
-                {% if '/teachers' in request.path %}
-                <a class="btn btn-success" href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}">
-                    <i class="fa fa-pencil"></i>
-                    {% trans "Content Builder" %}
-                    &nbsp;</a>
-                {% else %}
-                <a class="btn btn-success" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
-                    <i class="fa fa-pencil"></i>
-                    {% trans "Content Builder" %} &nbsp;</a>
-                {% endif %}
-                {% endif %}
-                <div class="card p-3 mt-3">
+                <div class="card p-3 card-scroll" style="min-height: 40em;">
+                    <div class="text-center mb-3">
+                        <h3 class="text-primary">Chapter {{ object.Chapter_No }} . {{ object.Chapter_Name }}</h3>
+                    </div>
+                    <div class="mb-4">
+                        <a class="btn btn-info" href="
+                                        {% if '/teachers' in request.path %}
+                                            {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
+                                        {% elif '/students' in request.path %}
+                                            {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
+                                        {% else %}
+                                            {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
+                                        {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i>
+                            {% trans "Content Viewer" %}</a>
+                        &nbsp;
+                        {% if '/students' not in request.path %}
+                        {% if '/teachers' in request.path %}
+                        <a class="btn btn-success" href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}">
+                            <i class="fa fa-pencil"></i>
+                            {% trans "Content Builder" %}
+                            &nbsp;</a>
+                        {% else %}
+                        <a class="btn btn-success" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
+                            <i class="fa fa-pencil"></i>
+                            {% trans "Content Builder" %} &nbsp;</a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
                     <p class="m-0 truncatedDescription d-block">
                         {{ object.Summary|truncatechars:170 }}
-                        </p>
-                        <p class="m-0 fullDescription d-none">
+                    </p>
+                    <p class="m-0 fullDescription d-none">
                         {{ object.Summary }}
-                        </p>
-                        <div class="text-center mt-1">
+                    </p>
+                    <div class="text-center mt-1">
                         {% if object.Summary|length > 170 %}
                         <span class="info-text text-info cursor-pointer text-center">{% trans "Read More" %} </span>
                         {% endif %}
                         {% if not object.Summary %}
                         {% trans "No description" %}
                         {% endif %}
-                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-7 col-md-12 col-sm-12">
@@ -222,33 +224,31 @@
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="text-primary">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
+                    {% if '/student' not in request.get_full_path %}
                     <div class="d-inline-block dropdown">
-                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
-                            data-toggle="dropdown">
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
                             <i class="ti-more-alt"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            {% if '/student' not in request.get_full_path %}
                             <a class="dropdown-item text-primary" data-z="1" data-animated href="{% if '/teachers' in request.path %}
-                            /teachers{{ object.get_update_url }}
-                            {% else %}
-                                {{ object.get_update_url }}
-                            {% endif %}">
+                                            /teachers{{ object.get_update_url }}
+                                            {% else %}
+                                                {{ object.get_update_url }}
+                                            {% endif %}">
                                 {% trans "Edit Chapter" %}
                             </a>
                             <a href="javascript:void(0)" class="dropdown-item text-danger chapter-confirm-delete" id="{{ object.pk }}">
                                 {% trans "Delete Chapter" %}
                             </a>
-                            <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
-                                id="deleteChapter{{ object.pk }}">
+                            <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}" id="deleteChapter{{ object.pk }}">
                                 {% csrf_token %}
                                 <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
                                 <input type="hidden" value="{{ object.pk }}" name="chapter_id">
                                 <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                             </form>
-                            {% endif %}
                         </div>
                     </div>
+                    {% endif %}
                 </div>
                 {% if '/students' not in request.path %}
                 <p>
