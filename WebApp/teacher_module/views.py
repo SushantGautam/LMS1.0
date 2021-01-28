@@ -431,8 +431,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
                                                     Course_Group__Course_Code=assignmentinfoObj.Course_Code,
                                                     Course_Group__Use_Flag=True,
                                                     Use_Flag=True,
-                                                    Start_Date__lte=datetime_now,
-                                                    End_Date__gte=datetime_now).distinct()
+                                                    Start_Date__lte=datetime_now).distinct()
         session_list.append(inning_info)
 
         innings = None
