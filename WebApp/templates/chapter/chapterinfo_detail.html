@@ -120,7 +120,7 @@
                         <h3 class="text-primary">Chapter {{ object.Chapter_No }} . {{ object.Chapter_Name }}</h3>
                     </div>
                     <div class="mb-4">
-                        <a class="btn btn-info" href="
+                        <a class="btn btn-info text-white" href="
                                         {% if '/teachers' in request.path %}
                                             {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
                                         {% elif '/students' in request.path %}
@@ -132,12 +132,12 @@
                         &nbsp;
                         {% if '/students' not in request.path %}
                         {% if '/teachers' in request.path %}
-                        <a class="btn btn-success" href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}">
+                        <a class="btn btn-success text-white" href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}">
                             <i class="fa fa-pencil"></i>
                             {% trans "Content Builder" %}
                             &nbsp;</a>
                         {% else %}
-                        <a class="btn btn-success" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
+                        <a class="btn btn-success text-white" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
                             <i class="fa fa-pencil"></i>
                             {% trans "Content Builder" %} &nbsp;</a>
                         {% endif %}
@@ -491,3 +491,8 @@
         </div>
     </div>
 </div>
+
+{# <div class="row"> #}
+    {# {% render_comments object request comments_per_page=10 %} #}
+    Render all the comments belonging to a passed object
+{# </div> #}
