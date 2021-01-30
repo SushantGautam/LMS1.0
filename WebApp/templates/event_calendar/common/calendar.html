@@ -270,34 +270,47 @@
 
 
                         <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">{% trans "Start" %}</label>
-                            <div class="col-sm-5">
+                            <label class="col-sm-3 col-form-label">{% trans "Date" %}</label>
+
+                            <div class="col-sm-4">
+                                <label class="col-sm-6 col-form-label">{% trans "Start" %}</label>
                                 <input id="event-start-date" type="text"
                                        class="form-control create-event-datepicker"
                                        placeholder="{% trans 'Start Date' %}">
                             </div>
-
-
-                            <div class="col-sm-4 datetime_dynamic">
-                                <input id="event-start-time" type="text" class="form-control create-event-demo"
-                                       placeholder="{% trans 'Start Time' %}">
+                            <div class="col-sm-4">
+                                <label class="col-sm-6 col-form-label">{% trans "End" %}</label>
+                                <input id="event-end-date" type="text" 
+                                       class="form-control create-event-datepicker"
+                                       placeholder="{% trans 'End Date' %}">
                             </div>
-
-
+         
                             <input type="hidden" name="date_start" id="id_date_start">
                         </div>
 
 
 
-                        <div class="form-group row row-sm">
-                            <label class="col-sm-3 col-form-label">{% trans 'End' %}</label>
-                            <div class="col-sm-5">
-                                <input id="event-end-date" type="text" class="form-control create-event-datepicker"
-                                       placeholder="{% trans 'End Date' %}">
+
+
+                       
+
+
+
+
+
+
+
+                        <div class="form-group row row-sm datetime_dynamic">
+                            <label class="col-sm-3 col-form-label">{% trans 'Time' %}</label>
+                            <div class="col-sm-4 ">
+                                <label class="col-sm-3 col-form-label">{% trans 'Start' %}</label>
+                                <input id="event-start-time" type="text" class="form-control create-event-demo"
+                                       placeholder="{% trans 'Start Time' %}">
                             </div>
 
 
                             <div class="col-sm-4 datetime_dynamic">
+                                <label class="col-sm-3 col-form-label">{% trans 'End' %}</label>
                                 <input id="event-end-time" type="text" class="form-control create-event-demo"
                                        placeholder="{% trans 'End Time' %}">
                             </div>
