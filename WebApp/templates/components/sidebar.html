@@ -39,12 +39,13 @@
                     <span>{% trans 'Session' %}</span>
                 </a>
             </li>
-            <li>
+            <li class="text-center">
                 <a href="#" data-menu-target="#quiz">
                     <span class="menu-tab-icon">
                         <i data-feather="help-circle"></i>
                     </span>
-                    <span>{% trans 'Quiz' %}</span>
+                    <span >{% trans 'Assessment' %} <br>{% trans 'Store' %}
+                    </span>
                 </a>
             </li>
             <li>
@@ -162,6 +163,12 @@
                 <a href="{% url 'quiz_exam_list' %}">
                     <span class="nav-link-icon" data-feather="book-open"></span>
                     <span>{% trans 'Quiz Exam' %}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'quiz_exam_list' %}">
+                    <span class="nav-link-icon" data-feather="book-open"></span>
+                    <span>{% trans 'Question Store' %}</span>
                 </a>
             </li>
         </ul>
