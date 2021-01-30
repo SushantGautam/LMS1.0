@@ -76,6 +76,44 @@ class CalendarEvent(models.Model):
         else:
             return self.date_end.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    def date_range(self):
+        start = self.date_start
+        end = self.date_end
+        
+        from datetime import timedelta
+        from django.utils.timezone import make_aware
+        date_list = []
+        print("Repeat_Type",self.repeat_type)
+        if self.repeat_type == 'WE':
+            for n in range(0, int((end-start).days) + 1, 7):
+                n_date = start + timedelta(n)
+                e_start_date = make_aware(datetime.combine(n_date.date(), start.time()))
+                e_end_date = make_aware(datetime.combine(n_date.date(), end.time()))
+                date_list.append((e_start_date, e_end_date))
+        elif self.repeat_type == 'MO':
+            from dateutil.relativedelta import relativedelta
+            for n in range(relativedelta(end,start).months+1):
+                n_date = start + relativedelta(months=n)
+                if n_date.day != start.day:
+                    continue
+                else:
+                    print("N date", n_date)
+                e_start_date = make_aware(datetime.combine(n_date.date(), start.time()))
+                e_end_date = make_aware(datetime.combine(n_date.date(), end.time()))
+                date_list.append((e_start_date, e_end_date))
+
+
+        else:
+            for n in range(int ((end - start).days) + 1):
+                n_date = start + timedelta(n)
+                e_start_date = make_aware(datetime.combine(n_date.date(), start.time()))
+                e_end_date = make_aware(datetime.combine(n_date.date(), end.time()))
+                date_list.append((e_start_date, e_end_date))
+        return date_list
+           
+
+        
+
     class Meta:
         verbose_name = _("Calendar Event")
         verbose_name_plural = _("Calendar Events")

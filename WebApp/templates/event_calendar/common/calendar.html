@@ -227,7 +227,7 @@
                                 </div>
                             </div>
                         </div>
-                         <div class="form-group row chapter_dynamic">
+                         <div class="form-group row ">
                             <label class="col-sm-3 col-form-label">{% trans "Repeat Type" %}</label>
                             <div class="col-sm-9">
                                 <div class="mt-2" id="repeat_order">
@@ -249,7 +249,7 @@
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="repeatRadioInline4" name="repeat_type"
                                                class="custom-control-input" value="WD">
-                                        <label class="custom-control-label" for="repeatRadioInline4">{% trans "Weekday" %}</label>
+                                        <label class="custom-control-label" for="repeatRadioInline4">{% trans "Weekday" %} <small> (Mon-Fri)</small></label>
                                     </div>
 
                                 </div>
@@ -481,28 +481,31 @@
             <div class="modal-body" style="text-align:center">
 
                 <div class="container modal_finder">
-                    <div class="row">
-                        <div class="col-md-10" style="float:left;text-align:left;">
+                    <div class="row ev_app">
+                        <div class="col-md-8" style="float:left;text-align:left;">
                             <h6> {% trans "Event Type" %}:</h6>
                             <div>
                                 <span class="btn btn-sm   event-type"> </span>
                                 <span class="btn btn-sm  type_event"> </span>
                             </div>
                         </div>
+
+
                     </div>
                     <br><br>
 
 
 
-                    <div class="row chapter_info_dynamic mb-5" >
-                        <div class="col-md-6" style="text-align:left;">
+                    <div class="row  mb-5" >
+                        <div class="col-md-6 rptp" style="text-align:left;">
+                            <h6 class="repeat_class"> {% trans "Repeat Type" %}: </h6>
+                          <div class="class_repeat"></div>
+                       </div>
+                        <div class="col-md-6 chapter_info_dynamic" style="text-align:left;">
                              <h6 class="chapter_class"> {% trans "Chapter Name" %}: </h6>
                             <div class="class_chapter"></div>
                         </div>
-                         <div class="col-md-6" style="text-align:left;">
-                              <h6 class="repeat_class"> {% trans "Repeat Type" %}: </h6>
-                            <div class="class_repeat"></div>
-                         </div>
+                        
 
                     </div>
 

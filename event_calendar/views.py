@@ -12,6 +12,7 @@ from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup, Ass
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
 from survey.models import SurveyInfo, SubmitSurvey
+from django.db.models import Q
 
 
 class EventCreateView(CreateView):
@@ -124,6 +125,10 @@ class EventListView(ListView):
             # context['is_submitted'] = SubmitSurvey.objects.filter(Survey_Code=self.object.id,
             #                                                       Student_Code=self.request.user.id).exists()
             print("ActiveAssignment",activeassignments)
+
+        context['daily_event']=context['object_list'].filter(Q(repeat_type='DA')| Q(repeat_type="WE"))
+        context['monthly_event']=context['object_list'].filter(repeat_type='MO')
+        context['weekday_event']=context['object_list'].filter(repeat_type='WD')
         return context
 
     def get_queryset(self):

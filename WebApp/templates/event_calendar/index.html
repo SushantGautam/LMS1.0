@@ -84,11 +84,14 @@
                     var modal = $('#createEventModal');
                     modal.find('.modal-title').text("{% trans 'Update Event' %}");
                     modal.find('#id_title').val(event.title);
+                    $(".chapter_dynamic").hide();
+                   // $(".chapter_dynamic").css("display", "none");
+                    console.log("Type", event.tp);
                    if (event.tp === "HO")
                    {
                         modal.find("#customRadioInline3").prop("checked", true);
                    }else if (event.tp === "ME")
-                    {
+                    {   
                         modal.find("#customRadioInline2").prop( "checked", true );
                    }else if (event.tp === "EX")
                     {
@@ -96,6 +99,7 @@
                    }else if (event.tp === "CH")
                     {
                         modal.find("#customRadioInline5").prop( "checked", true );
+                        $(".chapter_dynamic").show();
 
 
                            id = [];
@@ -145,7 +149,7 @@
 
 
 
-                  let start = event.start;
+                  let start = event.start_edit;
                    console.log("Start_from_Update",start);
                    sd = new Date()
            // console.log("Start_from_Update",start);
@@ -169,16 +173,16 @@
 
 
            // console.log("UpdateEND",end);
-                  let end = event.end;
+                  let end = event.end_edit.clone();
                    console.log("End_from_Update",end);
                   if (!end)
                   {
-                  end = event.start;
+                  end = event.start_edit.clone();
                   }
-                 //  if(event.allDay){
-                  //        end = end.subtract(1,"days");
+                   if(event.allDay){
+                          end = end.subtract(1,"days");
 
-                  //    }
+                      }
                   end = end._d.toLocaleString();
                   let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                   let end_time = end.split(' ')[1];
@@ -286,22 +290,45 @@
 
             var date = new Date();
 
-            var events = [
-                {% for event in object_list %}
-                 {% if event.register_agent.pk == request.user.pk or request.user in event.get_participants %}
-                    {
+            var weekday_events =[]
+            var os_date = null;
+            var oe_date = null;
+
+            {% for event in weekday_event %}
+               
+              //  console.log('ABCD','{{event.date_start}}')
+               // console.log('EFH','{{event.date_start}}')
+                os_date = moment('{{event.date_start.isoformat}}')
+                oe_date = moment('{{event.date_end.isoformat}}')
+                console.log("OE", oe_date.diff(os_date, 'days') + 1);
+
+                for (n=0; n < (oe_date.diff(os_date, 'days') + 1); n++){
+                    if(os_date.clone().add(n,'days').day()== 6 || os_date.clone().add(n,'days').day()== 0){
+                        continue;
+                    }
+                    weekday_events.push({
+                                 
                         title: '{{ event.title }}',
                         id: 'event_id_{{ event.pk }}',
+                        groupId:'event_id_{{ event.pk }}',
                         type: '{{ event.get_event_type_display }}',
                         tp: '{{event.event_type}}',
                         r_a: '{{event.register_agent.pk}}',
-                        start: '{{ event.date_start.isoformat}}',
+                     //   start: '{{ event.date_start.isoformat}}',
+                     //   start: '{{ multievent.0.isoformat}}',
+                        start:(os_date.clone().add(n, 'days')).set({hour:os_date.hours(),minute:os_date.minutes(),second:os_date.seconds()}), 
+                        start_edit: $.fullCalendar.moment('{{event.date_start.isoformat}}'),
+                       
                        // end: '{{ event.date_end.isoformat }}',
-                       {% if event.is_all_day %}
-                        end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
-                           {% else %}
-                            end: $.fullCalendar.moment('{{ event.get_end_date }}'),
-                           {% endif %}
+                       {% if event.is_all_day %} 
+                         end: (os_date.clone().add(n, 'days')).set({hour:oe_date.hours(),minute:oe_date.minutes(),second:oe_date.seconds()}),
+                         end_edit: $.fullCalendar.moment('{{event.date_end.isoformat}}').add(1, 'days'),
+                       // end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
+                           {% else %} 
+                           end: (os_date.clone().add(n, 'days')).set({hour:oe_date.hours(),minute:oe_date.minutes(),second:oe_date.seconds()}),  
+                           end_edit:  $.fullCalendar.moment('{{event.date_end.isoformat}}'),
+                          //  end: $.fullCalendar.moment('{{ event.get_end_date }}'),
+                          {% endif %} 
                       //  allDay: false,
                         part: '{{ event.get_participation_type_display }}',
                         chapter: '{% for c in event.get_chapters %} {{c.Chapter_Name}} {% endfor %}',
@@ -360,7 +387,214 @@
                             icon: "newspaper-o",
                             className: 'btn btn-primary',
                         {% elif event.event_type == "CH" %}
-                            icon: "envelope-o",
+                            icon: "book",
+                            className: 'btn btn-warning',
+                        {% else %}
+                            // default values
+                            icon: "diamond",
+                            className: 'btn btn-info',
+                        {% endif %}
+
+                    });
+
+                }
+           {% endfor %}
+           console.log("WE",weekday_events)
+            var monthly_events =[]
+             os_date = null;
+             oe_date = null;
+
+            {% for event in monthly_event %}
+               
+              //  console.log('ABCD','{{event.date_start}}')
+               // console.log('EFH','{{event.date_start}}')
+                os_date = moment('{{event.date_start.isoformat}}')
+                oe_date = moment('{{event.date_end.isoformat}}')
+               // console.log("OE", oe_date.diff(os_date, 'months') + 1);
+
+                for (n=0; n < (oe_date.diff(os_date, 'months') + 1); n++){
+                    
+                    monthly_events.push({
+                                 
+                        title: '{{ event.title }}',
+                        id: 'event_id_{{ event.pk }}',
+                        groupId:'event_id_{{ event.pk }}',
+                        type: '{{ event.get_event_type_display }}',
+                        tp: '{{event.event_type}}',
+                        r_a: '{{event.register_agent.pk}}',
+                     //   start: '{{ event.date_start.isoformat}}',
+                     //   start: '{{ multievent.0.isoformat}}',
+                        start:(os_date.clone().add(n, 'months')).set({hour:os_date.hours(),minute:os_date.minutes(),second:os_date.seconds()}), 
+                        start_edit: $.fullCalendar.moment('{{event.date_start.isoformat}}'),
+                       
+                       // end: '{{ event.date_end.isoformat }}',
+                       {% if event.is_all_day %} 
+                         end: (os_date.clone().add(n, 'months')).set({hour:oe_date.hours(),minute:oe_date.minutes(),second:oe_date.seconds()}),
+                         end_edit: $.fullCalendar.moment('{{event.date_end.isoformat}}').add(1, 'days'),
+                       // end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
+                           {% else %} 
+                           end: (os_date.clone().add(n, 'months')).set({hour:oe_date.hours(),minute:oe_date.minutes(),second:oe_date.seconds()}),  
+                           end_edit:  $.fullCalendar.moment('{{event.date_end.isoformat}}'),
+                          //  end: $.fullCalendar.moment('{{ event.get_end_date }}'),
+                          {% endif %} 
+                      //  allDay: false,
+                        part: '{{ event.get_participation_type_display }}',
+                        chapter: '{% for c in event.get_chapters %} {{c.Chapter_Name}} {% endfor %}',
+                        chapter_list: [
+                            {% for ch in event.get_chapters %}
+                                {
+                                    id: '{{ ch.pk }}',
+                                    name: '{{ ch.Chapter_Name }}',
+                                },
+
+                            {% endfor %}
+                        ],
+                        repeat:'{{ event.get_repeat_type_display }}',
+                        r_type: '{{ event.repeat_type }}',
+
+                        pt: '{{event.participation_type}}',
+                        event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
+                        event_part_list: [
+                            {% for part in event.get_participants %}
+                                {   id: '{{ part.pk }}',
+                                    username: '{{ part.username }}',
+                                    fullname: '{{ part.getFullName }}',
+                                    avatar: '{{ part.Avatar }}',
+
+                                },
+                            {% endfor %}
+                            ],
+
+
+
+
+
+
+                        //icon: "user-o",
+                        description: `{{ event.description }}`,
+
+                        {% if event.is_all_day %}
+                            allDay: true,
+
+                        {% else %}
+                            allDay: false,
+
+                        {% endif %}
+
+
+                        {% if event.event_type == "PR" %}
+                            icon: "building-o",
+                            className: 'btn btn-info',
+                        {% elif event.event_type == "ME" %}
+                            icon: "user-o",
+                            className: 'btn btn-success',
+                        {% elif event.event_type == "HO" %}
+                            icon: "car",
+                            className: 'btn btn-danger',
+                        {% elif event.event_type == "EX" %}
+                            icon: "newspaper-o",
+                            className: 'btn btn-primary',
+                        {% elif event.event_type == "CH" %}
+                            icon: "book",
+                            className: 'btn btn-warning',
+                        {% else %}
+                            // default values
+                            icon: "diamond",
+                            className: 'btn btn-info',
+                        {% endif %}
+
+                    });
+
+                }
+           {% endfor %}
+           console.log("Monthly", monthly_events )
+
+            var events = [
+                {% for event in daily_event %}
+                 {% if event.register_agent.pk == request.user.pk or request.user in event.get_participants %}
+                 {% if not event.is_all_day or not event.repeat_type == 'DA' %}
+                 {% for multievent in event.date_range %}
+
+                 {
+                        title: '{{ event.title }}',
+                        id: 'event_id_{{ event.pk }}',
+                        groupId:'event_id_{{ event.pk }}',
+                        type: '{{ event.get_event_type_display }}',
+                        tp: '{{event.event_type}}',
+                        r_a: '{{event.register_agent.pk}}',
+                     //   start: '{{ event.date_start.isoformat}}',
+                        start: '{{ multievent.0.isoformat}}',
+                        start_edit: $.fullCalendar.moment('{{event.date_start.isoformat}}'),
+                       
+                       // end: '{{ event.date_end.isoformat }}',
+                       {% if event.is_all_day %} 
+                         end: $.fullCalendar.moment('{{  multievent.1.isoformat }}'),
+                         end_edit:  $.fullCalendar.moment('{{event.date_end.isoformat}}').add(1, 'days'),
+                       // end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
+                           {% else %} 
+                           end: $.fullCalendar.moment('{{  multievent.1.isoformat}}'),  
+                           end_edit:  $.fullCalendar.moment('{{event.date_end.isoformat}}'),
+                          //  end: $.fullCalendar.moment('{{ event.get_end_date }}'),
+                          {% endif %} 
+                      //  allDay: false,
+                        part: '{{ event.get_participation_type_display }}',
+                        chapter: '{% for c in event.get_chapters %} {{c.Chapter_Name}} {% endfor %}',
+                        chapter_list: [
+                            {% for ch in event.get_chapters %}
+                                {
+                                    id: '{{ ch.pk }}',
+                                    name: '{{ ch.Chapter_Name }}',
+                                },
+
+                            {% endfor %}
+                        ],
+                        repeat:'{{ event.get_repeat_type_display }}',
+                        r_type: '{{ event.repeat_type }}',
+
+                        pt: '{{event.participation_type}}',
+                        event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
+                        event_part_list: [
+                            {% for part in event.get_participants %}
+                                {   id: '{{ part.pk }}',
+                                    username: '{{ part.username }}',
+                                    fullname: '{{ part.getFullName }}',
+                                    avatar: '{{ part.Avatar }}',
+
+                                },
+                            {% endfor %}
+                            ],
+
+
+
+
+
+
+                        //icon: "user-o",
+                        description: `{{ event.description }}`,
+
+                        {% if event.is_all_day %}
+                            allDay: true,
+
+                        {% else %}
+                            allDay: false,
+
+                        {% endif %}
+
+
+                        {% if event.event_type == "PR" %}
+                            icon: "building-o",
+                            className: 'btn btn-info',
+                        {% elif event.event_type == "ME" %}
+                            icon: "user-o",
+                            className: 'btn btn-success',
+                        {% elif event.event_type == "HO" %}
+                            icon: "car",
+                            className: 'btn btn-danger',
+                        {% elif event.event_type == "EX" %}
+                            icon: "newspaper-o",
+                            className: 'btn btn-primary',
+                        {% elif event.event_type == "CH" %}
+                            icon: "book",
                             className: 'btn btn-warning',
                         {% else %}
                             // default values
@@ -369,10 +603,102 @@
                         {% endif %}
 
                     },
+
+                 {% endfor %}
+                 {% else %}
+
+                 {
+                        title: '{{ event.title }}',
+                        id: 'event_id_{{ event.pk }}',
+                      
+                        type: '{{ event.get_event_type_display }}',
+                        tp: '{{event.event_type}}',
+                        r_a: '{{event.register_agent.pk}}',
+                        start: '{{ event.date_start.isoformat}}',
+                       
+                        start_edit: $.fullCalendar.moment('{{event.date_start.isoformat}}'),
+                        end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
+                        end_edit:  $.fullCalendar.moment('{{event.date_end.isoformat}}').add(1, 'days'),
+                       // end: '{{ event.date_end.isoformat }}',
+                   {#    {% if event.is_all_day %} #}
+                       // end: $.fullCalendar.moment('{{ event.get_end_date }}').add(1, 'days'),
+                        {#   {% else %} #}
+                          //  end: $.fullCalendar.moment('{{ event.get_end_date }}'),
+                        {#   {% endif %} #}
+                      //  allDay: false,
+                        part: '{{ event.get_participation_type_display }}',
+                        chapter: '{% for c in event.get_chapters %} {{c.Chapter_Name}} {% endfor %}',
+                        chapter_list: [
+                            {% for ch in event.get_chapters %}
+                                {
+                                    id: '{{ ch.pk }}',
+                                    name: '{{ ch.Chapter_Name }}',
+                                },
+
+                            {% endfor %}
+                        ],
+                        repeat:'{{ event.get_repeat_type_display }}',
+                        r_type: '{{ event.repeat_type }}',
+
+                        pt: '{{event.participation_type}}',
+                        event_part: '{% for e in event.get_participants %} {{e.username}} {% endfor %}',
+                        event_part_list: [
+                            {% for part in event.get_participants %}
+                                {   id: '{{ part.pk }}',
+                                    username: '{{ part.username }}',
+                                    fullname: '{{ part.getFullName }}',
+                                    avatar: '{{ part.Avatar }}',
+
+                                },
+                            {% endfor %}
+                            ],
+
+
+
+
+
+
+                        //icon: "user-o",
+                        description: `{{ event.description }}`,
+
+                        {% if event.is_all_day %}
+                            allDay: true,
+
+                        {% else %}
+                            allDay: false,
+
+                        {% endif %}
+
+
+                        {% if event.event_type == "PR" %}
+                            icon: "building-o",
+                            className: 'btn btn-info',
+                        {% elif event.event_type == "ME" %}
+                            icon: "user-o",
+                            className: 'btn btn-success',
+                        {% elif event.event_type == "HO" %}
+                            icon: "car",
+                            className: 'btn btn-danger',
+                        {% elif event.event_type == "EX" %}
+                            icon: "newspaper-o",
+                            className: 'btn btn-primary',
+                        {% elif event.event_type == "CH" %}
+                            icon: "book",
+                            className: 'btn btn-warning',
+                        {% else %}
+                            // default values
+                            icon: "diamond",
+                            className: 'btn btn-info',
+                        {% endif %}
+
+                    },
+                    
+                    {% endif %}
                     {%endif%}
                 {% endfor %}
             ];
-
+            
+            events = events.concat(monthly_events, weekday_events);
             console.log('MomentTime:',moment('2021-01-29T18:15:00Z'));
 
             $('#external-events .fc-event').each(function () {
@@ -406,7 +732,7 @@
 
                 timezone:"local",
                 nextDayThreshold: '00:00',
-                editable: true,
+                editable: false,
                 droppable: true,
                 drop: function () {
                     // is the "remove after drop" checkbox checked?
@@ -415,9 +741,9 @@
                         $(this).remove();
                     }
                 },
-                eventStartEditable: true,
-                eventResizableFromStart: true,
-                eventDurationEditable: true,
+                eventStartEditable: false,
+                eventResizableFromStart: false,
+                eventDurationEditable: false,
                 weekNumbers: true,
                 eventLimit: true, // allow "more" link when too many events
                 events: events,
@@ -425,10 +751,10 @@
                 eventRender: function (event, element) {
 
                     if(event.allDay ){
-                        console.log("All_D End Date",event.end);
-                        if(event.end){
+                        console.log("All_D End Date",event.end_edit);
+                        if(event.end_edit){
                            //  event.end.setHours(23, 59, 59);
-                             event.end.set({h:23, m:59, s:59});
+                             event.end_edit.set({h:23, m:59, s:59});
                              // $('#calendar-demo').fullCalendar('updateEvent', event);
 
                         }
@@ -609,14 +935,15 @@
 
                     }else{
                         $(".chapter_info_dynamic").hide();
-
+                        $(".rptp").show();
+                        modal.find('.class_repeat').html(event.repeat);
                     }
 
 
 
 
 
-                      let start = event.start;
+                      let start = event.start_edit;
                       start = start._d.toLocaleString();
                       let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
                       let start_time = start.split(' ')[1];
@@ -632,19 +959,23 @@
                       stime = sHours + ":" + sMinutes
 
 
-                      let end = event.end;
+                      let end = event.end_edit.clone();
+                    //  let end = $.extend( true, {}, event.end_edit );
+                    //  let end = JSON.parse(JSON.stringify(event.end_edit))
                     //  console.log(end);
                       if (!end)
                       {
-                      end = event.start;
+                      end = event.start_edit.clone();
+                      //end = $.extend( true, {}, event.start_edit );
+                      // end = JSON.parse(JSON.stringify(event.start_edit))
                       }
-                       console.log(event.end);
+                       console.log(event.end_edit);
                       if(event.allDay){
-                          end = end.subtract(1,"days");
+                        end = end.subtract(1,"days");
                       }
 
                       end = end._d.toLocaleString();
-                      console.log(event.end);
+                      console.log(event.end_edit);
                       let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                       let end_time = end.split(' ')[1];
                       let et = end.split(' ')[2];
@@ -848,10 +1179,10 @@
 
             function update_event(event, delta, revertFunc, jsEvent, ui, view) {
                 //// obtain event data
-                let start_date = iso_to_django(event.start._d);
+                let start_date = iso_to_django(event.start_edit._d);
                 let end_date = null;
-                if (event.end) {
-                    end_date = iso_to_django(event.end._d);
+                if (event.end_edit) {
+                    end_date = iso_to_django(event.end_edit._d);
                 } else {
                     end_date = start_date;
                 }
@@ -883,7 +1214,7 @@
             function create_event(event, delta, revertFunc, jsEvent, ui, view) {
                 //// obtain event data
 
-                let start_date = iso_to_django(event.start._d);
+                let start_date = iso_to_django(event.start_edit._d);
                 console.log("sd_create",start_date);
                 let end_date = null;
                 let event_type = "PR";
@@ -895,8 +1226,8 @@
                     event_type = "PR";
                 }
                 console.log("et_create",event_type);
-                if (event.end) {
-                    end_date = iso_to_django(event.end._d);
+                if (event.end_edit) {
+                    end_date = iso_to_django(event.end_edit._d);
 
                 } else {
                     end_date = start_date;
@@ -1038,7 +1369,7 @@
                 is_valid = false;
 
              }
-             if( sd > ed ){
+             if( new Date(sd) > new Date(ed) ){
                  $("#event-start-date").after('<span class="text-danger">Start Date Cannot be Greater then End Date.</span>');
                 is_valid = false;
              }
