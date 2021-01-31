@@ -15,29 +15,7 @@
                 {% endif %}
         
                 </div>
-                <div class="col-md-1 col-sm-2 text-center" style="padding: 0px;">
-        
-                    <a href="
-                {% if '/teachers' in request.path %}
-                            {% url 'teacher_quiz_update_info' quiz.id %}
-                            {% else %}
-                            {% url 'quiz_update_info' quiz.id %}
-                            {% endif %}">
-
-                        <button class="btn btn-sm btn-light qts-button ">Edit</button>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-2 text-left" style="padding: 0px;">
-                    <a href="
-                    {% if '/teachers' in request.path %}
-                        {% url 'teacher_quiz_delete' quiz.id %}
-                    {% else %}
-                        {% url 'quiz_delete' quiz.id %}
-                    {% endif %}
-                " onclick="return confirm('Are you sure you want to delete?')">
-                        <button class="btn btn-sm btn-danger qts-button ">Delete</button>
-                    </a>
-                </div>
+                
 
             </div>
         </div>
@@ -47,117 +25,7 @@
 
 </div>
 <div class="col-md-12 " style="">
-    <div class="row bg-light" style="padding: 12px 8px; margin-bottom:20px; border-radius:15px" >
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <p>
-                <b style="font-size: 16px;"> Quiz:</b> {{ quiz.title }}
-
-            </p>
-
-
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <p>
-                <b style="font-size: 16px;"> Course:</b> {{ quiz.course_code }}
-
-            </p>
-
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <p>
-                <b style="font-size: 16px;">Chapter :</b> {{ quiz.chapter_code }}
-
-            </p>
-
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <p>
-                <b style="font-size: 16px;">Type Of Quiz :</b> {% if quiz.pre_test %}Pre Test <br>{% endif %}
-                {% if quiz.post_test %}Post Test <br>{% endif %}
-                {% if quiz.exam_paper %}Exam <br>{% endif %}
-
-            </p>
-
-        </div>
-
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <p>
-                <b style="font-size: 16px;">URL :</b> {{ quiz.url }}
-
-            </p>
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            
-            <p>
-                <b style="font-size: 16px;">Quiz Feature :</b>  <span style="font-size: 12px;">  {% if quiz.random_order %} [ Random Order ] <br>
-                                                                 {% else %}
-                                                                    [Normal Order]
-                                                                 {% endif %}
-                {% if quiz.single_attempt %}[ Single Attempt ] <br>
-                {% else %}
-                   [ Multiple Attempt ]
-                {% endif %}
-                {% if quiz.negative_marking %} [ Negative Marking ] - {{ quiz.negative_percentage }}% 
-                <br>
-                {% else %}
-                [No  Negative Marking]
-                {% endif %}
-            </span>
-            </p>
-
-        </div>
-        <div class="col-md-12 col-sm-12 " >
-            <p>
-                <div class="col-md-6" >
-                    <div class="row">
-                    <div class="col-md-2"  style="padding: 0px!important;">
-                       <b style="font-size: 16px;"> Status:</b> 
-   
-                    </div>
-                 
-                   {% if quiz.draft is True %}
-                  
-                       <div class="col-md-2">
-                           <span class=" btn btn-sm text-danger">Inactive</span>
-                       </div>
-                       <div class="col-md-2">
-                           <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
-                               <input type="hidden" value="{{ request.path }}" name="redirect-url">
-                               <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
-                                      class="confirm-activate btn btn-sm ">
-                           </form>
-                       </div>
-                    </div>
-               {% endif %}
-               {% if quiz.draft is False %}
-                  
-                       <div class="col-md-2">
-                           <span class="btn btn-sm text-success">Active</span>
-                       </div>
-                       <div class="col-md-2">
-                           <form action="{% url 'deactivate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
-                               <input type="hidden" value="{{ request.path }}" name="redirect-url">
-                               <input type="button" value="Deactivate" style="float: right;color: #2A3F54;cursor:pointer"
-                                      class="confirm-deactivate btn btn-sm">
-                           </form>
-                       </div>
-                  
-               </div>
-               {% endif %}
-   
-               </p>
-
-
-        </div>
-        <div class="col-md-12 col-sm-12" style="padding: 0px;">
-            <p style="margin-bottom: 15px;">
-                <b style="font-size: 16px;"> Description:</b> {{ quiz.description }}
-
-            </p>
-         
-
-        </div>
-    </div>
+    
 </div>
 <!-- <div class="panel  ">
     <div class="table-responsive">
@@ -476,228 +344,366 @@
 
 </div> -->
 
-
-
-<div class="accordion custom-accordion">
-    <div class="accordion-row open">
-      <a href="#" class="accordion-header" >
-       <div class="col-md-12 col-sm-12 col-xs-12"> 
-        <div class="row">
-            <div class="col-md-8 col-sm-5 col-xs-5" style="cursor:pointer">
-                <p class="panel-title" data-toggle="collapse"   aria-expanded="true"> <i class="fa fa-list"></i>&nbsp; <b>List Of MCQuestions</b>   </p>
-    
-              </div>
-               <div class="col-md-4 col-sm-6 col-xs-6 text-right" style="padding: 0;" >
-                   <button id="mcq_create_button" data-toggle="modal"
-                   data-target="#question_form_popup" class="btn btn-info btn-sm ripple">Add MCQ+</button>
-                   <button id="mcq_choose_button" data-toggle="modal" data-target="#question_form_popup" class="btn btn-info btn-sm ripple">Choose Previous MCQ</button>
-              
-               </div>
-               <!-- <i class="accordion-status-icon close fa fa-chevron-up " ></i>
-               <i class="accordion-status-icon open fa fa-chevron-down " ></i>   -->
-             
-            
-
-               
-            
-          </div>
-        </div>  
-       
-      </a>
-      <div class="accordion-body">
-
-        {% for quest in quiz.mcquestion.all %}
-        <div class="mcq-list-details "  style="border-bottom: 1px solid #e2e9e6; padding:5px 0">
-            <div class="col-md-12 col-sm-12 col-xs-12" style="list-style: none;"> 
-             <div class="row">
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="accordion custom-accordion">
+                <div class="accordion-row open" style="">
+                  <a href="#" class="accordion-header" >
+                   <div class="col-md-12 col-sm-12 col-xs-12"> 
+                    <div class="row">
+                        <div class="col-md-8 col-sm-5 col-xs-5" style="cursor:pointer">
+                            <p class="panel-title" data-toggle="collapse"   aria-expanded="true"> <i class="fa fa-list"></i>&nbsp; <b>List Of MCQuestions</b>   </p>
                 
-                    <div class="col-md-9 col-sm-6 col-xs-12">
-
-                        <li class="quiz-listing">  {{ quest.content }}</li>
-
-                        {% if quest.figure %}
-                            <div class="detail-page-images">
-                                <img src="{{ quest.figure.url }}" alt="">
-
+                          </div>
+                           <div class="col-md-4 col-sm-6 col-xs-6 text-right" style="padding: 0;" >
+                               <button id="mcq_create_button" data-toggle="modal"
+                               data-target="#question_form_popup" class="btn btn-outline-info btn-sm ">Add MCQ+</button>
+                               <button id="mcq_choose_button" data-toggle="modal" data-target="#question_form_popup" class="btn btn-outline-info btn-sm ripple">Choose Previous MCQ</button>
+                          
+                           </div>
+                           <!-- <i class="accordion-status-icon close fa fa-chevron-up " ></i>
+                           <i class="accordion-status-icon open fa fa-chevron-down " ></i>   -->
+                         
+                        
+            
+                           
+                        
+                      </div>
+                    </div>  
+                   
+                  </a>
+                  <div class="">
+            
+                    {% for quest in quiz.mcquestion.all %}
+                    <div class="mcq-list-details "  style="border-bottom: 1px solid #e2e9e6; padding:5px 0">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="list-style: none;"> 
+                         <div class="row">
+                            
+                                <div class="col-md-9 col-sm-6 col-xs-12">
+            
+                                    <li class="quiz-listing">  {{ quest.content }}</li>
+            
+                                    {% if quest.figure %}
+                                        <div class="detail-page-images">
+                                            <img src="{{ quest.figure.url }}" alt="">
+            
+                                        </div>
+            
+            
+                                    {% endif %}
+            
+            
+                                </div>
+            
+            
+                                <div class="col-md-1 col-sm-2 col-xs-12  text-right " style="line-height: 24px;">
+                                    {% if quest.get_answers %}
+            
+                                        <a class="button-color-only1" href="#mcans_list_{{ quest.id }}"
+                                           data-toggle="collapse">
+                                         <button class="btn btn-light btn-sm ripple">Options</button>  
+                                        </a>
+            
+                                    {% endif %}
+            
+                                </div>
+                                <div class="col-md-1 col-sm-2 col-xs-12 text-right" style="font-weight: 700; padding:0px">
+                                    <input id="mcq_{{ quest.id }}_update_button" class=" btn btn-default btn-xs ripple " type="submit"
+                                           value="Edit" style="float: right" data-toggle="modal"
+                                           data-target="#question_form_popup">
+            
+                                </div>
+                                <div class="col-md-1 col-sm-2 col-xs-12 text-left " style="padding:0px">
+                                    <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <input class="button-color-only confirm-remove btn btn-default btn-xs ripple" type="submit" value="Remove">
+                                    </form>
+                                </div>
+            
+            
                             </div>
-
-
-                        {% endif %}
-
-
+            
+                        </div>
                     </div>
-
-
-                    <div class="col-md-1 col-sm-2 col-xs-12  text-right " style="line-height: 24px;">
-                        {% if quest.get_answers %}
-
-                            <a class="button-color-only1" href="#mcans_list_{{ quest.id }}"
-                               data-toggle="collapse">
-                             <button class="btn btn-light btn-sm ripple">Options</button>  
-                            </a>
-
-                        {% endif %}
-
+                    <div id="mcans_list_{{ quest.id }}" class=" correct-list collapse">
+                        <ul style="list-style:none!important">
+                            {% for ans in quest.get_answers %}
+                                <li class="quiz-answer-listing"></li>
+                                {{ forloop.counter }} <span>)&nbsp;</span>
+                                {{ ans.content }}{% if ans.correct %}  <i class="fa fa-arrow-right"></i> <span class="btn btn-sm btn-success">Correct</span>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <div class="col-md-1 col-sm-2 col-xs-12 text-right" style="font-weight: 700;">
-                        <input id="mcq_{{ quest.id }}_update_button" class=" btn btn-default btn-xs ripple " type="submit"
-                               value="Edit" style="float: right" data-toggle="modal"
-                               data-target="#question_form_popup">
-
-                    </div>
-                    <div class="col-md-1 col-sm-2 col-xs-12 text-right ">
-                        <form action="{% url 'mcquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
-                              method="post">
-                            {% csrf_token %}
-                            <input class="button-color-only confirm-remove btn btn-default btn-xs ripple" type="submit" value="Remove">
-                        </form>
-                    </div>
-
-
-                </div>
-
-            </div>
-        </div>
-        <div id="mcans_list_{{ quest.id }}" class=" correct-list collapse">
-            <ul style="list-style:none!important">
-                {% for ans in quest.get_answers %}
-                    <li class="quiz-answer-listing"></li>
-                    {{ forloop.counter }} <span>)&nbsp;</span>
-                    {{ ans.content }}{% if ans.correct %}  <i class="fa fa-arrow-right"></i> <span class="btn btn-sm btn-success">Correct</span>
-                    {% endif %}
                 {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
-      </div>
-    </div>
-    <div class="accordion-row">
-      <a href="#" class="accordion-header">
-       <div class="col-md-12 col-sm-12 col-xs-12">   
-        <div class="row">
-            <div class="col-md-8 col-sm-5 col-xs-5">
-                <p class="panel-title" data-toggle="collapse" ></p> <i class="fa fa-list"></i>&nbsp; <b>List Of TFQuestions </b>  </p>
-    
-              </div>
-               <div class="col-md-4 col-sm-6 col-xs-6 text-right" style="padding: 0;" >
-                   <button id="tfq_create_button" data-toggle="modal"
-                   data-target="#question_form_popup" class="btn btn-info btn-sm ripple">Add TFQ+</button>
-                   <button id="tfq_choose_button" data-toggle="modal" data-target="#question_form_popup" class="btn btn-info btn-sm ripple">Choose Previous TFQ</button>
-               </div>
-
-          </div>
-        </div> 
-        <!-- <i class="accordion-status-icon close fa fa-chevron-up"></i>
-        <i class="accordion-status-icon open fa fa-chevron-down"></i> -->
-      </a>
-      <div class="accordion-body">
-
-
-        {% for quest in quiz.tfquestion.all %}
-        <div class="tfq-list-details"  style="border-bottom: 1px solid #e2e9e6; padding:5px 0">
-            <div class="col-md-12" style="list-style: none;"> 
-             <div class="row">
-                    <div class="col-md-10">
-                        <li class="quiz-listing">  {{ quest.content }}</li>
-                        {% if quest.figure %}
-                            <div class="detail-page-images">
-                                <img src="{{ quest.figure.url }}" alt="">
-
-                            </div>
-
-
-                        {% endif %}
-                    </div>
-                    <div class="col-md-1 text-right">
-                        <input id="tfq_{{ quest.id }}_update_button" class="button-color-only btn btn-default btn-xs ripple" type="submit"
-                               value="Edit" style="float: right" data-toggle="modal"
-                               data-target="#question_form_popup">
-                    </div>
-                    <div class="col-md-1 text-right " style="line-height: 24px;">
-                        <form action="{% url 'tfquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
-                              method="post">
-                            {% csrf_token %}
-                            <input class="button-color-only confirm-remove btn btn-default btn-xs ripple" type="submit" value="Remove">
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-    {% endfor %}
-
-        
-
-
-
-      </div>
-    </div>
-    <div class="accordion-row">
-      <a href="#" class="accordion-header">
-        <div class="col-md-12">
-
-       
-            <div class="row">
-                <div class="col-md-8 col-sm-5 col-xs-5">
-                    <p class="panel-title" data-toggle="collapse" data-target="#saq-list-detailsid">  <i class="fa fa-align-right  "></i>&nbsp; <b>List Of SAQuestions</b>   </p>
-        
                   </div>
-                   <div class="col-md-4 col-sm-6 col-xs-6 text-right" style="padding: 0;" >
-                       <button id="saq_create_button" data-toggle="modal"
-                       data-target="#question_form_popup" class="btn btn-info btn-sm ripple">Add SAQ+</button>
-                       <button id="saq_choose_button" data-toggle="modal"
-                       data-target="#question_form_popup" class="btn btn-info btn-sm ripple">Choose Previous SAQ</button>
-                   </div>
-    
-              </div>
-            </div>
-        <!-- <i class="accordion-status-icon close fa fa-chevron-up"></i>
-        <i class="accordion-status-icon open fa fa-chevron-down"></i> -->
-      </a>
-      <div class="accordion-body">
-
-        {% for quest in quiz.saquestion.all %}
-        <div class="saq-list-details" id="saq-list-detailsid" style="border-bottom: 1px solid #e2e9e6; padding:5px 0">
-            <div class="col-md-12"style="list-style: none;"> 
-              <div class="row">
-                
-                    <div class="col-md-10">
-                        <li class="quiz-listing">  {{ quest.content }}</li>
-                        {% if quest.figure %}
-                            <div class="detail-page-images">
-                                <img src="{{ quest.figure.url }}" alt="">
-
-                            </div>
-
-
-                        {% endif %}
-                    </div>
-                    <div class="col-md-1 text-right">
-                        <input id="saq_{{ quest.id }}_update_button" class="button-color-only btn btn-default btn-xs ripple" type="submit"
-                               value="Edit" style="float: right" data-toggle="modal"
-                               data-target="#question_form_popup">
-                    </div>
-                    <div class="col-md-1 text-right " style="line-height: 24px;">
-                        <form action="{% url 'saquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
-                              method="post">
-                            {% csrf_token %}
-                            <input class="button-color-only confirm-remove btn btn-default btn-xs ripple" type="submit" value="Remove">
-                        </form>
-                    </div>
                 </div>
-            </div>
+                <div class="accordion-row" style="">
+                  <a href="#" class="accordion-header">
+                   <div class="col-md-12 col-sm-12 col-xs-12">   
+                    <div class="row">
+                        <div class="col-md-8 col-sm-5 col-xs-5">
+                            <p class="panel-title" data-toggle="collapse" aria-expanded="true"> <i class="fa fa-list"></i>&nbsp; <b>List Of TFQuestions </b>  </p>
+                           
+                
+                          </div>
+                           <div class="col-md-4 col-sm-6 col-xs-6 text-right" style="padding: 0;" >
+                               <button id="tfq_create_button" data-toggle="modal"
+                               data-target="#question_form_popup" class="btn btn-outline-info btn-sm ripple">Add TFQ+</button>
+                               <button id="tfq_choose_button" data-toggle="modal" data-target="#question_form_popup" class="btn btn-outline-info btn-sm ripple">Choose Previous TFQ</button>
+                           </div>
+            
+                      </div>
+                    </div> 
+                    <!-- <i class="accordion-status-icon close fa fa-chevron-up"></i>
+                    <i class="accordion-status-icon open fa fa-chevron-down"></i> -->
+                  </a>
+                  <div class="accordion">
+            
+            
+                    {% for quest in quiz.tfquestion.all %}
+                    <div class="tfq-list-details"  style="border-bottom: 1px solid #e2e9e6; padding:5px 0">
+                        <div class="col-md-12" style="list-style: none;"> 
+                         <div class="row">
+                                <div class="col-md-10">
+                                    <li class="quiz-listing">  {{ quest.content }}</li>
+                                    {% if quest.figure %}
+                                        <div class="detail-page-images">
+                                            <img src="{{ quest.figure.url }}" alt="">
+            
+                                        </div>
+            
+            
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-1 text-right"style="padding:0px">
+                                    <input id="tfq_{{ quest.id }}_update_button" class="button-color-only btn btn-default btn-xs ripple" type="submit"
+                                           value="Edit" style="float: right" data-toggle="modal"
+                                           data-target="#question_form_popup">
+                                </div>
+                                <div class="col-md-1 text-left " style="line-height: 24px;padding:0px">
+                                    <form action="{% url 'tfquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <input class="button-color-only confirm-remove btn btn-default btn-xs ripple" type="submit" value="Remove">
+                                    </form>
+            
+                                </div>
+            
+                            </div>
+            
+                        </div>
+            
+            
+                    </div>
+            
+                {% endfor %}
+            
+                    
+            
+            
+            
+                  </div>
+                </div>
+                <div class="accordion-row">
+                  <a href="#" class="accordion-header">
+                    <div class="col-md-12">
+            
+                   
+                        <div class="row">
+                            <div class="col-md-8 col-sm-5 col-xs-5">
+                                <p class="panel-title" data-toggle="collapse" data-target="#saq-list-detailsid">  <i class="fa fa-align-right  "></i>&nbsp; <b>List Of SAQuestions</b>   </p>
+                    
+                              </div>
+                               <div class="col-md-4 col-sm-6 col-xs-6 text-right" style="padding: 0;" >
+                                   <button id="saq_create_button" data-toggle="modal"
+                                   data-target="#question_form_popup" class="btn btn-outline-info btn-sm ripple">Add SAQ+</button>
+                                   <button id="saq_choose_button" data-toggle="modal"
+                                   data-target="#question_form_popup" class="btn btn-outline-info btn-sm ripple">Choose Previous SAQ</button>
+                               </div>
+                
+                          </div>
+                        </div>
+                    <!-- <i class="accordion-status-icon close fa fa-chevron-up"></i>
+                    <i class="accordion-status-icon open fa fa-chevron-down"></i> -->
+                  </a>
+                  <div class="accordion-body">
+            
+                    {% for quest in quiz.saquestion.all %}
+                    <div class="saq-list-details" id="saq-list-detailsid" style="border-bottom: 1px solid #e2e9e6; padding:5px 0">
+                        <div class="col-md-12"style="list-style: none;"> 
+                          <div class="row">
+                            
+                                <div class="col-md-10">
+                                    <li class="quiz-listing">  {{ quest.content }}</li>
+                                    {% if quest.figure %}
+                                        <div class="detail-page-images">
+                                            <img src="{{ quest.figure.url }}" alt="">
+            
+                                        </div>
+            
+            
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-1 text-right" style="padding: 0px;">
+                                    <input id="saq_{{ quest.id }}_update_button" class="button-color-only btn btn-default btn-xs ripple" type="submit"
+                                           value="Edit" style="float: right" data-toggle="modal"
+                                           data-target="#question_form_popup">
+                                </div>
+                                <div class="col-md-1 text-right " style="line-height: 24px;padding:0px">
+                                    <form action="{% url 'saquestion_remove_link' qn_id=quest.id quiz_id=quiz.id %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <input class="button-color-only confirm-remove btn btn-default btn-xs ripple" type="submit" value="Remove">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+            
+            
+                    </div>
+                {% endfor %}
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row " style="padding: 12px ; margin-bottom:0px; border-radius:15px; border:1px solid #ebebeb" >
+              
+               <div class="col-md-12">
+                <h3 class="text-primary text-center">Quiz Information</h3>
 
+               </div> 
+                <div class="table-responsive"style="margin-top:20px">
+                    <table class="table table-bordered">
+                  
+                                <tbody>
+                                    <tr>
+                                        <th class="table-active">Quiz Type</th>
+                                        <td> {% if quiz.pre_test %}Pre Test <br>{% endif %}
+                                            {% if quiz.post_test %}Post Test <br>{% endif %}
+                                            {% if quiz.exam_paper %}Exam <br>{% endif %}</td>
+                                        
+                                        </tr>
+                                    <tr>
+                                    <th class="table-active">Course</th>
+                                    <td>{{ quiz.course_code }}</td>
+                                    
+                                    </tr>
+                                    <tr>
+                                    <th class="table-active">Chapter</th>
+                                    <td>{{ quiz.chapter_code }}</td>
+                                    
+                                    </tr>
+                                        <tr>
+                                            <th class="table-active">Attempt </th>
+                                            <td> {% if quiz.pre_test %}Pre Test <br>{% endif %}
+                                                {% if quiz.post_test %}Post Test <br>{% endif %}
+                                                {% if quiz.exam_paper %}Exam <br>{% endif %}</td>
+                                            
+                                            </tr>
+                                        <tr>
+                                            <th class="table-active">URL</th>
+                                            <td>{{ quiz.url }}</td>
+                                            
+                                            </tr>
+                                            <tr>
+                                                <th class="table-active">Quiz Feature</th>
+                                                <td>{% if quiz.random_order %} [ Random Order ] <br>
+                                                    {% else %}
+                                                    [Normal Order]
+                                                    {% endif %}
+                                                        {% if quiz.single_attempt %}[ Single Attempt ] <br>
+                                                        {% else %}
+                                                        [ Multiple Attempt ]
+                                                        {% endif %}
+                                                        {% if quiz.negative_marking %} [ Negative Marking ] - {{ quiz.negative_percentage }}% 
+                                                        <br>
+                                                        {% else %}
+                                                        [No  Negative Marking]
+                                                        {% endif %}</td>
+                                                
+                                                </tr>
+                                                <tr>
+                                                    <th class="table-active">Status</th>
+                                                    <td> {% if quiz.draft is True %}
+                                        
+                                                        <div class="col-md-2" style="padding: 0px;">
+                                                            <span class="badge badge-success">Inactive</span>
+                                                        </div>
+                                                        <!-- <div class="col-md-2">
+                                                            <form action="{% url 'activate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+                                                                <input type="hidden" value="{{ request.path }}" name="redirect-url">
+                                                                <input type="button" value="Activate" style="float: right;color: #2A3F54;cursor:pointer"
+                                                                    class="confirm-activate btn btn-sm ">
+                                                            </form>
+                                                        </div> -->
+                                                    
+                                                {% endif %}
+                                                {% if quiz.draft is False %}
+                                                
+                                                        <div class="col-md-2" style="padding: 0px;">
+                                                            <span class="badge badge-success">Active</span>
+                                                        </div>
+                                                        <!-- <div class="col-md-2">
+                                                            <form action="{% url 'deactivate_quiz' pk=quiz.pk %}" method="post">{% csrf_token %}
+                                                                <input type="hidden" value="{{ request.path }}" name="redirect-url">
+                                                                <input type="button" value="Deactivate" style=";color: #2A3F54;cursor:pointer"
+                                                                    class="confirm-deactivate btn btn-sm">
+                                                            </form>
+                                                        </div> -->
+                                                
+                                                
+                                                {% endif %}</td>
+                                                    
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="table-active">Description</th>
+                                                        <td>{{ quiz.description }}</td>
+                                                        
+                                                        </tr>
+                                </tbody>
+                    </table>
+                </div>
+        
+                
+                
+                <div class="col-md-12 text-center">
+                    
+                        <a href="
+                        {% if '/teachers' in request.path %}
+                                    {% url 'teacher_quiz_update_info' quiz.id %}
+                                    {% else %}
+                                    {% url 'quiz_update_info' quiz.id %}
+                                    {% endif %}">
+        
+                                <button class="btn btn-outline-primary  qts-button ">Edit</button>
+                            </a>
+                    
+                            <a href="
+                            {% if '/teachers' in request.path %}
+                                {% url 'teacher_quiz_delete' quiz.id %}
+                            {% else %}
+                                {% url 'quiz_delete' quiz.id %}
+                            {% endif %}
+                        " onclick="return confirm('Are you sure you want to delete?')">
+                                <button class="btn  btn-outline-danger qts-button ">Delete</button>
+                            </a>
+                </div>
+                
+            </div>
+            
+           
+            
+  
 
         </div>
-    {% endfor %}
-      </div>
     </div>
-  </div>
+</div>
+
+
   
   
 

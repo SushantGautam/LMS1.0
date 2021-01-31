@@ -1,0 +1,17 @@
+{% load comment_tags %}
+<div class="js-parent-comment blockquote text-wrap">
+    {% include 'comment/comments/comment_body.html' with comment=comment %}
+    <div class="js-replies ml-5 my-4 d-none">
+        {% get_comment_replies comment user as replies %}
+        {% for comment in replies %}
+            {% include 'comment/comments/child_comment.html' %}
+        {% endfor %}
+        {% if not comment.is_closed %}
+            {% include 'comment/comments/create_comment.html' with placeholder=placeholder %}
+        {% else %}
+            <p class="text-center" style="font-size: x-small; color: #721c24;">Comment is closed. Reply is not
+                possible</p>
+        {% endif %}
+    </div>
+    <hr/>
+</div>

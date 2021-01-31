@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'decorator_include',
     'django_summernote',
     'pwa',
+    'comment',
 ]
 
 MIDDLEWARE = [
@@ -280,3 +281,6 @@ PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
 
 # LOCALE_PATHS = [os.path.join(BASE_DIR, "locale"),]
+
+COMMENT_FLAGS_ALLOWED = 10
+COMMENT_SHOW_FLAGGED = True

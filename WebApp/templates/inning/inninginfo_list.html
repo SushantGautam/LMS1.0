@@ -34,7 +34,7 @@
         <div class="col-lg-4 col-md-6 col-sm-6">
             {% if request.user.Is_CenterAdmin and '/mysessions' not in request.path %}
             <div class="pull-right">
-                <a class="btn btn-success" href="{% url 'inninginfo_create' %}">
+                <a class="btn btn-success text-white" href="{% url 'inninginfo_create' %}">
                     {% trans "Register New Session" %}
                 </a>
                 <button class="btn btn-info btn-floating editCheckedInnings ml-2" type="button" data-toggle="modal"

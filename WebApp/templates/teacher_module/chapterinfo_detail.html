@@ -23,7 +23,13 @@
 
 <!-- <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script> -->
-
+<script>
+    $(".info-text").on('click' ,function(){
+        $('.truncatedDescription').toggleClass('d-block d-none');
+        $('.fullDescription').toggleClass('d-none d-block');
+        $(this).text($(this).text() == 'Read Less' ? 'Read More' : 'Read Less');
+    })
+</script>
 <script>
 
   $(document).ready(function () {

@@ -4855,7 +4855,7 @@ a:not(.btn):hover,
 a:not(.btn):active,
 a:not(.btn):focus {
   text-decoration: none !important;
-  color: black;
+  /*color: black;*/
   outline: none;
 }
 

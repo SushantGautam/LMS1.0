@@ -391,9 +391,9 @@ class ChapterInfo(models.Model):
 
     chapter_sessionmaps = GenericRelation('SessionMapInfo')
 
-    # from comment.models import Comment
+    from comment.models import Comment
 
-    # comments = GenericRelation(Comment)
+    comments = GenericRelation(Comment)
     is_commentable = models.BooleanField(default=True)
     # Relationship Fields
     Course_Code = ForeignKey(
@@ -460,9 +460,23 @@ class ChapterInfo(models.Model):
             content_data = ""
 
         return content_data
-    
+
+    def get_pages_no(self):
+        path = settings.MEDIA_ROOT
+        content = ''
+        try:
+            with open(path + '/chapterBuilder/' + str(self.Course_Code.pk) + '/' + str(self.pk) + '/' + str(
+                    self.pk) + '.txt') as json_file:
+                content = json.load(json_file)
+                page_no = content["numberofpages"]
+        except Exception as e:
+            page_no = "0"
+
+        return page_no
+
     def has_content(self):
-        file_path = os.path.join(settings.MEDIA_ROOT,'chapterBuilder',str(self.Course_Code.pk),str(self.pk),str(self.pk) + '.txt')
+        file_path = os.path.join(settings.MEDIA_ROOT, 'chapterBuilder', str(self.Course_Code.pk), str(self.pk),
+                                 str(self.pk) + '.txt')
         return os.path.exists(file_path)
 
     # def quiz_count(self):
@@ -470,6 +484,13 @@ class ChapterInfo(models.Model):
 
     def assignment_count(self):
         return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
+
+    def isStudentChapterActive(self, user):
+        active_chapters = user.get_student_chapters(courseList=[self.Course_Code.pk], active=True)
+        status = False
+        if self.pk in [chapter.pk for chapter in active_chapters]:
+            status = True
+        return status
 
 
 

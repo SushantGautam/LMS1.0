@@ -1,0 +1,11 @@
+{% extends 'comment/comments/comment_base_modal.html' %}
+
+{% load comment_tags %}
+
+{% block form_class %}js-comment-show-form{% endblock %}
+
+{% block dataurl %}data-url="{% if comment %}{% url 'comment:show' pk=comment.id %}{% endif %}{% endblock dataurl %}
+{% block content %}Are you sure you want to show this comment {% endblock content %}
+{% block title %}Confirm comment show{% endblock title %}
+{% block formsubmitbutton %}Show{% endblock %}
+{% block del_btn_cls %}btn btn-success{% endblock %}

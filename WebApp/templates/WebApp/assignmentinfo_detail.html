@@ -18,14 +18,18 @@
 <li class="breadcrumb-item"><a href="{{ object.Chapter_Code.get_absolute_url }}">{{ object.Chapter_Code }}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{ object.Assignment_Topic }}</li>
 {% endblock %}
+
 {% block content %}
 {% include 'assignment/assignmentinfo_detail.html' %}
 {% include 'inning/inningmapFormModal.html' %}
 {% endblock %}
 
 {% block javascript %}
-
-<script>    $(".se-pre-con-ajax").fadeOut("fast");</script>
+<script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+<script src=" {% static 'vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+<script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+<script src="{% static 'vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+<script>$(".se-pre-con-ajax").fadeOut("fast");</script>
 
 <script src="{% static 'js/examples/datepicker.js' %}"></script>
 <script>
@@ -60,7 +64,6 @@
 
         });
 </script>
-
 
 <script>
  document.getElementById('id_Assignment_Start_edit').value = new Date(document.getElementById('id_Assignment_Start_edit').value).toLocaleString("en-US")
@@ -112,8 +115,6 @@
     });
 
 </script>
-
-
 
 <script>
        $(document).on('click', '.confirm-delete', function () {
@@ -193,7 +194,6 @@
             $(this).closest('form').find('.progress').remove();
         })
 </script>
-
 
 <script>
          $('.inningmap-btn').on('click', function () {
