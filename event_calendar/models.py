@@ -89,6 +89,8 @@ class CalendarEvent(models.Model):
                 n_date = start + timedelta(n)
                 e_start_date = make_aware(datetime.combine(n_date.date(), start.time()))
                 e_end_date = make_aware(datetime.combine(n_date.date(), end.time()))
+                if e_end_date < e_start_date:
+                    e_end_date += timedelta(1)
                 date_list.append((e_start_date, e_end_date))
         elif self.repeat_type == 'MO':
             from dateutil.relativedelta import relativedelta
@@ -108,7 +110,11 @@ class CalendarEvent(models.Model):
                 n_date = start + timedelta(n)
                 e_start_date = make_aware(datetime.combine(n_date.date(), start.time()))
                 e_end_date = make_aware(datetime.combine(n_date.date(), end.time()))
+                if e_end_date < e_start_date:
+                    e_end_date += timedelta(1)
+                
                 date_list.append((e_start_date, e_end_date))
+        print("date_List",[(x.isoformat(),y.isoformat()) for (x,y) in date_list ])
         return date_list
            
 

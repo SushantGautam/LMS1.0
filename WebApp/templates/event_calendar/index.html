@@ -699,6 +699,10 @@
             ];
             
             events = events.concat(monthly_events, weekday_events);
+            for(event of events ){
+                console.log("End_Event",event.end)
+                console.log("Start_Event",event.start)
+            }
             console.log('MomentTime:',moment('2021-01-29T18:15:00Z'));
 
             $('#external-events .fc-event').each(function () {
@@ -817,6 +821,11 @@
                        //  element.find(".fc-title").prepend("<i class='fa mr-1 fa-star'></i>");
                          element[0].style.setProperty('border', '2px solid black', 'important');
                     }
+
+                    console.log("EVStart",event.start)
+                    console.log("EVStart_Edit",event.start_edit)
+                    console.log("EVEND",event.end)
+                    console.log("EVEnd_Edit",event.end_edit)
                 },
 
                 dayClick: function (date, jsEvent, view) {
