@@ -277,9 +277,9 @@
             </div>
          
         </div>
+        {% if assigned_session %}
         <div class="card">
             <table class="table table-striped mb-1">
-                {% if assigned_session %}
                 <tr>
                     <th class="custom-table-width border-top-0">{% trans 'Session' %}</th>
                     <th class="date-width border-top-0">{% trans 'Start Date' %}</th>
@@ -289,7 +289,6 @@
                     <th class="border-top-0">{% trans 'Action' %}</th>
                     {% endif %}
                 </tr>
-                {% endif %}
                 {% for sessions in assigned_session %}
                 <tr>
                     <td class="custom-table-width border-bottom">
@@ -347,6 +346,7 @@
                 </tr> -->
             </table>
         </div>
+        {% endif %}
         <div class="card">
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
