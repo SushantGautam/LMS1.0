@@ -323,6 +323,7 @@ class CourseInfo(models.Model):
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
     Course_Provider = CharField(max_length=250, blank=True, null=True)
+    Syllabus = TextField(blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
