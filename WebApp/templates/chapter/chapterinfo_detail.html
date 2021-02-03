@@ -1,7 +1,7 @@
 {% load static %}
 {% load i18n %}
 {% load model_template_relation %}
-{# {% load comment_tags %} #}
+{% load comment_tags %}
 
 {# Loading the template tag #}
 
@@ -493,6 +493,6 @@
 </div>
 
 {# <div class="row"> #}
-    {# {% render_comments object request comments_per_page=10 %} #}
-    Render all the comments belonging to a passed object
+    {% render_comments object request comments_per_page=10 %}
+    <!-- Render all the comments belonging to a passed object -->
 {# </div> #}
