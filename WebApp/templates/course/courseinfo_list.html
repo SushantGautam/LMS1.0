@@ -46,6 +46,11 @@
 <div class="text-center">
     <h2 class="text-primary d-inline">{% trans "Courses" %}</h2>
     <div class="float-right pt-1">
+      {% if 'inactive' in request.path %}
+      <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2">View Active Courses</a>
+      {% elif 'active' in request.path %}
+      <a href="{% url 'courseinfo_grid_inactive' %}" class="btn btn-sm btn-outline-primary mr-2">View Inactive Courses</a>
+      {% endif %}
        <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2" title="Grid"
         data-toggle="tooltip">
         <i class="fa fa-th-large"></i>
@@ -65,7 +70,7 @@
         <input type="text" name="teacher_coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
           class="form-control course_query" required />
       </div>
-      <button class="btn btn-default" type="submit">
+      <button class="btn btn-outline-dark" type="submit">
         <i class="fa fa-search"></i>&nbsp;{% trans "Search" %}
       </button>
     </form>
@@ -75,7 +80,7 @@
         <input type="text" name="coursequery" placeholder="Search Course" value="{{ request.GET.query }}"
           class="form-control course_query" required />
       </div>
-      <button class="btn btn-default" type="submit">
+      <button class="btn btn-outline-dark" type="submit">
         <i class="fa fa-search"></i>&nbsp;{% trans "Search" %}
       </button>
     </form>
@@ -86,22 +91,16 @@
           <input type="text" name="query" placeholder="Search Course" value="{{ request.GET.query }}"
             class="form-control course_query" required />
         </div>
-        <button class="btn btn-default" type="submit">
+        <button class="btn btn-outline-dark" type="submit">
           <i class="fa fa-search"></i>&nbsp;{% trans "Search" %}
         </button>
       </div>
 
       {% endif %}
   </div>
-  <div class="col-lg-2 col-md-6 col-sm-12 text-right">
-    {% if 'inactive' in request.path %}
-    <a href="{% url 'courseinfo_grid_active' %}" class="btn">View Active Courses</a>
-    {% elif 'active' in request.path %}
-    <a href="{% url 'courseinfo_grid_inactive' %}" class="btn">View Inactive Courses</a>
-    {% endif %}
-  </div>
+ 
   {% if 'students' not in request.path %}
-  <div class="col-lg-4 col-md-12 col-sm-12 btn-createnew">
+  <div class="col-lg-6 col-md-12 col-sm-12 btn-createnew">
     <a class="btn btn-primary pull-right text-white" href="
             {% if '/teachers' in request.path %}
                 {% url 'teacher_courseinfo_create' %}
@@ -110,30 +109,29 @@
             {% endif %}">
       {% trans "Create New Course" %}
     </a>
-    <a class="btn btn-outline-info text-info pull-right mr-4" data-toggle="modal" data-target="#exampleModal1"
+    <a class="btn btn-outline-dark pull-right mr-4" data-toggle="modal" data-target="#exampleModal1"
       id="importcsv-btn"><i class="fa fa-upload" aria-hidden="true"></i> {% trans 'Import' %}</a>
   </div>
   {% endif %}
 </div>
 <div class="mt-4">
   {% for object in object_list %}
-  <div class="card">
-    <div class="card-body">
-      <div class="d-lg-flex text-center text-lg-left">
+  <div class="card p-3">
+      <div class="d-flex text-left">
         <a href="{{ object.get_absolute_url }}" title="Vase">
           <img src="{% if object.Course_Cover_File %}
                     {{ object.Course_Cover_File.url }}
                 {% else %}
                     {% static 'media/image/course.jpg' %}
-                {% endif %}" width="300" class="img-fluid rounded img-height-10" alt="Vase" />
+                {% endif %}" width="200" class="img-fluid rounded img-height-5" alt="Vase" />
         </a>
         <div class="px-4" style="width: 100%">
-          <h4 class="mb-3">
+          <h4 class="mb-2">
             <a href="{{ object.get_absolute_url }}" class="text-primary">
               {{ object.Course_Name }}
             </a>
           </h4>
-          <p>
+          <p class="mb-1">
             Difficulty : {% for i in '12345'|make_list %}
             {% if object.Course_Level >= forloop.counter %}
             <span class="fa fa-fw fa-star text-warning"></span>
@@ -141,7 +139,7 @@
             <span class="fa fa-fw fa-star-o text-warning"></span>
             {% endif %} {% endfor %}
           </p>
-          <hr />
+          <hr class="my-1">
           <p class="mb-0">
             {% if object.Course_Description %} {{ object.Course_Description|truncatechars:170 }}
             {% else %} No description {% endif %}
@@ -152,7 +150,6 @@
                     </div> -->
         </div>
       </div>
-    </div>
   </div>
   {% empty %}
   <div class="col-12 my-3 text-center">{% trans "No Course Available" %}</div>
