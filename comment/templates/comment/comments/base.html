@@ -1,6 +1,7 @@
 {% load comment_tags %}
 <script>window.CSRF_TOKEN = "{{ csrf_token }}"</script>
-<section id="comments" class="{% block comment_section_cls %}my-5 mx-3{% endblock comment_section_cls %}" style="padding: 20px;">
+<div class="card p-4">
+<section id="comments" class="{% block comment_section_cls %}{% endblock comment_section_cls %}">
     <strong class="border-bottom bb"><span class="js-comment-number">{% get_comments_count model_object user %}</span>
         Comments</strong>
     <hr class="hr"/>
@@ -24,3 +25,4 @@
         {% endblock pagination %}
     {% endif %}
 </section>
+</div>

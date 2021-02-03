@@ -71,15 +71,13 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="session-detail form-inline" style="padding: 10px 0;">
-            <div class="col col-md-6">
-                <span style="font-size:18px"><b> {% trans 'Course' %}: </b></span> {{ Assignment.Course_Code }}
+    <div class="row session-detail">
+            <div class="col-lg-2 col-md-6 col-sm-12 my-2 align-self-center">
+                <span class="mr-2"><b> {% trans 'Course' %}: </b></span> {{ Assignment.Course_Code }}
             </div>
-
-            <div class="col col-md-6">
-                <span style="font-size:18px"><b> {% trans 'Session' %}: </b></span>
-                <select id="select_session" class="form-control" style="width: 30%;">
+            <div class="col-lg-3 col-md-6 d-flex align-items-center my-2">
+                <span class="mr-2"><b> {% trans 'Session' %}: </b></span>
+                <select id="select_session" class="form-control">
                     {% for x in session_list %}
                         {% for session in x %}
                             <option value="{{ session.pk }}"
@@ -97,14 +95,9 @@
                     </option>
                 </select>
             </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="course-detail form-inline" style="padding: 10px 0;">
-            <div class="col col-md-6">
-                <span style="font-size:18px"><b> {% trans 'Chapter' %}: </b></span>
-                <select id="select_chapter" class="form-control" style="width: 30%;">
+            <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-center my-2">
+                <span class="mr-2"><b> {% trans 'Chapter' %}: </b></span>
+                <select id="select_chapter" class="form-control">
                     {% for chapter in chapter_list %}
                         <option value="{{ chapter.pk }}"
                                 {% if chapter.pk == Assignment.Chapter_Code.pk %}
@@ -115,9 +108,9 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
-                <span style="font-size:18px"><b> {% trans 'Assignment' %}: </b></span>
-                <select id="select_assignment" class="form-control" style="width: 30%;">
+            <div class="col-lg-3 col-md-6 col-sm-12 d-flex align-items-center my-2">
+                <span class="mr-2"><b> {% trans 'Assignment' %}: </b></span>
+                <select id="select_assignment" class="form-control">
                     {% for chapter in chapter_list %}
                         {% for assignment in chapter.assignmentinfos.all %}
                             <option value="{{ assignment.pk }}" data-chapter="{{ chapter.pk }}"
@@ -128,21 +121,27 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="col-lg-1 col-md-12 col-sm-12 text-center my-2">
             <button type="button" id="change_assignment_button" class="btn btn-info">{% trans 'Go' %}</button>
-        </div>
+            </div>
     </div>
+    
+    <hr>
+    
     {% if questions %}
         <div style="padding-bottom: 10px;">
-        {% for question in questions|slice:":1" %}
-            <h4 class="pageHeader"> {{ question.Assignment_Code }}</h4>
-        {% endfor %}
-        <hr class="header_hr">
+            {% for question in questions|slice:":1" %}
+            <h4 class="text-primary"> {{ question.Assignment_Code }}</h4>
+            {% endfor %}
+            <hr>
+        </div>
     {% endif %}
 {% for question in questions %}
-    <h5>Question : <br><br> <b>{{ question.Question_Title }}</b></h5>
+    <h5 class="text-primary mb-3">Question : <br><br> <b>{{ question.Question_Title }}</b></h5>
     {% if question.Answer_Type == 'F' %}
-        <btn class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">{% trans 'Download All Files' %}
-        </btn>
+        <button class="btn btn-info downloadallfiles" data-question_id="{{ question.id }}" style="float: right">
+            {% trans 'Download All Files' %}
+        </button>
     {% endif %}
     <table class="table table-striped table-bordered bg-white nowrap">
         <thead class="thead-light bg-primary">
@@ -177,7 +176,6 @@
                             <i class="fa fa-edit"></i>
                         </span>
                 </td>
-
                 <td>{{ answer.Assignment_Answer|safe }}</td>
                 <td>{% if answer %}
                     {% trans 'Submitted on' %} {{ answer.Updated_DateTime|date:'M d, Y ' }}
@@ -185,16 +183,15 @@
                     {% trans 'Not Submitted' %}
                 {% endif %}
                 </td>
-                <td>
+                <td class="text-center">
                     <button class="btn btn-sm btn-info showanswer" data-toggle="modal" data-target="#exampleModal1"
-                            value="{{ answer.id }}" style="float: right;color:black"
+                            value="{{ answer.id }}"
                             data-student_Score="{{ answer.Assignment_Score }}"
                             data-assignment_feedback="{{ answer.Assignment_Feedback }}"
                             {% if not answer %}
                             disabled
-                            {% endif %}
-                    >
-                        <b>{% trans 'View Answer' %}</b>
+                            {% endif %}>
+                        {% trans 'View Answer' %}
                     </button>
                 </td>
             </tr>
@@ -203,7 +200,6 @@
         </tbody>
     </table>
 {% endfor %}
-</div>
 
 {% endblock content %}
 
