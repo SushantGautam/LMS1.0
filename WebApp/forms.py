@@ -497,7 +497,7 @@ class AssignAssignmentInfoForm(forms.ModelForm):
 class AssignAnswerInfoForm(forms.ModelForm):
     Assignment_Answer = forms.CharField(widget=SummernoteWidget(attrs=
                                                                    {'summernote':
-                                                                        {'width': '100%', 'height': '200px',
+                                                                        {'width': '100%', 'height': '250px',
                                                                          'toolbar': [["style", ["style"]],
                                                                                      ["font",
                                                                                       ["bold", "italic", "underline"]],

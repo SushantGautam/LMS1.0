@@ -1,0 +1,11 @@
+{% extends 'comment/comments/comment_base_modal.html' %}
+
+{% load comment_tags %}
+
+{% block form_class %}js-comment-show-form{% endblock %}
+
+{% block dataurl %}data-url="{% if comment %}{% url 'comment:open' pk=comment.id %}{% endif %}{% endblock dataurl %}
+{% block content %}Are you sure you want to enable replies for this comment {% endblock content %}
+{% block title %}Confirm comment open{% endblock title %}
+{% block formsubmitbutton %}Enable{% endblock %}
+{% block del_btn_cls %}btn btn-success{% endblock %}

@@ -1,6 +1,7 @@
 {% load static %}
 {% load i18n %}
 {% load model_template_relation %}
+{# {% load comment_tags %} #}
 
 {# Loading the template tag #}
 
@@ -106,86 +107,116 @@
 
 <div class="row">
     <div class="col-lg-8 col-md-12">
-        <div class="page-header">
+        <div class="text-center">
             <div class="page-title">
-                <h3 class="d-flex align-items-center"><span class="icon-block text-primary">
-                        {{ object.Chapter_No }}</span> &nbsp;
-                    {{ object.Chapter_Name }}
-                </h3>
+                <h2 class="text-primary">{% trans "Chapter Information" %}</h2>
             </div>
-            <p>{{ object.Summary }}</p>
         </div>
-        <div class="text-center my-4">
-            <a class="btn btn-lg btn-info" href="
-            {% if '/teachers' in request.path %}
-                {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
-            {% elif '/students' in request.path %}
-                {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
-            {% else %}
-                {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
-            {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i>
-                {% trans "Content Viewer" %}</a>
-            &nbsp;
-            {% if '/students' not in request.path %}
-            {% if '/teachers' in request.path %}
-            <a class="btn btn-lg btn-success"
-                href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}"> <i
-                    class="fa fa-pencil"></i>
-                {% trans "Content Builder" %}
-                &nbsp;</a>
-            {% else %}
-            <a class="btn btn-lg btn-success" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
-                <i class="fa fa-pencil"></i>
-                {% trans "Content Builder" %} &nbsp;</a>
-            {% endif %}
-            {% endif %}
-        </div>
-        <div class="my-5">
-            <h4 class="text-primary mb-4">{% trans "List of Assignments" %}</h4>
-            {% if object.Use_Flag is False %}
-            <p style="color:red">{% trans "Note" %} :
-                {% trans "Chapter is inactive, therefore assignments are not assigned to students" %}.
-            </p>
-            {% endif %}
-
-            {% for assignment in assignments %}
-            <div class="accordion mb-4" id="assignmentList{{assignment.pk}}">
-                <div class="card shadow-none border">
-                    <div class="card-header justify-content-between" id="headingOne">
-                        <div class="d-flex align-items-center">
-                            <figure class="avatar avatar-sm">
-                                <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
-                            </figure>
-                            <h5 data-toggle="collapse" data-target="#assignment{{assignment.pk}}" aria-expanded="true"
-                                aria-controls="collapseOne" class="text-secondary m-0 pl-3 cursor-pointer">
-                                {{ assignment.Assignment_Topic }}
-                            </h5>
-                        </div>
-                        <a class="btn btn-outline-info" type="button" href="
-                    {% if '/students' in request.path %}
-                        {{ assignment.student_get_absolute_url }}
-                    {% elif '/teachers' in request.path %}
-                        {{ assignment.teacher_get_absolute_url }}
-                    {% else %}
-                       {{ assignment.get_absolute_url }}
-                    {% endif %}">
-                            {% trans "Continue" %} <i class="fa fa-arrow-right ml-2"></i>
-                        </a>
+        <hr/>
+        <div class="row mb-3">
+            <div class="col-lg-5 col-md-12 col-sm-12 text-center">
+                <div class="card p-3 card-scroll" style="min-height: 40em;">
+                    <div class="text-center mb-3">
+                        <h3 class="text-primary">Chapter {{ object.Chapter_No }} . {{ object.Chapter_Name }}</h3>
                     </div>
-                    <div id="assignment{{assignment.pk}}" class="collapse show" aria-labelledby="headingOne"
-                        data-parent="#assignmentList{{assignment.pk}}">
-                        <div class="p-3">
-                            <p class="m-0">{% trans "Start Date" %} - {{ assignment.Assignment_Start }}</p>
-                            <p class="m-0">{% trans "Submission Deadline" %} -
-                                {{ assignment.Assignment_Deadline }}</p>
-                        </div>
+                    <div class="mb-4">
+                        <a class="btn btn-info text-white" href="
+                                        {% if '/teachers' in request.path %}
+                                            {% url 'teacher_NewContentViewer' object.Course_Code.pk object.pk %}
+                                        {% elif '/students' in request.path %}
+                                            {% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}
+                                        {% else %}
+                                            {% url 'NewContentViewer' object.Course_Code.pk object.pk %}
+                                        {% endif %}" id="course-viewer" target="_self"><i class="fa fa-laptop"></i>
+                            {% trans "Content Viewer" %}</a>
+                        &nbsp;
+                        {% if '/students' not in request.path %}
+                        {% if '/teachers' in request.path %}
+                        <a class="btn btn-success text-white" href="{% url 'teachers_newChapterBuilder' object.Course_Code.id object.id %}">
+                            <i class="fa fa-pencil"></i>
+                            {% trans "Content Builder" %}
+                            &nbsp;</a>
+                        {% else %}
+                        <a class="btn btn-success text-white" href="{% url 'newChapterBuilder' object.Course_Code.id object.id %}">
+                            <i class="fa fa-pencil"></i>
+                            {% trans "Content Builder" %} &nbsp;</a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    <p class="m-0 truncatedDescription d-block">
+                        {{ object.Summary|truncatechars:170 }}
+                    </p>
+                    <p class="m-0 fullDescription d-none">
+                        {{ object.Summary }}
+                    </p>
+                    <div class="text-center mt-1">
+                        {% if object.Summary|length > 170 %}
+                        <span class="info-text text-info cursor-pointer text-center">{% trans "Read More" %} </span>
+                        {% endif %}
+                        {% if not object.Summary %}
+                        {% trans "No description" %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            {% endfor %}
-
-
-
+            <div class="col-lg-7 col-md-12 col-sm-12">
+                <div class="card card-scroll" style="height: 40em; overflow-y :scroll">
+                    <div class="d-flex justify-content-between align-items-center p-3">
+                        <h4 class="text-primary m-0">{% trans "List of Assignments" %}</h4>
+                        {% if '/students' not in request.path %}
+                        <div>
+                            <button class="btn btn-sm btn-success" data-z="1" data-toggle="modal" data-target="#create_assignment_modal"
+                                data-animated id="add-newassignment-btn">
+                                {% trans "Create New Assignment" %}
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <!--<h4 class="text-primary px-3 pt-3">{% trans "List of Assignments" %}</h4>-->
+                    {% if object.Use_Flag is False %}
+                    <p class="text-danger px-3">{% trans "Note" %} :
+                        {% trans "Chapter is inactive, therefore assignments are not assigned to students" %}.
+                    </p>
+                    {% endif %}
+                    <div>
+                        {% for assignment in assignments %}
+                        <div class="accordion" id="assignmentList{{assignment.pk}}">
+                            <div class="card shadow-none border">
+                                <div class="card-header justify-content-between" id="headingOne">
+                                    <div class="d-flex align-items-center">
+                                        <figure class="avatar avatar-sm">
+                                            <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
+                                        </figure>
+                                        <h5 data-toggle="collapse" data-target="#assignment{{assignment.pk}}" aria-expanded="true"
+                                            aria-controls="collapseOne" class="text-secondary m-0 pl-3 cursor-pointer">
+                                            {{ assignment.Assignment_Topic }}
+                                        </h5>
+                                    </div>
+                                    <a class="btn btn-sm btn-outline-info" type="button" href="
+                                                                                        {% if '/students' in request.path %}
+                                                                                            {{ assignment.student_get_absolute_url }}
+                                                                                        {% elif '/teachers' in request.path %}
+                                                                                            {{ assignment.teacher_get_absolute_url }}
+                                                                                        {% else %}
+                                                                                           {{ assignment.get_absolute_url }}
+                                                                                        {% endif %}">
+                                        {% trans "Continue" %} <i class="fa fa-arrow-right ml-2"></i>
+                                    </a>
+                                </div>
+                                <div id="assignment{{assignment.pk}}" class="collapse show" aria-labelledby="headingOne"
+                                    data-parent="#assignmentList{{assignment.pk}}">
+                                    <div class="p-3">
+                                        <p class="m-0">{% trans "Start Date" %} - {{ assignment.Assignment_Start }}</p>
+                                        <p class="m-0">{% trans "Submission Deadline" %} -
+                                            {{ assignment.Assignment_Deadline }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-lg-4 col-md-12">
@@ -193,33 +224,31 @@
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="text-primary">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
+                    {% if '/student' not in request.get_full_path %}
                     <div class="d-inline-block dropdown">
-                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
-                            data-toggle="dropdown">
+                        <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
                             <i class="ti-more-alt"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            {% if '/student' not in request.get_full_path %}
                             <a class="dropdown-item text-primary" data-z="1" data-animated href="{% if '/teachers' in request.path %}
-                            /teachers{{ object.get_update_url }}
-                            {% else %}
-                                {{ object.get_update_url }}
-                            {% endif %}">
+                                            /teachers{{ object.get_update_url }}
+                                            {% else %}
+                                                {{ object.get_update_url }}
+                                            {% endif %}">
                                 {% trans "Edit Chapter" %}
                             </a>
                             <a href="javascript:void(0)" class="dropdown-item text-danger chapter-confirm-delete" id="{{ object.pk }}">
                                 {% trans "Delete Chapter" %}
                             </a>
-                            <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}"
-                                id="deleteChapter{{ object.pk }}">
+                            <form method="post" action="{% url 'chapterinfo_delete' pk=object.pk %}" id="deleteChapter{{ object.pk }}">
                                 {% csrf_token %}
                                 <!-- <input type="hidden" value="{{questions.pk}}" name="question_id"> -->
                                 <input type="hidden" value="{{ object.pk }}" name="chapter_id">
                                 <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
                             </form>
-                            {% endif %}
                         </div>
                     </div>
+                    {% endif %}
                 </div>
                 {% if '/students' not in request.path %}
                 <p>
@@ -246,25 +275,88 @@
                     {% endif %}
                 </p>
             </div>
-            {% if '/students' not in request.path %}
-            <ul class="text-center">
-                <li class="p-2 border-top">
-                    <button class="btn btn-success" data-toggle="modal" data-target="#create_assignment_modal"
-                        id="add-newassignment-btn">
-                        {% trans "Create New Assignment" %}
-                    </button>
-                </li>
-            </ul>
-            {% endif %}
+         
+        </div>
+        <div class="card">
+            <table class="table table-striped mb-1">
+                {% if assigned_session %}
+                <tr>
+                    <th class="custom-table-width border-top-0">{% trans 'Session' %}</th>
+                    <th class="date-width border-top-0">{% trans 'Start Date' %}</th>
+                    <th class="date-width border-top-0">{% trans 'End Date' %}</th>
+                    <th class="border-top-0">{% trans 'Chapter Status' %}</th>
+                    {% if '/students' not in request.path %}
+                    <th class="border-top-0">{% trans 'Action' %}</th>
+                    {% endif %}
+                </tr>
+                {% endif %}
+                {% for sessions in assigned_session %}
+                <tr>
+                    <td class="custom-table-width border-bottom">
+                        {{ sessions }}
+                        {% if '/students' not in request.path and '/teachers' not in request.path %}
+                        {% if sessions.is_active %}
+                        <span class="text-success"> <b style="text-transform: uppercase; font-size:14px">
+                            [{% trans 'Active' %}]</b> </span>
+                        {% else %}
+                        <span class="text-danger"><b style="text-transform: uppercase; font-size:14px">
+                            [{% trans 'Inactive'%}]</b></span>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                    {% getSessionMap object 'chapterinfo' sessions as sessionmap %}
+                    {# {% for sessionmap in object.chapter_sessionmaps.all %}#}
+                    {# {% if sessionmap.Session_Code == sessions %}#}
+                    <td class="start-date dateconFullMonth date-width border-bottom">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
+                    <td class="end-date dateconFullMonth date-width border-bottom">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                    <td class="border-bottom">
+                        {% now "Y-m-d H:i" as todays_datewithtime %}
+                        {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
+                            <span class="badge badge-info">{% trans 'Upcoming' %}</span>
+                            {% elif sessionmap.0.End_Date and todays_datewithtime > sessionmap.0.End_Date|date:"Y-m-d H:i" %}
+                            <span class="badge badge-danger">{% trans 'Expired' %}</span>
+                            {% else %}
+                            <span class="badge badge-success">{% trans 'Active' %}</span>
+                            {% endif %}
+                    </td>
+                    {# {% endif %}#}
+                    {# {% endfor %}#}
+                    {% if '/students' not in request.path %}
+                    <td class="border-bottom">
+                        <button type="button" class="btn btn-sm btn-primary inningmap-btn" data-toggle="modal"
+                            data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
+                            data-objectid="{{ object.id }}">
+                            {% trans 'Change' %}
+                        </button>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <!-- End Of start/end date -->
+                <!-- <tr>
+                    <td class="border-top-0">
+                        {% trans 'Discussion' %}
+                    </td>
+                    <td class="border-top-0" colspan="4">
+                        {% if object.is_commentable %}
+                        <span class="badge badge-success">{% trans 'Active' %}</span>
+                        {% else %}
+                        <span class="badge badge-danger">{% trans 'Inactive' %}</span>
+                        {% endif %}
+                    </td>
+                </tr> -->
+            </table>
         </div>
         <div class="card">
             <div class="px-4 pt-4">
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="text-primary">{% trans 'Pre Test Quiz' %}</h5>
-                    <button type="button" class="btn btn-primary btn-sm qts-button" id="pre_test_popup"
-                        data-toggle="modal" data-target="#quiz_create_popup">
+                    {% if not "students" in request.get_full_path %}
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="pre_test_popup" data-toggle="modal"
+                        data-target="#quiz_create_popup">
                         <i class="fa fa-plus"></i>
                     </button>
+                    {% endif %}
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     {% if 'students' in request.path %}
@@ -331,12 +423,14 @@
         </div>
         <div class="card">
             <div class="px-4 pt-4">
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="text-primary">{% trans 'Post Test Quiz' %}</h5>
-                    <button type="button" class="btn btn-primary btn-sm qts-button" id="post_test_popup"
-                        data-toggle="modal" data-target="#quiz_create_popup">
+                    {% if not "students" in request.get_full_path %}
+                    <button type="button" class="btn btn-primary btn-sm qts-button" id="post_test_popup" data-toggle="modal"
+                        data-target="#quiz_create_popup">
                         <i class="fa fa-plus"></i>
                     </button>
+                    {% endif %}
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     {% if 'students' in request.path %}
@@ -397,3 +491,8 @@
         </div>
     </div>
 </div>
+
+{# <div class="row"> #}
+    {# {% render_comments object request comments_per_page=10 %} #}
+    Render all the comments belonging to a passed object
+{# </div> #}
