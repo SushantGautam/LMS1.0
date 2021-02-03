@@ -66,6 +66,7 @@ class EventListView(ListView):
         datetime_now = timezone.now().replace(microsecond=0)
         users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
         context['chapter_list'] = ChapterInfo.objects.all()
+        # print("CH_LIST",context['chapter_list'])
         context['user_list'] = users
         context['r_a'] = CalendarEvent.register_agent
         # context['ev_tp'] = CalendarEvent.event_type

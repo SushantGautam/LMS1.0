@@ -822,10 +822,10 @@
                          element[0].style.setProperty('border', '2px solid black', 'important');
                     }
 
-                    console.log("EVStart",event.start)
-                    console.log("EVStart_Edit",event.start_edit)
-                    console.log("EVEND",event.end)
-                    console.log("EVEnd_Edit",event.end_edit)
+                  //  console.log("EVStart",event.start)
+                 //   console.log("EVStart_Edit",event.start_edit)
+                 //   console.log("EVEND",event.end)
+                 //   console.log("EVEnd_Edit",event.end_edit)
                 },
 
                 dayClick: function (date, jsEvent, view) {
@@ -984,7 +984,7 @@
                       }
 
                       end = end._d.toLocaleString();
-                      console.log(event.end_edit);
+                    //  console.log(event.end_edit);
                       let end_date = end.split(' ')[0].replace(/[,]/g, ' ');
                       let end_time = end.split(' ')[1];
                       let et = end.split(' ')[2];
@@ -1296,7 +1296,7 @@
     </script>
 
     <script>
-        $(".select2-example").select2({
+        $("#id_participants").select2({
             placeholder: 'Select',
            width: "element",
              multiple: true,
@@ -1316,6 +1316,13 @@
                 }
                 return null;
             },
+        });
+
+        $("#chapter_list_multiple").select2({
+            placeholder: 'Select',
+            width: "element",
+            multiple: true,
+           
         });
 
         //// Calendar Event Create Form Submit:
@@ -1430,8 +1437,8 @@
                 $(".participant_dynamic").show();
             } else {
                 $(".participant_dynamic").hide();
-                $(".select2-example").val("");
-                $(".select2-example").trigger("change");
+                $("#id_participants").val("");
+                $("#id_participants").trigger("change");
             }
         });
 
@@ -1443,8 +1450,8 @@
                 $(".chapter_dynamic").show();
             } else {
                 $(".chapter_dynamic").hide();
-                $(".select2-example").val("");
-                $(".select2-example").trigger("change");
+                $("#chapter_list_multiple").val("");
+                $("#chapter_list_multiple").trigger("change");
             }
          });
 
