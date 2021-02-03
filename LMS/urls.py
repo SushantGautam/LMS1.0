@@ -28,8 +28,8 @@ urlpatterns = [
                   path('forum/', include('forum.urls')),
                   path('survey/', include('survey.urls')),
                   path('login/', views.login.as_view(), name='login'),
-                #   url(r'^login/$', views.login, {'template_name': 'registration/login.html',
-                #                                  'redirect_authenticated_user': True}, name='login'),
+                  #   url(r'^login/$', views.login, {'template_name': 'registration/login.html',
+                  #                                  'redirect_authenticated_user': True}, name='login'),
                   path(
                       'students/courseinfo/<int:course>/chapterinfo/<int:chapter>/contentforapp/<slug:username>/<slug:password>/',
                       loginforapp, name='loginforapp'),
@@ -134,4 +134,8 @@ urlpatterns += (
 
 urlpatterns += (
     path('comment/', include('comment.urls')),
+)
+
+urlpatterns += (
+    path('admin/log_viewer/', include('log_viewer.urls')),
 )
