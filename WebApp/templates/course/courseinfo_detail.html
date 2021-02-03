@@ -49,7 +49,7 @@
         <hr/>
         <div class="row">
             <div class="col-lg-6 col-md-12 col-sm-12">
-                <div class="card p-4 card-scroll" style="min-height: 40em;">
+                <div class="card p-3 card-scroll" style="min-height: 40em;">
                     <div class="text-center">
                         <h3 class="text-primary">{{ object.Course_Name }}</h3>
                     </div>
@@ -82,7 +82,7 @@
             <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="card card-scroll" style="height: 40em; overflow-y :scroll">
                     <div class="d-flex justify-content-between align-items-center p-3">
-                        <h4 class="text-primary m-0">{% trans "List of Chapters" %}</h4>
+                        <h3 class="text-primary m-0">{% trans "List of Chapters" %}</h3>
                         {% if '/students' not in request.path %}
                         <div>
                         <button class="btn btn-sm btn-success" data-z="1" data-toggle="modal" data-target="#create_chapter_modal"
@@ -181,6 +181,11 @@
                                 {% endif %}
                             </div>
                         </div>
+
+                    {% empty %}
+                    <div class="text-center">
+                        {% trans "There is no chapter" %}
+                    </div>
                     {% endfor %}
                 </div>
             </div>

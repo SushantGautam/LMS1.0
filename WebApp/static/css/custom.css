@@ -133,6 +133,11 @@
 }
 
 /* courselist height css */
+.img-height-5 {
+  object-fit: cover;
+  max-height: 5rem;
+}
+
 .img-height-10 {
   object-fit: cover;
   max-height: 10rem;
