@@ -199,6 +199,12 @@
 
 <div class="row">
     <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 ">
+        <div class="text-center">
+            <div class="page-title">
+                <h2 class="text-primary">Assignment Information</h2>
+            </div>
+        </div>
+        <hr/>
         <div class="page-header">
             <div class="page-title pb-3">
                 <h3 class="d-flex align-items-center">
@@ -206,8 +212,8 @@
                 </h3>
             </div>
         </div>
-        <div class="my-2">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="card p-2">
+            <div class="d-flex justify-content-between align-items-center mx-2 mt-2 mb-3">
                 <h4 class="text-primary mb-0">{% trans "List of Questions" %}</h4>
                 {% if not "students" in request.get_full_path %}
                 <div>
@@ -218,201 +224,201 @@
                 </div>
                 {% endif %}
             </div>
-        </div>
-        <div>
-            {% for question in questions %}
-            <div class="accordion mb-4" id="questionList{{ question.pk }}">
-                <div class="card shadow-none border">
-                    <div class="card-header justify-content-between" id="headingOne">
-                        <div class="d-flex align-items-center pr-3">
-                            <figure class="avatar avatar-sm">
-                                <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
-                            </figure>
-                            <h5 class="text-secondary m-0 pl-3 cursor-pointer">
-                                {{ question.Question_Title }}
-                            </h5>
-                        </div>
-                        <div class="d-flex" style="min-width: 120px;">
-                            <div class="row align-items-center">
-                                 <button class="btn btn-primary btn-sm mr-3" type="button" data-toggle="collapse"
-                                data-target="#answer-collapse-{{ question.id }}" aria-expanded="false" aria-controls="collapseExample">
-                                Answers
-                            </button>
-                            {% if '/students' not in request.path %}
-                            <button class="btn editquestion-btn btn-info btn-floating mr-3" data-toggle="modal" data-target="#editQuestionModal"
-                                data-questionpk="{{ question.pk }}" id="editquestion-btn{{ question.pk }}">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            <div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog"
-                                aria-labelledby="editQuestionLabel" aria-hidden="true" id="editquestion-btn{{ questions.pk }}">
-                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header text-center">
-                                            <h5 class="modal-title text-primary font-weight-bold">Edit Question</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <i class="ti-close"></i>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body modal-auto" id="edit_question_modal_body">
+            <div>
+                {% for question in questions %}
+                <div class="accordion mb-4" id="questionList{{ question.pk }}">
+                    <div class="card shadow-none border">
+                        <div class="card-header justify-content-between" id="headingOne">
+                            <div class="d-flex align-items-center pr-3">
+                                <figure class="avatar avatar-sm">
+                                    <span class="avatar-title rounded-circle"> {{ forloop.counter }}</span>
+                                </figure>
+                                <h5 class="text-secondary m-0 pl-3 cursor-pointer">
+                                    {{ question.Question_Title }}
+                                </h5>
+                            </div>
+                            <div class="d-flex" style="min-width: 120px;">
+                                <div class="row align-items-center">
+                                    <button class="btn btn-primary btn-sm mr-3" type="button" data-toggle="collapse"
+                                    data-target="#answer-collapse-{{ question.id }}" aria-expanded="false" aria-controls="collapseExample">
+                                    Answers
+                                </button>
+                                {% if '/students' not in request.path %}
+                                <button class="btn editquestion-btn btn-info btn-floating mr-3" data-toggle="modal" data-target="#editQuestionModal"
+                                    data-questionpk="{{ question.pk }}" id="editquestion-btn{{ question.pk }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="editQuestionLabel" aria-hidden="true" id="editquestion-btn{{ questions.pk }}">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header text-center">
+                                                <h5 class="modal-title text-primary font-weight-bold">Edit Question</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <i class="ti-close"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body modal-auto" id="edit_question_modal_body">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            {% if '/teachers' in request.path %}
-                            <button id="{{ question.pk }}" class="btn btn-floating btn-danger confirm-delete">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            <form method="post" action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
-                                id="deleteQuestion{{ question.pk }}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ question.pk }}" name="question_id">
-                                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                            </form>
-                            {% else %}
-                            <button id="{{ question.pk }}" class="btn btn-floating btn-danger confirm-delete"> <i class="fa fa-trash"></i> </button>
-                            <form method="post" action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=questions.pk %}"
-                                id="deleteQuestion{{ questions.pk }}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ questions.pk }}" name="question_id">
-                                <input type="hidden" value="{{ object.pk }}" name="assignment_id">
-                                <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
-                                <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
-                            </form>
-                            {% endif %}
-                            {% endif %}
-                            </div>
-                            <a data-toggle="collapse" data-target="#question{{ question.pk }}" aria-expanded="true" aria-controls="collapseOne"
-                                href="javascript:void(0)" class="ml-4">
-                                <figure class="avatar avatar-sm">
-                                    <span class="avatar-title rounded-circle">
-                                        <i class="fa fa-chevron-down"></i>
-                                    </span>
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
-                    <div id="question{{ question.pk }}" class="collapse" aria-labelledby="headingOne"
-                        data-parent="#questionList{{ question.pk }}">
-                        <div class="row m-0">
-                            <div class="col-lg-9 col-md-8 p-3">
-                                {% if question.Question_Description %}
-                                <p class="mb-1">{% trans "Question Description" %} : {{ question.Question_Description | safe }}</p>
+                                {% if '/teachers' in request.path %}
+                                <button id="{{ question.pk }}" class="btn btn-floating btn-danger confirm-delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <form method="post" action="{% url 'teacher_questioninfo_delete' assignment=object.pk pk=question.pk %}"
+                                    id="deleteQuestion{{ question.pk }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ question.pk }}" name="question_id">
+                                    <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                                    <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                                    <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+                                </form>
                                 {% else %}
-                                <p class="mb-1">{% trans "No Decription Given" %}</p>
+                                <button id="{{ question.pk }}" class="btn btn-floating btn-danger confirm-delete"> <i class="fa fa-trash"></i> </button>
+                                <form method="post" action="{% url 'webapp_questioninfo_delete' assignment=object.pk pk=questions.pk %}"
+                                    id="deleteQuestion{{ questions.pk }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ questions.pk }}" name="question_id">
+                                    <input type="hidden" value="{{ object.pk }}" name="assignment_id">
+                                    <input type="hidden" value="{{ object.Course_Code.id }}" name="course_id">
+                                    <input type="hidden" value="{{ object.Chapter_Code.id }}" name="chapter_id">
+                                </form>
                                 {% endif %}
-                                {% if question.Question_Media_File %}
-                                <p class="mb-1">{% trans "Question Media" %} : </p>
-                                <div class="text-center">
-                                    {% if question.extension == '.jpg' or question.extension == '.png' %}
-                                    <a href="{{ question.Question_Media_File.url }}" target="_blank">
-                                    <img class="card-img-top w-auto" height="300px" src="{{ question.Question_Media_File.url }}">
-                                    </a>
+                                {% endif %}
+                                </div>
+                                <a data-toggle="collapse" data-target="#question{{ question.pk }}" aria-expanded="true" aria-controls="collapseOne"
+                                    href="javascript:void(0)" class="ml-4">
+                                    <figure class="avatar avatar-sm">
+                                        <span class="avatar-title rounded-circle">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </span>
+                                    </figure>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="question{{ question.pk }}" class="collapse" aria-labelledby="headingOne"
+                            data-parent="#questionList{{ question.pk }}">
+                            <div class="row m-0">
+                                <div class="col-lg-9 col-md-8 p-3">
+                                    {% if question.Question_Description %}
+                                    <p class="mb-1">{% trans "Question Description" %} : {{ question.Question_Description | safe }}</p>
                                     {% else %}
-                                    <a href="{{ question.Question_Media_File.url }}" target="_blank"><b style="color:#017a9b">
-                                            {% trans "Click to view attatched file" %}</b></a>
+                                    <p class="mb-1">{% trans "No Decription Given" %}</p>
+                                    {% endif %}
+                                    {% if question.Question_Media_File %}
+                                    <p class="mb-1">{% trans "Question Media" %} : </p>
+                                    <div class="text-center">
+                                        {% if question.extension == '.jpg' or question.extension == '.png' %}
+                                        <a href="{{ question.Question_Media_File.url }}" target="_blank">
+                                        <img class="card-img-top w-auto" height="300px" src="{{ question.Question_Media_File.url }}">
+                                        </a>
+                                        {% else %}
+                                        <a href="{{ question.Question_Media_File.url }}" target="_blank"><b style="color:#017a9b">
+                                                {% trans "Click to view attatched file" %}</b></a>
+                                        {% endif %}
+                                    </div>
                                     {% endif %}
                                 </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-lg-3 col-md-4 border-top p-3 border-left">
-                                {% if question.Question_Score %}
-                                <p>{% trans "Question Score" %} : {{ question.Question_Score }}</p>
-                                {% endif %}
-                            
-                                {% if question.Answer_Type %}
-                                <p>
-                                    {% trans "Answer Type" %} : {% if question.Answer_Type == 'S' %}
-                                    {% trans "Short Answer" %}
-                                    {% elif question.Answer_Type == 'F' %}
-                                    {% trans "File Upload" %}
+                                <div class="col-lg-3 col-md-4 border-top p-3 border-left">
+                                    {% if question.Question_Score %}
+                                    <p>{% trans "Question Score" %} : {{ question.Question_Score }}</p>
                                     {% endif %}
-                                </p>
-                                {% endif %}
+                                
+                                    {% if question.Answer_Type %}
+                                    <p>
+                                        {% trans "Answer Type" %} : {% if question.Answer_Type == 'S' %}
+                                        {% trans "Short Answer" %}
+                                        {% elif question.Answer_Type == 'F' %}
+                                        {% trans "File Upload" %}
+                                        {% endif %}
+                                    </p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="answer-div collapse p-2 border-top" id="answer-collapse-{{ question.id }}">
-                        <div class="py-3">
-                            <table class="table table-data table-striped table-bordered bg-white nowrap" style="width: 100%;">
-                                <thead>
-                                    <tr class="tableTitleRow">
-                                        <th>S.No.</th>
-                                        <th>S.No.</th>
-                                        <th>Username</th>
-                                        <th>Full Name</th>
-                                        <th>Total Marks</th>
-                                        <th>Marks Obtained</th>
-                                        <th>Answer</th>
-                                        <th>Submitted on</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for student in students_list %}
-                                    {% getAssignmentAnswer Assignment student question as answer %}
-                                    <tr>
-                                        <td class="counterCell" style=" padding-top: 15px;"></td>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td style=" padding-top: 15px;">{{ student.username }}</td>
-                                        <td>{{ student.get_full_name }}</td>
-                                        <td>{{ question.Question_Score }} </td>
-                                        <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
-                                            data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
-                                            {% if answer %}
-                                            {% if answer.Assignment_Score is None %}
-                                            Not graded
-                                            {% else %}
-                                            {{ answer.Assignment_Score }}
-                                            {% endif %}
-                                            <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
-                                                <i class="fa fa-edit"></i>
-                                            </span>
-                                            {% else %}
-                                            Not Submitted
-                                            {% endif %}
-                                        </td>
+                        <div class="answer-div collapse p-2 border-top" id="answer-collapse-{{ question.id }}">
+                            <div class="py-3">
+                                <table class="table table-data table-striped table-bordered bg-white nowrap" style="width: 100%;">
+                                    <thead>
+                                        <tr class="tableTitleRow">
+                                            <th>S.No.</th>
+                                            <th>S.No.</th>
+                                            <th>Username</th>
+                                            <th>Full Name</th>
+                                            <th>Total Marks</th>
+                                            <th>Marks Obtained</th>
+                                            <th>Answer</th>
+                                            <th>Submitted on</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for student in students_list %}
+                                        {% getAssignmentAnswer Assignment student question as answer %}
+                                        <tr>
+                                            <td class="counterCell" style=" padding-top: 15px;"></td>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td style=" padding-top: 15px;">{{ student.username }}</td>
+                                            <td>{{ student.get_full_name }}</td>
+                                            <td>{{ question.Question_Score }} </td>
+                                            <td id="Score_{{ answer.pk }}" data-answer_id="{{ answer.id }}"
+                                                data-assignment_max_score="{{ answer.Question_Code.Question_Score }}">
+                                                {% if answer %}
+                                                {% if answer.Assignment_Score is None %}
+                                                Not graded
+                                                {% else %}
+                                                {{ answer.Assignment_Score }}
+                                                {% endif %}
+                                                <span class="edit_assignment_score" data-assignment_score="{{ answer.Assignment_Score }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </span>
+                                                {% else %}
+                                                Not Submitted
+                                                {% endif %}
+                                            </td>
 
-                                        <td>{{ answer.Assignment_Answer|safe }}</td>
-                                        <td>{% if answer %}
-                                            Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
-                                            {% elif not answer %}
-                                            Not Submitted
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-center">
-                                        <span style="display: none;" id="answer_{{ answer.id }}">{{ answer.Assignment_Answer|safe }}</span>
-                                            <button class="btn btn-sm btn-primary showanswer" data-toggle="modal"
-                                            {#  data-target="#create_session_modal" value="{{ answer.id }}" #}
-                                                data-target="#exampleModal1"
-                                                value="{{ answer.id }}"
-                                                data-question_score="{{ answer.Question_Code.Question_Score }}"
-                                                data-student_Score="{{ answer.Assignment_Score }}"
-                                                data-answer_file="{{ answer.Assignment_File }}"
-                                                data-assignment_feedback="{{ answer.Assignment_Feedback }}"
-                                                {% if not answer %}
-                                                    disabled
-                                                {% endif %}>
-                                                View Answer
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                            <td>{{ answer.Assignment_Answer|safe }}</td>
+                                            <td>{% if answer %}
+                                                Submitted on {{ answer.Updated_DateTime|date:'M d, Y ' }}
+                                                {% elif not answer %}
+                                                Not Submitted
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                            <span style="display: none;" id="answer_{{ answer.id }}">{{ answer.Assignment_Answer|safe }}</span>
+                                                <button class="btn btn-sm btn-primary showanswer" data-toggle="modal"
+                                                {#  data-target="#create_session_modal" value="{{ answer.id }}" #}
+                                                    data-target="#exampleModal1"
+                                                    value="{{ answer.id }}"
+                                                    data-question_score="{{ answer.Question_Code.Question_Score }}"
+                                                    data-student_Score="{{ answer.Assignment_Score }}"
+                                                    data-answer_file="{{ answer.Assignment_File }}"
+                                                    data-assignment_feedback="{{ answer.Assignment_Feedback }}"
+                                                    {% if not answer %}
+                                                        disabled
+                                                    {% endif %}>
+                                                    View Answer
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
     <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 ">
         <div class="card">
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="text-primary">{% trans "Assignment Information" %}</h5>
+                    <h5 class="text-primary m-0">{% trans "Assignment Information" %}</h5>
                     <div class="d-inline-block dropdown">
                         <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm"
                             data-toggle="dropdown">

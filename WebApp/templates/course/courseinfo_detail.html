@@ -195,14 +195,13 @@
         <div class="card">
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="text-primary">{% trans "Course" %}</h5>
+                    <h5 class="text-primary m-0">{% trans "Course" %}</h5>
                     {% if '/student' not in request.get_full_path %}
                     <div class="d-inline-block dropdown">
                         <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
                             <i class="ti-more-alt"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                
                             <a class="dropdown-item text-primary" data-z="1" data-animated href="{% if '/teachers' in request.path %}
                                     /teachers{{ object.get_update_url }}
                                         {% else %}
