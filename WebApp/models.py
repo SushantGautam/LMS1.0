@@ -323,6 +323,7 @@ class CourseInfo(models.Model):
     Register_Agent = CharField(max_length=500, blank=True, null=True)
 
     Course_Provider = CharField(max_length=250, blank=True, null=True)
+    Syllabus = TextField(blank=True, null=True)
 
     # Relationship Fields
     Center_Code = ForeignKey(
@@ -1056,7 +1057,7 @@ class SessionMapInfo(models.Model):
         null=True,
         on_delete=models.CASCADE
     )
-    object_id = models.PositiveIntegerField(max_length=255, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
     target = GenericForeignKey('content_type', 'object_id')
     Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.DO_NOTHING)
 

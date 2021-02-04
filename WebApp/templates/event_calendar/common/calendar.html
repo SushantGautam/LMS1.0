@@ -213,14 +213,14 @@
                         </div>
                         <div class="form-group row chapter_dynamic">
                             <label class="col-sm-3 col-form-label">{% trans "Chapter List" %}</label>
+                            
                             <div class="col-sm-9">
                                 <div class="mt-2" id="chapter_list">
                                      <select name="chapters" class="form-control select2-example"
                                             id="chapter_list_multiple" multiple>
                                         {% for c in chapter_list %}
-                                             <option
-                                        value="{{ c.pk }}">{{ c.Chapter_Name }}
-                                            </option>
+                                        
+                                             <option value='{{c.pk}}'>{{c.Chapter_Name}}</option>
                                         {% endfor %}
                                     </select>
 {#                                 <input type="hidden" name="chapters" id="chapter_list_hidden" value="">#}
