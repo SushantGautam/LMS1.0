@@ -101,7 +101,8 @@
                                             <span class="avatar-title rounded-circle"> {{ chapter.Chapter_No }}</span>
                                         </figure>
                                         <h5 data-toggle="collapse" data-target="#chapter{{chapter.pk}}" aria-expanded="true"
-                                            aria-controls="collapseOne" class="text-secondary m-0 pl-3 cursor-pointer">
+                                            aria-controls="collapseOne" class="text-secondary m-0 pl-3 
+                                            {% if '/students' in request.path %}cursor-pointer{% endif %}">
                                             {{ chapter.Chapter_Name }}
                                         </h5>
                                     </div>
@@ -181,7 +182,6 @@
                                 {% endif %}
                             </div>
                         </div>
-
                     {% empty %}
                     <div class="text-center">
                         {% trans "There is no chapter" %}
