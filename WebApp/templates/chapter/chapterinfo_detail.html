@@ -206,9 +206,10 @@
                                 <div id="assignment{{assignment.pk}}" class="collapse show" aria-labelledby="headingOne"
                                     data-parent="#assignmentList{{assignment.pk}}">
                                     <div class="p-3">
-                                        <p class="m-0">{% trans "Start Date" %} - {{ assignment.Assignment_Start }}</p>
+                                        <p class="m-0">{{ assignment.Assignment_Start }} &nbsp; ~ &nbsp; {{ assignment.Assignment_Deadline }}</p>
+                                        <!--<p class="m-0">{% trans "Start Date" %} - {{ assignment.Assignment_Start }}</p>
                                         <p class="m-0">{% trans "Submission Deadline" %} -
-                                            {{ assignment.Assignment_Deadline }}</p>
+                                            {{ assignment.Assignment_Deadline }}</p>-->
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +224,7 @@
         <div class="card">
             <div class="px-4 pt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="text-primary">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
+                    <h5 class="text-primary m-0">{% trans "Course Code" %} : {{ object.Course_Code }}</h5>
                     {% if '/student' not in request.get_full_path %}
                     <div class="d-inline-block dropdown">
                         <a href="javascript:void(0)" class="btn btn-outline-light btn-floating btn-sm" data-toggle="dropdown">
