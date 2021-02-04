@@ -162,6 +162,7 @@ class MemberInfo(AbstractUser):
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
     Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
     Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
+    New_Flag = models.BooleanField(default=False)
 
     # Relationship Fields
     Center_Code = ForeignKey(

@@ -563,6 +563,8 @@ class MemberInfoListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['partial_member_form'] = MemberInfoForm(request=self.request)
+        context['new_block'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code,
+                                 Use_Flag=False, New_Flag=True).count()
         return context
 
     # model = MemberInfo
@@ -1110,6 +1112,9 @@ class MemberInfoDetailView(MemberAuthMxnCls, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MemberInfoDetailView, self).get_context_data()
+        if self.object.Use_Flag == False and self.object.New_Flag == True:
+            self.object.New_Flag = False
+            self.object.save()
         context['student_groups'] = self.object.groupmapping_set.filter(Use_Flag=True)
         context['student_sessions'] = InningInfo.objects.filter(Groups__in=context['student_groups'],
                                                                 Use_Flag=True).order_by('-Updated_DateTime')
