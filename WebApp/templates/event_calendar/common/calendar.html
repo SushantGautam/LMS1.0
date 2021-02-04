@@ -20,7 +20,23 @@
         <div class="col-md-3 app-sidebar">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title mb-2">{% trans "Events" %}</h6>
+                    <div class="row"> 
+                        <div class="col-sm-6 mb-2" >
+                            <h6 class="card-title ">{% trans "Events" %}</h6>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="mb-2" >
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="checkbox_all_event" class="custom-control-input "
+                                        id="checkbox_all_event" checked>
+                                    <label class="custom-control-label" for="checkbox_all_event"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                      {% if 'students' in request.get_full_path %}
                      {%else%}
                     <p class="text-muted">{% trans "Drag and drop your event" %}</p>
@@ -218,10 +234,19 @@
                                 <div class="mt-2" id="chapter_list">
                                      <select name="chapters" class="form-control select2-example"
                                             id="chapter_list_multiple" multiple>
-                                        {% for c in chapter_list %}
+                                        {% if "teachers" in request.path%}
+                                        {% for c in teacher_chapter_list %}
+                                        
+                                        <option value='{{c.pk}}'>{{c.Chapter_Name}}</option>
+                                        {% endfor %}
+
+                                        {%else%}    
+                                        {% for c in admin_chapter_list %}
                                         
                                              <option value='{{c.pk}}'>{{c.Chapter_Name}}</option>
                                         {% endfor %}
+                                        {%endif%}
+
                                     </select>
 {#                                 <input type="hidden" name="chapters" id="chapter_list_hidden" value="">#}
                                 </div>

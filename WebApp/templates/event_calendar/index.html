@@ -1527,7 +1527,33 @@
 
 
 
+    $(".event_filter").change(function () { 
 
+        if( $("#ho_checkbox").is(':checked') && $("#ex_checkbox").is(':checked') && $("#me_checkbox").is(':checked') && $("#pr_checkbox").is(':checked') && $("#ch_checkbox").is(':checked'))
+    {
+        $("#checkbox_all_event").prop("checked", true);
+        
+    }else{
+        $("#checkbox_all_event").prop("checked", false);
+    }
+
+    })
+
+   
+
+    
+
+    $("#checkbox_all_event").change(function () {
+       
+        if ($("#checkbox_all_event").prop("checked") ){
+        $(".event_filter").prop("checked",true);
+     
+        } else{
+            $(".event_filter").prop("checked",false);
+        
+        }
+        $("#calendar-demo").fullCalendar('rerenderEvents');
+    })
 
 </script>
 
