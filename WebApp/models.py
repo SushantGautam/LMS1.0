@@ -491,7 +491,7 @@ class ChapterInfo(models.Model):
         if self.pk in [chapter.pk for chapter in active_chapters]:
             status = True
         return status
-
+    
 
 
 

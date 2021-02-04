@@ -8,12 +8,12 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 
-from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup, AssignmentInfo, ChapterInfo
+from WebApp.models import MemberInfo, InningInfo, GroupMapping, InningGroup, AssignmentInfo, ChapterInfo, CourseInfo
 from event_calendar.forms import CalendarEventForm, CalendarEventUpdateForm
 from event_calendar.models import CalendarEvent
 from survey.models import SurveyInfo, SubmitSurvey
 from django.db.models import Q
-
+ 
 
 class EventCreateView(CreateView):
     model = CalendarEvent
@@ -65,18 +65,31 @@ class EventListView(ListView):
         context = super().get_context_data()
         datetime_now = timezone.now().replace(microsecond=0)
         users = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code)
-        context['chapter_list'] = ChapterInfo.objects.all()
-        # print("CH_LIST",context['chapter_list'])
+        context['admin_chapter_list'] = ChapterInfo.objects.all()
+        
+        teacher = MemberInfo.objects.get(pk = self.request.user.pk )
+        ingGrp = teacher.inninggroup_set.all()
+        course = CourseInfo.objects.filter(inninggroups__in = ingGrp)
+        teacher_chapter = ChapterInfo.objects.filter(Course_Code__in = course)
+        context['teacher_chapter_list'] = teacher_chapter
+     
+       
         context['user_list'] = users
         context['r_a'] = CalendarEvent.register_agent
         # context['ev_tp'] = CalendarEvent.event_type
         # print('Type:', context['ev_tp'])
 
-        context['session'] = InningInfo.objects.filter(Use_Flag=True,
+        s_list = InningInfo.objects.filter(Use_Flag=True,
                                                        Start_Date__lte=datetime_now,
 
                                                        End_Date__gte=datetime_now,
                                                        Course_Group__Teacher_Code=self.request.user.pk).distinct()
+
+
+        context['session'] = s_list
+       
+       
+
 
         if self.request.user.Is_Student:
 
@@ -126,6 +139,8 @@ class EventListView(ListView):
             # context['is_submitted'] = SubmitSurvey.objects.filter(Survey_Code=self.object.id,
             #                                                       Student_Code=self.request.user.id).exists()
             print("ActiveAssignment",activeassignments)
+        
+
 
         context['daily_event']=context['object_list'].filter(Q(repeat_type='DA')| Q(repeat_type="WE"))
         context['monthly_event']=context['object_list'].filter(repeat_type='MO')
