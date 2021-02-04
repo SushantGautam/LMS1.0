@@ -1,0 +1,17 @@
+{% extends 'comment/comments/comment_body.html' %}
+{% load comment_tags %}
+
+{% block stylesheet %}
+    .useravatar {
+    height: 60px;
+    width: 60px;
+    border-radius:50%
+    }
+{% endblock stylesheet %}
+
+{% block image_cls %} useravatar{% endblock image_cls %}
+
+{% block comment_content %}
+   <p >{% render_content comment.content 20 %}</p> 
+{% endblock comment_content %}
+

@@ -183,8 +183,6 @@
                                 </form>
                                 {% endif %}
                                 {% endif %}
-                                
-
                             </div>
                             <a data-toggle="collapse" data-target="#question{{ question.pk }}" aria-expanded="true" aria-controls="collapseOne"
                                 href="javascript:void(0)" class="ml-4">
@@ -207,14 +205,16 @@
                                 {% endif %}
                                 {% if question.Question_Media_File %}
                                 <p class="mb-1">{% trans "Question Media" %} : </p>
-                                <p>
+                                <div class="text-center">
                                     {% if question.extension == '.jpg' or question.extension == '.png' %}
-                                    <img class="card-img-top" width="400px" src="{{ question.Question_Media_File.url }}">
+                                    <a href="{{ question.Question_Media_File.url }}" target="_blank">
+                                    <img class="card-img-top w-auto" height="300px" src="{{ question.Question_Media_File.url }}">
+                                    </a>
                                     {% else %}
                                     <a href="{{ question.Question_Media_File.url }}" target="_blank"><b style="color:#017a9b">
                                             {% trans "Click to view attatched file" %}</b></a>
                                     {% endif %}
-                                </p>
+                                </div>
                                 {% endif %}
                             </div>
                             <div class="col-lg-3 col-md-4 border-top p-3 border-left">

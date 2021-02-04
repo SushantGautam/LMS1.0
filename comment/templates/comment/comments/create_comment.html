@@ -2,9 +2,6 @@
 {% if user.is_authenticated %}
     <form class="js-comment-form" method="post" data-url="{% url 'comment:create' %}">
         {% csrf_token %}
-        <div class="col-md-12 col-sm-12 col-xs-12" style=" padding: 10px 10px 20px 10px">
-
-       
         <div class="row">
 
             <div class="{% block text_area_wrapper_cls %}col-sm-9 col-md-9 px-2 m-2 m-sm-0{% endblock text_area_wrapper_cls %}">
@@ -20,13 +17,12 @@
             {% endif %}
             <div class="{% block submit_button_wrapper_cls %}col-sm-3 col-md-3 px-2 m-3 m-sm-0 text-left{% endblock submit_button_wrapper_cls %}">
                 <button disabled
-                        class="js-comment-btn {% block submit_button_cls %}btn btn-outline-success btn-primary btn-sm{% endblock submit_button_cls %}"
+                        class="js-comment-btn {% block submit_button_cls %}btn btn-outline-primary btn-sm{% endblock submit_button_cls %}"
                         type="submit" name="form_type" data-type="{% if comment %}child{% else %}parent{% endif %}">
                     {% if comment %}Reply{% else %}Comment{% endif %}
                 </button>
             </div>
         </div>
-    </div> 
     </form>
 {% else %}
     <div class="d-flex mb-3">
