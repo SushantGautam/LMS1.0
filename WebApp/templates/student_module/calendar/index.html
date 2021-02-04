@@ -433,14 +433,19 @@
                     {
                             title: "{{ c.Survey_Title }}",
                             id: 'survey{{ c.pk }}',
-                            start: '{{ c.Start_Date|date:"Y-m-d" }}',
-                            end: '{{ c.End_Date|date:"Y-m-d" }}',
+                           // start: '{{ c.Start_Date|date:"Y-m-d" }}',
+                            start: '{{c.Start_Date.isoformat }}',
+                            start_edit: $.fullCalendar.moment('{{c.Start_Date.isoformat}}'),
+                           // end: '{{ c.End_Date|date:"Y-m-d" }}',
+                            end: $.fullCalendar.moment('{{  c.End_Date.isoformat }}').add(1, 'days'),
+                            end_edit:  $.fullCalendar.moment('{{ c.End_Date.isoformat}}').add(1, 'days'),
+
                             version: '{{c.Version_No}}',
                             view_result : '{{c.Publish_Result}}',
 
                             category: '{{c.Category_Code}}',
                             tp:'SR',
-
+                            allDay: true,
                             part_list: '{% for p in c.get_participant_for_calendar %}{{p.username}},{% endfor %}',
                             {% if c.get_participant_for_calendar == "All Students" %}
                             part: '{% trans "All Students" %}',
@@ -483,7 +488,10 @@
                     {
                         title: "{{ i.Assignment_Topic}}",
                         id: 'assignment{{ c.pk }}',
-                        start: '{{ i.Assignment_Start|date:"Y-m-d" }}',
+                       // start: '{{ i.Assignment_Start|date:"Y-m-d" }}',
+                        start: '{{ i.Assignment_Start.isoformat }}',
+                                       
+                        start_edit: $.fullCalendar.moment('{i.Assignment_Start.isoformat}}'),
                         end: '{{ i.Assignment_Deadline|date:"Y-m-d" }}',
                             {% for c in i.get_course %}
                         course:'{{c}}',
@@ -953,8 +961,11 @@
                         modal.find('.class_repeat').html(event.repeat);
                     }
 
-                      let start = event.start_edit;
-                     // let start = event.start;
+                      
+                   
+                       let start = event.start_edit;
+                       console.log("StartTime", start)
+                    
                       start = start._d.toLocaleString();
                       let start_date = start.split(' ')[0].replace(/[,]/g, ' ');
                       let start_time = start.split(' ')[1];
@@ -970,14 +981,17 @@
                       stime = sHours + ":" + sMinutes
 
 
+                       
+                   
                     //  let end = event.end;
                     //  console.log(end);
                     //  if (!end)
-                    //  {
-                    //  end = event.start;
-                   //   }
+                   //   {
+                   //   end = event.start;
+                  //    }
                    //   console.log(end);
-                      let end = event.end_edit.clone();
+                    
+                    let end = event.end_edit.clone();
                       if (!end)
                       {
                       end = event.start_edit.clone();
@@ -986,6 +1000,8 @@
                       if(event.allDay){
                         end = end.subtract(1,"days");
                       }
+                   
+                      
 
                       end = end._d.toLocaleString();
                       console.log(end);
