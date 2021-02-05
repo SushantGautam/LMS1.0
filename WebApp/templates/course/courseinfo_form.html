@@ -32,27 +32,33 @@
                         <textarea name="Course_Description" id="id_Course_Description" class="form-control"
                             rows="10">{{ object.Course_Description }}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="id_Course_Cover_File">{% trans "Course Cover File" %}</label>
-                        <br>
-                        {{form.Course_Cover_File}}
+                    <div class="row">
+                        <div class="form-group col-8">
+                            <label for="id_Course_Cover_File">{% trans "Course Cover File" %}</label>
+                            <br>
+                            {{form.Course_Cover_File}}
+                        </div>
+                        {% if 'edit' in request.path %}
+                        <div class="form-group col-4">
+                            <label for="id_Use_Flag">
+                                {% trans "Status" %}
+                            </label><br>
+                            <input type="checkbox" id="id_Use_Flag" name="Use_Flag" {% if object.Use_Flag == False %} &nbsp;
+                                {% else %} checked {% endif %}>
+                        </div>
+                        {% else %}
+                        <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="id_Course_Provider">{% trans "Course Rating" %} *</label>
                         <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
                             value="{{ object.Course_Level }}" min="1" max="5" required>
                     </div>
-                    {% if 'edit' in request.path %}
                     <div class="form-group">
-                        <label for="id_Use_Flag">
-                            {% trans "Status" %}
-                        </label><br>
-                        <input type="checkbox" id="id_Use_Flag" name="Use_Flag" {% if object.Use_Flag == False %} &nbsp;
-                            {% else %} checked {% endif %}>
+                        <label for="id_Syllabus">{% trans "Course Syllabus" %}</label>
+                        {{ form.Syllabus }}
                     </div>
-                    {% else %}
-                    <input type="hidden" id="id_Use_Flag" name="Use_Flag" value="True">
-                    {% endif %}
                     <input type="hidden" name="Center_Code" id="id_Center_Code"
                         value="{{ request.user.Center_Code.id }}">
                     <input type="hidden" name="Register_Agent" id="id_Register_Agent"

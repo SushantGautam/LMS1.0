@@ -252,6 +252,18 @@ class MemberUpdateForm(forms.ModelForm):
 
 
 class CourseInfoForm(forms.ModelForm):
+    Syllabus = forms.CharField(widget=SummernoteWidget(attrs=
+                                                                   {'summernote':
+                                                                        {'width': '100%', 'height': '240px',
+                                                                         'toolbar': [["style", ["style"]],
+                                                                                     ["font",
+                                                                                      ["bold", "italic", "underline"]],
+                                                                                     ["para", ["ul", "ol"]],
+                                                                                     ["table", ["table"]],
+                                                                                     ["insert", ["link", "picture"]],
+                                                                                     ]}
+                                                                    }), required=False)
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
