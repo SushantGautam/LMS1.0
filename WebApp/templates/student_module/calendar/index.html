@@ -446,7 +446,7 @@
                             category: '{{c.Category_Code}}',
                             tp:'SR',
                             allDay: true,
-                            part_list: '{% for p in c.get_participant_for_calendar %}{{p.username}},{% endfor %}',
+                           // part_list: '{% for p in c.get_participant_for_calendar %}{{p}},{% endfor %}',
                             {% if c.get_participant_for_calendar == "All Students" %}
                             part: '{% trans "All Students" %}',
                             {% else %}
@@ -490,15 +490,17 @@
                         id: 'assignment{{ c.pk }}',
                        // start: '{{ i.Assignment_Start|date:"Y-m-d" }}',
                         start: '{{ i.Assignment_Start.isoformat }}',
-                                       
-                        start_edit: $.fullCalendar.moment('{i.Assignment_Start.isoformat}}'),
-                        end: '{{ i.Assignment_Deadline|date:"Y-m-d" }}',
-                            {% for c in i.get_course %}
+                        start_edit: $.fullCalendar.moment('{{i.Assignment_Start.isoformat}}'),
+                       // end: '{{ i.Assignment_Deadline|date:"Y-m-d" }}',
+                        end: $.fullCalendar.moment('{{  i.Assignment_Deadline.isoformat }}').add(1, 'days'),
+                        end_edit:  $.fullCalendar.moment('{{i.Assignment_Deadline.isoformat}}').add(1, 'days'),
+                            {% for c in i.get_course_groups %}
                         course:'{{c}}',
                             {% endfor %}
 
-                        chapter:'{{i.get_chapter}}',
+                        chapter:'{{i.Chapter_Code}}',
                         tp:'AS',
+                        allDay: true,
 
                         event_part_list: [
                             {% for part in i.get_participant_for_calendar %}
@@ -909,6 +911,7 @@
                             modal.find('.event-type').removeClass('btn btn-danger btn-info btn-success btn-primary btn-secondary btn-warning');
                             modal.find('.event-type').addClass('btn btn-dark');
                             modal.find('.srv-cat').html("");
+                           
 
                             }
                           if (event.tp == "SR")
@@ -917,7 +920,7 @@
                             modal.find('.event-type').addClass('btn btn-secondary');
                             // modal.find('.survey-category').text("Category:" + event.category);
                             modal.find('.srv-cat').html(`<span style='margin-left:18px;font-size:14px;'>{% trans 'Category' %}: &nbsp;</span><span class='survey-category btn btn-sm btn-dark' style='font-weight:normal; <fon></fon>t-size:14px; margin-left:15px;'> ${event.category}</span>` );
-
+                           
                             }
                           if (event.tp == "CH")
                             {
@@ -955,7 +958,18 @@
                          //
                          console.log(event.chapter);
 
-                    }else{
+                    }else if (event.tp === 'AS' || event.tp === 'SR' ){
+
+                       // $('.rptp').hide();
+                      //  $('.chapter_info_dynamic').hide();
+                        $('.ch_rp_class').hide();
+
+                    }
+                    
+                    
+                    
+                    
+                    else{
                         $(".chapter_info_dynamic").hide();
                         $(".rptp").show();
                         modal.find('.class_repeat').html(event.repeat);

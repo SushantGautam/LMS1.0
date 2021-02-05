@@ -568,6 +568,19 @@ class AssignmentInfo(models.Model):
     def get_update_url(self):
         return reverse('assignmentinfo_update', args=(self.Course_Code.id, self.Chapter_Code.id, self.pk,))
 
+    def get_course_groups(self):
+        return InningGroup.objects.filter(Course_Code=self.Course_Code)
+
+    
+
+    def get_participant_for_calendar(self):
+        inning_groups = InningGroup.objects.filter(Course_Code=self.Course_Code)
+        inning_infos = InningInfo.objects.filter(Course_Group__in=inning_groups)
+        groups = GroupMapping.objects.filter(inninginfos__in=inning_infos)
+        students = MemberInfo.objects.filter(groupmapping__in=groups)
+        return students.distinct()
+
+
     def has_questions(self):
         if AssignmentQuestionInfo.objects.filter(Assignment_Code=self).exists():
             return True

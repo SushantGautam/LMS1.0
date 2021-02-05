@@ -129,7 +129,8 @@ class EventListView(ListView):
 
             my_queryset = None
             my_queryset = general_survey | session_survey | course_survey | system_survey
-            my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            # my_queryset = my_queryset.filter(End_Date__gt=timezone.now(), Survey_Live=False)
+            my_queryset = my_queryset.filter(End_Date__gt=timezone.now())
             context['activeassignments'] = activeassignments
             context['activesurvey'] = my_queryset
             submitSurveyQuerySet = SubmitSurvey.objects.filter(
