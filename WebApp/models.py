@@ -162,29 +162,31 @@ class MemberInfo(AbstractUser):
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
     Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
     Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
+    New_Flag = models.BooleanField(default=False)
 
     # Relationship Fields
     Center_Code = ForeignKey(
         'CenterInfo',
         related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
     )
-    datetime_now = timezone.now().replace(microsecond=0)
 
     def get_student_groups(self, itemCount=None):
         return GroupMapping.objects.filter(Students__id=self.pk)
 
     def get_student_sessions(self, active=False, inactive=False, itemCount=None):
         batches = self.get_student_groups()
-        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True, Start_Date__lte=self.datetime_now)
+        datetime_now = timezone.now().replace(microsecond=0)
+        sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True, Start_Date__lte=datetime_now)
         if active:
             sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
-                                       End_Date__gte=self.datetime_now).distinct()
+                                       End_Date__gte=datetime_now).distinct()
         if inactive:
             sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
-                                       End_Date__lt=self.datetime_now).distinct()
+                                       End_Date__lt=datetime_now).distinct()
         return sessions.all()[:itemCount]
 
     def get_student_courses(self, sessions=None, inactiveCourse=False, activeCourse=False, itemCount=None):
+        datetime_now = timezone.now().replace(microsecond=0)
         if sessions:
             all_sessions = sessions
         else:
@@ -193,7 +195,7 @@ class MemberInfo(AbstractUser):
         all_courses = CourseInfo.objects.filter(
             pk__in=[ig.Course_Code.pk for ig in
                     inning_group])
-        active_sessions = all_sessions.filter(End_Date__gte=self.datetime_now)
+        active_sessions = all_sessions.filter(End_Date__gte=datetime_now)
 
         courses = all_courses
         sessions = all_sessions
@@ -210,7 +212,7 @@ class MemberInfo(AbstractUser):
         return {'courses': courses.all()[:itemCount], 'session': sessions}
 
     def get_teacher_courses(self, courseFromExpiredSession=False, inactiveCourse=False):
-        datetime_now = self.datetime_now
+        datetime_now = timezone.now().replace(microsecond=0)
         course_groups = InningGroup.objects.filter(Teacher_Code=self.pk, Use_Flag=True)
         all_courses = CourseInfo.objects.filter(pk__in=course_groups.values_list('Course_Code', flat=True)).distinct()
         if courseFromExpiredSession:
@@ -235,6 +237,7 @@ class MemberInfo(AbstractUser):
 
     def get_student_chapters(self, courseList=None, sessions=None, active=False, inactive=False, itemCount=None):
         # courseList - List of courseIDs
+        datetime_now = timezone.now().replace(microsecond=0)
         if sessions:
             assigned_session = sessions
         else:
@@ -254,10 +257,10 @@ class MemberInfo(AbstractUser):
                                                         Session_Code__in=assigned_session)
             if not session_map.exists():
                 active_chapters.append(chapter.pk)
-            elif session_map.filter(Q(Start_Date__lte=self.datetime_now) | Q(Start_Date=None)).filter(
-                    Q(End_Date__gte=self.datetime_now) | Q(End_Date=None)).exists():
+            elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                    Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter.pk)
-            elif session_map.filter(Q(Start_Date__gte=self.datetime_now)).exists():
+            elif session_map.filter(Q(Start_Date__gte=datetime_now)).exists():
                 chapters.exclude(pk=chapter.pk)
             else:
                 inactive_chapters.append(chapter.pk)
@@ -268,41 +271,53 @@ class MemberInfo(AbstractUser):
         else:
             return chapters.all()[:itemCount]
 
-    def get_student_assignments(self, chapterList=None, sessions=None, active=False, inactive=False, itemCount=None):
+    # active=none all, active=true active, active=false expired assignments (upcoming are excluded)
+    def get_student_assignments(self, chapterList=None, sessions=None, active=None):
+        datetime_now = timezone.now().replace(microsecond=0)
         if sessions:
             assigned_session = sessions
         else:
             assigned_session = self.get_student_sessions()
 
         if chapterList:
-            chapterIDs = chapterList
+            chapterIDs = list(chapterList)
         else:
             chapterIDs = self.get_student_chapters()
 
         assignments = AssignmentInfo.objects.filter(Chapter_Code__in=chapterIDs, Use_Flag=True).exclude(
             assignment_sessionmaps=None).order_by('pk')
-        active_assignments = []
-        inactive_assignments = []
         for assignment in assignments:
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
                                                         object_id=assignment.id,
-                                                        Start_Date__lte=self.datetime_now,
+                                                        Start_Date__lte=datetime_now,
                                                         Session_Code__in=assigned_session
                                                         ).exclude(Start_Date=None, End_Date=None)
             if session_map.exists():
-                if session_map.filter(End_Date__gte=self.datetime_now).exists():
-                    assignment.active = True
-                    active_assignments.append(assignment.pk)
-                if session_map.filter(End_Date__lt=self.datetime_now).exists():
-                    inactive_assignments.append(assignment.pk)
+                if active is None:
+                    pass
+                elif active and session_map.filter(End_Date__lt=datetime_now).exists():
+                    assignments = assignments.exclude(pk=assignment.pk) # For active assignment case
+                elif not active and session_map.filter(End_Date__gte=datetime_now).exists():
+                    assignments = assignments.exclude(pk=assignment.pk) # For expired assingment case
+            else:
+                assignments = assignments.exclude(pk=assignment.pk)
 
-        # if itemCount is None, then return all.
-        if active:
-            return assignments.filter(pk__in=active_assignments)[:itemCount]
-        elif inactive:
-            return assignments.filter(pk__in=inactive_assignments)[:itemCount]
-        else:
-            return assignments.all()[:itemCount]
+        for assignment in assignments:   # For adding extra data in assignment query
+            latest_sessionmap = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                                            object_id=assignment.id,
+                                                            Session_Code__in=assigned_session).latest('End_Date')
+            assignment.startdate = latest_sessionmap.Start_Date
+            assignment.deadline = latest_sessionmap.End_Date
+            if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
+                                            object_id=assignment.id,
+                                            Start_Date__lte=datetime_now,
+                                            End_Date__gte=datetime_now,
+                                            Session_Code__in=assigned_session).exists():
+                assignment.active = True
+            else:
+                assignment.active = False
+
+        return assignments
 
     @property
     def get_user_type(self):

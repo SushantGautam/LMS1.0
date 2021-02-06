@@ -88,7 +88,8 @@
                                        name="memberinfo_id[]"></td>
                             <td class="text-center" style="vertical-align: middle;">{{ forloop.counter }}</td>
                             <td style="vertical-align: middle;"><b><a
-                                    href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+                                    href="{{ object.get_absolute_url }}">{{ object.username }} 
+                                {% if object.New_Flag %} <span class="badge bg-red">N</span> {% endif %}</a></b></td>
                             <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
                             <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
                             <td>{{ object.email }}</td>

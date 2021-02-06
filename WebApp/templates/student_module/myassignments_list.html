@@ -72,7 +72,9 @@
                          {% trans 'Submission Deadline' %} -
                             {% if a.active %}
                                 <span class="text-success">
-                                    {% blocktrans %} {{a.deadline|timeuntil}} left {% endblocktrans %}
+                                    {% blocktrans  with deadline=a.deadline|timeuntil %}
+                                         {{ deadline }} left 
+                                    {% endblocktrans %}
                                 </span>
                             {% else %}
                                 <span class="text-danger">{% trans 'Expired' %}</span>
@@ -136,7 +138,9 @@
                         <p>
                             {% trans 'Submission Deadline' %} -
                             <span class="text-success">
-                                {% blocktrans %} {{a.deadline|timeuntil}} left {% endblocktrans %}
+                                {% blocktrans with deadline=a.deadline|timeuntil %}
+                                     {{ deadline }} left 
+                                {% endblocktrans %}
                             </span>
                         </p>
                     </div>

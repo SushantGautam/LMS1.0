@@ -82,7 +82,8 @@
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-5 blocked-members">
                                 <span class="span-member" style="margin:2px"><a
-                                        href="{% url 'memberinfo_list_inactive' %}" style="color: white">{% trans 'View Blocked Members' %}</a></span>
+                                        href="{% url 'memberinfo_list_inactive' %}" style="color: white">{% trans 'View Blocked Members' %}
+                                        {% if new_block %} <span class="badge bg-red">{{ new_block }}</span> {% endif %}</a></span>
                     </div>
 
                 </div>

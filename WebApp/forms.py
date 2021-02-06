@@ -23,7 +23,7 @@ class UserRegisterForm(UserCreationForm):
         Member_BirthDate = forms.DateField(widget=SelectDateWidget(
             years=range(1955, datetime.date.today().year - 10)))
         model = MemberInfo
-        fields = ('username', 'email', 'Member_Gender',
+        fields = ('username', 'email', 'Member_Gender', 'New_Flag',
                   'Center_Code', 'Is_Student', 'Is_Teacher', 'Use_Flag')
 
 

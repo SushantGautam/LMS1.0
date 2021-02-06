@@ -3,19 +3,25 @@
 {% load static %}
 <div class="nav_menu">
     <nav>
-        <div class="nav toggle">
-            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-        </div>
+        <div class="row">
+            <div class="col-md-1 col-sm-1 col-xs-1">
+                <div class="nav toggle">
+                    <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                </div>
+            </div>
+            <div class="col-md-7 col-sm-7 col-xs-12">
+                <span class="centerNameTopNav">
+                    {% if user.Center_Code %}
+                        <img style="max-height: 50px" src="{{ user.Center_Code.Center_Logo.url }}" alt=""/>
+                        <b style="padding-left: 1em;">{{ user.Center_Code }}</b>
+                    {% endif %}
+                </span>
+        
 
-        <span class="centerNameTopNav">
-            {% if user.Center_Code %}
-                <img style="max-height: 50px" src="{{ user.Center_Code.Center_Logo.url }}" alt=""/>
-                <b style="padding-left: 1em;">{{ user.Center_Code }}</b>
-            {% endif %}
-        </span>
-
-
-        <ul class="nav navbar-nav navbar-right" style="width: 50%">
+            </div>
+            <div class="col-md-4 col-sm-7 col-xs-12">
+                
+        <ul class="nav navbar-nav navbar-right" style="">
 
             {% if request.user.is_authenticated %}
 
@@ -143,6 +149,12 @@
 
 
         </ul>
+            </div>
+        </div>
+      
+
+       
+
     </nav>
 
 </div>
