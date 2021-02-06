@@ -12,6 +12,7 @@ class CenterInfoSerializer(serializers.ModelSerializer):
 
 
 class MemberInfoSerializer(serializers.ModelSerializer):
+    get_student_courses = serializers.SerializerMethodField('student_courses_func')
     class Meta:
         model = models.MemberInfo
         fields = (
@@ -22,6 +23,8 @@ class MemberInfoSerializer(serializers.ModelSerializer):
             'get_student_courses'
         )
 
+    def student_courses_func(self, obj):
+        return obj.get_student_courses()['courses'].values_list('pk')
 
 class CourseInfoSerializer(serializers.ModelSerializer):
     class Meta:
