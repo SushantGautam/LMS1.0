@@ -1020,6 +1020,18 @@ class QuizExamListView(ListView):
 
         return old_context
 
+class QuizQuestionListView(ListView):
+    model = Question
+
+    def get_template_names(self):
+        if 'teachers' in self.request.path:
+            return ['teacher_quiz/question_store_list.html']
+        
+        else:
+            return ['quiz/question_store_list.html']
+
+    def get_queryset(self):
+        return Question.objects.select_subclasses('mcquestion', 'tf_question', 'sa_question')
 
 class UpdateQuestions(UpdateView):
     model = Quiz
