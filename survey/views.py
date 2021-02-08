@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from dateutil.parser import parse
 
 from django import forms
 from django.contrib import messages
@@ -13,6 +14,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.views.generic.base import View
+from django.core.files.storage import FileSystemStorage
+
+import os
+import pandas as pd
 
 from LMS.auth_views import SurveyInfoAuthMxnCls, AdminAuthMxnCls
 from WebApp.models import CourseInfo
@@ -716,3 +721,147 @@ def deleteSurvey(request):
         if SurveyInfo.objects.filter(pk=request.POST['objectpk']).exists():
             obj = SurveyInfo.objects.get(pk=request.POST['objectpk']).delete()
     return redirect('surveyinfo_list')
+
+
+def import_survey(request):
+    if request.method == "POST" and request.FILES['import_csv']:
+        media = request.FILES['import_csv']
+        center_id = request.user.Center_Code.id
+        file_name = datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S-%f')[:-4]
+        extension = media.name.split('.')[-1]
+        new_file_name = str(file_name) + '.' + extension
+        path = 'media/import_csv/' + str(center_id) + '/survey'
+        fs = FileSystemStorage(location=path)
+        filename = fs.save(new_file_name, media)
+        path = os.path.join(path, filename)
+
+        saved_id = []
+        error = ''
+        previous_survey = []
+        try:
+            df = pd.read_excel(path, header=[0,1], sheet_name='Sheet1')
+            # Drop empty row of excel csv file
+            df = df.dropna(how='all')
+            df = df.replace(pd.np.nan, '', regex=True)
+        except TypeError:
+            error = "There is no sheet name <b>Sheet1</b> in the file"
+        
+        if not error and df.empty:
+            error = "The uploaded excel file has no data to register"
+
+        if not error:
+            for i in range(len(df)):
+                question_count = 0
+                try:
+                    title = df.iloc[i]['(*)survey title'][0]
+                    start_date = df.iloc[i]['(*)start date'][0]
+                    end_date = df.iloc[i]['(*)end date'][0]
+                    category = df.iloc[i]['(*)category'][0]
+
+                    mcq_quest = [col for col in df.columns.levels[0] if 'MCQ' in col]
+                    saq_quest = [col for col in df.columns.levels[0] if 'SAQ' in col]
+
+                    if not len(mcq_quest) + len(saq_quest):
+                        error = "No any Question is provided, please check the heading name format"
+                        raise Exception
+
+                    if not title:
+                        error = "Survey title is required"
+                        raise Exception
+                    title = str(title)
+                    if len(title) >= 500:
+                        error = "Survey title can't be more than 500 characters"
+                        raise Exception
+
+                    if not start_date:
+                        error = "Start date is required"
+                        raise Exception
+                    start_date = str(start_date)
+                    try:
+                        start_date = parse(start_date)
+                    except:
+                        error = "Start date of the survey is the not valid format"
+                        raise Exception
+
+                    if not end_date:
+                        error = "End date is required"
+                        raise Exception
+                    end_date = str(end_date)
+                    try:
+                        end_date = parse(end_date)
+                    except:
+                        error = "End date of the survey is the not valid format"
+                        raise Exception
+
+                    if not category:
+                        error = "Survey category is required"
+                        raise Exception
+                    category = str(category)
+                    if CategoryInfo.objects.filter(Category_Name__exact=category).exists():
+                        category_code = CategoryInfo.objects.get(Category_Name__exact=category)
+                    else:
+                        error = "Survey category value is worng it must be one of the value (General, Session, Course, System)"
+                        raise Exception
+
+                    for mcq in mcq_quest:
+                        if mcq['question'] and mcq['option1'] and mcq['option2']:
+                            question_count += 1
+                    for saq in saq_quest:
+                        if saq['question']:
+                            question_count += 1
+
+                    if question_count == 0:
+                        error = "No question to register survey, either question is missing or min. 2 option missing if MCQ"
+                        raise Exception
+
+                    # Saving the survey object
+                    obj = SurveyInfo()
+                    obj.Survey_Title = title
+                    obj.Start_Date = start_date
+                    obj.End_Date = end_date
+                    obj.Center_Code = request.user.Center_Code
+                    obj.Category_Code = category_code
+                    obj.Added_By = request.user
+                    obj.save()
+
+                    saved_id.append(obj.id)
+
+                    for mcq in mcq_quest:
+                        if mcq['question'] and mcq['option1'] and mcq['option2']:
+                            objm = QuestionInfo()
+                            objm.Question_Name = str(mcq['question'])
+                            objm.Question_Type = 'MCQ'
+                            objm.Survey_Code = obj
+                            objm.save()
+
+                            mcq_option = [ind for ind in mcq.index if 'option' in ind]
+                            for option in mcq_option:
+                                if mcq[option]:
+                                    objo = OptionInfo()
+                                    objo.Option_Name = str(mcq[option])
+                                    objo.Question_Code = objm
+                                    objo.save()
+
+                    for saq in saq_quest:
+                        if saq['question']:
+                            objs = QuestionInfo()
+                            objs.Question_Name = str(saq['question'])
+                            objs.Question_Type = 'SAQ'
+                            objs.Survey_Code = obj
+                            objs.save()
+
+                except Exception as e:
+                    for j in saved_id:
+                        SurveyInfo.objects.filter(id=j).delete()
+                    msg = error + ". Can't Upload data, Problem in " + str(
+                        i + 1) + "th row of data while uploading. <br><br> " + "<br>".join(
+                        ["{} -> {}".format(k, v) for k, v in df.iloc[i].to_dict().items()]) + "<br>" + str(e)
+                    return JsonResponse(data={"message": msg, "class": "text-danger", "rmclass": "text-success"})
+        if previous_survey:
+            error = """Survey Data has been uploaded<br><div class='text-danger'>But These users are already
+             present in the system so are not registered:<br>""" + str(previous_survey) + """</div>"""
+        if error:
+            msg = error
+        else:
+            msg = "All data has been Uploaded Sucessfully"
+        return JsonResponse(data={"message": msg, "class": "text-success", "rmclass": "text-danger"})

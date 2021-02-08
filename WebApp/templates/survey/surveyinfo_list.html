@@ -1,9 +1,59 @@
 {% load i18n %}
+{% load static %}
 
 <div class="clearfix">
+    <!-- Model for Import CSV file -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title" id="exampleModalLabel"><b>{% trans 'Survey File Import' %}</b>
+                        <button type="button" class="close closeImportCSV" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </h4>
+                </div>
+                <div class="modal-body" id="import_csv_body" style="height: 60%;overflow:hidden">
+                    <form method="POST" id="form_import_csv" enctype="multipart/form-data">
+                        {% csrf_token %} <br><br>
+                        <label for="id_import_csv">{% trans 'Choose the CSV file to Import Survey Data' %}</label>
+                        <input type="file" name="import_csv" id="id_import_csv" accept=".csv"><br><br>
+                        <a target="_blank" class="text-center" href="{% static 'Survey_Import_Format.xlsx' %}"
+                           style="padding-top: 2em;">
+                            <h4><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download Sample CSV' %}</h4>
+                        </a><br>
+
+                        <span class="button-info" style="cursor:pointer;padding:0.4em;color:#222"><b>{% trans 'Read Detail Info' %}...</b></span>
+                        <ul class="info-text" style="display:none;background:azure;">
+                            <li>- {% trans 'Survey title should be given' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'Start date and End date should be in standard date format' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'Category can be only General, Course, Session or System' %} ({% trans 'required' %})</li>
+                            <li>- {% trans 'At least one question is required in the survey' %}</li>
+                            <li>- {% trans 'Question must include question text otherwise question is discarded' %}</li>
+                            <li>- {% trans 'MCQ question must have at least 2 option to register the question' %}</li>
+                            <li>- {% trans 'Heading format must be same, for short answer question SQA1, SAQ2 ... with question subheading' %}</li>
+                            <li>- {% trans 'Similarly for multiple choice question MCQ1, MCQ2 ... with question and options(option1, option2...) as subheadings' %}</li>
+                        </ul>
+
+                        <div class="import-message"></div>
+                        <div class="text-center">
+                            <button class="btn btn-success" id="submitcsv" type="submit"
+                                    style="margin:3em auto 2em auto">
+                                <span id="submitspinner"></span>{% trans 'Submit File' %}
+                            </button>
+                            <button class="btn btn-primary closeImportCSV" data-dismiss="modal" aria-label="Close"
+                                    style="margin:3em auto 2em auto">{% trans 'Close' %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of model -->
 
     <div id="mainSurveyPage">
-
         <div class="container">
             <div class="row">
                 <div class="row" id="surveyheader">
@@ -39,7 +89,13 @@
                         <div class="categoryContainer">
                             <div class="card">
                                 <div class="card-body">
-                                    <h2 class="card-title "><strong>{% trans 'Category' %}</strong></h2>
+                                    <h2 class="card-title ">
+                                        <strong>{% trans 'Category' %} &nbsp;&nbsp;&nbsp;</strong>
+                                        <small class="exportcsv" data-toggle="modal" data-target="#exampleModal1" id="importcsv-btn" style="cursor: pointer;">
+                                            <i class="fa fa-paper-plane"></i>
+                                             Import 
+                                        </small>
+                                        <!-- <small class="">Import Survey</small></h2> -->
                                     <hr>
                                     <div id="card_category">
                                         <h5 class="card-text active">
@@ -101,4 +157,3 @@
         </div>
     </div>
 </div>
-
