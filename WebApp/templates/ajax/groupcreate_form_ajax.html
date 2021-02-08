@@ -1,6 +1,13 @@
 {% load static %}
 {% load i18n %}
 
+<style>
+    #groupmappingselector .selector {
+        margin-left: 10%;
+        width: auto !important;
+    }
+</style>
+
 <small>{% trans "Choose meaningful name and View Details on Students Group List" %}
     <a href="{% url 'groupmapping_list' %}" class="font-weight-bold">{% trans "here" %}</a>
 </small>
@@ -15,7 +22,7 @@
         <input type="text" class="form-control" name="GroupMapping_Name" maxlength="250" id="id_GroupMapping_Name"
             required>
     </div>
-    <div class="mt-4">
+    <div class="mt-4" id="groupmappingselector">
         {{ form.Students }}
     </div>
     <div class="d-inline-block col-12 text-center">

@@ -45,7 +45,13 @@
     </div>
 </div>
 <div class="text-center">
-    <h2 class="text-primary d-inline">{% trans "Course List" %}</h2>
+    <h2 class="text-primary d-inline">
+        {% if 'inactive' in request.path %}
+            {% trans "Inactive Course List" %}
+            {% elif 'active' in request.path %}
+            {% trans "Course List" %}
+            {% endif %}
+    </h2>
     <div class="float-right pt-1">
             {% if 'inactive' in request.path %}
             <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2">View Active Courses</a>
