@@ -4437,7 +4437,7 @@ def DownloadChapterData(request):
 
 
 def getMediaInformation(request):
-    tags = '{},{}'.format(settings.SERVER_NAME, request.user.Center_Code.Center_Name)
+    tags = '{},{}'.format(settings.SERVER_NAME, "center_"+request.user.Center_Code.Center_Name)
     image_count, audio_count, video_count = None, None, None
 
     type_list = request.GET.getlist('type_list[]')
