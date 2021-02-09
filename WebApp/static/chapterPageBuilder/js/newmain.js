@@ -1479,6 +1479,11 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
+        acceptableFilelist = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
+        if (!acceptableFilelist.includes(file.name.split('.').pop())) {
+            alert("Only ['png', 'jpg', 'jpeg', 'bmp', 'gif'] are allowed");
+            return false
+        }
         upload(file, $(this));
     });
 
@@ -1516,14 +1521,14 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
                     } else {
                         console.log('error')
                     }
-                }
-                request.send()
+                };
+                request.send();
                 $.get(`https://api.cincopa.com/v2/asset.set_meta.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&rid=${options.rid}&tags=${server_name},center_${centerName},course_${courseName},chapterid_${chapterID},userid_${user}`, function () {
                     console.log('success')
                 }).fail(function () {
                     console.log('failed')
-                })
-                div.remove()
+                });
+                div.remove();
                 PictureFunction(
                     $(div)[0].style.top,
                     $(div)[0].style.left,
@@ -1627,13 +1632,13 @@ function PictureFunction(top = null, left = null, pic = null, link = null, width
 
                 $('#picture-drag').css({
                     'display': 'none'
-                })
+                });
 
                 $(div).hover(function () {
                     $(this).css("border", "1px solid red");
                 }, function () {
                     $(this).css("border", '0')
-                })
+                });
 
                 $('.pic').resizable({
                     containment: $('.editor-canvas'),
@@ -2142,6 +2147,11 @@ function PDFFunction(top = null, left = null, link = null, height = null, width 
         e.preventDefault();
         const files = e.originalEvent.dataTransfer.files;
         var file = files[0];
+        acceptableFilelist = ['.pdf'];
+        if (!acceptableFilelist.includes(file.name.split('.').pop())) {
+            alert("Only ['pdf'] files are allowed");
+            return false
+        }
         upload(file, $(this));
     });
 
