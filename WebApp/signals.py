@@ -8,9 +8,10 @@ from django.utils import timezone
 from Notifications.models import Notification
 from Notifications.signals import notify
 from WebApp.models import CourseInfo, MemberInfo, ChapterInfo, InningInfo, InningGroup, AssignmentInfo, AssignAnswerInfo
-
-
 # Multiple Submission of Assignment Prevention
+from forum.models import Thread, Post
+
+
 def MultipleAssignmentSubmission(sender, instance, **kwargs):
     import inspect
     for frame_record in inspect.stack():
@@ -475,3 +476,70 @@ def AssignmentInfoDelete_handler(sender, instance, **kwargs):
 
 
 post_delete.connect(AssignmentInfoDelete_handler, sender=AssignmentInfo)
+
+
+def ThreadInfoCreate_handler(sender, instance, created, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if created:
+        verb = "created"
+
+        if instance.topic.course_associated_with:
+            pass
+        elif instance.topic.center_associated_with:
+            target_audience = MemberInfo.objects.filter(Center_Code=instance.topic.center_associated_with,
+                                                        Use_Flag=True).exclude(pk=request.user.pk).distinct()
+        else:
+            target_audience = MemberInfo.objects.filter(Use_Flag=True).exclude(pk=request.user.pk).distinct()
+
+        notify.send(
+            sender=request.user,
+            recipient=target_audience,
+            verb=verb,
+            description="{} thread has been added to the topic {} in forum.".format(instance.title, instance.topic.title),
+            action_object=instance,
+        )
+
+
+post_save.connect(ThreadInfoCreate_handler, sender=Thread)
+
+
+def PostInfoCreate_handler(sender, instance, created, **kwargs):
+    import inspect
+    for frame_record in inspect.stack():
+        if frame_record[3] == 'get_response':
+            request = frame_record[0].f_locals['request']
+            break
+    else:
+        request = None
+
+    if created:
+        verb = "commented on"
+        description = "{} replied to thread on {}".format(request.user, instance.thread)
+    else:
+        if request.POST.get('content'):
+            verb = "updated comment"
+            description = "{} updated replied to thread on {}".format(request.user, instance.thread)
+        else:
+            return
+
+    # All user that has posted in the thread will be notified
+    target_audience_list = [x.user.pk for x in instance.thread.replies.all()]
+    # Thread Owner will be notified
+    target_audience_list.append(instance.thread.user.pk)
+    notify.send(
+        sender=request.user,
+        recipient=MemberInfo.objects.filter(pk__in=target_audience_list).exclude(pk=request.user.pk).distinct(),
+        verb=verb,
+        description="{} has replied to the thread {}.".format(request.user, instance.thread.title),
+        action_object=instance,
+    )
+
+
+post_save.connect(PostInfoCreate_handler, sender=Post)

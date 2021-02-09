@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from django.utils.safestring import mark_safe
+
 from .models import Thread, Topic, Post, Appendix, NodeGroup
 
 
@@ -15,6 +15,29 @@ class PostInline(admin.TabularInline):
         'hidden',
     )
     extra = 1
+
+class PostAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'thread',
+        'user',
+        'pub_date',
+        'content_raw',
+    )
+    fields = (
+        'user',
+        'thread',
+        'content_raw',
+    )
+
+    search_fields = (
+        'title',
+        'user__username',
+        'user__email'
+    )
+    raw_id_fields = (
+        'user',
+    )
 
 
 class AppendixInline(admin.TabularInline):
@@ -118,3 +141,4 @@ class NodeGroupAdmin(admin.ModelAdmin):
 admin.site.register(Thread, ThreadAdmin)
 admin.site.register(NodeGroup, NodeGroupAdmin)
 admin.site.register(Topic, TopicAdmin)
+admin.site.register(Post, PostAdmin)
