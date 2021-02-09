@@ -116,3 +116,7 @@ urlpatterns += (
     # delete survey
     path('surveyinfo/delete/', views.deleteSurvey, name='surveyinfo_delete'),
 )
+
+urlpatterns += (
+     path('surveyinfo/import/', views.import_survey, name='csv_import_survey'),
+)
