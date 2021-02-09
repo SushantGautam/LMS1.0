@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from Notifications.models import Notification
 from Notifications.signals import notify
-from WebApp.models import CourseInfo, MemberInfo, InningInfo, InningGroup,  AssignAnswerInfo, SessionMapInfo, \
+from WebApp.models import CourseInfo, MemberInfo, InningInfo, InningGroup, AssignAnswerInfo, SessionMapInfo, \
     AssignmentQuestionInfo, ChapterInfo, AssignmentInfo
 # Multiple Submission of Assignment Prevention
 from comment.models import Comment
@@ -477,7 +477,10 @@ def ThreadInfoCreate_handler(sender, instance, created, **kwargs):
         verb = "created"
 
         if instance.topic.course_associated_with:
-            pass
+            target_audience_union = instance.topic.course_associated_with.get_students_of_this_course() | set(
+                instance.topic.course_associated_with.get_teachers_of_this_course())
+            target_audience = MemberInfo.objects.filter(pk__in=[m.pk for m in target_audience_union]).exclude(
+                pk=request.user.pk).distinct()
         elif instance.topic.center_associated_with:
             target_audience = MemberInfo.objects.filter(Center_Code=instance.topic.center_associated_with,
                                                         Use_Flag=True).exclude(pk=request.user.pk).distinct()
@@ -488,7 +491,8 @@ def ThreadInfoCreate_handler(sender, instance, created, **kwargs):
             sender=request.user,
             recipient=target_audience,
             verb=verb,
-            description="{} thread has been added to the topic {} in forum.".format(instance.title, instance.topic.title),
+            description="{} thread has been added to the topic {} in forum.".format(instance.title,
+                                                                                    instance.topic.title),
             action_object=instance,
         )
 
@@ -529,6 +533,7 @@ def PostInfoCreate_handler(sender, instance, created, **kwargs):
 
 
 post_save.connect(PostInfoCreate_handler, sender=Post)
+
 
 def threadActionsHandler(request, instance, verb, description=''):
     if request.user.pk != instance.user.pk:
