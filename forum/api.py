@@ -1,10 +1,9 @@
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import SessionAuthentication
 
+from WebApp.signals import threadActionsHandler
 from WebApp.student_module.views import Topic_related_to_user
 from forum import models, serializers
-from forum.models import Thread, Post
-from forum.serializers import ThreadSerializer, PostSerializer
 
 
 class SessionAuthenticationExemptCSRF(SessionAuthentication):
@@ -19,6 +18,22 @@ class ThreadViewSet(viewsets.ModelViewSet):
     queryset = models.Thread.objects.all()
     serializer_class = serializers.ThreadSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    # def partial_update(self, request, *args, **kwargs):
+    #     return super().partial_update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        # For Creating Notifications for owner on status change of thread
+        if 'hidden' in self.request.data:
+            verb = "hide your thread in" if self.request.data['hidden'] == 'true' else "unhide your thread in"
+            threadActionsHandler(self.request, serializer.instance, verb,
+                                 "{} has {} {}".format(self.request.user, verb, serializer.instance))
+
+        if 'closed' in self.request.data:
+            verb = "closed your thread in" if self.request.data['closed'] == 'true' else "opened your thread in"
+            threadActionsHandler(self.request, serializer.instance, verb,
+                                 "{} has {} {}".format(self.request.user, verb, serializer.instance))
+        return super(ThreadViewSet, self).perform_update(serializer)
 
 
 class PostViewSet(viewsets.ModelViewSet):

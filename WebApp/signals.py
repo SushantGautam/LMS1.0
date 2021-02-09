@@ -543,3 +543,13 @@ def PostInfoCreate_handler(sender, instance, created, **kwargs):
 
 
 post_save.connect(PostInfoCreate_handler, sender=Post)
+
+def threadActionsHandler(request, instance, verb, description=''):
+    if request.user.pk != instance.user.pk:
+        notify.send(
+            sender=request.user,
+            recipient=instance.user,
+            verb=verb,
+            description=description,
+            action_object=instance,
+        )
