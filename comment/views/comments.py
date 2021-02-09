@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import FormView
 
+from WebApp.signals import commentActionsHandler
 from comment.forms import CommentForm
 from comment.models import Comment
 from comment.utils import get_comment_context_data, get_model_obj, is_comment_admin, is_comment_moderator
@@ -89,8 +90,9 @@ class DeleteComment(BaseCommentView):
 
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
-        if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+        if request.user != self.comment.user and not is_comment_admin(request.user) and not (
+                self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -106,13 +108,15 @@ class DeleteComment(BaseCommentView):
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
+
 class HideComment(BaseCommentView):
     comment = None
 
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
-        if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+        if request.user != self.comment.user and not is_comment_admin(request.user) and not (
+                self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -123,11 +127,15 @@ class HideComment(BaseCommentView):
         data['html_form'] = render_to_string('comment/comments/comment_hide_modal.html', context, request=request)
         return JsonResponse(data)
 
+
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = False
         self.comment.save()
+        description = "{} has hide your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="hide your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
+
 
 class ShowComment(BaseCommentView):
     comment = None
@@ -135,7 +143,8 @@ class ShowComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -149,6 +158,8 @@ class ShowComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_visible = True
         self.comment.save()
+        description = "{} has shown your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="shown your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -159,7 +170,8 @@ class CloseComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -173,6 +185,8 @@ class CloseComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_closed = True
         self.comment.save()
+        description = "{} has closed your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="closed your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)
 
@@ -183,7 +197,8 @@ class OpenComment(BaseCommentView):
     def dispatch(self, request, *args, **kwargs):
         self.comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
         if request.user != self.comment.user and not is_comment_admin(request.user) \
-                and not (self.comment.is_flagged and is_comment_moderator(request.user)):
+                and not (self.comment.is_flagged and is_comment_moderator(
+            request.user)) and not request.user.Is_Teacher and not request.user.Is_CenterAdmin:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -197,5 +212,7 @@ class OpenComment(BaseCommentView):
     def post(self, request, *args, **kwargs):
         self.comment.is_closed = False
         self.comment.save()
+        description = "{} has opened your comment in {}".format(request.user, self.comment.content_object)
+        commentActionsHandler(request, self.comment, verb="opened your comment in", description=description)
         context = self.get_context_data()
         return render(request, 'comment/comments/base.html', context)

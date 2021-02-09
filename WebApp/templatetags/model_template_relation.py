@@ -2,9 +2,11 @@
 
 from django import template
 from django.db.models import Sum
+from django.urls import reverse
 from django.utils import timezone
 
-from WebApp.models import MemberInfo, AssignAnswerInfo
+from WebApp.models import MemberInfo, AssignAnswerInfo, GroupMapping, InningInfo, InningGroup, CourseInfo, ChapterInfo, \
+    AssignmentInfo
 
 register = template.Library()
 
@@ -145,3 +147,39 @@ def quizQuestion_check_if_answered(sitting, questionID):
                 if len(ans) < 1:
                     return False
             return True
+
+
+@register.simple_tag
+def getStudentNotificationURL(object, user):
+    from WebApp.student_module.views import student_active_chapters
+    datetime_now = timezone.now()
+
+    if object.__class__ in [ChapterInfo, AssignmentInfo]:
+        student_groups = GroupMapping.objects.filter(Students=user)
+        course_groups = InningGroup.objects.filter(Course_Code__pk=object.Course_Code.pk)
+        assigned_session = InningInfo.objects.filter(Use_Flag=True,
+                                                     Start_Date__lte=datetime_now,
+                                                     End_Date__gte=datetime_now,
+                                                     Groups__in=student_groups,
+                                                     Course_Group__in=course_groups)
+
+    if object.__class__ == ChapterInfo:
+        active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=object.Course_Code.pk),
+                                                  assigned_session)
+
+        if object in active_chapters:
+            return reverse('student_chapterinfo_detail', args=(object.Course_Code.id, object.id))
+        else:
+            return reverse('student_courseinfo_detail', args=(object.Course_Code.id,))
+
+    elif object.__class__ == AssignmentInfo:
+        active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=object.Course_Code.pk),
+                                                  assigned_session)
+
+        if object.Chapter_Code in active_chapters:
+            return reverse('student_chapterinfo_detail', args=(object.Course_Code.id, object.Chapter_Code.id))
+        else:
+            return reverse('student_courseinfo_detail', args=(object.Course_Code.id,))
+
+    else:
+        return ''

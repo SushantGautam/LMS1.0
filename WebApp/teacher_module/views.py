@@ -65,6 +65,7 @@ from .misc import get_query
 
 User = get_user_model()
 
+from Notifications.signals import notify
 
 def start(request):
     """Start page with a documentation.
@@ -711,7 +712,40 @@ def submitStudentscore(request, Answer_id, score):
         answerInfo.Assignment_Score = score
         if request.POST.get('assignment_feedback'):
             answerInfo.Assignment_Feedback = request.POST.get('assignment_feedback')
+
+            # Notification for students after teacher gives feedback on question
+            student_description = '{} has provided feedback on Question "{}" of assignment "{}".'.format(
+                request.user,
+                answerInfo.Question_Code.Question_Title,
+                answerInfo.Question_Code.Assignment_Code.Assignment_Topic,
+            )
+            notify.send(
+                sender=request.user,
+                recipient=answerInfo.Student_Code,
+                verb='commented',
+                description=student_description,
+                action_object=answerInfo.Question_Code.Assignment_Code,
+                is_sent=True
+            )
+            # ------------------------------------------------------------------------------------------
+
         answerInfo.save()
+
+        # Notification for students after teacher gives score on question
+        student_description = '{} score has been given to Question "{}" of assignment "{}".'.format(
+            answerInfo.Assignment_Score,
+            answerInfo.Question_Code.Question_Title,
+            answerInfo.Question_Code.Assignment_Code.Assignment_Topic,
+        )
+        notify.send(
+            sender=request.user,
+            recipient=answerInfo.Student_Code,
+            verb='marked',
+            description=student_description,
+            action_object=answerInfo.Question_Code.Assignment_Code,
+            is_sent=True
+        )
+        # ------------------------------------------------------------------------------------------
         return HttpResponse("success")
     else:
         return HttpResponse("You are not allowed to do this")

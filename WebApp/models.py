@@ -1137,14 +1137,6 @@ class NoticeView(models.Model):
 class SessionMapInfo(models.Model):
     Start_Date = DateTimeField(null=True, blank=True)
     End_Date = DateTimeField(null=True, blank=True)
-    # Chapter_Code = ForeignKey(
-    #     'ChapterInfo',
-    #     related_name="chapterSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
-    # )
-    # Assignment_Code = ForeignKey(
-    #     'AssignmentInfo',
-    #     related_name="assignmentSessionMapInfo", on_delete=models.CASCADE, blank=True, null=True,
-    # )
     content_type = models.ForeignKey(
         ContentType,
         related_name='sessionmap_target',
