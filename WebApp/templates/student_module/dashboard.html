@@ -1,5 +1,6 @@
 {% extends "student_module/base.html" %}
 {% load static %}
+{% load humanize %}
 {% load i18n %}
 {% load getStatusOfAssignmentStudents %}
 
@@ -94,7 +95,7 @@
                                         padding-right: 10px;
                                         line-height: 1.5em;
                                         height: 3em;
-                                        overflow-wrap:break-word; 
+                                        overflow-wrap:break-word;
                                         overflow: hidden;
                                         white-space: normal;
                                         text-overflow: ellipsis;">
@@ -243,6 +244,29 @@
 
 
         <div class="col-sm-6" style="max-width: -webkit-fill-available;">
+            <div class="panel panel-default">
+                <div class="title">
+                    <h2 style="font-size: 2em"><a href="{% url 'student_forum' %}">&nbsp;<b style="text-transform: uppercase;">{% trans 'Forum' %}</b><span
+                            class="thread">{{ threads|length }}</span></a></h2>
+                </div>
+                <ul class="list-group" data-hover-z="0.5" data-animated="">
+
+                    {% for object in threads %}
+                        <li class="list-group-item ">
+                            <div class="media-body">
+                                <b><span class="forum"><a
+                                        href="{{ object.get_student_url }}">{{ object.title|truncatechars:68 }}</a></span><span
+                                        class="thread">{{ object.pub_date|naturaltime }}</span></b>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12" style="max-width: -webkit-fill-available;">
             <div class="panel panel-default">
                 <div class="title text-center">
                     <h2 style="font-size: 2em">&nbsp;<b>{% trans 'Word Cloud' %} - {% trans 'Forum' %}</b></h2>

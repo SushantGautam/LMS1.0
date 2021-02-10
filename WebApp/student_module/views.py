@@ -130,6 +130,18 @@ def start(request):
                                                              chapterList=chapters.values_list('pk', flat=True))[:5]
     sittings = Sitting.objects.filter(user=request.user)
 
+    threads = Thread.objects.visible().filter(user__Center_Code=request.user.Center_Code, closed=False,
+                                              hidden=False).order_by('-pub_date')
+
+    # remove course forum threads if the user is not associated with the course
+    for count, thread in enumerate(threads):
+        if count > 5:
+            break
+        if thread.topic.course_associated_with:
+            target_audience_union = thread.topic.course_associated_with.get_students_of_this_course()
+            if not request.user.pk in target_audience_union:
+                threads = threads.exclude(pk=thread.pk)
+    threads = threads[:5]
     # Wordcloud
     wordCloud = Thread.objects.filter(user__Center_Code=request.user.Center_Code)
     thread_keywords = get_top_thread_keywords(request, 10)
@@ -178,6 +190,7 @@ def start(request):
                   {'Group': sessions, 'Course': courses,
                    'activeAssignments': activeassignments, 'sittings': sittings,
                    'wordCloud': wordCloud,
+                   'threads': threads,
                    'notice': notice,
                    'get_top_thread_keywords': thread_keywords,
                    'incomplete_chapters': incomplete_chapters,

@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
+import re
+from functools import partial
+from io import BytesIO
+
+import mistune
+import six
+import xxhash
+from PIL import Image
+from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.db.models import F
-from django.contrib.auth import get_user_model
-from django.conf import settings
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
+
 from WebApp.models import MemberInfo, CourseInfo, CenterInfo
-from functools import partial
 from forum.tasks import notify
-from PIL import Image
-from io import BytesIO
-import xxhash
-import mistune
-import re
-import six
+
 if six.PY2:
     import sys
     reload(sys)
@@ -143,6 +145,9 @@ class Thread(models.Model):
 
     def get_absolute_url(self):
         return reverse('forum:thread', kwargs={'pk': self.pk})
+
+    def get_student_url(self):
+        return reverse('student_thread', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['order', '-pub_date']
