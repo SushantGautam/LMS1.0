@@ -15,7 +15,7 @@ class QuizViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = (DjangoFilterBackend,)
     filter_class = QuizFilter
-
+    filter_fields = ['id', 'cent_code', 'course_code', 'chapter_code']
 
 
 class MCQuestionViewSet(viewsets.ModelViewSet):
