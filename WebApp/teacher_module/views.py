@@ -675,9 +675,15 @@ class MyAssignmentsListView(ListView):
                     assignment.end_date = None
                     inactive_assignments.append(assignment)
 
-            course.assignments = all_assignments
-            course.active_assignments = active_assignments
-            course.inactive_assignments = inactive_assignments
+            # course.assignments = all_assignments
+            # course.active_assignments = active_assignments
+            # course.inactive_assignments = inactive_assignments
+            if self.request.GET.get('t') and self.request.GET.get('t') in ['-1', -1]:
+                course.assignments = all_assignments
+            elif self.request.GET.get('t') and self.request.GET.get('t') in ['0', 0]:
+                course.assignments = inactive_assignments
+            else:
+                course.assignments = active_assignments
 
         # context['Assignment'] = []
         # context['expiredAssignment'] = []
