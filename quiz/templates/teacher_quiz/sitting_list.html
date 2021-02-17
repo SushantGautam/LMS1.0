@@ -28,6 +28,7 @@
     <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 
+    <script src="{% static 'vendorsx/datatables.net/plug-ins/natural.js'  %}"></script>
 
     <script type="text/javascript">
 
@@ -50,8 +51,9 @@
                         fieldSeparator: '\t'
                     }
                 ],
-                "columnDefs": []
-
+                columnDefs: [
+                    {type: 'natural-nohtml', targets: [0,1,]}
+                ]
             });
         });
 
