@@ -67,6 +67,7 @@ User = get_user_model()
 
 from Notifications.signals import notify
 
+
 def start(request):
     """Start page with a documentation.
     """
@@ -446,7 +447,7 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, TeacherAssignmentAuthMx
             context['students_list'] = innings.Groups.Students.all()
             context['Answers'] = AssignAnswerInfo.objects.filter(Question_Code__in=questions,
                                                                  Student_Code__in=context['students_list'])
-            
+
         else:
             students_list = []
             for inning in inning_info:
@@ -571,7 +572,7 @@ def downloadAssignmentAnswers(request):
         dstfolder = os.path.join('', *[path, 'assignments', assignment_pk, assignment_pk + '_' + question_pk])
 
         answer_files = AssignAnswerInfo.objects.filter(pk__in=list_of_ids).values_list('Assignment_File', flat=True)
-        
+
         # Clean previous copied content
         if os.path.isdir(dstfolder):
             shutil.rmtree(dstfolder)
@@ -587,7 +588,7 @@ def downloadAssignmentAnswers(request):
                     flag = False
                     break
             flag = not flag
-        
+
         # Copy and create new zip file
         if flag:
             for answer_file in answer_files:
@@ -595,9 +596,9 @@ def downloadAssignmentAnswers(request):
                 # if os.path.isfile(os.path.join(path, src)):
                 #     if os.path.exists(dstfolder) and os.path.isdir(dstfolder):
                 shutil.copy(os.path.join(path, answer_file), dstfolder)
-                    # else:
-                    #     os.makedirs(dstfolder)
-                    #     shutil.copy(os.path.join(path, src), dstfolder)
+                # else:
+                #     os.makedirs(dstfolder)
+                #     shutil.copy(os.path.join(path, src), dstfolder)
             shutil.make_archive(
                 path + '/assignments/' + assignment_pk + '/' + assignment_pk + '_' + question_pk,
                 'zip', dstfolder)
@@ -644,27 +645,50 @@ class MyAssignmentsListView(ListView):
         course_session_data = self.request.user.get_teacher_courses()
         assigned_sessions = course_session_data['session']
         courses = course_session_data['courses']
-        
+
         for course in courses:
-            all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
+            # all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
             active_assignments = []
             inactive_assignments = []
+
+
+            # -----------------------------------------------------------------------------------------------
+            # Assignment Query optimization for reducing the loop counter.
+
+            session_maps = SessionMapInfo.objects.filter(Session_Code__in=assigned_sessions,
+                                                         content_type=ContentType.objects.get(model='assignmentinfo'))
+            if self.request.GET.get('t') and self.request.GET.get('t') in ['-1', -1]:
+                all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
+
+            elif self.request.GET.get('t') and self.request.GET.get('t') in ['0', 0]:
+                all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True).filter(
+                    Q(assignment_sessionmaps__in=session_maps.exclude(Start_Date__lte=datetime_now,
+                              End_Date__gte=datetime_now)) | ~Q(
+                        assignment_sessionmaps__in=session_maps)
+                )
+            else:
+                all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True,
+                                                                assignment_sessionmaps__in=session_maps.filter(
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now
+                                                                ))
+
+            # -----------------------------------------------------------------------------------------------
+
             for assignment in all_assignments:
-                datemap = SessionMapInfo.objects.filter(Session_Code__in=assigned_sessions,
-                                                        content_type=ContentType.objects.get_for_model(assignment),
-                                                        object_id=assignment.id)
+                datemap = session_maps.filter(object_id=assignment.id)
                 if datemap:
                     if datemap.filter(Start_Date__lte=datetime_now, End_Date__gte=datetime_now).exists():
                         assignment.status = 'active'
                         assignment.end_date = datemap.filter(Start_Date__lte=datetime_now,
                                                              End_Date__gte=datetime_now).aggregate(
-                                                             Max('End_Date'))['End_Date__max']
+                            Max('End_Date'))['End_Date__max']
                         active_assignments.append(assignment)
                     elif datemap.filter(Start_Date__gte=datetime_now, End_Date__gte=datetime_now).exists():
                         assignment.status = 'upcoming'
                         assignment.end_date = datemap.filter(Start_Date__gte=datetime_now,
                                                              End_Date__gte=datetime_now).aggregate(
-                                                             Max('End_Date'))['End_Date__max']
+                            Max('End_Date'))['End_Date__max']
                         inactive_assignments.append(assignment)
                     else:
                         assignment.status = 'inactive'
@@ -1139,11 +1163,13 @@ class QuizMarkingDetailSAQ(TeacherAuthMxnCls, QuizMarkerMixin, DetailView):
 
         return context
 
+
 def QuizMarkingMultiple(request, *args, **kwargs):
     score_json = request.POST.get('data')
     for data in json.loads(score_json):
         changeQuizScore(Sitting.objects.get(pk=int(data['sitting_id'])), data['q_id'], data['new_score'])
     return JsonResponse({'data': "success"}, status=200)
+
 
 def changeQuizScore(sitting, q_to_toggle, new_score):
     q = Question.objects.get_subclass(id=int(q_to_toggle))
@@ -2648,7 +2674,8 @@ def QuizMarkingCSV(request, quiz_pk):
             start_date = quiz_sitting.start.replace(tzinfo=None)
         if quiz_sitting.end:
             end_date = quiz_sitting.end.replace(tzinfo=None)
-        new_row = {'S.N.': counter, 'Username': quiz_sitting.user.username, 'Full Name': quiz_sitting.user.get_full_name(),
+        new_row = {'S.N.': counter, 'Username': quiz_sitting.user.username,
+                   'Full Name': quiz_sitting.user.get_full_name(),
                    'Start Datetime': start_date, 'End Datetime': end_date}
 
         user_answers = json.loads(quiz_sitting.user_answers)
@@ -2662,14 +2689,14 @@ def QuizMarkingCSV(request, quiz_pk):
             if question_name_value:
                 # ans_value = Answer.objects.get(id=int(question_name_value)).content
                 if (isinstance(question_name_value, list)):
-                    ans_value_list = [Answer.objects.get(id=int(ans)).content for ans in question_name_value] 
-                else: #### for old data, there wont be list
+                    ans_value_list = [Answer.objects.get(id=int(ans)).content for ans in question_name_value]
+                else:  #### for old data, there wont be list
                     ans_value_list = [Answer.objects.get(id=int(question_name_value)).content]
             else:
                 # ans_value = ''
                 ans_value_list = []
             mcq_score, mcq_is_correct = quiz_sitting.get_mcq_score(mcquestion)
-            
+
             # new_row[question_name] = ans_value
             new_row[question_name] = ans_value_list
 
