@@ -111,7 +111,7 @@ class AjaxableResponseMixin:
 def ProfileView(request):
     if AuthCheck(request, admn=1) == 2:
         return redirect('login')
-    return render(request, 'WebApp/profile.html', context={'SERVER_NAME':settings.SERVER_NAME})
+    return render(request, 'WebApp/profile.html', context={'SERVER_NAME': settings.SERVER_NAME})
 
 
 class CustomAuthForm(AuthenticationForm):
@@ -564,7 +564,7 @@ class MemberInfoListView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['partial_member_form'] = MemberInfoForm(request=self.request)
         context['new_block'] = MemberInfo.objects.filter(Center_Code=self.request.user.Center_Code,
-                                 Use_Flag=False, New_Flag=True).count()
+                                                         Use_Flag=False, New_Flag=True).count()
         return context
 
     # model = MemberInfo
@@ -4096,6 +4096,7 @@ def get_study_time(course_id, chapter, student):
     progresspercent = 0
     study_time = 0
     progress = 'Incomplete'
+    currentPage, totalPage = '-', '-'
     try:
         with open(student_data_file) as outfile:
             jsondata = json.load(outfile)
@@ -4108,13 +4109,15 @@ def get_study_time(course_id, chapter, student):
                     jsondata['contents']['currentpagenumber']) > 0:
                 progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                     jsondata['contents']['totalPage'])
+                currentPage, totalPage = int(jsondata['contents']['currentpagenumber']), int(
+                    jsondata['contents']['totalPage'])
             if progresspercent > 100:
                 progresspercent = 100
         if chapter.mustreadtime and jsondata['contents']['totalstudytime']:
             if int(jsondata['contents']['totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100:
                 progress = 'Complete'
 
-    data = {'study_time': study_time, 'progress': progress}
+    data = {'study_time': study_time, 'progress': progress, 'currentPage': currentPage, 'totalPage': totalPage}
     return data
 
 
@@ -4220,7 +4223,8 @@ def CourseProgressDownload(request, coursepk, sessionpk):
     for chapter in chapters:
         chapter_name = chapter.Chapter_Name
         column_names = (column_names + (
-            (chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
+            (chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Status"),
+            (chapter_name, "Progress Data"), (chapter_name, "Progress Percentage")))
         quizes = Quiz.objects.filter(chapter_code=chapter)
         quiz_total_score = 0.0
         for quiz in quizes:
@@ -4258,12 +4262,17 @@ def CourseProgressDownload(request, coursepk, sessionpk):
 
             data = get_study_time(course.pk, chapter, student)
             progress = data['progress']
+            progress_data = '{}/{}'.format(str(data['currentPage']), str(data['totalPage']))
 
+            # data['currentPage'] if has data then it will be integer else it will return '-'.
+            progress_percent = '0%' if not isinstance(data['currentPage'], int) else "{:.2f}".format((data['currentPage'] * 100)/data['totalPage'])
             new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(
                 student_quiz_score) + ')'
             new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(
                 student_assignment_score) + ')'
-            new_row[(chapter_name, "Progress Complete")] = str(progress)
+            new_row[(chapter_name, "Progress Status")] = str(progress)
+            new_row[(chapter_name, "Progress Data")] = progress_data
+            new_row[(chapter_name, "Progress Percentage")] = progress_percent
 
         df = df.append(new_row, ignore_index=True)
     # return HttpResponse("<h4>Student All Course Progress download</h4>")
@@ -4440,26 +4449,29 @@ def DownloadChapterData(request):
 
 
 def getMediaInformation(request):
-    tags = '{},{}'.format(settings.SERVER_NAME, "center_"+request.user.Center_Code.Center_Name)
+    tags = '{},{}'.format(settings.SERVER_NAME, "center_" + request.user.Center_Code.Center_Name)
     image_count, audio_count, video_count = None, None, None
 
     type_list = request.GET.getlist('type_list[]')
 
     for types in type_list:
         if types == 'image':
-            image_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(types, tags)
+            image_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(
+                types, tags)
             image_r = requests.get(image_url)
             if image_r.status_code == 200:
                 responseText = json.loads(image_r.text)
                 image_count = responseText['items_data']['items_count']
         if types == 'audio':
-            audio_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(types, tags)
+            audio_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(
+                types, tags)
             audio_r = requests.get(audio_url)
             if audio_r.status_code == 200:
                 responseText = json.loads(audio_r.text)
                 audio_count = responseText['items_data']['items_count']
         if types == 'video':
-            video_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(types, tags)
+            video_url = "https://api.cincopa.com/v2/asset.list.json?api_token=1453562iobwp33x0qrt34ip4bjiynb5olte&type={}&tag={}".format(
+                types, tags)
             video_r = requests.get(video_url)
             if video_r.status_code == 200:
                 responseText = json.loads(video_r.text)
