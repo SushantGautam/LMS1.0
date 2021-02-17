@@ -171,18 +171,16 @@ class MemberInfo(AbstractUser):
     )
 
     def get_student_groups(self, itemCount=None):
-        return GroupMapping.objects.filter(Students__id=self.pk)
+        return GroupMapping.objects.filter(Students__id=self.pk, Use_Flag=True)
 
     def get_student_sessions(self, active=False, inactive=False, itemCount=None):
         batches = self.get_student_groups()
         datetime_now = timezone.now().replace(microsecond=0)
         sessions = InningInfo.objects.filter(Groups__in=batches, Use_Flag=True, Start_Date__lte=datetime_now)
         if active:
-            sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
-                                       End_Date__gte=datetime_now).distinct()
+            sessions = sessions.filter(End_Date__gte=datetime_now).distinct()
         if inactive:
-            sessions = sessions.filter(Groups__in=batches, Use_Flag=True,
-                                       End_Date__lt=datetime_now).distinct()
+            sessions = sessions.filter(End_Date__lt=datetime_now).distinct()
         return sessions.all()[:itemCount]
 
     def get_student_courses(self, sessions=None, inactiveCourse=False, activeCourse=False, itemCount=None):
@@ -191,7 +189,7 @@ class MemberInfo(AbstractUser):
             all_sessions = sessions
         else:
             all_sessions = self.get_student_sessions()
-        inning_group = InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group'))
+        inning_group = InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group')).distinct()
         all_courses = CourseInfo.objects.filter(
             pk__in=[ig.Course_Code.pk for ig in
                     inning_group])

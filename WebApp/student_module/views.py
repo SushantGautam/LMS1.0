@@ -122,9 +122,8 @@ def start(request):
     global courses, activeassignments, sessions, batches
     datetime_now = timezone.now().replace(microsecond=0)
     sessions = request.user.get_student_sessions()
-    courses = request.user.get_student_courses(sessions=sessions, activeCourse=True, itemCount=5)['courses']
-    chapters = request.user.get_student_chapters(active=True, courseList=courses.values_list('pk', flat=True),
-                                                 itemCount=5)
+    courses = request.user.get_student_courses(sessions=sessions, activeCourse=True)['courses']
+    chapters = request.user.get_student_chapters(active=True, courseList=courses.values_list('pk', flat=True))
 
     activeassignments = request.user.get_student_assignments(active=True,
                                                              chapterList=chapters.values_list('pk', flat=True))[:5]
