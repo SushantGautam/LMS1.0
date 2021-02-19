@@ -4096,7 +4096,6 @@ def get_study_time(course_id, chapter, student):
     progresspercent = 0
     study_time = 0
     progress = 'Incomplete'
-    currentPage, totalPage = '-', '-'
     try:
         with open(student_data_file) as outfile:
             jsondata = json.load(outfile)
@@ -4109,15 +4108,13 @@ def get_study_time(course_id, chapter, student):
                     jsondata['contents']['currentpagenumber']) > 0:
                 progresspercent = int(jsondata['contents']['currentpagenumber']) * 100 / int(
                     jsondata['contents']['totalPage'])
-                currentPage, totalPage = int(jsondata['contents']['currentpagenumber']), int(
-                    jsondata['contents']['totalPage'])
             if progresspercent > 100:
                 progresspercent = 100
         if chapter.mustreadtime and jsondata['contents']['totalstudytime']:
             if int(jsondata['contents']['totalstudytime']) >= chapter.mustreadtime and progresspercent >= 100:
                 progress = 'Complete'
 
-    data = {'study_time': study_time, 'progress': progress, 'currentPage': currentPage, 'totalPage': totalPage}
+    data = {'study_time': study_time, 'progress': progress}
     return data
 
 
@@ -4223,8 +4220,7 @@ def CourseProgressDownload(request, coursepk, sessionpk):
     for chapter in chapters:
         chapter_name = chapter.Chapter_Name
         column_names = (column_names + (
-            (chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Status"),
-            (chapter_name, "Progress Data"), (chapter_name, "Progress Percentage")))
+            (chapter_name, "Quiz"), (chapter_name, "Assignment"), (chapter_name, "Progress Complete")))
         quizes = Quiz.objects.filter(chapter_code=chapter)
         quiz_total_score = 0.0
         for quiz in quizes:
@@ -4262,17 +4258,12 @@ def CourseProgressDownload(request, coursepk, sessionpk):
 
             data = get_study_time(course.pk, chapter, student)
             progress = data['progress']
-            progress_data = '{}/{}'.format(str(data['currentPage']), str(data['totalPage']))
 
-            # data['currentPage'] if has data then it will be integer else it will return '-'.
-            progress_percent = '0%' if not isinstance(data['currentPage'], int) else "{:.2f}".format((data['currentPage'] * 100)/data['totalPage'])
             new_row[(chapter_name, "Quiz")] = '(' + str(score_dict[chapter.pk][0]) + '/ ' + str(
                 student_quiz_score) + ')'
             new_row[(chapter_name, "Assignment")] = '(' + str(score_dict[chapter.pk][1]) + '/ ' + str(
                 student_assignment_score) + ')'
-            new_row[(chapter_name, "Progress Status")] = str(progress)
-            new_row[(chapter_name, "Progress Data")] = progress_data
-            new_row[(chapter_name, "Progress Percentage")] = progress_percent
+            new_row[(chapter_name, "Progress Complete")] = str(progress)
 
         df = df.append(new_row, ignore_index=True)
     # return HttpResponse("<h4>Student All Course Progress download</h4>")
