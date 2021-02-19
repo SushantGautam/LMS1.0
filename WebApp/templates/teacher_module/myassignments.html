@@ -218,9 +218,9 @@
     document.getElementById("allAssignments").click();
 
     $(document).ready(function () {
-        {% if request.GET.t == '0' %}
+        {% if request.GET.status == 'inactive' %}
             document.getElementById('tab-button-inactive').className += " active";
-        {% elif request.GET.t == '-1' %}
+        {% elif request.GET.status == 'all' %}
             document.getElementById('tab-button-all').className += " active";
         {% else %}
             document.getElementById('tab-button-active').className += " active";
