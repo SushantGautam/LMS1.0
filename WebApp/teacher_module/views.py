@@ -657,10 +657,10 @@ class MyAssignmentsListView(ListView):
 
             session_maps = SessionMapInfo.objects.filter(Session_Code__in=assigned_sessions,
                                                          content_type=ContentType.objects.get(model='assignmentinfo'))
-            if self.request.GET.get('t') and self.request.GET.get('t') in ['-1', -1]:
+            if self.request.GET.get('status') and self.request.GET.get('status').tolower() == "all":
                 all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True)
 
-            elif self.request.GET.get('t') and self.request.GET.get('t') in ['0', 0]:
+            elif self.request.GET.get('status') and self.request.GET.get('status').tolower() == "inactive":
                 all_assignments = AssignmentInfo.objects.filter(Course_Code=course, Use_Flag=True).filter(
                     Q(assignment_sessionmaps__in=session_maps.exclude(Start_Date__lte=datetime_now,
                               End_Date__gte=datetime_now)) | ~Q(

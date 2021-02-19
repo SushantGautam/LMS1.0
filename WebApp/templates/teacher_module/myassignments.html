@@ -19,17 +19,17 @@
 
 <h1 class="tableHeader"><b>{% trans 'List of My Assignments' %}</b></h1>
 <h4 class="text-center"><b>
-        <a href="{% url 'teacher_myassignmentinfo_list' %}?t=1">
+        <a href="{% url 'teacher_myassignmentinfo_list' %}?status=active">
             <button class="tablinks tabButton" id="tab-button-active" onclick="openTab(event, 'activeAssignments')">
                 {% trans 'Active' %}
             </button>
         </a>
-        <a href="{% url 'teacher_myassignmentinfo_list' %}?t=-1">
+        <a href="{% url 'teacher_myassignmentinfo_list' %}?status=all">
             <button class="tablinks tabButton" id="tab-button-all" onclick="openTab(event, 'allAssignments')">
                 {% trans 'All' %}
             </button>
         </a>
-        <a href="{% url 'teacher_myassignmentinfo_list' %}?t=0">
+        <a href="{% url 'teacher_myassignmentinfo_list' %}?status=inactive">
             <button class="tablinks tabButton" id="tab-button-inactive" onclick="openTab(event, 'expiredAssignments')">
                 {% trans 'Inactive' %}
             </button>
