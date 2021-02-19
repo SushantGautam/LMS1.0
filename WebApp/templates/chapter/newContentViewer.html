@@ -2236,8 +2236,8 @@
         var idleTimeRedirectTime = (15 * 60 * 1000); // Time after the alert modal is shown.
         window.onmousemove = function () {
             idleTime = 0;
-        }
-
+        };
+        var latestFocusedElement;
         function idleTImeCheck() {
             if (idleTime >= (idleTimeRedirectTime) && !($('#message-modal').is(':visible'))) {
                 displayAlertMessage()
@@ -2251,6 +2251,7 @@
         function displayAlertMessage() {
             if (window.innerWidth == screen.width && window.innerHeight == screen.height) {
                 window.toggleFullScreen();
+                latestFocusedElement = document.activeElement;
             }
             $('#message-modal').modal('show');
             var counter = 50;   // After the alert modal is displayed, then after 50 seconds, it will redirect.
@@ -2274,6 +2275,10 @@
 
         $('#message-modal').on('hidden.bs.modal', function () {
             idleTime = 0;
+            if (latestFocusedElement && $(latestFocusedElement).closest('.video-div').length > 0) {
+                latestFocusedElement.requestFullscreen();
+                latestFocusedElement = null;
+            }
             clearSetInterval(redirectInterval);
         });
 
