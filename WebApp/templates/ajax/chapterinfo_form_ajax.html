@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load model_template_relation %}
 {% load i18n %}
 
 <form method="post" id="ajaxchapterinfoform">
@@ -43,6 +44,56 @@
         <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable" checked>
     </div>
 
+    {% if assigned_session|length > 0 %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <h6 style="color: #5a0934"> {% trans 'Note' %}: {% trans 'All checked session will have same dates as the first checked session' %}. </h6>
+
+            <h6 class="text-info"><span class="checkedsessionCount"></span> of {{ assigned_session|length }} selected
+            </h6>
+            <table class="table" id="inning_dataTable">
+                <tr>
+                    <th><input type="checkbox" name="sessiondataAll" class="inningInfoCheckAll"
+                    {% if '/edit' not in request.path %}
+                   checked
+                   {% endif %}
+                    ></th>
+                    <th>{% trans 'S.No' %}</th>
+                    <th>{% trans 'Session Name' %}</th>
+                    <th>{% trans 'Start Date' %}*</th>
+                    <th>{% trans 'End Date' %}*</th>
+                    {#                    <th></th>#}
+                </tr>
+
+                {% for session in assigned_session %}
+                    {% if object %}
+                        {% getSessionMap object 'assignmentinfo' session as sessionmap %}
+                    {% endif %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="sessiondata" class="inningInfoCheckbox"
+                            {% if '/edit' not in request.path %}
+                           checked
+                           {% endif %}
+                            >
+                        </td>
+                        <td class="counter">{{ forloop.counter }}</td>
+                        <td class="session_id"><span data-value="{{ session.id }}">{{ session.Inning_Name }}</span></td>
+                        <td class="session_start_date">
+                            <input type="text" name="Start_Date" class="form-control"
+                                   max="9999-12-31" autocomplete="off" value="{{ sessionmap.0.Start_Date|date:'c' }}">
+                        </td>
+                        <td class="session_end_date">
+                            <input type="text" name="End_Date" class="form-control"
+                                   value="{{ sessionmap.0.End_Date|date:'c' }}"
+                                   max="9999-12-31" autocomplete="off">
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+    {% endif %}
+
     <div class="col-md-12 col-sm-12 col-xs-12">
         <input type="hidden" name="Register_Agent" id="id_Register_Agent" value="{{ request.user.username }}"
                class="select form-control">
@@ -56,12 +107,63 @@
 
 <script src="{% static 'vendorsx/switchery/dist/switchery.min.js' %}"></script>
 <script>
-    {#$('#id_Start_Date').datetimepicker();#}
-    {#$('#id_End_Date').datetimepicker();#}
-    $("#ajaxchapterinfoform").submit(function (e) {
+    $.each($('input[name=Start_Date], input[name=End_Date]'), function (event) {
+        this.value = new Date(this.value).toLocaleString("en-US");
+        this.value = new Date(this.value).toLocaleString("en-US");
+    });
+    $('input[name="Start_Date"]').datetimepicker();
+    $('input[name="End_Date"]').datetimepicker();
 
+    var submitted = false;
+    $("#ajaxchapterinfoform").submit(function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
-        $.ajax({
+        if (submitted) {
+            return false
+        }
+        submitted = true;
+
+        sessiondata = [];
+        let submitCheck = true;
+        let checkStartDate = false;
+        let checkEndDate = false;
+        $.each($('#inning_dataTable tr'), function (index, value) {
+            if ($(value).find('td').length > 0) {
+                {%  comment %}
+                if ($(value).hasClass('off')) {
+                    return false
+                }
+                {% endcomment %}
+                start_date = $(value).find('.session_start_date input').val() != '' ? new Date($(value).find('.session_start_date input').val()).toISOString() : '';
+                end_date = $(value).find('.session_end_date input').val() != '' ? new Date($(value).find('.session_end_date input').val()).toISOString() : '';
+                if (start_date && end_date && start_date > end_date) {
+                    $('.form-errors').empty().append('End Date should be greater than Start Date.').css('display', 'block').fadeOut(7000);
+                    submitCheck = false;
+                    return false;
+                }
+                checkStartDate = true ? (start_date != null && start_date.length != 0) : false;
+                checkEndDate = true ? (end_date != null && end_date.length != 0) : false;
+                inputvalues = {
+                    'session_id': $(value).find('.session_id span').attr('data-value'),
+                    'start_date': start_date,
+                    'end_date': end_date,
+                };
+                sessiondata.push(inputvalues)
+            }
+            if ((!checkStartDate && checkEndDate) || (checkStartDate && !checkEndDate)) {
+                alert('Start Date and End Date are both required.');
+                submitted = false;
+                submitCheck = false;
+                return false;
+            }
+        });
+        if (!checkStartDate && !checkEndDate) {
+            submitCheck = confirm('Assignment will be inactive if dates are not provided. Confirm?');
+            if (!submitCheck) {
+                submitted = false;
+            }
+        }
+        if (submitCheck) {
+            $.ajax({
             url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
             data: {
                 "csrfmiddlewaretoken": '{{ csrf_token }}',
@@ -75,6 +177,7 @@
                 {#"Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',#}
                 {#"End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',#}
                 "is_commentable": $('#id_is_commentable').is(":checked"),
+                "sessiondata[]": JSON.stringify(sessiondata),
             },
             // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -93,5 +196,67 @@
                 }
             }
         });
+        }
     });
+
+    $('.inningInfoCheckAll').on('click', function () {
+        $('#inning_dataTable input:checkbox').not(this).prop('checked', this.checked);
+
+        if ($(this).prop("checked") == true) {
+            // $('#inning_dataTable input[type=text]').removeAttr('disabled');
+        } else {
+            $('#inning_dataTable input[type=text]').removeAttr('readonly');
+        }
+        checkboxSelectFunction()
+    });
+
+    $('.inningInfoCheckbox').on('click', function () {
+        if ($('.inningInfoCheckbox').length === $('.inningInfoCheckbox:checked').length) {
+            $('.inningInfoCheckAll').prop('checked', 'checked');
+        } else {
+            $('.inningInfoCheckAll').prop('checked', false);
+        }
+        if ($(this).prop("checked") == true) {
+            $(this).closest('tr').removeClass('off');
+        } else {
+            $(this).closest('tr').addClass('off');
+            $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
+        }
+        checkboxSelectFunction()
+    });
+
+
+    function checkboxSelectFunction() {
+        let start_date = null;
+        let end_date = null;
+        // for count of checked session
+        $('.checkedsessionCount').text($('.inningInfoCheckbox:checked').length);
+
+        // for copying value of dates in all checked session after the first checked one.
+        $.each($('.inningInfoCheckbox:checked'), function (e) {
+            if ($(this).prop("checked") == true) {
+                if (start_date == null && end_date == null) {
+                    start_date = $(this).closest('tr').find('.session_start_date input').val();
+                    end_date = $(this).closest('tr').find('.session_end_date input').val();
+                    $(this).closest('tr').find('input[type=text]').removeAttr('readonly');
+                } else {
+                    $(this).closest('tr').find('.session_start_date input').val(start_date);
+                    $(this).closest('tr').find('.session_end_date input').val(end_date);
+                    $(this).closest('tr').find('input[type=text]').attr('readonly', true);
+                }
+
+            }
+        })
+    }
+
+    $('input[name=Start_Date], input[name=End_Date]').on('dp.change', function (event) {
+        start_date = $(this).closest('tr').find('.session_start_date input').val();
+        end_date = $(this).closest('tr').find('.session_end_date input').val();
+        if (start_date && end_date && start_date > end_date) {
+            $('.form-errors').empty().append('End Date should be greater than Start Date.').css('display', 'block').fadeOut(7000);
+            return false
+        }
+        checkboxSelectFunction()
+    });
+    checkboxSelectFunction()
 </script>

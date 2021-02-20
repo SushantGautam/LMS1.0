@@ -742,7 +742,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{% url 'chapterinfo_create_ajax' %}",  // URL to your view that serves new info
+                url: "{% url 'chapterinfo_create_ajax_course_id' object.id %}",  // URL to your view that serves new info
                 success: function (response) {
                     $('#create_chapter_modal_body').append(response);
                     var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));

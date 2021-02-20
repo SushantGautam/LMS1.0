@@ -1326,17 +1326,31 @@ class ChapterInfoCreateViewAjax(AjaxableResponseMixin, CreateView):
 
     def form_valid(self, form):
         form.save(commit=False)
-        # if form.cleaned_data['Start_Date'] == "":
-        #     form.instance.Start_Date = None
-        # if form.cleaned_data['End_Date'] == "":
-        #     form.instance.End_Date = None
         form.save()
+        if self.request.POST.get('sessiondata[]'):
+            for session in json.loads(self.request.POST.get('sessiondata[]')):
+                requestStatus = InningInfoMappingView(model_name='ChapterInfo', start_date=session['start_date'],
+                                                      end_date=session['end_date'], session_id=session['session_id'],
+                                                      object_id=form.instance.id)
         return JsonResponse(
             data={'Message': 'Success'}
         )
 
     def form_invalid(self, form):
         return JsonResponse({'errors': form.errors}, status=500)
+
+    def get_context_data(self, **kwargs):
+        context = super(ChapterInfoCreateViewAjax, self).get_context_data()
+        if self.kwargs.get('coursepk'):
+            datetime_now = timezone.now().replace(microsecond=0)
+            # student_groups = GroupMapping.objects.filter(Students=self.request.user)
+            course_groups = InningGroup.objects.filter(
+                Course_Code=CourseInfo.objects.get(pk=self.kwargs.get('coursepk')))
+            context['assigned_session'] = InningInfo.objects.filter(Use_Flag=True,
+                                                                    Start_Date__lte=datetime_now,
+                                                                    End_Date__gte=datetime_now,
+                                                                    Course_Group__in=course_groups).distinct()
+        return context
 
 
 class PartialChapterInfoUpdateViewAjax(AjaxableResponseMixin, UpdateView):
