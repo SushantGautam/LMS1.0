@@ -170,3 +170,97 @@
 .card-scroll::-webkit-scrollbar-thumb:hover {
   background: #717171; 
 }
+
+.session-card{
+  position: relative !important;
+}
+.session-all{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 0;
+  height: 100%;
+  transition: .5s ease;
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+.session-card:hover .session-all{
+  width: 30%;
+  left: 70%;
+}
+
+.course-card{
+  position: relative !important;
+}
+.course-all{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 0;
+  height: 100%;
+  transition: .5s ease;
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+.course-card:hover .course-all{
+  width: 30%;
+  left: 70%;
+}
+.forum-card{
+  position: relative !important;
+}
+.forum-all{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 0;
+  height: 100%;
+  transition: .5s ease;
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+.forum-card:hover .forum-all{
+  width: 30%;
+  left: 70%;
+}
+.survey-card{
+  position: relative !important;
+}
+.survey-all{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 0;
+  height: 100%;
+  transition: .5s ease;
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+.survey-card:hover .survey-all{
+  width: 30%;
+  left: 70%;
+}
