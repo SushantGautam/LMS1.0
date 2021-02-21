@@ -379,6 +379,16 @@
                                                         class="fa fa-trash"
                                                         aria-hidden="true"></i>
                                                 </button>
+                                                {% if answer.Assignment_Feedback %}
+                                                    <button type="button" class="btn btn-primary assignmentDetailsBtn "
+                                                            data-toggle="modal"
+                                                            data-target="#AssignmentResultModal"
+                                                            data-modal-title="Feedback on {{ answer.Question_Code.Question_Title }} "
+                                                            data-feedback="{{ answer.Assignment_Feedback }}"
+                                                            style="float: right">
+                                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                                    </button>
+                                                {% endif %}
                                             {% endif %}
                                             <div class="assignment_update_form" style="display: none;">
                                                 <form class="form_{{ questions.id }}">

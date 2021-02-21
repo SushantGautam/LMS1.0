@@ -2,16 +2,35 @@
 {% load static %}
 {% load i18n %}
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{% url 'student_mycourses_list' %}">{% trans 'My Courses' %}</a></li>
-<li class="breadcrumb-item"><a href="{{ object.Course_Code.student_get_absolute_url }}">{{ object.Course_Code }}</a>
-</li>
-<li class="breadcrumb-item"><a href="{{ object.Chapter_Code.student_get_absolute_url }}">{{ object.Chapter_Code }}</a>
-</li>
-<li class="breadcrumb-item active" aria-current="page" style="max-width: 30ch; overflow: hidden;white-space: nowrap; text-overflow:ellipsis;
+    <li class="breadcrumb-item"><a href="{% url 'student_mycourses_list' %}">{% trans 'My Courses' %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ object.Course_Code.student_get_absolute_url }}">{{ object.Course_Code }}</a>
+    </li>
+    <li class="breadcrumb-item"><a
+            href="{{ object.Chapter_Code.student_get_absolute_url }}">{{ object.Chapter_Code }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page" style="max-width: 30ch; overflow: hidden;white-space: nowrap; text-overflow:ellipsis;
 ;margin-bottom: -5px;">{{ object.Assignment_Topic }}</li>
 {% endblock %}
 {% block content %}
 
-{% include 'assignment/assignmentinfo_detail.html' %}
+    {% include 'assignment/assignmentinfo_detail.html' %}
+    {% include 'assignment/assignment_feedback_modal.html' %}
 
 {% endblock content %}
+
+{% block customjss %}
+    <script>
+        $('.assignmentDetailsBtn').on('click', function () {
+            $('.modal-title').text($(this).attr('data-modal-title'));
+            var feedback = $(this).attr('data-feedback')==""?"No feedback provided":$(this).attr('data-feedback');
+            $('.assignment-modal-body').empty();
+                $('.assignment-modal-body').append(`
+                    <div class="row">
+                        <div class="feedback_div">
+                            <span>${feedback}</span>
+                        </div>
+                    </div>
+                `)
+        })
+    </script>
+{% endblock customjss %}
