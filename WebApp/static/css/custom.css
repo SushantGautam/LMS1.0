@@ -264,3 +264,7 @@
   width: 30%;
   left: 70%;
 }
+.table_buttons_wrapper{
+  display: flex;
+  justify-content: space-between;
+}

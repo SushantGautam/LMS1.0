@@ -160,6 +160,11 @@
             $(`a[data-menu-target='#dashboard'] .menu-tab-icon`).click();
         {% endif %}
     </script>
+    <script>
+        window.onload = function () { 
+            $(".dataTables_length, .dt-buttons, .dataTables_filter").wrapAll('<div class="table_buttons_wrapper"></div>');
+        }
+    </script>
 
     <!-- <script>
         // This is the service worker with the Advanced caching
