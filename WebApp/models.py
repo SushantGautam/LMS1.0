@@ -72,7 +72,7 @@ class DepartmentInfo(models.Model):
 
     Center_Code = ForeignKey(
         'CenterInfo',
-        related_name="departmentinfos", on_delete=models.DO_NOTHING, null=True
+        related_name="departmentinfos", on_delete=models.SET_NULL, null=True
     )
 
     class Meta:
