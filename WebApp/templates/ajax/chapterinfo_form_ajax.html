@@ -80,11 +80,12 @@
                         <td class="session_id"><span data-value="{{ session.id }}">{{ session.Inning_Name }}</span></td>
                         <td class="session_start_date">
                             <input type="text" name="Start_Date" class="form-control"
-                                   max="9999-12-31" autocomplete="off" value="{{ sessionmap.0.Start_Date|date:'c' }}">
+                                   max="9999-12-31" autocomplete="off"
+value="{% if not sessionmap.0.Start_Date or sessionmap.0.Start_Date == "" %}{{ session.Start_Date|date:'c' }}{% else %}{{ sessionmap.0.Start_Date|date:'c' }}{% endif %}">
                         </td>
                         <td class="session_end_date">
                             <input type="text" name="End_Date" class="form-control"
-                                   value="{{ sessionmap.0.End_Date|date:'c' }}"
+value="{% if not sessionmap.0.End_Date or sessionmap.0.End_Date == "" %}{{ session.End_Date|date:'c' }}{% else %}{{ sessionmap.0.End_Date|date:'c' }}{% endif %}"
                                    max="9999-12-31" autocomplete="off">
                         </td>
                     </tr>
