@@ -318,7 +318,7 @@
                 },
                 {
                     "orderable": false,
-                    "targets": [0, 3, 11, 12, 13, 14, 15 ,16, 17]
+                    "targets": [0, 11, 12, 13, 14, 15 ,16, 17]
                 },
             ]
         });
@@ -326,16 +326,11 @@
 
 
         $("#student_button").bind("click", function () {
-
             $("#student_button").css("color", "white");
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
-
-
-
             table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
             //console.log(table_main.ajax.url().includes("onlystudents=true"));
-
         });
         $("#teacher_button").bind("click", function () {
             $("#student_button").css("color", "black");

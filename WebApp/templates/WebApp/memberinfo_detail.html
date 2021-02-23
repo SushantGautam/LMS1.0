@@ -147,7 +147,7 @@
         <tr>
             <td>
                 <span class="font-weight-bold">{% trans "Register DateTime" %}</span>
-                <span class="pull-right">{{ object.date_joined|date:'M d, Y H:i' }}</span>
+                <span class="pull-right datecon">{{ object.date_joined|date:'Y-m-d H:i' }}</span>
             </td>
             <td>
                 <span class="font-weight-bold">{% trans "Member Type" %}</span>
@@ -374,6 +374,7 @@
 </div>
 {% endblock %}
 {% block javascript %}
+
 <script>
 
     $(document).on('click', '.confirm-deactivate', function (event) {

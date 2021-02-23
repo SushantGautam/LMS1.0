@@ -160,7 +160,7 @@ class MemberInfo(AbstractUser):
     Is_CenterAdmin = models.BooleanField(default=False)
     Is_Parent = models.BooleanField(default=False)
     Member_Gender = models.CharField(max_length=1, choices=Gender_Choices, default='F')
-    Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.DO_NOTHING, blank=True, null=True)
+    Member_Department = models.ForeignKey('DepartmentInfo', on_delete=models.SET_NULL, blank=True, null=True)
     Member_Position = models.CharField(max_length=30, choices=Position_Choices, blank=True, null=True)
 
     # Relationship Fields
