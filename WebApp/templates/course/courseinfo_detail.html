@@ -557,16 +557,23 @@
                                     </div>
 
                                 </div>
-                                <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0px !important;">
-                                    <h4>
-                                        <span class="running-time" style="font-weight:600;  font-style: italic;">
-{#                                            Period: <b>{{ o.Start_Date|date:'M d, Y' }} - {{ o.End_Date|date:'M d, Y' }}</b>#}
-                                        </span>
-                                    </h4>
-                                </div>
+
                                 {% if '/students' in request.path %}
                                     {% for x in student_data %}
                                         {% if  o.pk == x.chapter.chapterObj.pk %}
+                                            <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0px !important;">
+                                            <h4>
+                                                <span class="running-time" style="font-weight:600;  font-style: italic;">
+                                                    Chapter Status:
+                                                    {% isChapterActive request.user o as isChapterActive %}
+                                                    {% if isChapterActive %}
+                                                         <span> <strong class="text-success">{% trans 'Active' %}</strong></span>
+                                                    {% else %}
+                                                         <span> <strong class="text-danger">{% trans 'Inactive' %}</strong></span>
+                                                    {% endif %}
+                                                </span>
+                                            </h4>
+                                        </div>
                                             <div class="col-md-6 col-sm-6 col-xs-12" style="padding: 0px !important;">
                                                 <h4>
                                                 <span class="running-time"
