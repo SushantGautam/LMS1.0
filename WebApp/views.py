@@ -3055,7 +3055,6 @@ class NewContentsView(TemplateView):
     chapters = []
 
     def get(self, request, *args, **kwargs):
-        from WebApp.student_module.views import student_active_chapters
         datetime_now = timezone.now()
 
         if CourseAuth(request, self.kwargs.get('course')) == 1:
@@ -3074,26 +3073,9 @@ class NewContentsView(TemplateView):
             chapterObj = ChapterInfo.objects.get(pk=self.kwargs.get('chapter'))
 
             if chapterObj.Use_Flag:
-                if '/students' in request.path:
-                    student_groups = GroupMapping.objects.filter(Students=self.request.user)
-                    course_groups = InningGroup.objects.filter(Course_Code__pk=self.kwargs.get('course'))
-                    assigned_session = InningInfo.objects.filter(Use_Flag=True,
-                                                                 Start_Date__lte=datetime_now,
-                                                                 End_Date__gte=datetime_now,
-                                                                 Groups__in=student_groups,
-                                                                 Course_Group__in=course_groups)
-
-                    # chapters = ChapterInfo.objects.filter(Course_Code__pk=self.kwargs.get('course'), Use_Flag=True)
-                    # active_chapters = []
-                    # for chapter in chapters:
-                    active_chapters = student_active_chapters(CourseInfo.objects.filter(pk=self.kwargs.get('course')),
-                                                              assigned_session)
-
-                    self.chapters = active_chapters
-
-                    if chapterObj not in active_chapters:
-                        messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
-                        raise ObjectDoesNotExist
+                if '/students' in request.path and not chapterObj.isContentVisible(self.request.user):
+                    messages.add_message(self.request, messages.WARNING, 'Chapter is not active.')
+                    raise ObjectDoesNotExist
 
             else:
                 if '/students' in request.path:

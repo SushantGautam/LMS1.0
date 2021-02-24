@@ -73,8 +73,8 @@
                         <i class="fa fa-laptop"></i> {% trans 'Content Viewer' %} &nbsp;
                     </a>
                 {% else %}
-                    {% isChapterActive request.user object as chapteractive %}
-                    {% if chapteractive %}
+                    {% isContentVisible request.user object as can_view_contents %}
+                    {% if can_view_contents %}
                         <a class="btn-sm btn-info"
                            href="{% url 'student_NewContentViewer' object.Course_Code.pk object.pk %}" id="course-viewer"
                            target="_self"

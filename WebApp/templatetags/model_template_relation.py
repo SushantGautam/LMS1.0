@@ -108,6 +108,10 @@ def isChapterActive(userObj, chapterObj):
     return chapterObj.isStudentChapterActive(user=userObj)
 
 @register.simple_tag
+def isContentVisible(userObj, chapterObj):
+    return chapterObj.isContentVisible(user=userObj)
+
+@register.simple_tag
 def isAssignmentActive(assignmentObj):
     inningmaps = assignmentObj.assignment_sessionmaps.all()
     isanswerable = False

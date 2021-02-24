@@ -583,6 +583,19 @@ class ChapterInfo(models.Model):
             status = True
         return status
 
+    def isContentVisible(self, user):
+        if self.isStudentChapterActive(user):
+            return True
+        else:
+            assigned_session = user.get_student_sessions()
+
+            session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(self),
+                                                        object_id=self.id,
+                                                        Session_Code__in=assigned_session)
+            status = False
+            for session in session_map:
+                status = True if session.Publish_Content_Expired else False
+            return status
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
