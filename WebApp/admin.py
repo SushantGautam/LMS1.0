@@ -3,7 +3,6 @@ from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
 from import_export.admin import ImportExportModelAdmin, ExportMixin
 from import_export.resources import ModelResource
-from django.forms.models import BaseInlineFormSet
 
 from Notifications.models import Notification
 from .models import CenterInfo, MemberInfo, SessionInfo, InningInfo, InningGroup, GroupMapping, MessageInfo, \
@@ -334,4 +333,7 @@ class NoticeViewAdmin(admin.ModelAdmin):
 admin.site.register(NoticeView, NoticeViewAdmin)
 admin.site.register(Notification)
 
-admin.site.register(SessionMapInfo)
+class SessionMapInfoAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'Session_Code', 'target', 'content_type', 'object_id', 'Start_Date', 'End_Date']
+
+admin.site.register(SessionMapInfo, SessionMapInfoAdmin)

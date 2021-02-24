@@ -327,6 +327,7 @@
                             <th class="date-width">{% trans 'End Date' %}</th>
                             <th>{% trans 'Chapter Status' %}</th>
                             {% if '/students' not in request.path %}
+                                <th>{% trans "Expired Content View" %}</th>
                                 <th>{% trans 'Action' %}</th>
                             {% endif %}
                         </tr>
@@ -349,7 +350,7 @@
                             {#                            {% if sessionmap.Session_Code == sessions %}#}
                             <td class="start-date dateconFullMonth date-width">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
                             <td class="end-date date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
-                            
+
                             <td>
                                 {% now "Y-m-d H:i" as todays_datewithtime %}
                                 {% if sessionmap.0.Start_Date and todays_datewithtime < sessionmap.0.Start_Date|date:"Y-m-d H:i" %}
@@ -360,15 +361,22 @@
                                     <span class="badge badge-success">{% trans 'Active' %}</span>
                                 {% endif %}
                             </td>
-                            
+
                             {#                            {% endif %}#}
                             {#                        {% endfor %}#}
                             {% if '/students' not in request.path %}
+                                <td class="custom-table-width">
+                                   {% if sessionmap.0.Publish_Content_Expired %}
+                                       <span class="badge badge-success">{% trans 'Enabled' %}</span>
+                                   {% else %}
+                                       <span class="badge badge-danger">{% trans 'Disabled' %}</span>
+                                   {% endif %}
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary inningmap-btn"
                                             data-toggle="modal"
                                             data-target="#inningmap_form_modal" data-sessionid="{{ sessions.id }}"
-                                            data-objectid="{{ object.id }}">
+                                            data-objectid="{{ object.id }}" data-useflag="{{ sessionmap.0.Publish_Content_Expired }}">
                                         {% trans 'Change' %}
                                     </button>
                                 </td>
@@ -776,7 +784,7 @@
         }
 
         $('.inningmap-btn').on('click', function () {
-            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'chapterinninginfomap' %}')
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), $(this).attr('data-useflag'), '{% url 'chapterinninginfomap' %}')
         })
     </script>
 {% endblock %}

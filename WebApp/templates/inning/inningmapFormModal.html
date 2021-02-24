@@ -1,4 +1,5 @@
 {% load crispy_forms_tags %}
+{% load to_class_name %}
 {% load i18n %}
 <style>
     .modal-body {
@@ -11,7 +12,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="inningMap_label"></h5>
+                <h5 class="modal-title" id="inningMap_label">{{ object.content_type }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -42,6 +43,17 @@
                         </div>
                     </div>
 
+                    {% if object|to_class_name|lower == "chapterinfo" %}
+                        <div id="div_Publish_Content_Expired" class="form-group">
+                            <label for="id_Publish_Content_Expired" class="control-label ">
+                                {% trans 'Content Publish' %}
+                            </label>
+                            <div class="controls ">
+                                <input type="checkbox" name="Publish_Content_Expired" class="form-control js-switch"
+                                       id="id_Publish_Content_Expired" value="{{ object.Publish_Content_Expired }}">
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" name="sessionid" id="sessionid" value="">
@@ -62,7 +74,7 @@
         {#$('#id_Start_Date').datetimepicker();#}
     })
 
-    function inningMapDataLoad($element, sessionid, objectid, formaction) {
+    function inningMapDataLoad($element, sessionid, objectid, useflag, formaction) {
         if ($element.closest('tr').find('.start-date').text() != "") {
             document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")
         }
@@ -71,13 +83,17 @@
         }
         $('#id_End_Date').datetimepicker();
         $('#id_Start_Date').datetimepicker();
-        $('#sessionid').val(sessionid)
-        $('#objectid').val(objectid)
+        $('#sessionid').val(sessionid);
+        $('#objectid').val(objectid);
+        if (useflag.toLowerCase() == "true" && !$('#id_Publish_Content_Expired').is(':checked')) {
+            $('#id_Publish_Content_Expired').trigger('click');
+        }
         $('#inningmapForm').attr('action', formaction)
     }
 
     $('#inningmapForm').on('submit', function (e) {
         e.preventDefault();
+        var Publish_Content_Expired = $('#id_Publish_Content_Expired').length > 0 ? $('#id_Publish_Content_Expired').is(':checked') : null;
         $.ajax({
             type: 'post',
             data: {
@@ -86,6 +102,7 @@
                 "objectid": $('#objectid').val(),
                 "Start_Date": $('#id_Start_Date').val() != '' ? new Date($('#id_Start_Date').val()).toISOString() : '',
                 "End_Date": $('#id_End_Date').val() != '' ? new Date($('#id_End_Date').val()).toISOString() : '',
+                "Publish_Content_Expired": Publish_Content_Expired
             },
             url: $(this).attr('action'),  // URL to your view that serves new info
             success: function (data) {

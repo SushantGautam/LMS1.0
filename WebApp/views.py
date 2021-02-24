@@ -4304,19 +4304,14 @@ from django.apps import apps
 
 def InningInfoMappingView(model_name, request=None, **kwargs):
     if request:
-        start_date, end_date, session_id, object_id = request.POST['Start_Date'], request.POST['End_Date'], \
-                                                      request.POST['sessionid'], request.POST['objectid']
+        start_date, end_date, session_id, object_id, Publish_Content_Expired = request.POST['Start_Date'], request.POST['End_Date'], \
+                                                      request.POST['sessionid'], request.POST['objectid'], request.POST.get('Publish_Content_Expired', None).capitalize()
     else:
-        start_date, end_date, session_id, object_id = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
-            'session_id'), kwargs.get('object_id')
+        start_date, end_date, session_id, object_id, Publish_Content_Expired = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
+            'session_id'), kwargs.get('object_id'), kwargs.get('Publish_Content_Expired', None).capitalize()
 
     inninginfoObj = get_object_or_404(InningInfo, pk=session_id)
     Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=object_id)
-
-    # if model_name == "AssignmentInfo":
-    #     if start_date == '' or end_date == '' or \
-    #             start_date is None or end_date is None:
-    #         return JsonResponse({'message': 'Start Date and End Date cannot be blank.'}, status=500)
 
     if (start_date and end_date):
         if (start_date > end_date):
@@ -4330,7 +4325,8 @@ def InningInfoMappingView(model_name, request=None, **kwargs):
             End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
-            Session_Code=inninginfoObj
+            Session_Code=inninginfoObj,
+            Publish_Content_Expired=Publish_Content_Expired if Publish_Content_Expired else None
         )
         # Update function will not save the object, therefore, signals will not be called, so save function is used.
         for session in sessionmap:
@@ -4341,7 +4337,8 @@ def InningInfoMappingView(model_name, request=None, **kwargs):
             End_Date=end_date if end_date != "" else None,
             content_type=ContentType.objects.get_for_model(Obj.__class__),
             object_id=Obj.id,
-            Session_Code=inninginfoObj
+            Session_Code=inninginfoObj,
+            Publish_Content_Expired = Publish_Content_Expired if Publish_Content_Expired else None
         )
         sessionmap.save()
     return JsonResponse({'message': 'Success '}, status=200)
