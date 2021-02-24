@@ -281,6 +281,20 @@
   border-radius: 0.8em;
 }
 
+.card-title-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #3b5898cc;
+  overflow: hidden;
+  width: 100%;
+  transition: .5s ease-out;
+  max-height: 100%;
+  border-bottom-left-radius: 0.8em;
+  border-bottom-right-radius: 0.8em;
+}
+
 .card-overlay {
   position: absolute;
   bottom: 0;
@@ -289,7 +303,7 @@
   background-color: #3b5898cc;
   overflow: hidden;
   width: 100%;
-  height: 20%;
+  height: 0%;
   transition: .5s ease;
   border-bottom-left-radius: 0.8em;
   border-bottom-right-radius: 0.8em;
@@ -298,4 +312,7 @@
 .card-container:hover .card-overlay {
   height: 100%;
   border-radius: 0.8em;
+}
+.card-container:hover .card-title-overlay {
+  max-height: 0;
 }
