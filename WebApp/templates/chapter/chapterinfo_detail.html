@@ -349,7 +349,7 @@
                             {#                        {% for sessionmap in object.chapter_sessionmaps.all %}#}
                             {#                            {% if sessionmap.Session_Code == sessions %}#}
                             <td class="start-date dateconFullMonth date-width">{{ sessionmap.0.Start_Date|date:"d M, Y h:i A" }}</td>
-                            <td class="end-date date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
+                            <td class="end-date dateconFullMonth date-width">{{ sessionmap.0.End_Date|date:"d M, Y h:i A" }}</td>
 
                             <td>
                                 {% now "Y-m-d H:i" as todays_datewithtime %}
