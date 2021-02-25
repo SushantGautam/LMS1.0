@@ -1157,7 +1157,7 @@ class SessionMapInfo(models.Model):
     )
     object_id = models.PositiveIntegerField(blank=True, null=True)
     # For Expired Cases For Chapters only
-    Publish_Content_Expired = models.BooleanField(default=None, blank=True, null=True)
+    Publish_Content_Expired = models.BooleanField(default=True, blank=True, null=True)
     target = GenericForeignKey('content_type', 'object_id')
     Session_Code = ForeignKey('InningInfo', related_name="inningSessionMapInfo", on_delete=models.CASCADE)
 
