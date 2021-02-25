@@ -784,7 +784,7 @@
         }
 
         $('.inningmap-btn').on('click', function () {
-            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), $(this).attr('data-useflag'), '{% url 'chapterinninginfomap' %}')
+            inningMapDataLoad($(this), $(this).attr('data-sessionid'), $(this).attr('data-objectid'), '{% url 'chapterinninginfomap' %}', useflag=$(this).attr('data-useflag'))
         })
     </script>
 {% endblock %}

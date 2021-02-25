@@ -74,7 +74,7 @@
         {#$('#id_Start_Date').datetimepicker();#}
     })
 
-    function inningMapDataLoad($element, sessionid, objectid, useflag, formaction) {
+    function inningMapDataLoad($element, sessionid, objectid, formaction, useflag) {
         if ($element.closest('tr').find('.start-date').text() != "") {
             document.getElementById('id_Start_Date').value = new Date($element.closest('tr').find('.start-date').text()).toLocaleString("en-US")
         }
@@ -85,7 +85,7 @@
         $('#id_Start_Date').datetimepicker();
         $('#sessionid').val(sessionid);
         $('#objectid').val(objectid);
-        if (useflag.toLowerCase() == "true" && !$('#id_Publish_Content_Expired').is(':checked')) {
+        if (useflag && useflag.toLowerCase() == "true" && !$('#id_Publish_Content_Expired').is(':checked')) {
             $('#id_Publish_Content_Expired').trigger('click');
         }
         $('#inningmapForm').attr('action', formaction)
