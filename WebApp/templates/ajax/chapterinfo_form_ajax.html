@@ -32,17 +32,21 @@
     {#    <div class="col-md-6 col-sm-12 col-xs-12">#}
     {#        {{ form.End_Date|as_crispy_field }}<br>#}
     {#    </div>#}
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        {{ form.mustreadtime|as_crispy_field }}<br>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            {{ form.mustreadtime|as_crispy_field }}<br>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6 pt-5" id="div_use_flag" style="padding-top: 2em;">
+            <label for="id_Use_Flag" class="control-label ">{% trans 'Publish' %}</label>
+            <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-6" id="div_is_commentable" style="padding-top: 2em;">
+            <label for="id_is_commentable" class="control-label ">{% trans 'Comment' %}</label>
+            <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable" checked>
+        </div>
     </div>
-    <div class="col-md-12 col-sm-12 col-xs-12" id="div_use_flag">
-        <label for="id_Use_Flag" class="control-label ">{% trans 'Publish' %}</label>
-        <input type="checkbox" id="id_Use_Flag" class="js-switch" name="Use_Flag" checked>
-    </div>
-    <div class="col-md-12 col-sm-12 col-xs-12" id="div_is_commentable">
-        <label for="id_is_commentable" class="control-label ">{% trans 'Comment' %}</label>
-        <input type="checkbox" id="id_is_commentable" class="js-switch" name="is_commentable" checked>
-    </div>
+    
 
     {% if assigned_session|length > 0 %}
         <div class="col-md-12 col-sm-12 col-xs-12">
