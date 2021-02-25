@@ -4290,8 +4290,10 @@ def InningInfoMappingView(model_name, request=None, **kwargs):
                                                       request.POST['sessionid'], request.POST['objectid'], request.POST.get('Publish_Content_Expired', None).capitalize()
     else:
         start_date, end_date, session_id, object_id, Publish_Content_Expired = kwargs.get('start_date'), kwargs.get('end_date'), kwargs.get(
-            'session_id'), kwargs.get('object_id'), kwargs.get('Publish_Content_Expired', None).capitalize()
-
+            'session_id'), kwargs.get('object_id'), kwargs.get('Publish_Content_Expired', None)
+        if Publish_Content_Expired:
+            Publish_Content_Expired = Publish_Content_Expired.capitalize()
+            
     inninginfoObj = get_object_or_404(InningInfo, pk=session_id)
     Obj = get_object_or_404(apps.get_model("WebApp", model_name), pk=object_id)
 
