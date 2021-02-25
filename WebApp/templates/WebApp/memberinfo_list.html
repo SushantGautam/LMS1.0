@@ -70,7 +70,6 @@
         </div>
     </div>
 </div>
-{% csrf_token %}
 <div class="text-right">
     <nav id="navbar_parent" class="navbar-dark">
         <a class="btn btn-success text-white" href="{% url 'memberinfo_create' %}">Create new Member</a>
@@ -113,26 +112,6 @@
             </tr>
 
         </thead>
-        <!-- <tfoot>
-            <tr>
-                <th>S. No.</th>
-                <th>Username</th>
-                <th>Member ID</th>
-                <th>Full Name</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Gender</th>
-                <th>Student</th>
-                <th>Teacher</th>
-                <th>Temporary Address</th>
-                <th>Permanent Address</th>
-                <th>Birthdate</th>
-                <th>Type</th>
-                <th>Action</th>
-            </tr>
-        </tfoot> -->
         <tbody>
 
         </tbody>
@@ -180,9 +159,7 @@
     }, 3000);
 
     $(document).ready(function () {
-
         // ServerSide export all data from "https://stackoverflow.com/a/57335685"
-
         /* For Export Buttons available inside jquery-datatable "server side processing" - Start
         - due to "server side processing" jquery datatble doesn't support all data to be exported
         - below function makes the datatable to export all records when "server side processing" is on */
@@ -230,8 +207,6 @@
         };
         //For Export Buttons available inside jquery-datatable "server side processing" - End
 
-
-
         var table_main = $('#members_list_table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
@@ -245,11 +220,8 @@
             order: [],
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
             buttons: [
-
-
                 {
                     extend: 'csv',
-
                     title: function(){
 
                         if (table_main.ajax.url().includes("onlystudents=true"))
@@ -262,21 +234,16 @@
                         }
                         else{
                              return "All Member List";
-
                         }
                     },
-
 
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     exportOptions: {
                     //   columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-                        columns: [1, 2, 3, 5, 6, 7,  9, 10, 11, 12, 13, 14, 15, 8 ]
+                        columns: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
                     },
                     action: newexportaction,
-
                 },
-
-
 
                 {
                     text: '<span class="exportcsv" data-toggle="modal" data-target="#import_csv_modal" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
@@ -312,13 +279,13 @@
                 }],
             "columnDefs": [
                 {
-                    "targets": [4, 5, 9, 10, 11, 12, 13],
+                    "targets": [5, 6, 9, 11, 12, 13 ,14,15],
                     "visible": false,
                     "searchable": true,
                 },
                 {
                     "orderable": false,
-                    "targets": [0, 11, 12, 13, 14, 15 ,16, 17]
+                    "targets": [0,7,9, 11, 12, 13, 14, 15 ,16, 17]
                 },
             ]
         });
@@ -393,13 +360,6 @@
     })
 </script>
 
-
-<script>
-
-
-
-</script>
-
 <script type="text/javascript">
     $(document).ready(function () {
         $(".editCheckedMembers").on('click', function () {
@@ -408,6 +368,32 @@
                 seleced_members.push($(this).val())
             })
             $('#member_ids').val(seleced_members)
+        });
+
+        $(".deleteCheckedMembers").on('click', function (e) {
+            e.preventDefault()
+            let seleced_members = []
+            $.each($('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll'), function (index) {
+                seleced_members.push($(this).val())
+            });
+            $.ajax({
+                type: "POST",
+                url: "{% url 'memberinfo_inactive_delete_checked' %}",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'memberinfo_ids': seleced_members,
+                }, // serializes the form's elements.
+                success: function (data) {
+                    location.reload(); // show response from the php script.
+                },
+                error: function (e) {
+                    $('.error-div').empty()
+                    $('.error-div').css('display', 'block')
+                    $('.error-div').append(`
+                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
+                    `)
+                }
+            });
         });
 
         $('#id_Member_Department').select2({

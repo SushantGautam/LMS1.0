@@ -511,7 +511,7 @@ class MemberInfoListViewAjax(BaseDatatableView):
                'Member_Phone',
                'Member_Gender', 'Is_Student', 'Is_Teacher', 'Member_Permanent_Address', 'Member_Temporary_Address',
                'Member_BirthDate', 'type', 'action']
-    order_columns = ['', 'id', 'username', 'Member_ID', 'first_name', 'first_name', 'last_name', 'email',
+    order_columns = ['', 'id', 'username', 'Member_ID', 'full_name', 'first_name', 'last_name', 'email',
                      'Member_Department',
                      'Member_Phone',
                      'Member_Gender', 'Is_Student', 'Is_Teacher', '', '', '', '', '']
@@ -1106,30 +1106,24 @@ def MemberInfoEditViewChecked(request):
     if request.method == 'POST':
         member_list = []
 
-        memberinfo_list = MemberInfo.objects.filter(
-            pk__in=request.POST.get('member_ids[]').split(','))
+        memberinfo_list = MemberInfo.objects.filter(pk__in=request.POST.get('member_ids[]').split(','))
         if request.POST.get('Member_Department') and request.POST.get('Member_Department') != '':
-            Member_Department = DepartmentInfo.objects.get(
-                pk=request.POST.get('Member_Department'))
+            Member_Department = DepartmentInfo.objects.get(pk=request.POST.get('Member_Department'))
 
         if request.POST.get('Member_Department'):
             memberinfo_list.update(Member_Department=Member_Department)
         if request.POST.get('Member_Position'):
-            memberinfo_list.update(
-                Member_Position=request.POST.get('Member_Position'))
+            memberinfo_list.update(Member_Position=request.POST.get('Member_Position'))
         if request.POST.get('Member_Gender'):
-            memberinfo_list.update(
-                Member_Gender=request.POST.get('Member_Gender'))
+            memberinfo_list.update(Member_Gender=request.POST.get('Member_Gender'))
         if request.POST.get('Is_Teacher'):
-            Is_Teacher = True if request.POST.get(
-                'Is_Teacher') == "1" else False
+            Is_Teacher = True if request.POST.get('Is_Teacher') == "on" else False
             memberinfo_list.update(Is_Teacher=Is_Teacher)
         if request.POST.get('Is_Student'):
-            Is_Student = True if request.POST.get(
-                'Is_Student') == "1" else False
+            Is_Student = True if request.POST.get('Is_Student') == "on" else False
             memberinfo_list.update(Is_Student=Is_Student)
         if request.POST.get('Use_Flag'):
-            Use_Flag = True if request.POST.get('Use_Flag') == "1" else False
+            Use_Flag = True if request.POST.get('Use_Flag') == "on" else False
             memberinfo_list.update(Use_Flag=Use_Flag)
 
         if '/inactive' in request.path:
