@@ -1088,8 +1088,7 @@ def MemberInfoDeleteViewChecked(request):
     if request.method == 'POST':
         try:
             # return self.delete(request, *args, **kwargs)
-            Obj = MemberInfo.objects.filter(
-                pk__in=request.POST.getlist('memberinfo_ids[]'))
+            Obj = MemberInfo.objects.filter(pk__in=request.POST.getlist('memberinfo_ids[]'))
             Obj.delete()
             if '/inactive' in request.path:
                 return redirect('memberinfo_list_inactive')
