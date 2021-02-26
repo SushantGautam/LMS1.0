@@ -1,5 +1,7 @@
 {% extends "teacher_module/base.html"%}
 {% load static %}
+{% load i18n %}
+
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
@@ -9,24 +11,98 @@
 {% endblock %}
 
 {% block content %}
-<style>
-    .thumbnail {
-        width: -webkit-fill-available !important;
-        overflow: hidden;
-        height: unset !important;
-    }
-</style>
-<div class="row">
-    <div class="student_card ">
-        <div class="student_card_container">
-            <img src=" {{ memberinfo.Avatar }}" class="" alt="...">
-        </div>
-        <h4><b>{{ memberinfo.username }}</b></h4>
-        <p>{{ memberinfo.first_name }} {{ memberinfo.last_name }}</p>
-        <p>{{ memberinfo.Member_Phone }}</p>
-        <p>{{ memberinfo.email }}</p>
-    </div>
+<div class="student_card text-center">
+    <figure class="avatar mr-2" style="height: 10rem; width: 10rem;">
+        {% if memberinfo.Avatar %}
+        <img src="{{ memberinfo.Avatar }}" class="rounded-circle" alt="avatar">
+        {% else %}
+        <img src="{% static 'media/image/user/man_avatar3.jpg'%}" class="rounded-circle" alt="avatar">
+        {% endif %}
+    </figure>
 </div>
+<table class="table table-striped table-bordered mt-3">
+    <tr>
+        <td style="max-width: 10rem;">
+            <span class="font-weight-bold">{% trans "Member ID" %}</span>
+            <small> ({% trans "Assigned by center" %})</small>
+            <span class="pull-right">{{ memberinfo.Member_ID }}</span>
+        </td>
+        <td><span class="font-weight-bold">{% trans "Username" %}</span>
+            <small> ({% trans "Used for login" %})</small>
+            <span class="pull-right">
+                {{ memberinfo.username }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="font-weight-bold">{% trans "Full Name" %}</span>
+            <span class="pull-right"> {{ memberinfo.first_name }} {{ memberinfo.last_name }}</span>
+        </td>
+        <td>
+            <span class="font-weight-bold">{% trans "Email" %}</span>
+            <span class="pull-right">{{ memberinfo.email }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="font-weight-bold">{% trans "Department" %}</span>
+            <span class="pull-right"> {{ memberinfo.Member_Department }}</span>
+        </td>
+        {% if memberinfo.Is_Teacher %}
+        <td>
+            <span class="font-weight-bold">{% trans "Position" %}</span>
+            <span class="pull-right"> {{ memberinfo.Member_Position }}</span>
+        </td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td>
+            <span class="font-weight-bold">{% trans "Permanent Address" %}</span>
+            <span class="pull-right"> {{ memberinfo.Member_Permanent_Address }}</span>
+        </td>
+        <td>
+            <span class="font-weight-bold">{% trans "Temporary Address" %}</span>
+            <span class="pull-right"> {{ memberinfo.Member_Temporary_Address }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="font-weight-bold">{% trans "BirthDate" %}</span>
+            <span class="pull-right">{{ memberinfo.Member_BirthDate|date:"F d, Y" }}</span>
+        </td>
+        <td>
+            <span class="font-weight-bold">{% trans "Phone Number" %}</span>
+            <span class="pull-right"> {{ memberinfo.Member_Phone }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="font-weight-bold">{% trans "Gender" %}</span>
+            <span class="pull-right">
+                {% if memberinfo.Member_Gender == 'M' %}
+                {% trans "Male" %}
+                {% elif memberinfo.Member_Gender == 'F' %}
+                {% trans "Female" %}
+                {% endif %}
+            </span>
+        </td>
+        <td>
+            <span class="font-weight-bold">{% trans "Member Type" %}</span>
+            <span class="pull-right">
+                {% if memberinfo.Is_CenterAdmin %}
+                &nbsp;{% trans "Admin" %}
+                {% endif %}
+                {% if memberinfo.Is_Teacher %}
+                &nbsp;{% trans "Teacher" %}
+                {% endif %}
+                {% if memberinfo.Is_Student %}
+                &nbsp;{% trans "Student" %}
+                {% endif %}
+            </span>
+        </td>
+    </tr>
+</table>
 
 <hr>
 
@@ -34,8 +110,6 @@
     <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
     </div>
 </div>
-
-
 
 <hr>
 
