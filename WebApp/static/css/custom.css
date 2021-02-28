@@ -303,14 +303,14 @@
   background-color: #3b5898cc;
   overflow: hidden;
   width: 100%;
-  height: 0%;
+  /* height: 20%; */
   transition: .5s ease;
   border-bottom-left-radius: 0.8em;
   border-bottom-right-radius: 0.8em;
 }
 
 .card-container:hover .card-overlay {
-  height: 100%;
+  /* height: 100%; */
   border-radius: 0.8em;
 }
 .card-container:hover .card-title-overlay {

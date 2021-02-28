@@ -71,5 +71,27 @@
             e.preventDefault()
         }
     });
+    
+    $('.card-overlay').each(function(){
+        var theight = $(this).find('.course-title').height() + 25;
+        $(this).css({height:theight});
+        $(this).parent().hover(function () {
+            $(this).find(".card-overlay").css({height:"100%"})
+            $(this).find('.course-title').css({
+                maxHeight: "40px",
+                // whiteSpace: "wrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"})
+        }, function () {
+            $(this).find(".card-overlay").css({height:theight})
+            $(this).find('.course-title').css({
+                maxHeight: "100%",
+                // whiteSpace: "wrap",
+                overflow: "visible",
+                textOverflow: "none"})
+        });
+    })
+
 </script>
+
 {% endblock %}
