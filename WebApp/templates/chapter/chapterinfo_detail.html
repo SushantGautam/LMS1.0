@@ -366,7 +366,7 @@
                             {#                        {% endfor %}#}
                             {% if '/students' not in request.path %}
                                 <td class="custom-table-width">
-                                   {% if sessionmap.0.Publish_Content_Expired %}
+                                   {% if sessionmap.0.Publish_Content_Expired or sessionmap.0 is None %}
                                        <span class="badge badge-success">{% trans 'Enabled' %}</span>
                                    {% else %}
                                        <span class="badge badge-secondary">{% trans 'Disabled' %}</span>
