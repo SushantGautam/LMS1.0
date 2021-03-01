@@ -804,10 +804,10 @@ def import_survey(request):
                         raise Exception
 
                     for mcq in mcq_quest:
-                        if mcq['question'] and mcq['option1'] and mcq['option2']:
+                        if df[mcq]['question'][i] and df[mcq]['option1'][i] and df[mcq]['option2'][i]:
                             question_count += 1
                     for saq in saq_quest:
-                        if saq['question']:
+                        if df[saq]['question'][i]:
                             question_count += 1
 
                     if question_count == 0:
@@ -827,25 +827,25 @@ def import_survey(request):
                     saved_id.append(obj.id)
 
                     for mcq in mcq_quest:
-                        if mcq['question'] and mcq['option1'] and mcq['option2']:
+                        if df[mcq]['question'][i] and df[mcq]['option1'][i] and df[mcq]['option2'][i]:
                             objm = QuestionInfo()
-                            objm.Question_Name = str(mcq['question'])
+                            objm.Question_Name = str(df[mcq]['question'][i])
                             objm.Question_Type = 'MCQ'
                             objm.Survey_Code = obj
                             objm.save()
 
-                            mcq_option = [ind for ind in mcq.index if 'option' in ind]
+                            mcq_option = [ind for ind in df[mcq].columns if 'option' in ind]
                             for option in mcq_option:
-                                if mcq[option]:
+                                if df[mcq][option][i]:
                                     objo = OptionInfo()
-                                    objo.Option_Name = str(mcq[option])
+                                    objo.Option_Name = str(df[mcq][option][i])
                                     objo.Question_Code = objm
                                     objo.save()
 
                     for saq in saq_quest:
-                        if saq['question']:
+                        if df[saq]['question'][i]:
                             objs = QuestionInfo()
-                            objs.Question_Name = str(saq['question'])
+                            objs.Question_Name = str(df[saq]['question'][i])
                             objs.Question_Type = 'SAQ'
                             objs.Survey_Code = obj
                             objs.save()
