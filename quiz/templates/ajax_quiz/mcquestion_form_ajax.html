@@ -8,33 +8,31 @@
 <form method="post" id="mcq_form_post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
-
         {{ form.content|as_crispy_field }}
-
-        <div id="col-md-12 option_dynamic_append">
+        <div id="option_dynamic_append">
             {{ answers_formset.management_form }}
             {% for form in answers_formset %}
-                <div class="row form-group form-row ">
-                    <div style="display: none" class="delete-ans-checkbox">
-                        {{ form.DELETE }}
-                    </div>
-                    
-                        {{ form.content|as_crispy_field }}
-                    
-
-                    <div class="correct-ans-checkbox " >
-                        {{ form.correct|as_crispy_field }}
-                    </div>
-
-                    <div class="form-button-div " style="text-align: right;">
-                        <button type="button" class="btn btn-danger btn-sm remove-form-row ">x</button>
-                    </div>
-                    
-                    
+            <div class="row form-group form-row ">
+                <div style="display: none" class="delete-ans-checkbox">
+                    {{ form.DELETE }}
                 </div>
-                {% for fields in form.hidden_fields %}
-                    {{ fields }}
-                {% endfor %}
+    
+                {{ form.content|as_crispy_field }}
+    
+    
+                <div class="correct-ans-checkbox ">
+                    {{ form.correct|as_crispy_field }}
+                </div>
+    
+                <div class="form-button-div " style="text-align: right;">
+                    <button type="button" class="btn btn-danger btn-sm remove-form-row ">x</button>
+                </div>
+    
+    
+            </div>
+            {% for fields in form.hidden_fields %}
+            {{ fields }}
+            {% endfor %}
             {% endfor %}
         </div>
         <div class="text-danger" id="option_error"></div>
@@ -42,38 +40,32 @@
             <a class="add-more-text" value="Add More" id="add_more"> <i class=" fa fa-plus">&nbsp;</i>Add more
                 options</a>
         </div>
-        <hr>
-
-
-        <div class="panel-group">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h5 class="panel-title">
-                        <a data-toggle="collapse" href="#collapse1">More Options</a>
-                    </h5>
-                </div>
-                <div id="collapse1" class="panel-collapse collapse">
-
-                    {{ form.answer_order|as_crispy_field }}
-                    {{ form.figure|as_crispy_field }}
-                    {{ form.score|as_crispy_field }}
-                    {{ form.explanation|as_crispy_field }}
-
-                    {{ form.course_code|as_crispy_field }}
-                    {{ form.cent_code|as_crispy_field }}
-                </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse1">More Options</a>
+                </h5>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                {{ form.answer_order|as_crispy_field }}
+                {{ form.figure|as_crispy_field }}
+                {{ form.score|as_crispy_field }}
+                {{ form.explanation|as_crispy_field }}
+                {{ form.course_code|as_crispy_field }}
+                {{ form.cent_code|as_crispy_field }}
             </div>
         </div>
-
-
-    </div>
     {% if quiz_id %}
         <input name="quiz_id" value="{{ quiz_id }}" type="hidden">
     {% endif %}
 
     <hr>
     <!-- <input class="add-mcq" type="button" value="Add More" id="add_more">  -->
-    <button class="btn btn-primary" type="submit">Submit</button>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
 </form>
 
 {% block javascript %}
