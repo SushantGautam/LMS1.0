@@ -65,7 +65,7 @@
                         <a  id="navSearchBtn" class="btn btn-inverse paper-shadow relative" data-z="0.5" data-hover-z="1">Search</a>
                     </div>
                     </div> -->
-            <div class="card border-0 bg-light">
+            <div class="card">
                 {% block widget_before %}{% endblock %}
                 {% if request.user.is_authenticated %}
                 {% include 'forum/widgets/authenticated_user_panel.html' %}
