@@ -7,17 +7,17 @@
   <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 {% endblock stylesheets %}
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">QUIZ</a></li>
-
-
-
+  <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">Quiz</a></li>
   <li class="breadcrumb-item active" aria-current="page">{{ quiz.title }}</li>
 {% endblock %}
 
 {% block content %}
-  <form class="custom-background-color" action="" method="post" onsubmit="return validateForm()">
+<div class="col-12 text-center">
+<h2 class="text-primary">Edit {{ quiz.title }}</h2>
+</div>
+  <form class="py-3" action="" method="post" onsubmit="return validateForm()">
     {{ form.non_field_errors }}
-    {#      {{ wizard.form|crispy }}#}
+    <!-- {#      {{ wizard.form|crispy }}#} -->
     {% crispy form %}
   </form>
   <style>
@@ -30,8 +30,8 @@
 
 {% block javascript %}
   <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-  <script src=" {% static 'vendorsx/nprogress/nprogress.js' %}"></script>
-  <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script src=" {% static 'vendors/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static 'vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
   <script>
       $('label').addClass("quiz-add-label");
