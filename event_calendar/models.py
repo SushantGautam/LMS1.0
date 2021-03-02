@@ -21,6 +21,7 @@ REPEAT_TYPE_CHOICES = (('DA', _('Daily')),
 PART_TYPE_CHOICES = (('AL', _('All User')),
                      ('AT', _('All Teacher')),
                      ('AS', _('All Student')),
+                     ('AA', _('All Teacher Student')),
                      ('CH', _('Choose User')))
 
 
