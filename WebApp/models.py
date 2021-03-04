@@ -192,7 +192,7 @@ class MemberInfo(AbstractUser):
         inning_group = InningGroup.objects.filter(pk__in=all_sessions.values_list('Course_Group')).distinct()
         all_courses = CourseInfo.objects.filter(
             pk__in=[ig.Course_Code.pk for ig in
-                    inning_group])
+                    inning_group], Use_Flag=True)
         active_sessions = all_sessions.filter(End_Date__gte=datetime_now)
 
         courses = all_courses
