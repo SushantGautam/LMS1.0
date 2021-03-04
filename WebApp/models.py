@@ -255,6 +255,8 @@ class MemberInfo(AbstractUser):
                                                         Session_Code__in=assigned_session)
             if not session_map.exists():
                 active_chapters.append(chapter.pk)
+            elif session_map.count() < assigned_session.count():
+                active_chapters.append(chapter.pk)
             elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
                     Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter.pk)
@@ -294,23 +296,24 @@ class MemberInfo(AbstractUser):
                 if active is None:
                     pass
                 elif active and session_map.filter(End_Date__lt=datetime_now).exists():
-                    assignments = assignments.exclude(pk=assignment.pk) # For active assignment case
+                    assignments = assignments.exclude(pk=assignment.pk)  # For active assignment case
                 elif not active and session_map.filter(End_Date__gte=datetime_now).exists():
-                    assignments = assignments.exclude(pk=assignment.pk) # For expired assingment case
+                    assignments = assignments.exclude(pk=assignment.pk)  # For expired assingment case
             else:
                 assignments = assignments.exclude(pk=assignment.pk)
 
-        for assignment in assignments:   # For adding extra data in assignment query
-            latest_sessionmap = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                                            object_id=assignment.id,
-                                                            Session_Code__in=assigned_session).latest('End_Date')
+        for assignment in assignments:  # For adding extra data in assignment query
+            latest_sessionmap = SessionMapInfo.objects.filter(
+                content_type=ContentType.objects.get_for_model(assignment),
+                object_id=assignment.id,
+                Session_Code__in=assigned_session).latest('End_Date')
             assignment.startdate = latest_sessionmap.Start_Date
             assignment.deadline = latest_sessionmap.End_Date
             if SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(assignment),
-                                            object_id=assignment.id,
-                                            Start_Date__lte=datetime_now,
-                                            End_Date__gte=datetime_now,
-                                            Session_Code__in=assigned_session).exists():
+                                             object_id=assignment.id,
+                                             Start_Date__lte=datetime_now,
+                                             End_Date__gte=datetime_now,
+                                             Session_Code__in=assigned_session).exists():
                 assignment.active = True
             else:
                 assignment.active = False
@@ -582,6 +585,24 @@ class ChapterInfo(models.Model):
         if self.pk in [chapter.pk for chapter in active_chapters]:
             status = True
         return status
+
+    def getChapterStatus(self, assigned_session=None):
+        if not assigned_session:
+            assigned_session = self.Course_Code.innings_of_this_course()
+        datetime_now = timezone.now().replace(microsecond=0)
+        session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(self),
+                                                    object_id=self.id,
+                                                    Session_Code__in=assigned_session)
+
+        if session_map.count() < assigned_session.count():
+            return "Active"
+        elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
+                Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
+            return "Active"
+        elif session_map.filter(Q(Start_Date__gte=datetime_now)).exists():
+            return "Upcoming"
+        else:
+            return "Expired"
 
     def isContentVisible(self, user):
         if self.isStudentChapterActive(user):

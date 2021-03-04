@@ -510,27 +510,30 @@
 
 
                             <div>
-                            <span style="padding: 2px 0; font-weight:600;font-size:14px;margin-left:10px; color: #000000"> {% trans 'Chapter No' %}: {{ o.Chapter_No }}
+                                <span style="padding: 2px 0; font-weight:600;font-size:14px;margin-left:10px; color: #000000"> {% trans 'Chapter No' %}: {{ o.Chapter_No }}
 
-                                {% if o.Use_Flag == False %}
-                                    <span class="text-danger"><b>[{% trans 'Inactive' %}]</b></span>
-                                {% endif %}
-                            </span>
-
-                                {% comment %}
-                                {% if '/students' in request.path %}
-                                    {% for x in student_data %}
-                                        {% if  o.pk == x.chapter.chapterObj.pk %}
-                                            {% if x.chapter.attendance %}
-                                                <strong style="color: #00A000;font-weight: 700;"></strong>
-                                            {% else %}
-                                                <strong style="color: red;font-weight: 700;">[Studied time must meet the
-                                                    Running time to complete chapter]</strong>
-                                            {% endif %}
+                                    {% if o.Use_Flag == False %}
+                                        <span class="text-danger"><b>[{% trans 'Inactive' %}]</b></span>
+                                    {% endif %}
+                                    {% if '/students' in request.path %}
+                                        {% isChapterActive request.user o as isChapterActive %}
+                                        {% if isChapterActive %}
+                                            <span class="badge badge-success">{% trans 'Active' %}</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">{% trans 'Inactive' %}</span>
                                         {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                                {% endcomment %}
+                                    {% endif %}
+
+                                    {% if '/students' not in request.path %}
+                                        {% if o.getChapterStatus|lower == "expired" %}
+                                            <span class="badge badge-danger">{% trans o.getChapterStatus %}</span>
+                                        {% elif o.getChapterStatus|lower == "upcoming" %}
+                                            <span class="badge badge-info">{% trans o.getChapterStatus %}</span>
+                                        {% else %}
+                                            <span class="badge badge-success">{% trans o.getChapterStatus %}</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -563,6 +566,7 @@
                                         {% if  o.pk == x.chapter.chapterObj.pk %}
                                             <div class="col-md-6 col-sm-12 col-xs-12" style="padding: 0px !important;">
                                             <h4>
+                                                {% comment %}
                                                 <span class="running-time" style="font-weight:600;  font-style: italic;">
                                                     Chapter Status:
                                                     {% isChapterActive request.user o as isChapterActive %}
@@ -571,6 +575,7 @@
                                                     {% else %}
                                                          <span> <strong class="text-danger">{% trans 'Inactive' %}</strong></span>
                                                     {% endif %}
+                                                    {% endcomment %}
                                                 </span>
                                             </h4>
                                         </div>
