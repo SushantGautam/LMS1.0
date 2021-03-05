@@ -316,3 +316,19 @@
 .card-container:hover .card-title-overlay {
   max-height: 0;
 }
+
+.hide-radio{
+  position: absolute;
+  clip: rect(0,0,0,0);
+}
+
+.survey-list-card #participatedSurvey{
+  color: #3b5998;
+}
+
+.survey-list-card:hover,
+.survey-list-card:hover #participatedSurvey,
+.survey-list-card:hover .survey-title-name{
+  background-color: #3b5998;
+  color: white;
+}

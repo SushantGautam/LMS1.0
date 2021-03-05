@@ -1,111 +1,94 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+
 {% block stylesheets %}
-
-  <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
-
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}" style="font-weight:normal;">{% trans "Home" %}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{% trans "Survey" %}</li>
-  {% endblock %}
-{% block content %}
-
-  {% include 'survey/new_surveylist.html' %}
+<li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'start' %}">
+        {% trans "Home" %}
+    </a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Survey" %}</li>
 {% endblock %}
 
+{% block content %}
+{% include 'survey/new_surveylist.html' %}
+{% endblock %}
 
 {% block javascript %}
+<script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
 
+{% for category in categories %}
+<script>
+    /////////////////////// Survey Create AJAX POPUP -- ADMIN   ////////////////////////
+    $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
+        $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
+        $.ajax({
+            type: "GET",
+            data: { 'category_name': '{{category.Category_Name}}' },
+            url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#surveyForm").html(data);
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+            }
+        });
+    });
+</script>
+{% endfor %}
 
 <script>
-
-
+    $('#category_Add_Button_live').on('click', function () {
+        $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
+        $.ajax({
+            type: "GET",
+            data: { 'category_name': 'live' },
+            url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
+            success: function (data) {
+                $("#surveyForm").html(data);
+            },
+            complete: function () {
+                $(".se-pre-con-ajax").fadeOut("fast");
+            }
+        });
+    });
 </script>
 
-
-
-  <script src=" {% static 'vendors/jquery.repeater.min.js'%}"></script>
-
-
-  {% for category in categories %}
-    <script>
-        /////////////////////// Survey Create AJAX POPUP -- ADMIN   ////////////////////////
-       $('#category_Add_Button{{ category.Category_Name }}').on('click', function () {
-            $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
-            $.ajax({
-                type: "GET",
-                data: {'category_name': '{{category.Category_Name}}'},
-                url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
-                success: function (data) {
-                    $("#surveyForm").html(data);
-                },
-                complete: function () {
-                    $(".se-pre-con-ajax").fadeOut("fast");
+<script>
+    $(document).ready(function () {
+        ////////////////////////////// Prevent Blank Search  /////////////////////////////////////////
+        $('#search_survey').submit(function () {
+            $('#search_survey input[type=text]').each(function (n, element) {
+                if ($(element).val() == '') {
+                    event.preventDefault();
+                    return false;
                 }
             });
+            return true;
         });
-    </script>
- {% endfor %}
-
-
-  <script>
-      $('#category_Add_Button_live').on('click', function () {
-          $('#surveyForm').append('<div class="se-pre-con-ajax"></div>');
-          $.ajax({
-              type: "GET",
-              data: {'category_name': 'live'},
-              url: "{% url 'surveyinfo_ajax' %}",  // URL to your view that serves new info
-              success: function (data) {
-                  $("#surveyForm").html(data);
-              },
-              complete: function () {
-                  $(".se-pre-con-ajax").fadeOut("fast");
-              }
-          });
-      });
-  </script>
-
-  <script>
-
-      $(document).ready(function () {
-
-       ////////////////////////////// Prevent Blank Search  /////////////////////////////////////////
-          $('#search_survey').submit(function(){
-                $('#search_survey input[type=text]').each(function(n,element){
-                    if ($(element).val()=='') {
-                        event.preventDefault();
-                        return false;
-                     }
-                });
-                return true;
-          });
-
-       ////////////////////// Repeater /////////////////////////////
-         $('.repeater').repeater();
-
-      });
-
-
-  </script>
-  <script>
-      function survey_create_content(response) {
-          //location.reload();
-          console.log(response['url']);
-          window.location.href = String(response['url']);
-      }
-  </script>
-
-
-
-  <script>
-  ////////////////  Prevent Default for Add Survey  /////////////////////////
-   $('.add_survey_btn').click(function(event){
-          event.preventDefault();
-
+        ////////////////////// Repeater /////////////////////////////
+        $('.repeater').repeater();
     });
-  </script>
+</script>
+
+<script>
+    function survey_create_content(response) {
+        //location.reload();
+        console.log(response['url']);
+        window.location.href = String(response['url']);
+    }
+</script>
+
+<script>
+    ////////////////  Prevent Default for Add Survey  /////////////////////////
+    $('.add_survey_btn').click(function (event) {
+        event.preventDefault();
+    });
+</script>
 
 {% endblock javascript %}
