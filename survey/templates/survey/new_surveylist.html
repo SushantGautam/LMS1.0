@@ -137,12 +137,12 @@
                 <div class="col-12">
                     <div class="card-columns">
                         {% for object in object_list%}
-                        <div class="card p-3 survey-list-card">
+                        <div class="card p-3 survey-list-card text-center">
                                 <!-- <blockquote class="blockquote mb-0 card-body"> -->
                                     {% if object.id in submittedSurvey %}
-                                    <i class="fa fa-check fa-4x" id="participatedSurvey" aria-hidden="true"></i>
+                                    <i class="fa fa-check fa-3x" id="participatedSurvey" aria-hidden="true"></i>
                                     {% else %}
-                                    <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-4x" id="participatedSurvey"
+                                    <i class="fa fa-{{ object.Category_Code.Category_Icon }} fa-3x" id="participatedSurvey"
                                         aria-hidden="true"></i>
                                     {% endif %}
                                 <div>
