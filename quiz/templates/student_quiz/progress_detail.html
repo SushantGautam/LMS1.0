@@ -67,14 +67,13 @@
     {% if object.score_list == "" %}
         {% trans 'Not attempted' %}
     {% endif %}
-
     <div class="panel-group row" id="accordion">
         {% for q in object.questions_with_user_answers %}
             <div class="panel panel-default" style="margin-bottom: 10px; margin-top: 10px;">
                 <div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}"
                        class="hover_me">
-                        <h4 class="panel-title">
+                        <h4 class="panel-title" {% if q.user_answer|slugify|length < 1 %}title="Not Answered" {% endif %}>
                             <i class="fa fa-chevron-down fa-2x text-info" style="margin-right: 10px"></i>
                             {{ q.content }}
 
@@ -91,6 +90,11 @@
                                 {% else %}
                                     <i class="fa fa-check fa-2x text-success" style="float: right"></i>
                                 {% endif %}
+                            {% endif %}
+                            {% if q.user_answer|slugify|length < 1 %}
+                                <span class="badge" style="float: right;background: darkgray;">
+                                    NA  &nbsp;
+                                </span>
                             {% endif %}
                         </h4>
                     </a>
