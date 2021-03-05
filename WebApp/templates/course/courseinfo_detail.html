@@ -524,7 +524,7 @@
                                         {% endif %}
                                     {% endif %}
 
-                                    {% if '/students' not in request.path %}
+                                    {% if '/teachers' in request.path %}
                                         {% if o.getChapterStatus|lower == "expired" %}
                                             <span class="badge badge-danger">{% trans o.getChapterStatus %}</span>
                                         {% elif o.getChapterStatus|lower == "upcoming" %}
