@@ -250,18 +250,19 @@ class MemberInfo(AbstractUser):
         active_chapters = []
         inactive_chapters = []
         for chapter in chapters:
+            sessions = chapter.Course_Code.innings_of_this_course() & assigned_session
             session_map = SessionMapInfo.objects.filter(content_type=ContentType.objects.get_for_model(chapter),
                                                         object_id=chapter.id,
-                                                        Session_Code__in=assigned_session)
+                                                        Session_Code__in=sessions)
             if not session_map.exists():
                 active_chapters.append(chapter.pk)
-            elif session_map.count() < assigned_session.count():
+            elif session_map.count() < sessions.count():
                 active_chapters.append(chapter.pk)
             elif session_map.filter(Q(Start_Date__lte=datetime_now) | Q(Start_Date=None)).filter(
                     Q(End_Date__gte=datetime_now) | Q(End_Date=None)).exists():
                 active_chapters.append(chapter.pk)
             elif session_map.filter(Q(Start_Date__gte=datetime_now)).exists():
-                chapters.exclude(pk=chapter.pk)
+                chapters = chapters.exclude(pk=chapter.pk)
             else:
                 inactive_chapters.append(chapter.pk)
         if active:
@@ -580,10 +581,14 @@ class ChapterInfo(models.Model):
         return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
 
     def isStudentChapterActive(self, user):
-        active_chapters = user.get_student_chapters(courseList=[self.Course_Code.pk], active=True)
-        status = False
-        if self.pk in [chapter.pk for chapter in active_chapters]:
-            status = True
+        # User maybe assigned to the session in which the course is not assigned.
+        # Therefore, we select session available in both the user sessions and the course sessions
+        sessions = self.Course_Code.innings_of_this_course() & user.get_student_sessions()
+        # active_chapters = user.get_student_chapters(sessions=sessions, courseList=[self.Course_Code.pk], active=True)
+        # status = False
+        # if self.pk in [chapter.pk for chapter in active_chapters]:
+        #     status = True
+        status = True if self.getChapterStatus(assigned_session=sessions).lower() == "active" else False
         return status
 
     def getChapterStatus(self, assigned_session=None):
@@ -617,6 +622,7 @@ class ChapterInfo(models.Model):
             for session in session_map:
                 status = True if session.Publish_Content_Expired else False
             return status
+
 
 class ChapterContentsInfo(models.Model):
     Use_Flag = BooleanField(default=True)
