@@ -61,7 +61,7 @@
                 </li>
 
                 <!-- End Of Notification -->
-
+                {% comment %}
                 <li role="presentation" class="dropdown">
                     <a href="javascript:" class="dropdown-toggle info-number" data-toggle="dropdown"
                        aria-expanded="false">
@@ -120,7 +120,8 @@
                         </li>
                     </ul>
 
-
+                    {% endcomment %}
+                    
                     {% if request.path == '/messageinfo/' %}
                         <li>
                             <i class="fa fa-bell fa-2x" id="fa-bell" aria-hidden="true"></i>
