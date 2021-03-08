@@ -580,14 +580,15 @@ class ChapterInfo(models.Model):
     def assignment_count(self):
         return AssignmentInfo.objects.filter(Chapter_Code=self, Use_Flag=True).count()
 
+    def getStudentChapterStatus(self, user):
+        sessions = self.Course_Code.innings_of_this_course() & user.get_student_sessions()
+        status = self.getChapterStatus(assigned_session=sessions).lower()
+        return status
+
     def isStudentChapterActive(self, user):
         # User maybe assigned to the session in which the course is not assigned.
         # Therefore, we select session available in both the user sessions and the course sessions
         sessions = self.Course_Code.innings_of_this_course() & user.get_student_sessions()
-        # active_chapters = user.get_student_chapters(sessions=sessions, courseList=[self.Course_Code.pk], active=True)
-        # status = False
-        # if self.pk in [chapter.pk for chapter in active_chapters]:
-        #     status = True
         status = True if self.getChapterStatus(assigned_session=sessions).lower() == "active" else False
         return status
 

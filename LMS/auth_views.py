@@ -108,12 +108,25 @@ class TeacherChapterAuthMxnCls:
             'login')
 
 
+'''
+    Student Access Revoked. If,
+        Chapter Use_Flag Off
+        Chapter Upcoming
+'''
+def StudentChapterAuth(request, pk):
+    return 1 if all(x in ['active', 'expired'] for x in
+                    [get_object_or_404(ChapterInfo, pk=pk, Use_Flag=True).getStudentChapterStatus(
+                        request.user), ]) else returnResultFunc(request)
+
+
 class StudentChapterAuthMxnCls:
     def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs) if StudentCourseAuth(request,
-                                                                          kwargs.get(
-                                                                              'course')) == 1 else redirect('login')
-
+        if StudentCourseAuth(request, kwargs.get('course')) == 1:
+            return super().get(request, *args, **kwargs) if StudentChapterAuth(request,
+                                                                           kwargs.get(
+                                                                               'pk')) == 1 else redirect('login')
+        else:
+            return redirect('login')
 
 def ChapterAuth(request, pk):
     return 1 if get_object_or_404(ChapterInfo,
