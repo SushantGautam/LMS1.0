@@ -1889,8 +1889,8 @@
 <!-- Chapter Progress save feature -->
 {% if not connection_offline %}
     {% if '/students' in request.path %}
-        {% isCourseActive request.user course as iscourseactive %}
-        {% if iscourseactive %}
+        {% isChapterActive request.user chapter as ischapteractive %}
+        {% if ischapteractive %}
             <script>
             var chapterProgress;
             var currentPageUpdateOnServer = 0;
