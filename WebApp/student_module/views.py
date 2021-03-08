@@ -490,7 +490,8 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
                                          End_Date__gte=datetime_now,
                                          Session_Code__in=context['assigned_session']).exists():
             context['object'].active = True
-
+        else:
+            context['object'].active = False
         for question in context['Questions']:
             Answer = AssignAnswerInfo.objects.filter(
                 Student_Code=self.request.user.pk, Question_Code=question.id)
@@ -504,7 +505,8 @@ class AssignmentInfoDetailView(AssignmentInfoAuthMxnCls, StudentAssignmentAuthMx
         # print(context['AnsweredQuestion'])
         context['notAnswered'] = Question - AnsweredQuestion
         # context['Assignment_Code'] = get_object_or_404(AssignmentInfo, pk=self.kwargs.get('assignment'))
-        context['form'] = self.get_form()
+        if context['object'].active:
+            context['form'] = self.get_form()
         return context
 
 

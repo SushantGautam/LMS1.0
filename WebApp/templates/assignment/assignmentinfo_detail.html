@@ -482,19 +482,21 @@
                                             {% elif questions.Answer_Type == 'F' %}
 
                                                 <div class="form-group">
-                                                    <label for="id_Assignment_File{{ questions.id }}" class="">
-                                                        <span style="font-size: 10px; color: #721c24">
-                                                            {% trans 'Assignment File' %} ({% trans 'Max' %}: 10 MB) </span>
-                                                    </label>
+                                                    {% if object.active %}
+                                                        <label for="id_Assignment_File{{ questions.id }}" class="">
+                                                            <span style="font-size: 10px; color: #721c24">
+                                                                {% trans 'Assignment File' %} ({% trans 'Max' %}: 10 MB) </span>
+                                                        </label>
 
-                                                    <input type="file" name="Assignment_File"
-                                                           id="id_Assignment_File{{ questions.id }}"
-                                                           required/>
-                                                    <input type="hidden" value="{{ request.user.id }}"
-                                                           name="Student_Code"
-                                                           id="id_Student_Code{{ questions.id }}">
-                                                    <input type="hidden" value="{{ questions.id }}" name="Question_Code"
-                                                           id="id_Question_Code{{ questions.id }}">
+                                                        <input type="file" name="Assignment_File"
+                                                               id="id_Assignment_File{{ questions.id }}"
+                                                               required/>
+                                                        <input type="hidden" value="{{ request.user.id }}"
+                                                               name="Student_Code"
+                                                               id="id_Student_Code{{ questions.id }}">
+                                                        <input type="hidden" value="{{ questions.id }}" name="Question_Code"
+                                                               id="id_Question_Code{{ questions.id }}">
+                                                    {% endif %}
                                                 </div>
                                                 <div class="form-group text-center">
                                                     {% now "Y-m-d H:i" as todays_date %}
