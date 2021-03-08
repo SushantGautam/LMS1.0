@@ -2,20 +2,12 @@
     
 <div class="row">
     <div class="col-lg-9 col-md-6 col-sm-12">
-        <div class="row">
-            <div class="col-md-6 col-sm-12">
-                <h3 class="text-primary"> Quiz Detail</h3>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <div class="row">
-                    <div class="col-md-8 col-sm-8 text-right">
-                        {% if '/teachers' in request.path %}
-                        <a href="/teachers/quiz/marking/{{object.pk}}" class=" btn btn-sm btn-info  qts-button  active"
-                            role="button" aria-pressed="true">View Marking</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex justify-content-between mb-4">
+            <h3 class="text-primary"> Quiz Detail</h3>
+            {% if '/teachers' in request.path %}
+            <a href="/teachers/quiz/marking/{{object.pk}}" class=" btn btn-sm btn-info  qts-button  active" role="button"
+                aria-pressed="true">View Marking</a>
+            {% endif %}
         </div>
         <div class="accordion custom-accordion">
             <div class="accordion-row open">

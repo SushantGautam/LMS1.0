@@ -17,19 +17,19 @@
 
     {% if request.user.is_authenticated %}
     {% if not '/students' in request.path %}
-    <div class="media-right" style="margin-right: 15px;">
-        <a class="btn btn-light btn-square  custom-size-font " href="{% if '/teachers' in request.path %}
+    <div class="media-right mr-4">
+        <a class="btn btn-light custom-size-font " href="{% if '/teachers' in request.path %}
                         {% url 'teacher_create_topic' %}
                          {% elif '/forum' in request.path %}
                         /forum/topic/create
                          {% endif %}">
-            <i class="fa fa-fw fa-plus "></i> Sub Category
+            <i class="fa fa-fw fa-plus mr-2"></i> Sub Category
         </a>
     </div>
     {% endif %}
 
     <div class="media-right">
-        <a class="btn btn-primary btn-square btn-pulse" href="{% if '/teachers' in request.path %}
+        <a class="btn btn-primary btn-pulse" href="{% if '/teachers' in request.path %}
                         /teachers/forum/create_thread
                         {% elif '/students' in request.path %}
                         /students/forum/create_thread

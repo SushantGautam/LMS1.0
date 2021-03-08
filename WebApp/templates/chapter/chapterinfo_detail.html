@@ -403,14 +403,15 @@
                                 class="btn btn-default btn-on-3 btn-sm {% if pre_quiz.draft == False %}active{% endif %}"
                                 id="ActiveButton" style="text-transform: uppercase;">
                                 <input type="radio" value="1" name="pre-test-radio" id="id_pre-test-radio" 
-                                {% if pre_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
+                                {% if pre_quiz.draft == False %}checked{% endif %}>&nbsp;
+                                {% trans 'On' %}
                             </label>
                             <label
                                 class="btn btn-default btn-off-3 btn-sm {% if pre_quiz.draft == True %}active{% endif %}"
                                 id="ExpireButton" style="text-transform: uppercase;">
                                 <input type="radio" value="0" name="pre-test-radio" 
-                                {% if pre_quiz.draft == True %}checked{% endif %}>{%
-                                trans 'Off' %}
+                                {% if pre_quiz.draft == True %}checked{% endif %}>&nbsp;
+                                {% trans 'Off' %}
                             </label>
                         </div>
                         <input type="hidden" name="quiz_id" value="{{ pre_quiz.id }}">
@@ -471,14 +472,16 @@
                                 class="btn btn-default btn-on-3 btn-sm {% if post_quiz.draft == False %}active{% endif %}"
                                 id="ActiveButton" style="text-transform: uppercase;">
                                 <input type="radio" value="1" name="post-test-radio" id="id_post-test-radio" 
-                                {% if post_quiz.draft == False %}checked{% endif %}>{% trans 'On' %}
+                                {% if post_quiz.draft == False %}checked{% endif %}>
+                                &nbsp;{% trans 'On' %}
                             </label>
                             <label
                                 class="btn btn-default btn-off-3 btn-sm {% if post_quiz.draft == True %}active{% endif %}"
                                 id="ExpireButton" style="text-transform: uppercase;">
                                 <input type="radio" value="0" name="post-test-radio" 
-                                {% if post_quiz.draft == True %}checked{% endif %}>{%
-                                trans 'Off' %}
+                                {% if post_quiz.draft == True %}checked{% endif %}>
+                                &nbsp;
+                                {% trans 'Off' %}
                             </label>
                         </div>
                         <input type="hidden" name="quiz_id" value="{{ post_quiz.id }}">
