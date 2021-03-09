@@ -107,6 +107,7 @@ urlpatterns += (
          name='saquestion_remove_link'),
 
     path('quizfw/', views.QuizCreateWizard.as_view(), name='quizfw'),
+    path('quiz_single_page/', views.QuizCreateViewSinglePage.as_view(), name='quiz_single_page'),
     path('teachers/quizfw/', views.QuizCreateWizard.as_view(), name='teachers_quizfw'),
     path('get_course_chapter/', views.GetCourseChapter.as_view(),
          name='get_course_chapter'),

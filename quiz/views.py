@@ -708,6 +708,26 @@ class SAQuestionDetailView(DetailView):
     model = SA_Question
 
 
+class QuizCreateViewSinglePage(AdminAuthMxnCls, CreateView):
+    model = Quiz
+    form_class = QuizBasicInfoForm
+    template_name = 'quiz/quiz_update_basic_info.html'
+    success_url = reverse_lazy('quiz_list')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.cent_code = self.request.user.Center_Code
+        cleaned_data = form.cleaned_data
+        mcq = cleaned_data.pop('mcquestion')
+        tfq = cleaned_data.pop('tfquestion')
+        saq = cleaned_data.pop('saquestion')
+        self.object.save()
+        self.object.mcquestion.add(*mcq)
+        self.object.tfquestion.add(*tfq)
+        self.object.saquestion.add(*saq)
+
+        return super().form_valid(form)
+
 def SAQuestionDeleteView(request, pk):
     SA_Question.objects.filter(pk=pk).delete()
     return redirect("essayquestion_list")

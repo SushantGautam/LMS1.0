@@ -344,6 +344,10 @@ class QuizBasicInfoForm(forms.ModelForm):
                   'random_order', 'single_attempt', 'draft', 'exam_paper', 'duration', 'pass_mark', 'success_text',
                   'fail_text', 'negative_marking', 'negative_percentage']
 
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
+
     def clean(self):
         cleaned_data = super().clean()
         exam_val = cleaned_data.get("exam_paper")
@@ -352,6 +356,17 @@ class QuizBasicInfoForm(forms.ModelForm):
         time_val = cleaned_data.get("duration")
         pass_val = cleaned_data.get("pass_mark")
 
+        # Question Fields
+        # Check questions if only created.
+        if not self.instance.id:
+            mq = cleaned_data.get("mcquestion")
+            tq = cleaned_data.get("tfquestion")
+            eq = cleaned_data.get("saquestion")
+            if not (mq or tq or eq):
+                raise forms.ValidationError(
+                    "Please Select Atleast One Question"
+                )
+            # ----------------------------------------------------------------
         if exam_val:
             if not time_val:
                 raise forms.ValidationError(
@@ -369,11 +384,37 @@ class QuizBasicInfoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
+        course_id = kwargs.pop('course_id', None)
         super().__init__(*args, **kwargs)
-        self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
-        if my_obj.exam_paper:
-            # self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
-            self.fields['chapter_code'].widget.attrs['class'] = "readonly-field"
+
+        if not my_obj:
+            mcq_qs = MCQuestion.objects.filter(course_code=course_id) if course_id else MCQuestion.objects.all()
+            tfq_qs = TF_Question.objects.filter(course_code=course_id) if course_id else TF_Question.objects.all()
+            saq_qs = SA_Question.objects.filter(course_code=course_id) if course_id else SA_Question.objects.all()
+            self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+                queryset=mcq_qs,
+                required=False,
+                label="Multiple Choice Questions",
+                widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+            )
+            self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+                queryset=saq_qs,
+                required=False,
+                label="Short Answer Type Questions",
+                widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
+            )
+            self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+                queryset=tfq_qs,
+                required=False,
+                label="True/False Questions",
+                widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
+            )
+
+        if my_obj:
+            self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
+            if my_obj.exam_paper:
+                # self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
+                self.fields['chapter_code'].widget.attrs['class'] = "readonly-field"
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -385,18 +426,6 @@ class QuizBasicInfoForm(forms.ModelForm):
                 Column('chapter_code', css_class='form-group col-lg-4 md-6 sm-12 text-primary mb-0'),
                 css_class='form-row mb-3'
             ),
-            # Row(
-            #     Column(PrependedText('description', '<i class="fa fa-edit"></i>', rows='5'),
-            #            css_class='form-group col-md-4 mb-0 text-primary'
-            #            ),
-            #     Column(PrependedText('success_text', '<i class="fa fa-edit"></i>', rows='2'),
-            #            css_class='form-group text-primary col-md-4 mb-0'
-            #            ),
-            #     Column(PrependedText('fail_text', '<i class="fa fa-edit"></i>', rows='2'),
-            #            css_class='form-group text-primary col-md-4 mb-0'
-            #            ),
-            #     css_class='form-row'
-            # ),
             Row(
                 Column(PrependedText('description', '', rows='5'),
                        css_class='form-group col-lg-4 md-6 sm-12 mb-0 text-primary'
@@ -441,6 +470,18 @@ class QuizBasicInfoForm(forms.ModelForm):
             ),
             Row(
                 Column('negative_percentage', css_class='form-group col-md-12 mb-0 '),
+                css_class='form-row '
+            ),
+            Row(
+                Column('mcquestion', css_class='form-group col-md-12 mb-0 '),
+                css_class='form-row '
+            ),
+            Row(
+                Column('saquestion', css_class='form-group col-md-12 mb-0 '),
+                css_class='form-row '
+            ),
+            Row(
+                Column('tfquestion', css_class='form-group col-md-12 mb-0 '),
                 css_class='form-row '
             ),
             Row(
