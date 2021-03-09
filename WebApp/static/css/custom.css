@@ -332,3 +332,31 @@
   background-color: #3b5998;
   color: white;
 }
+
+/* forum profile card */
+.forum-profile-container{
+  position: relative;
+  transition: .5s ease-in;
+}
+
+.forum-profile-button{
+  position: absolute;
+  left: 33%;
+  top: 45%;
+  display: none;
+  transition:  .5s ease-in;
+}
+
+.forum-profile-container:hover{
+  background-color: #e9ecef;
+}
+
+.forum-profile-container:hover .profile_pic{
+  opacity: 0.5;
+}
+
+.forum-profile-container:hover .forum-profile-button{
+  display: inline;
+  opacity: 1;
+
+}

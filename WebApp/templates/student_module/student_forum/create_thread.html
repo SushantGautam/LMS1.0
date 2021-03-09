@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'student_home' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="{% url 'student_forum' %}">Forum</a></li>
 {% if fixed_nodegroup.0.title %}
 <li class="breadcrumb-item"><a
@@ -20,19 +21,14 @@
 
 
 {% block main_contain %}
-<div class="panel panel-default paper-shadow" data-z="2">
+<div class="panel panel-default">
     <div class="panel-body">
-
         <form method="post" action="{% url 'student_create_thread' %}">
             {% csrf_token %}
-
             <div class=" x-title">
                 <h2>Create Thread</h2>
-
-
             </div>
             <div class="ln_solid"></div>
-
             {% if not fixed_nodegroup %}
             <div id="div_id_node_group" class="form-group"><label for="id_node_group"
                     class="control-label  requiredField">
@@ -43,8 +39,8 @@
                         {% for c in node_group %}
                         <option id="{{ c.id }}" value="{{ c.id|capfirst }}">{{ c }}</option>
                         {% endfor %}
-
-                    </select></div>
+                    </select>
+                </div>
             </div>
             {% else %}
             <div id="div_id_node_group" class="form-group">
@@ -56,7 +52,6 @@
             {% endif %}
 
             {% if not topic %}
-
             <div id="div_id_topic" class="form-group"><label for="id_topic" class="control-label  requiredField">
                     SubCategory<span class="asteriskField">*</span> </label>
                 <div class="controls"><select name="topic" id="id_topic" required="" class="select form-control">
@@ -69,16 +64,12 @@
                         {% else %}
                         <option value="" selected="">---------</option>
                         {% for c in topics %}
-
                         <option class="{{ c.node_group.id }}" value="{{ c.id|capfirst }}">{{ c }}
                         </option>
-
-
                         {% endfor %}
                         {% endif %}
-
-
-                    </select></div>
+                    </select>
+                </div>
             </div>
             {% else %}
             <div id="div_id_node_group" class="form-group">
@@ -88,14 +79,11 @@
                     maxlength="30" readonly>
                 <input name="topic" id="id_topics" required="" value="{{ topic.pk }}" hidden></div>
             {% endif %}
-
-
-
-
             <div id="div_id_title" class="form-group"><label for="id_title" class="control-label  requiredField">
                     Title<span class="asteriskField">*</span> </label>
                 <div class="controls "><input type="text" autocomplete="off" name="title" id="id_title" required=""
-                        class="textinput textInput form-control" maxlength="120"></div>
+                        class="textinput textInput form-control" maxlength="120">
+                </div>
             </div>
 
             <div id="threadList">
@@ -103,10 +91,7 @@
 
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Description
-
-                    </h2>
-
+                    <h2>Description</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -118,7 +103,6 @@
                             <ul class="dropdown-menu">
                             </ul>
                         </div>
-
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i
                                     class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
@@ -140,7 +124,6 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="btn-group">
                             <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
                             <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i
@@ -199,13 +182,10 @@
 
                     <textarea name="content_raw" id="id_content_raw" style="display:none;"></textarea>
                 </div>
-
-
             </div>
 
-            <div class="form-group">
-                <div class="controls "><input type="submit" name="submit" value="Submit" class="btn btn-primary"
-                        id="submit-id-submit"></div>
+            <div class="my-3 text-center">
+                <input type="submit" name="submit" value="Submit" class="btn btn-primary" id="submit-id-submit">
             </div>
         </form>
     </div>

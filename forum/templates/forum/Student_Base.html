@@ -5,50 +5,32 @@
 
 
 {% block stylesheets %}
-
     <link rel="stylesheet" href="{% static 'css/forum.app.css' %}"/>
-
 {% endblock stylesheets %}
 
-
-
 {% block content %}
-    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
-
-    <br> <br>
-
     <div class="row">
-        <div class="col-md-8 col-sm-8 col-xs-12 col-lg-9">
+        <div class=" col-lg-9 col-md-8 col-sm-8 col-xs-12">
             {% block main_contain %}
             {% endblock %}
         </div>
 
-        <div class="col-md-4 col-sm-4 col-xs-12 col-lg-3">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
             <div class="st-pusher" id="content">
-
-                <div class="card1">
-
-                    <div class="form-group form-control-search searchField">
-                        <form role="search" action="{% url 'student_search_redirect' %}" class="form" style="position: relative">
-                            <input type="text" id="keywordInput" name="keyword" class="form-control"
-                                   value="{{ keyword }}"
-                                   placeholder="Type to search">
-
-                            <span class=" pull-right searchButton" style="position: absolute; right: 0px; top: 0px;">
-                                    <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
-                                            class="fa fa-search"></i>
-                                    </button>
-
-                                </span>
-
-                        </form>
-                    </div>
-
-
+                <div class="form-group form-control-search searchField">
+                    <form role="search" action="{% url 'student_search_redirect' %}" class="form" style="position: relative">
+                        <input type="text" id="keywordInput" name="keyword" class="form-control" value="{{ keyword }}"
+                            placeholder="Type to search">
+                    
+                        <span class=" pull-right searchButton" style="position: absolute; right: 0px; top: 0px;">
+                            <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    
+                    </form>
                 </div>
 
-                <div class="card text-center  border-0 bg-light" >
-                  <div class="card-body">
+                <div class="card" >
                         {% block widget_before %}{% endblock %}
                         {% if request.user.is_authenticated %}
                             {% include 'student_module/student_forum/widgets/authenticated_user_panel.html' %}
@@ -57,26 +39,22 @@
                         {% endif %}
 
                         {% block widget_after %}{% endblock %}
-                  </div>
                 </div>
 
                 <div class="card">
                     <ul class="list-group list-group-flush">
                         <h4 class="panel-title" style="padding: 10px 30px;">Categories</h4>
                         {% for nodegroup in node_groups %}
-
-                            <li class="list-group-item
-                    {% if '/nodegroup/' in request.path %}
-                        {% if nodegroup.pk|stringformat:"i" in request.path %}
-                            active
-                        {% endif %}
-                    {% endif %}">
-
-                                <a href="{% url 'student_nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}"
-                                   class="node_group_list">
+                            <li class="list-group-item font-weight-bold
+                                                {% if '/nodegroup/' in request.path %}
+                                                    {% if nodegroup.pk|stringformat:'i' in request.path %}
+                                                        active
+                                                    {% endif %}
+                                                {% endif %}">
+                            
+                                <a href="{% url 'student_nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}" class="node_group_list text-primary">
                                     {{ nodegroup.title }}</a>
                             </li>
-
                         {% endfor %}
                     </ul>
                 </div>
@@ -85,7 +63,8 @@
     </div>
 {% endblock %}
 
-{% block customjss %}
+{% block javascript %}
+    <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'vendorsx/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js' %}"></script>
     <script src="{% static 'vendorsx/jquery.hotkeys/jquery.hotkeys.js' %}"></script>
     <script src="{% static 'vendorsx/google-code-prettify/src/prettify.js' %}"></script>
