@@ -1,10 +1,8 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {{ form.media }}
-{% block stylesheets %}
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
-{% endblock stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 
 {% block content %}
 <div class="col-12 text-center">
@@ -28,6 +26,8 @@
   <script src=" {% static 'vendors/nprogress/nprogress.js' %}"></script>
   <script src=" {% static 'vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
   <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
+  <script src="{% static 'build/js/CustomSelectFilter2.js' %}"></script>
+
   <script>
       $('label').addClass("quiz-add-label");
       $(document).ready(function () {
