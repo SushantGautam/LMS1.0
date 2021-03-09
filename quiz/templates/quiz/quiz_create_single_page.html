@@ -1,0 +1,127 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="col-12 text-center">
+<h2 class="text-primary">Edit {{ quiz.title }}</h2>
+</div>
+  <form class="py-3" action="{% url 'quiz_single_page' %}" method="post" onsubmit="return validateForm()">
+    {{ form.non_field_errors }}
+    <!-- {#      {{ wizard.form|crispy }}#} -->
+    {% crispy form %}
+  </form>
+  <style>
+      .custom-background-color{
+          background-color: white;
+          padding: 15px ;
+      }
+  </style>
+{% endblock %}
+
+{% block javascript %}
+  <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+  <script src=" {% static 'vendors/nprogress/nprogress.js' %}"></script>
+  <script src=" {% static 'vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+  <script src=" {% static 'duration_picker/bootstrap-duration-picker.js' %}"></script>
+  <script>
+      $('label').addClass("quiz-add-label");
+      $(document).ready(function () {
+          if ($("#id_exam_paper").is(':checked')) {
+              $("#div_id_duration").show();
+              $("#div_id_pass_mark").show();
+          } else {
+              $("#div_id_duration").hide();
+              $("#div_id_pass_mark").hide();
+          }
+          $("#test_error").hide();
+          $.ajax({
+              type: "GET",
+              data: {'course_id': $('#id_course_code').val()},
+              url: "{% url 'get_course_chapter' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $('#id_chapter_code').empty();
+                  $.each(data, function (key, value) {
+                      $('#id_chapter_code').append($("<option></option>").attr("value", key).text(value));
+                  });
+                  if ('{{ form.chapter_code.value }}' != 'None') {
+                      $('#id_chapter_code').val({{ form.chapter_code.value }});
+                  }
+              }
+          });
+      });
+      $('#id_duration').durationPicker({
+          showDays: false,
+      });
+
+      //forms.py cannot send disabled otherwise, it won't update fields when changed.
+      // readonly can be set to input only, checkbox cannot be set readonly.
+      $('.readonly-field').each(function () {
+          $(this).removeClass('readonly-field');
+          $(this).prop('disabled', 'disabled')
+      })
+      $("#id_exam_paper").change(function () {
+          if (this.checked) {
+              {#$('#id_single_attempt').prop('disabled', 'disabled')#}
+              $('#id_chapter_code').prop('disabled', 'disabled')
+              $('#id_single_attempt').prop('checked', 'checked')
+              $("#div_id_duration").show();
+              $("#div_id_pass_mark").show();
+          } else {
+              {#$('#id_single_attempt').removeAttr('disabled readonly')#}
+              $('#id_chapter_code').removeAttr('disabled readonly');
+              $('#id_single_attempt').prop('checked', false);
+              $("#div_id_duration").hide();
+              $("#div_id_pass_mark").hide();
+          }
+      });
+
+      function validateForm() {
+          if ($("#id_exam_paper").is(':checked')) {
+              if ($("#id_pre_test").is(':checked') || $("#id_post_test").is(':checked')) {
+                  $("#test_error").show();
+                  $("#test_error").html("Exam cannot be pre or post test.");
+                  return false;
+              }
+          } else if (!($("#id_pre_test").is(':checked') || $("#id_post_test").is(':checked'))) {
+              $("#test_error").show();
+              $("#test_error").html("Please select at least one test type.");
+              return false;
+          }
+      }
+
+      $('#id_course_code').change(function () {
+          $.ajax({
+              type: "GET",
+              data: {'course_id': $(this).val()},
+              url: "{% url 'get_course_chapter' %}",  // URL to your view that serves new info
+              success: function (data) {
+                  $('#id_chapter_code').empty();
+                  $.each(data, function (key, value) {
+                      $('#id_chapter_code').append($("<option></option>").attr("value", key).text(value));
+                  });
+
+              }
+          });
+      });
+
+      $(document).ready(function () {
+          checkNegativeMarking($("#id_negative_marking"))
+          $("#id_negative_marking").on('change', function () {
+              checkNegativeMarking($(this))
+          });
+      })
+
+      function checkNegativeMarking($this) {
+          if ($this[0].checked) {
+              $("#div_id_negative_percentage").show();
+          } else {
+              $("#div_id_negative_percentage").hide();
+          }
+      }
+  </script>
+{% endblock javascript %}

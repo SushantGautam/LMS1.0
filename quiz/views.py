@@ -711,7 +711,7 @@ class SAQuestionDetailView(DetailView):
 class QuizCreateViewSinglePage(AdminAuthMxnCls, CreateView):
     model = Quiz
     form_class = QuizBasicInfoForm
-    template_name = 'quiz/quiz_update_basic_info.html'
+    template_name = 'quiz/quiz_create_single_page.html'
     success_url = reverse_lazy('quiz_list')
 
     def form_valid(self, form):

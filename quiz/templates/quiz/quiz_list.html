@@ -416,7 +416,7 @@
     $('#create_quiz_modal_btn').on('click', function () {
         $.ajax({
             type: "GET",
-            url: "{% url 'quizfw' %}",  // URL to your view that serves new info
+            url: "{% url 'quiz_single_page' %}",  // URL to your view that serves new info
             success: function (response) {
                 $('#create_quiz_modal_body').empty();
                 $('#create_quiz_modal_body').append(response);
