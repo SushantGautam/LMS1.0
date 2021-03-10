@@ -32,11 +32,11 @@
       <tr>
         <td>
           {% if '/teachers' in request.path %}
-          <a href="{% url 'teacher_quiz_detail' pk=object.id %}">{{ object.title }}</a>
+          <a href="{% url 'teacher_quiz_detail' pk=object.id %}" class="text-primary font-weight-bold">{{ object.title }}</a>
           {% elif '/students' in request.path %}
           {{ object.title }}
           {% else %}
-          <a href="{% url 'quiz_detail' pk=object.id %}">{{ object.title }}</a>
+          <a href="{% url 'quiz_detail' pk=object.id %}" class="text-primary font-weight-bold">{{ object.title }}</a>
           {% endif %}
         </td>
         <td>{{ object.course_code.Course_Name }}</td>

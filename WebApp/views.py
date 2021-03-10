@@ -536,7 +536,7 @@ class MemberInfoListViewAjax(BaseDatatableView):
             return row.get_user_type
         elif column == 'action':
             return '<a class="btn btn-sm btn-info" href="%s">Edit</a>  \
-                    <a class="btn btn-sm btn-danger text-white confirm-delete" id="%s">Delete</a>' % (
+                    <a class="btn btn-sm btn-danger text-white confirm-delete ml-2" id="%s">Delete</a>' % (
                 row.get_update_url(), row.id)
         else:
             return super(MemberInfoListViewAjax, self).render_column(row, column)

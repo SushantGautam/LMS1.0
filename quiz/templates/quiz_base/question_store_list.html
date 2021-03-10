@@ -7,7 +7,7 @@
         <h2 class="text-primary">{% trans "Question Store" %}</h2>
     </div>
     <div class="col-lg-4 col-md-4 col-sm-12 btn-createnew">
-        <button class="btn btn-outline-primary pull-right" id="create_department-btn" data-toggle="modal"
+        <button class="btn btn-primary pull-right" id="create_department-btn" data-toggle="modal"
             data-target="#department-modal">{% trans "Create" %}</button>
     </div>
 </div>
@@ -22,7 +22,6 @@
                 <th>{% trans "No. Of Assigned Quiz" %}</th>
                 <th>{% trans "Created Date" %}</th>
                 <th>{% trans "Score" %}</th>
-                
                 <th>{% trans "Actions" %}</th>
             </tr>
         </thead>
@@ -52,12 +51,12 @@
                     data-target="#department-modal" value="{{ object.pk }}">
                     <i class="fa fa-edit"></i>
                 </button>
+                &nbsp;
                 <a class="btn btn-danger btn-floating" href="{% url 'departmentinfo_delete' pk=object.pk %}"
                     onclick="return confirm('Are you sure you want to delete the Department:\n'+ '{{ object.Department_Name|safe }}' +'\n\nThis cannot be undone.')">
                     <i class="fa fa-trash"></i>
                 </a>
             </td>
-           
         </tr>
         {% endfor %}
     </table>
@@ -69,7 +68,7 @@
 <!-- Modal -->
 <div class="modal fade" id="department-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
                 <h5 class="modal-title text-primary font-weight-bold" id="exampleModalLabel">Create Question</h5>
@@ -78,8 +77,6 @@
                 </button>
             </div>
             <div class="modal-body modal-auto" id="quiz_form_ajax" style="max-height: 90vh; overflow:auto">
-
-
                 <!-- Bootstrap -->
                 <link href="/static/admin/css/widgets.css" type="text/css" media="all" rel="stylesheet">
                 <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
@@ -95,7 +92,6 @@
                         margin-left: 20%;
                         width: auto !important;
                     }
-                
                     .selector-available,
                     .selector-chosen {
                         width: 280px !important;
@@ -118,100 +114,80 @@
                         font-weight: bold;
                     }
                 </style>
-                <form method="post" id="quiz_form_post" onsubmit="return validateForm()" action="/quiz/create/?chapter_id=None&amp;course_id=7&amp;test_type=exam_paper">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="166YsJBU8MnYsEwIekkQ60H20looKDyxOOHj3CppfV00NeHzQvkwrdXPGszfDiAY">
+                <form method="post" id="quiz_form_post" onsubmit="return validateForm()"
+                    action="/quiz/create/?chapter_id=None&amp;course_id=7&amp;test_type=exam_paper">
+                    <input type="hidden" name="csrfmiddlewaretoken"
+                        value="166YsJBU8MnYsEwIekkQ60H20looKDyxOOHj3CppfV00NeHzQvkwrdXPGszfDiAY">
                     <div class="title_div mb-4">
-                        
-                
-                
-                    
-                    <div id="div_id_title" class="form-group">
-                        
+                        <div id="div_id_title" class="form-group">
                             <label for="id_title" class="control-label  requiredField">
                                 Title<span class="asteriskField">*</span>
                             </label>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    <input type="text" name="title" value="Bahasa Inggris: Quiz 02/07/21 16:27" class="textinput textInput form-control" required="" id="id_title">
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                
-                
-                
-                                </div>
-                            
-                        
-                    </div>
-                    
-                
-                
+                            <div class="controls ">
+                                <input type="text" name="title" value="Bahasa Inggris: Quiz 02/07/21 16:27"
+                                    class="textinput textInput form-control" required="" id="id_title">
+                            </div>
+                        </div>
                     </div>
                     <div id="accordion">
                         <div class="card">
                             <div class="card-header border-0" id="headingOne">
                                 <h5 class="mb-0">
-                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" type="button" class="text-dark">
+                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                                        aria-controls="collapseOne" type="button" class="text-dark">
                                         <i class="fa fa-list"></i>
                                         Manage Multiple Choice Questions
                                     </a>
                                 </h5>
                             </div>
-                
                             <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                                 <div class="card-body">
-                                    
-                
-                
-                    
-                    <div id="div_id_mcquestion" class="form-group">
-                        
-                            <div class="col-md-12 col-sm-12 col-xs-12 text-center"><label for="id_mcquestion" class="control-label ">
-                                Multiple Choice Questions
-                            </label></div><div class="col-md-12 col-sm-12 col-xs-12 text-center"><button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="mcq_create_button" data-toggle="modal" data-target="#question_form_popup">Add Multiple Choice Question
-                            </button></div>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                
-                
-                
-                                <div class="selector"><div class="selector-available"><h2>Available MCQs <span class="help help-tooltip help-icon" title="This is the list of available MCQs. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span></h2><p id="id_mcquestion_filter" class="selector-filter"><label for="id_mcquestion_input"><span class="help-tooltip search-label-icon" title="Type into this box to filter down the list of available MCQs."></span></label> <input type="text" placeholder="Filter" id="id_mcquestion_input"></p><select name="mcquestion_old" class="filtered" id="id_mcquestion_from" multiple="" data-field-name="MCQs" data-is-stacked="0"><option value="10" title="bahasa inggrisnya siswa apa?">bahasa inggrisnya siswa apa?</option><option value="11" title="bahasa inggrisnya siswa apa?">bahasa inggrisnya siswa apa?</option></select><a title="Click to choose all MCQs at once." href="#" id="id_mcquestion_add_all_link" class="selector-chooseall active">Choose all</a></div><ul class="selector-chooser"><li><a title="Choose" href="#" id="id_mcquestion_add_link" class="selector-add">Choose</a></li><li><a title="Remove" href="#" id="id_mcquestion_remove_link" class="selector-remove">Remove</a></li></ul><div class="selector-chosen"><h2>Chosen MCQs <span class="help help-tooltip help-icon" title="This is the list of chosen MCQs. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span></h2><select id="id_mcquestion_to" multiple="multiple" size="0" name="mcquestion" class="filtered" style="height: 241.8px;"></select><a title="Click to remove all chosen MCQs at once." href="#" id="id_mcquestion_remove_all_link" class="selector-clearall">Remove all</a></div></div></div>
-                            
-                        
-                    </div>
-                    
-                
-                
+                                    <div id="div_id_mcquestion" class="form-group">
+                                        <div class="col-12 text-center">
+                                            <label for="id_mcquestion" class="control-label">
+                                                Multiple Choice Questions
+                                            </label>
+                                        </div>
+                                        <div class="col-12 text-center"><button type="button"
+                                                class="btn btn-sm btn-outline-secondary qts-button mb-5" id="mcq_create_button"
+                                                data-toggle="modal" data-target="#question_form_popup">Add Multiple Choice Question
+                                            </button></div>
+                                        <div class="controls ">
+                                            <div class="selector">
+                                                <div class="selector-available">
+                                                    <h2>Available MCQs <span class="help help-tooltip help-icon"
+                                                            title="This is the list of available MCQs. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span>
+                                                    </h2>
+                                                    <p id="id_mcquestion_filter" class="selector-filter"><label
+                                                            for="id_mcquestion_input"><span class="help-tooltip search-label-icon"
+                                                                title="Type into this box to filter down the list of available MCQs."></span></label>
+                                                        <input type="text" placeholder="Filter" id="id_mcquestion_input"></p><select
+                                                        name="mcquestion_old" class="filtered" id="id_mcquestion_from" multiple=""
+                                                        data-field-name="MCQs" data-is-stacked="0">
+                                                        <option value="10" title="bahasa inggrisnya siswa apa?">bahasa inggrisnya siswa
+                                                            apa?</option>
+                                                        <option value="11" title="bahasa inggrisnya siswa apa?">bahasa inggrisnya siswa
+                                                            apa?</option>
+                                                    </select><a title="Click to choose all MCQs at once." href="#"
+                                                        id="id_mcquestion_add_all_link" class="selector-chooseall active">Choose all</a>
+                                                </div>
+                                                <ul class="selector-chooser">
+                                                    <li><a title="Choose" href="#" id="id_mcquestion_add_link"
+                                                            class="selector-add">Choose</a></li>
+                                                    <li><a title="Remove" href="#" id="id_mcquestion_remove_link"
+                                                            class="selector-remove">Remove</a></li>
+                                                </ul>
+                                                <div class="selector-chosen">
+                                                    <h2>Chosen MCQs <span class="help help-tooltip help-icon"
+                                                            title="This is the list of chosen MCQs. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span>
+                                                    </h2><select id="id_mcquestion_to" multiple="multiple" size="0" name="mcquestion"
+                                                        class="filtered" style="height: 241.8px;"></select><a
+                                                        title="Click to remove all chosen MCQs at once." href="#"
+                                                        id="id_mcquestion_remove_all_link" class="selector-clearall">Remove all</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -221,111 +197,112 @@
                         <div class="card">
                             <div class="card-header border-0" id="headingTwo">
                                 <h5 class="mb-0">
-                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" type="button" class="text-dark">
+                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+                                        aria-controls="collapseTwo" type="button" class="text-dark">
                                         <i class="fa fa-bookmark "></i>
                                         Manage True/False Questions
                                     </a>
                                 </h5>
                             </div>
-                
                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                 <div class="card-body">
-                                    
-                
-                
-                    
-                    <div id="div_id_tfquestion" class="form-group">
-                        
-                            <div class="col-md-12 col-sm-12 col-xs-12 text-center"><label for="id_tfquestion" class="control-label ">
-                                True/False Questions
-                            </label></div><div class="col-md-12 col-sm-12 col-xs-12 text-center"><button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="tfq_create_button" data-toggle="modal" data-target="#question_form_popup">Add True/False question
-                            </button></div>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                
-                
-                
-                                <div class="selector"><div class="selector-available"><h2>Available TFQs <span class="help help-tooltip help-icon" title="This is the list of available TFQs. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span></h2><p id="id_tfquestion_filter" class="selector-filter"><label for="id_tfquestion_input"><span class="help-tooltip search-label-icon" title="Type into this box to filter down the list of available TFQs."></span></label> <input type="text" placeholder="Filter" id="id_tfquestion_input"></p><select name="tfquestion_old" class="filtered" id="id_tfquestion_from" multiple="" data-field-name="TFQs" data-is-stacked="0"></select><a title="Click to choose all TFQs at once." href="#" id="id_tfquestion_add_all_link" class="selector-chooseall">Choose all</a></div><ul class="selector-chooser"><li><a title="Choose" href="#" id="id_tfquestion_add_link" class="selector-add">Choose</a></li><li><a title="Remove" href="#" id="id_tfquestion_remove_link" class="selector-remove">Remove</a></li></ul><div class="selector-chosen"><h2>Chosen TFQs <span class="help help-tooltip help-icon" title="This is the list of chosen TFQs. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span></h2><select id="id_tfquestion_to" multiple="multiple" size="0" name="tfquestion" class="filtered" style="height: 241.8px;"></select><a title="Click to remove all chosen TFQs at once." href="#" id="id_tfquestion_remove_all_link" class="selector-clearall">Remove all</a></div></div></div>
-                            
-                        
-                    </div>
-                    
-                
-                
+                                    <div id="div_id_tfquestion" class="form-group">
+                                        <div class="col-12 text-center"><label for="id_tfquestion" class="control-label ">
+                                                True/False Questions
+                                            </label></div>
+                                        <div class="col-12 text-center"><button type="button"
+                                                class="btn btn-sm btn-outline-secondary qts-button mb-5" id="tfq_create_button"
+                                                data-toggle="modal" data-target="#question_form_popup">Add True/False question
+                                            </button></div>
+                                        <div class="controls ">
+                                            <div class="selector">
+                                                <div class="selector-available">
+                                                    <h2>Available TFQs <span class="help help-tooltip help-icon"
+                                                            title="This is the list of available TFQs. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span>
+                                                    </h2>
+                                                    <p id="id_tfquestion_filter" class="selector-filter"><label
+                                                            for="id_tfquestion_input"><span class="help-tooltip search-label-icon"
+                                                                title="Type into this box to filter down the list of available TFQs."></span></label>
+                                                        <input type="text" placeholder="Filter" id="id_tfquestion_input"></p><select
+                                                        name="tfquestion_old" class="filtered" id="id_tfquestion_from" multiple=""
+                                                        data-field-name="TFQs" data-is-stacked="0"></select><a
+                                                        title="Click to choose all TFQs at once." href="#"
+                                                        id="id_tfquestion_add_all_link" class="selector-chooseall">Choose all</a>
+                                                </div>
+                                                <ul class="selector-chooser">
+                                                    <li><a title="Choose" href="#" id="id_tfquestion_add_link"
+                                                            class="selector-add">Choose</a></li>
+                                                    <li><a title="Remove" href="#" id="id_tfquestion_remove_link"
+                                                            class="selector-remove">Remove</a></li>
+                                                </ul>
+                                                <div class="selector-chosen">
+                                                    <h2>Chosen TFQs <span class="help help-tooltip help-icon"
+                                                            title="This is the list of chosen TFQs. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span>
+                                                    </h2><select id="id_tfquestion_to" multiple="multiple" size="0" name="tfquestion"
+                                                        class="filtered" style="height: 241.8px;"></select><a
+                                                        title="Click to remove all chosen TFQs at once." href="#"
+                                                        id="id_tfquestion_remove_all_link" class="selector-clearall">Remove all</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                
                     <div id="accordion">
                         <div class="card">
                             <div class="card-header border-0" id="headingThree">
                                 <h5 class="mb-0">
-                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree" type="button" class="text-dark">
+                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseThree"
+                                        aria-expanded="true" aria-controls="collapseThree" type="button" class="text-dark">
                                         <i class="fa fa-align-right"></i>
                                         Manage Short Answer Type Questions
                                     </a>
                                 </h5>
                             </div>
-                
                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                                 <div class="card-body">
-                                    
-                
-                
-                    
-                    <div id="div_id_saquestion" class="form-group">
-                        
-                            <div class="col-md-12 col-sm-12 col-xs-12 text-center"><label for="id_saquestion" class="control-label ">
-                                Short Answer Type Questions
-                            </label></div><div class="col-md-12 col-sm-12 col-xs-12 text-center"><button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="saq_create_button" data-toggle="modal" data-target="#question_form_popup">Add Short Answer question
-                            </button></div>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                
-                
-                
-                                <div class="selector"><div class="selector-available"><h2>Available SAQs <span class="help help-tooltip help-icon" title="This is the list of available SAQs. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span></h2><p id="id_saquestion_filter" class="selector-filter"><label for="id_saquestion_input"><span class="help-tooltip search-label-icon" title="Type into this box to filter down the list of available SAQs."></span></label> <input type="text" placeholder="Filter" id="id_saquestion_input"></p><select name="saquestion_old" class="filtered" id="id_saquestion_from" multiple="" data-field-name="SAQs" data-is-stacked="0"></select><a title="Click to choose all SAQs at once." href="#" id="id_saquestion_add_all_link" class="selector-chooseall">Choose all</a></div><ul class="selector-chooser"><li><a title="Choose" href="#" id="id_saquestion_add_link" class="selector-add">Choose</a></li><li><a title="Remove" href="#" id="id_saquestion_remove_link" class="selector-remove">Remove</a></li></ul><div class="selector-chosen"><h2>Chosen SAQs <span class="help help-tooltip help-icon" title="This is the list of chosen SAQs. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span></h2><select id="id_saquestion_to" multiple="multiple" size="0" name="saquestion" class="filtered" style="height: 241.8px;"></select><a title="Click to remove all chosen SAQs at once." href="#" id="id_saquestion_remove_all_link" class="selector-clearall">Remove all</a></div></div></div>
-                            
-                        
-                    </div>
-                    
-                
-                
+                                    <div id="div_id_saquestion" class="form-group">
+                                        <div class="col-12 text-center"><label for="id_saquestion" class="control-label ">
+                                                Short Answer Type Questions
+                                            </label></div>
+                                        <div class="col-12 text-center"><button type="button"
+                                                class="btn btn-sm btn-outline-secondary qts-button mb-5" id="saq_create_button"
+                                                data-toggle="modal" data-target="#question_form_popup">Add Short Answer question
+                                            </button></div>
+                                        <div class="controls ">
+                                            <div class="selector">
+                                                <div class="selector-available">
+                                                    <h2>Available SAQs <span class="help help-tooltip help-icon"
+                                                            title="This is the list of available SAQs. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span>
+                                                    </h2>
+                                                    <p id="id_saquestion_filter" class="selector-filter"><label
+                                                            for="id_saquestion_input"><span class="help-tooltip search-label-icon"
+                                                                title="Type into this box to filter down the list of available SAQs."></span></label>
+                                                        <input type="text" placeholder="Filter" id="id_saquestion_input"></p><select
+                                                        name="saquestion_old" class="filtered" id="id_saquestion_from" multiple=""
+                                                        data-field-name="SAQs" data-is-stacked="0"></select><a
+                                                        title="Click to choose all SAQs at once." href="#"
+                                                        id="id_saquestion_add_all_link" class="selector-chooseall">Choose all</a>
+                                                </div>
+                                                <ul class="selector-chooser">
+                                                    <li><a title="Choose" href="#" id="id_saquestion_add_link"
+                                                            class="selector-add">Choose</a></li>
+                                                    <li><a title="Remove" href="#" id="id_saquestion_remove_link"
+                                                            class="selector-remove">Remove</a></li>
+                                                </ul>
+                                                <div class="selector-chosen">
+                                                    <h2>Chosen SAQs <span class="help help-tooltip help-icon"
+                                                            title="This is the list of chosen SAQs. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span>
+                                                    </h2><select id="id_saquestion_to" multiple="multiple" size="0" name="saquestion"
+                                                        class="filtered" style="height: 241.8px;"></select><a
+                                                        title="Click to remove all chosen SAQs at once." href="#"
+                                                        id="id_saquestion_remove_all_link" class="selector-clearall">Remove all</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -334,281 +311,101 @@
                         <div class="card">
                             <div class="card-header border-0" id="headingFour">
                                 <h5 class="mb-0">
-                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour" type="button" class="text-dark">
+                                    <a href="javascript:void(0)" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true"
+                                        aria-controls="collapseFour" type="button" class="text-dark">
                                         <i class="fa fa-align-right"></i>
                                         More Options
                                     </a>
                                 </h5>
                             </div>
-                
                             <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
                                 <div class="card-body">
-                                    
-                
-                
-                    
-                    <div id="div_id_description" class="form-group">
-                        
-                            <label for="id_description" class="control-label ">
-                                Description
-                            </label>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    <textarea name="description" cols="40" rows="4" class="textarea form-control" id="id_description"></textarea>
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                    
-                        <p id="hint_id_description" class="help-block">a description of the quiz</p>
-                    
-                
-                
-                
-                
-                                </div>
-                            
-                        
-                    </div>
-                    
-                
-                
-                                    
-                
-                
-                    
-                    <div id="div_id_duration" class="form-group">
-                        
-                            <label for="id_duration" class="control-label ">
-                                Time limit for quiz
-                            </label>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    <input type="number" name="duration" value="1800" class="numberinput form-control" id="id_duration" style="display: none;"><div class="bdp-input"><div class="bdp-block hidden"><input class="form-control input-sm" type="number" min="0" value="0"><div id="bdp-days-label">days</div></div><div class="bdp-block "><input class="form-control input-sm" type="number" min="0" value="0" max="99999"><div id="bdp-hours-label">hours</div></div><div class="bdp-block "><input class="form-control input-sm" type="number" min="0" value="0" max="59"><div id="bdp-minutes-label">minutes</div></div><div class="bdp-block hidden"><input class="form-control input-sm" type="number" min="0" value="0" max="59"><div id="bdp-seconds-label">seconds</div></div></div>
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                    
-                        <p id="hint_id_duration" class="help-block">Time limit for quiz</p>
-                    
-                
-                
-                
-                
-                                </div>
-                            
-                        
-                    </div>
-                    
-                
-                
-                                    
-                
-                
-                    
-                    <div id="div_id_pass_mark" class="form-group">
-                        
-                            <label for="id_pass_mark" class="control-label ">
-                                Pass Mark
-                            </label>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    <input type="number" name="pass_mark" value="40" class="numberinput form-control" id="id_pass_mark">
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                    
-                        <p id="hint_id_pass_mark" class="help-block">Percentage required to pass exam.</p>
-                    
-                
-                
-                
-                
-                                </div>
-                            
-                        
-                    </div>
-                    
-                
-                
-                                    
-                
-                
-                    
-                        <div class="form-group">
-                        
-                    
-                    <div id="div_id_negative_marking" class="checkbox">
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <label for="id_negative_marking" class="">
-                                    <input type="checkbox" name="negative_marking" class="checkboxinput" id="id_negative_marking">
-                                    Negative Marking
-                                </label>
-                                
-                
-                
-                    
-                
-                
-                
-                
-                    
-                    
-                        <p id="hint_id_negative_marking" class="help-block">If checked, incorrect answers will have negative marking</p>
-                    
-                
-                
-                
-                
-                            
-                        
-                    </div>
-                    
-                        
-                        </div>
-                    
-                
-                
-                                    
-                
-                
-                    
-                    <div id="div_id_negative_percentage" class="form-group" style="display: none;">
-                        
-                            <label for="id_negative_percentage" class="control-label ">
-                                Negative Marking Percentage
-                            </label>
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <div class="controls ">
-                                    <input type="number" name="negative_percentage" value="0" class="numberinput form-control" id="id_negative_percentage">
-                                    
-                
-                
-                    
-                
-                
-                
-                
-                    
-                    
-                        <p id="hint_id_negative_percentage" class="help-block">Percentage of total marks to use for negative marking</p>
-                    
-                
-                
-                
-                
-                                </div>
-                            
-                        
-                    </div>
-                    
-                
-                
-                                    
-                
-                
-                    
-                        <div class="form-group">
-                        
-                    
-                    <div id="div_id_random_order" class="checkbox">
-                        
-                
-                        
-                
-                        
-                
-                        
-                            
-                                <label for="id_random_order" class="">
-                                    <input type="checkbox" name="random_order" class="checkboxinput" id="id_random_order">
-                                    Random Order
-                                </label>
-                                
-                
-                
-                    
-                
-                
-                
-                
-                    
-                    
-                        <p id="hint_id_random_order" class="help-block">Display the questions in a random </p>
-                    
-                
-                
-                
-                
-                            
-                        
-                    </div>
-                    
-                        
-                        </div>
-                    
-                
-                
+                                    <div id="div_id_description" class="form-group">
+                                        <label for="id_description" class="control-label ">
+                                            Description
+                                        </label>
+                                        <div class="controls ">
+                                            <textarea name="description" cols="40" rows="4" class="textarea form-control"
+                                                id="id_description"></textarea>
+                                            <p id="hint_id_description" class="help-block">a description of the quiz</p>
+                                        </div>
+                                    </div>
+                                    <div id="div_id_duration" class="form-group">
+                                        <label for="id_duration" class="control-label ">
+                                            Time limit for quiz
+                                        </label>
+                                        <div class="controls ">
+                                            <input type="number" name="duration" value="1800" class="numberinput form-control"
+                                                id="id_duration" style="display: none;">
+                                            <div class="bdp-input">
+                                                <div class="bdp-block hidden"><input class="form-control input-sm" type="number" min="0"
+                                                        value="0">
+                                                    <div id="bdp-days-label">days</div>
+                                                </div>
+                                                <div class="bdp-block "><input class="form-control input-sm" type="number" min="0"
+                                                        value="0" max="99999">
+                                                    <div id="bdp-hours-label">hours</div>
+                                                </div>
+                                                <div class="bdp-block "><input class="form-control input-sm" type="number" min="0"
+                                                        value="0" max="59">
+                                                    <div id="bdp-minutes-label">minutes</div>
+                                                </div>
+                                                <div class="bdp-block hidden"><input class="form-control input-sm" type="number" min="0"
+                                                        value="0" max="59">
+                                                    <div id="bdp-seconds-label">seconds</div>
+                                                </div>
+                                            </div>
+                                            <p id="hint_id_duration" class="help-block">Time limit for quiz</p>
+                                        </div>
+                                    </div>
+                                    <div id="div_id_pass_mark" class="form-group">
+                                        <label for="id_pass_mark" class="control-label ">
+                                            Pass Mark
+                                        </label>
+                                        <div class="controls ">
+                                            <input type="number" name="pass_mark" value="40" class="numberinput form-control"
+                                                id="id_pass_mark">
+                                            <p id="hint_id_pass_mark" class="help-block">Percentage required to pass exam.</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div id="div_id_negative_marking" class="checkbox">
+                                            <label for="id_negative_marking" class="">
+                                                <input type="checkbox" name="negative_marking" class="checkboxinput"
+                                                    id="id_negative_marking">
+                                                Negative Marking
+                                            </label>
+                                            <p id="hint_id_negative_marking" class="help-block">If checked, incorrect answers will have
+                                                negative marking</p>
+                                        </div>
+                                    </div>
+                                    <div id="div_id_negative_percentage" class="form-group" style="display: none;">
+                                        <label for="id_negative_percentage" class="control-label ">
+                                            Negative Marking Percentage
+                                        </label>
+                                        <div class="controls ">
+                                            <input type="number" name="negative_percentage" value="0" class="numberinput form-control"
+                                                id="id_negative_percentage">
+                                            <p id="hint_id_negative_percentage" class="help-block">Percentage of total marks to use for
+                                                negative marking</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div id="div_id_random_order" class="checkbox">
+                                            <label for="id_random_order" class="">
+                                                <input type="checkbox" name="random_order" class="checkboxinput" id="id_random_order">
+                                                Random Order
+                                            </label>
+                                            <p id="hint_id_random_order" class="help-block">Display the questions in a random </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 mt-3 text-center">
-                        <button id="quiz_submit_button" class="btn btn-success" type="submit">Submit</button>
+                        <button id="quiz_submit_button" class="btn btn-primary" type="submit">Submit</button>
                     </div>
-                
                 </form>
                 
                 <script src=" /static/duration_picker/bootstrap-duration-picker.js"></script>
@@ -655,21 +452,21 @@
                     $("label[for='id_mcquestion']").after(`<button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="mcq_create_button" data-toggle="modal"
                                     data-target="#question_form_popup">Add Multiple Choice Question
                             </button>`);
-                    $("#mcq_create_button, label[for='id_mcquestion']").wrap("<div class = 'col-md-12 col-sm-12 col-xs-12 text-center'></div>");
+                    $("#mcq_create_button, label[for='id_mcquestion']").wrap("<div class = 'col-12 text-center'></div>");
                     // $("label[for='id_mcquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
                     //$("#mcq_create_button").wrap("<div class='col-12'></div>");
                 
                     $("label[for='id_tfquestion']").after(`<button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="tfq_create_button" data-toggle="modal"
                                     data-target="#question_form_popup">Add True/False question
                             </button>`);
-                    $("#tfq_create_button, label[for='id_tfquestion']").wrap("<div class = 'col-md-12 col-sm-12 col-xs-12 text-center'></div>");
+                    $("#tfq_create_button, label[for='id_tfquestion']").wrap("<div class = 'col-12 text-center'></div>");
                     // $("label[for='id_tfquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
                     // $("#tfq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
                 
                     $("label[for='id_saquestion']").after(`<button type="button" class="btn btn-sm btn-outline-secondary qts-button mb-5" id="saq_create_button" data-toggle="modal"
                                     data-target="#question_form_popup">Add Short Answer question
                             </button>`);
-                    $("#saq_create_button, label[for='id_saquestion']").wrap("<div class = 'col-md-12 col-sm-12 col-xs-12 text-center'></div>");
+                    $("#saq_create_button, label[for='id_saquestion']").wrap("<div class = 'col-12 text-center'></div>");
                     // $("label[for='id_saquestion']").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
                     // $("#saq_create_button").wrap("<div class='col-md-6 col-sm-6 col-xs-6'></div>");
                 
@@ -824,7 +621,8 @@
                     date = new Date();
                     var options = { year: 'numeric', month: '2-digit', day: 'numeric', hour: '2-digit', minute: '2-digit' };
                     $('#id_title').val($('#id_title').val().split(':').slice(0, -2).join(':') + ': ' + new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()).toLocaleString('en-US', options))
-                </script></div>
+                </script>
+            </div>
         </div>
     </div>
 </div>
