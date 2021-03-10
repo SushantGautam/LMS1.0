@@ -388,9 +388,9 @@ class QuizBasicInfoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if not my_obj:
-            mcq_qs = MCQuestion.objects.filter(course_code=course_id) if course_id else MCQuestion.objects.all()
-            tfq_qs = TF_Question.objects.filter(course_code=course_id) if course_id else TF_Question.objects.all()
-            saq_qs = SA_Question.objects.filter(course_code=course_id) if course_id else SA_Question.objects.all()
+            mcq_qs = MCQuestion.objects.filter(course_code=course_id) if course_id else MCQuestion.objects.none()
+            tfq_qs = TF_Question.objects.filter(course_code=course_id) if course_id else TF_Question.objects.none()
+            saq_qs = SA_Question.objects.filter(course_code=course_id) if course_id else SA_Question.objects.none()
             self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
                 queryset=mcq_qs,
                 required=False,
@@ -472,18 +472,20 @@ class QuizBasicInfoForm(forms.ModelForm):
                 Column('negative_percentage', css_class='form-group col-md-12 mb-0 '),
                 css_class='form-row '
             ),
-            Row(
-                Column('mcquestion', css_class='form-group col-md-12 mb-0 '),
-                css_class='form-row '
-            ),
-            Row(
-                Column('saquestion', css_class='form-group col-md-12 mb-0 '),
-                css_class='form-row '
-            ),
-            Row(
-                Column('tfquestion', css_class='form-group col-md-12 mb-0 '),
-                css_class='form-row '
-            ),
+            Div(
+                Row(
+                    Column('mcquestion', css_class='form-group col-md-12 mb-0 '),
+                    css_class='form-row '
+                ),
+                Row(
+                    Column('saquestion', css_class='form-group col-md-12 mb-0 '),
+                    css_class='form-row '
+                ),
+                Row(
+                    Column('tfquestion', css_class='form-group col-md-12 mb-0 '),
+                    css_class='form-row '
+                ),
+            css_class="question_form_div"),
             Row(
                 # Column(css_class='col-md-4 mb-0'),
                 # Column(css_class='col-md-4 mb-0'),

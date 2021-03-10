@@ -894,10 +894,18 @@ class GetCourseChapter(View):
     def get(self, request):
         my_course = CourseInfo.objects.get(id=request.GET['course_id'])
         resp = {}
+        mcq = {}
+        saq = {}
+        tfq = {}
         for my_dict in my_course.chapterinfos.all().values('id', 'Chapter_Name'):
             resp[my_dict['id']] = my_dict['Chapter_Name']
-        print(resp)
-        return JsonResponse(resp)
+        for mcq_dict in MCQuestion.objects.filter(course_code=my_course).values('id', 'content'):
+            mcq[mcq_dict['id']] = mcq_dict['content']
+        for saq_dict in SA_Question.objects.filter(course_code=my_course).values('id', 'content'):
+            saq[saq_dict['id']] = saq_dict['content']
+        for tfq_dict in TF_Question.objects.filter(course_code=my_course).values('id', 'content'):
+            tfq[tfq_dict['id']] = tfq_dict['content']
+        return JsonResponse({"chapters": resp, "mcq": mcq, "saq": saq, "tfq": tfq})
 
 
 class RemoveMcqLink(View):
