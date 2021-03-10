@@ -728,6 +728,10 @@ class QuizCreateViewSinglePage(AdminAuthMxnCls, CreateView):
 
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(QuizCreateViewSinglePage, self).get_form_kwargs()
+        return dict(kwargs, is_method_post=True if self.request.method == "POST" else False)
+
 def SAQuestionDeleteView(request, pk):
     SA_Question.objects.filter(pk=pk).delete()
     return redirect("essayquestion_list")

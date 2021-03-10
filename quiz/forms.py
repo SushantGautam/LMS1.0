@@ -384,13 +384,19 @@ class QuizBasicInfoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
+        is_method_post = kwargs.pop('is_method_post', None)
         course_id = kwargs.pop('course_id', None)
         super().__init__(*args, **kwargs)
 
         if not my_obj:
-            mcq_qs = MCQuestion.objects.filter(course_code=course_id) if course_id else MCQuestion.objects.none()
-            tfq_qs = TF_Question.objects.filter(course_code=course_id) if course_id else TF_Question.objects.none()
-            saq_qs = SA_Question.objects.filter(course_code=course_id) if course_id else SA_Question.objects.none()
+            if not is_method_post:
+                mcq_qs = MCQuestion.objects.filter(course_code=course_id) if course_id else MCQuestion.objects.none()
+                tfq_qs = TF_Question.objects.filter(course_code=course_id) if course_id else TF_Question.objects.none()
+                saq_qs = SA_Question.objects.filter(course_code=course_id) if course_id else SA_Question.objects.none()
+            else:
+                mcq_qs = MCQuestion.objects.filter(course_code__pk=self.data["course_code"])
+                tfq_qs = TF_Question.objects.filter(course_code=self.data["course_code"])
+                saq_qs = SA_Question.objects.filter(course_code=self.data["course_code"])
             self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
                 queryset=mcq_qs,
                 required=False,
