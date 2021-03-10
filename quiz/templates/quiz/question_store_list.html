@@ -3,32 +3,24 @@
 {% load i18n %}
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 {% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item active" aria-current="page">Question Store</li>
 {% endblock %}
-
 
 {% block content %}
 {% include "quiz_base/question_store_list.html" %}
 {% endblock %}
+
 {% block javascript %}
 <script type="text/javascript">
-
     $(document).ready(function () {
-
     var table_main = $('#question-store').DataTable({
         responsive: true,
         dom: 'lBfrtip',
         buttons: [],
         "bSort" : true,
-      
-
         });
     });
-
-
 </script>
-
-
-   
 {% endblock %}
 

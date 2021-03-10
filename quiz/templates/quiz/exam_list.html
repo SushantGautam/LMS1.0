@@ -3,6 +3,7 @@
 {% load i18n %}
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 {% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">Quiz</a></li>
 <li class="breadcrumb-item active" aria-current="page">Exam Papers</li>
 {% endblock %}
