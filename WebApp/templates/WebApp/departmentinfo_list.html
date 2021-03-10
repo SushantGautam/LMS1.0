@@ -76,9 +76,6 @@
             $('#department-modal .modal-title').text("Edit Department");
             $("#department-modal .modal-body").append('<div class="se-pre-con-ajax"></div>');
 
-
-
-
             let url = "/departmentinfo/update/" + this.value + "/ajax/";
             $.ajax({
                 type: "GET",
