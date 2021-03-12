@@ -25,27 +25,18 @@
 
         <div class="col-md-4 col-sm-4 col-xs-12 col-lg-3">
             <div class="st-pusher" id="content">
-
                  <div class="form-group form-control-search searchField">
-
                     <form role="search" action="{% url 'teacher_search_redirect' %}" class="form" style="position: relative">
-
-
                         <input type="text" id="keywordInput" name="keyword" class="form-control"
                                value="{{ keyword }}"
                                placeholder="Type to search">
-
                         <div class=" pull-right searchButton" style="position: absolute; right: 0px; top: 0px;">
                             <button type="submit" id="navSearchBtn" class="btn btn-inverse" data-hover-z="1"><i
                                     class="fa fa-search"></i></button>
-
                         </div>
-
                     </form>
                 </div>
-
-                <div class="card text-center  border-0 bg-light">
-                   <div class="card-body">
+                <div class="card">
                        {% block widget_before %}{% endblock %}
                        {% if request.user.is_authenticated %}
                             {% include 'teacher_module/teacher_forum/widgets/authenticated_user_panel.html' %}
@@ -54,28 +45,19 @@
                         {% endif %}
 
                         {% block widget_after %}{% endblock %}
-                   </div>
                 </div>
 
 
                 <div class="card">
-
                     <ul class="list-group list-group-flush">
                         <h4 class="panel-title" style="padding: 10px 30px;">Categories</h4>
                         {% for nodegroup in node_groups %}
-
-                            <li class="list-group-item
-                    {% if '/nodegroup/' in request.path %}
-                        {% if nodegroup.pk|stringformat:"i" in request.path %}
-                            active
-                        {% endif %}
-                    {% endif %}">
-
-                                <a href="{% url 'teacher_nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}"
-                                   class="node_group_list">
-                                    {{ nodegroup.title }}</a>
-                            </li>
-
+                        <li class="list-group-item font-weight-bold
+                                            {% if '/nodegroup/' in request.path %}
+                                                {% if nodegroup.pk|stringformat:'i' in request.path %} active {% endif %} {% endif %}">
+                            <a href="{% url 'teacher_nodegroup' nodegroup.pk %}" id="{{ nodegroup.pk }}" class="node_group_list text-primary">
+                                {{ nodegroup.title }}</a>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>

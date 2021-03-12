@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'start' %}">{% trans "Home" %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Members" %}</li>
 {% endblock %}
+
 {% block content %}
 <div class="modal fade" id="import_csv_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -51,6 +53,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-12">
         <h2 class="text-primary">{% trans "List of Active Members" %}</h2>
@@ -70,7 +73,7 @@
         </div>
     </div>
 </div>
-{% csrf_token %}
+
 <div class="text-right">
     <nav id="navbar_parent" class="navbar-dark">
         <a class="btn btn-success text-white" href="{% url 'memberinfo_create' %}">Create new Member</a>
@@ -88,8 +91,8 @@
     </nav>
 </div>
 
-<div class="table-responsive groupmappingtable mt-3" id="member_dataTable">
-    <table class="table table-striped" cellspacing="0" width="100%" id="members_list_table">
+<div class="table-responsive groupmappingtable mt-4" id="member_dataTable">
+    <table class="table table-bordered table-striped" cellspacing="0" width="100%" id="members_list_table">
         <thead class="thead-light">
             <tr>
                 <th> <input type="checkbox" class="memberinfoCheckAll"> </th>
@@ -113,26 +116,6 @@
             </tr>
 
         </thead>
-        <!-- <tfoot>
-            <tr>
-                <th>S. No.</th>
-                <th>Username</th>
-                <th>Member ID</th>
-                <th>Full Name</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Gender</th>
-                <th>Student</th>
-                <th>Teacher</th>
-                <th>Temporary Address</th>
-                <th>Permanent Address</th>
-                <th>Birthdate</th>
-                <th>Type</th>
-                <th>Action</th>
-            </tr>
-        </tfoot> -->
         <tbody>
 
         </tbody>
@@ -180,9 +163,7 @@
     }, 3000);
 
     $(document).ready(function () {
-
         // ServerSide export all data from "https://stackoverflow.com/a/57335685"
-
         /* For Export Buttons available inside jquery-datatable "server side processing" - Start
         - due to "server side processing" jquery datatble doesn't support all data to be exported
         - below function makes the datatable to export all records when "server side processing" is on */
@@ -230,8 +211,6 @@
         };
         //For Export Buttons available inside jquery-datatable "server side processing" - End
 
-
-
         var table_main = $('#members_list_table').DataTable({
             dom: 'lBfrtip',
             stateSave: true,
@@ -245,11 +224,8 @@
             order: [],
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
             buttons: [
-
-
                 {
                     extend: 'csv',
-
                     title: function(){
 
                         if (table_main.ajax.url().includes("onlystudents=true"))
@@ -262,21 +238,16 @@
                         }
                         else{
                              return "All Member List";
-
                         }
                     },
-
 
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                     exportOptions: {
                     //   columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-                        columns: [1, 2, 3, 5, 6, 7,  9, 10, 11, 12, 13, 14, 15, 8 ]
+                        columns: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
                     },
                     action: newexportaction,
-
                 },
-
-
 
                 {
                     text: '<span class="exportcsv" data-toggle="modal" data-target="#import_csv_modal" id="importcsv-btn"><i class="fa fa-paper-plane fa-rotate-180"></i> Import CSV </span>'
@@ -312,13 +283,13 @@
                 }],
             "columnDefs": [
                 {
-                    "targets": [4, 5, 9, 10, 11, 12, 13],
+                    "targets": [5, 6, 9, 11, 12, 13 ,14,15],
                     "visible": false,
                     "searchable": true,
                 },
                 {
                     "orderable": false,
-                    "targets": [0, 3, 11, 12, 13, 14, 15]
+                    "targets": [0,7,9, 11, 12, 13, 14, 15 ,16, 17]
                 },
             ]
         });
@@ -326,16 +297,11 @@
 
 
         $("#student_button").bind("click", function () {
-
             $("#student_button").css("color", "white");
             $("#teacher_button").css("color", "black");
             $("#all_button").css("color", "black");
-
-
-
             table_main.ajax.url("{% url 'memberinfo_listajax' %}?onlystudents=true").load();
             //console.log(table_main.ajax.url().includes("onlystudents=true"));
-
         });
         $("#teacher_button").bind("click", function () {
             $("#student_button").css("color", "black");
@@ -398,150 +364,4 @@
     })
 </script>
 
-
-<script>
-
-
-
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".editCheckedMembers").on('click', function () {
-            let seleced_members = []
-            $.each($('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll'), function (index) {
-                seleced_members.push($(this).val())
-            })
-            $('#member_ids').val(seleced_members)
-        });
-
-        $('#id_Member_Department').select2({
-            placeholder: 'Select Department'
-        });
-        $('#id_Member_Position').select2({
-            placeholder: 'Select Position'
-        });
-        $('#id_Member_Gender').select2({
-            placeholder: 'Select Gender'
-        });
-    });
-
-    $('.memberinfoCheckAll').on('click', function () {
-        $('#member_dataTable input:checkbox').not(this).prop('checked', this.checked);
-        checkboxChangeEvent()
-    });
-
-    $('#member_dataTable').on('click', '.memberinfoCheckbox', function () {
-        if ($('.memberinfoCheckbox').length === $('.memberinfoCheckbox:checked').length) {
-            $('.memberinfoCheckAll').prop('checked', 'checked');
-        } else {
-            $('.memberinfoCheckAll').prop('checked', false);
-        }
-        checkboxChangeEvent()
-    });
-
-    function checkboxChangeEvent() {
-        let checkBoxlength = $('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll').length
-        if (checkBoxlength > 0) {
-            $('.checkboxCheckedLength').text(checkBoxlength + ' of ' + $('.memberinfoCheckbox').length + ' selected')
-            $('.editCheckedMembers, .deleteCheckedMembers').removeAttr('disabled')
-        } else {
-            $('.checkboxCheckedLength').text('')
-            $('.editCheckedMembers, .deleteCheckedMembers').prop('disabled', 'disabled')
-        }
-    }
-
-    checkboxChangeEvent();
-
-    $('#changedepartment-btn').on('click', function () {
-        toggleInput('#id_Member_Department')
-        $("#changedepartment-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changememberposition-btn').on('click', function () {
-        toggleInput('#id_Member_Position')
-        $("#changememberposition-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changemembergender-btn').on('click', function () {
-        toggleInput('#id_Member_Gender')
-        $("#changemembergender-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changeisteacher-btn').on('click', function () {
-        toggleInput('#id_Is_Teacher')
-        toggleInput('#id_Is_Teacher_hidden')
-        $("#changeisteacher-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changeisstudent-btn').on('click', function () {
-        toggleInput('#id_Is_Student')
-        toggleInput('#id_Is_Student_hidden')
-        $("#changeisstudent-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changeActive-btn').on('click', function () {
-        toggleInput('#id_Use_Flag')
-        toggleInput('#id_Use_Flag_hidden')
-        $("#changeActive-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    function toggleInput(inputID) {
-        if ($(inputID).is(':disabled')) {
-            $(inputID).removeAttr('disabled');
-        } else {
-            $(inputID).prop('disabled', 'disabled')
-        }
-    }
-
-    $('#editCheckedMembers input, select').not('input[name=csrfmiddlewaretoken], #member_ids').attr('disabled', true)
-
-    $(function () {
-        $('#editCheckedMembers :checkbox').on('change', function () {
-            if (this.checked == true) {
-                $(this).val("1");
-                $(this).parent().find('input[type=hidden]').val("1");
-            } else {
-                $(this).val("0");
-                $(this).parent().find('input[type=hidden]').val("0");
-            }
-        });
-    });
-
-    // Form Submission
-
-    $('#editCheckedMembers').on('submit', function (e) {
-        e.preventDefault()
-        if ($('#id_Member_Department').is(':disabled') && $('#id_Member_Position').is(':disabled') && $('#id_Member_Gender').is(':disabled')
-            && $('#id_Is_Teacher').is(':disabled') && $('#id_Is_Student').is(':disabled') && $('#id_Use_Flag').is(':disabled')
-        ) {
-            alert('Please input data and enable required fields to submit')
-            return false
-        }
-
-        var form = $(this);
-        var url = form.attr('action');
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
-            success: function (data) {
-                location.reload(); // show response from the php script.
-            },
-            error: function (e) {
-                $('.error-div').empty()
-                $('.error-div').css('display', 'block')
-                $('.error-div').append(`
-                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
-                    `)
-                $.each(e.responseJSON.inning_list, function (index) {
-                    $('.error-div').append(`
-                            <p style="font-size: small">${e.responseJSON.inning_list[index]['Inning_Name']}</p>
-                        `)
-                })
-
-            }
-        });
-    });
-</script>
 {% endblock %}

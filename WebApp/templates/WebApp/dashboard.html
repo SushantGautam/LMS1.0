@@ -19,7 +19,7 @@
 {% block content %}
 <div class="page-header">
     <div class="page-title">
-        <h2>Admin Dashboard</h2>
+        <h2 class="text-facebook">Admin Dashboard</h2>
     </div>
 </div>
 
@@ -27,7 +27,7 @@
     <div class="col-lg-3 col-md-6 col-sm-12">
         <div class="card card-body bg-success-gradient">
             <p class="d-flex justify-content-between mb-2">
-                <span>Student</span>
+                <span class="font-size-20">Student</span>
             </p>
             <h2>{{ studentcount }}</h2>
         </div>
@@ -35,7 +35,7 @@
     <div class="col-lg-3 col-md-6 col-sm-12">
         <div class="card card-body bg-info-gradient">
             <p class="d-flex justify-content-between mb-2">
-                <span>Teacher</span>
+                <span class="font-size-20">Teacher</span>
             </p>
             <h2>{{ teachercount }}</h2>
         </div>
@@ -43,7 +43,7 @@
     <div class="col-lg-3 col-md-6 col-sm-12">
         <div class="card card-body bg-warning-gradient">
             <p class="d-flex justify-content-between mb-2">
-                <span>Member</span>
+                <span class="font-size-20"><a href="{% url 'memberinfo_list' %}" class="text-white">Member</a></span>
             </p>
             <h2>{{ totalcount }}</h2>
         </div>
@@ -51,7 +51,7 @@
     <div class="col-lg-3 col-md-6 col-sm-12">
         <div class="card card-body bg-secondary-gradient">
             <p class="d-flex justify-content-between mb-2">
-                <span>Courses</span>
+                <span class="font-size-20"><a href="{% url 'courseinfo_grid_active' %}" class="text-white">Courses</a></span>
             </p>
             <h2>{{ coursecount }}</h2>
         </div>
@@ -59,10 +59,12 @@
 </div>
 <div class="row">
     <div class="col-lg-5 col-md-5 col-sm-12">
-        <div class="card">
+        <div class="card session-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h6 class="card-title mb-0">Session</h6>
+                    <h4 class="mb-0">
+                        <a class="text-facebook" href="{% url 'inninginfo_list' %}">Session</a>
+                    </h4>
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for object in sessions %}
@@ -74,17 +76,17 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="card-body text-center pt-0">
-                <a href="{% url 'inninginfo_list' %}" class="btn btn-outline-light">
+            <div class="session-all text-center p-0 bg-facebook">
+                <a href="{% url 'inninginfo_list' %}" class="text-white font-size-16 font-weight-bold">
                     View All
                 </a>
             </div>
         </div>
-        <div class="card">
+        <div class="card course-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <a href="{% url 'courseinfo_grid_active' %}">
-                        <h6 class="card-title mb-0">Courses</h6>
+                        <h4 class="text-facebook mb-0">Courses</h4>
                     </a>
                 </div>
                 <ul class="list-group list-group-flush">
@@ -97,20 +99,24 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="card-body text-center pt-0">
-                <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-outline-light">
+            <div class="course-all text-center p-0 bg-facebook">
+                <a href="{% url 'courseinfo_grid_active' %}" class="text-white font-size-16 font-weight-bold">
                     View All
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-7 col-md-7 col-sm-12">
-        <div class="card">
+        <div class="card forum-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <!-- <a href="{% url 'forum:index' %}"> -->
-                    <h6 class="card-title mb-0">Forum</h6>
-                    <span>{{ threadcount }}</span>
+                    <h4 class="mb-0">
+                        <a href="{% url 'forum:index' %}" class="text-facebook">
+                            Forum
+                        </a>
+                    </h4>
+                    <span class="text-primary font-size-20">{{ threadcount }}</span>
                     <!-- </a> -->
                 </div>
                 <ul class="list-group list-group-flush">
@@ -123,19 +129,19 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="card-body text-center pt-0">
-                <a href="{% url 'forum:index' %}" class="btn btn-outline-light">
+            <div class="forum-all text-center p-0 bg-facebook">
+                <a href="{% url 'forum:index' %}" class="text-white font-size-16 font-weight-bold">
                     View All
                 </a>
             </div>
         </div>
-        <div class="card">
+        <div class="card survey-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-3">
-                    <!-- <a href="{% url 'forum:index' %}"> -->
-                    <h6 class="card-title mb-0">Survey</h6>
-                    <span>{{ surveycount }}</span>
-                    <!-- </a> -->
+                    <h4 class="mb-0">
+                        <a href="{% url 'surveyinfo_list' %}" class="text-facebook">Survey</a>
+                    </h4>
+                    <span class="text-primary font-size-20">{{ surveycount }}</span>
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for survey in surveys %}
@@ -172,8 +178,8 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="card-body text-center pt-0">
-                <a href="{% url 'surveyinfo_list' %}" class="btn btn-outline-light">
+            <div class="survey-all text-center p-0 bg-facebook">
+                <a href="{% url 'surveyinfo_list' %}" class="text-white font-size-16 font-weight-bold">
                     View All
                 </a>
             </div>
@@ -183,7 +189,7 @@
 <div class="col-12">
     <div class="card">
         <div class="card-body">
-            <h3 class="card-title text-center">&nbsp;<b>Word Cloud - Forum</b></h3>
+            <h3 class="card-title text-center text-facebook">&nbsp;<b>Word Cloud - Forum</b></h3>
             <div id="word-cloud" style="padding-top:10em; width:100%;"></div>
         </div>
     </div>

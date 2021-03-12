@@ -80,72 +80,70 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="questionContainer">
-                            <div id="mcq_que">
-                                {{ questioninfo_formset.management_form }}
-                                {{ questioninfo_formset.non_form_errors }}
+                    </div>
+                    <div class="questionContainer">
+                        <div id="mcq_que">
+                            {{ questioninfo_formset.management_form }}
+                            {{ questioninfo_formset.non_form_errors }}
 
-                                <div class='qninfo_dynamic_append'>
-                                    {% for questioninfo_form in questioninfo_formset.forms %}
-                                    <div class='qninfo_dynamic'>
-                                        <p class="d-inline-block" style="position:relative; top:45px;">{{ forloop.counter}}</p>
-                                        {{ questioninfo_form|crispy }}
-                                        {% if questioninfo_form.nested %}
-                                        {{ questioninfo_form.nested.management_form }}
-                                        {{ questioninfo_form.nested.non_form_errors }}
+                            <div class='qninfo_dynamic_append'>
+                                {% for questioninfo_form in questioninfo_formset.forms %}
+                                <div class='qninfo_dynamic'>
+                                    <p class="d-inline-block" style="position:relative; top:45px;">{{ forloop.counter}}</p>
+                                    {{ questioninfo_form|crispy }}
+                                    {% if questioninfo_form.nested %}
+                                    {{ questioninfo_form.nested.management_form }}
+                                    {{ questioninfo_form.nested.non_form_errors }}
 
-                                        <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic'
-                                            style="margin-left:40px;">
-                                            {% for option_form in questioninfo_form.nested.forms %}
-                                            <div class="op " style="display:flex;  ">
-                                                <p style="position:relative; margin-right:10px;">
-                                                    {{forloop.counter|to_char }} </p>
-                                                {{ option_form|crispy }}
-                                            </div>
-                                            {% endfor %}
+                                    <div id="option_dynamic{{ forloop.counter0 }}" class='opinfo_dynamic'
+                                        style="margin-left:40px;">
+                                        {% for option_form in questioninfo_form.nested.forms %}
+                                        <div class="op " style="display:flex;  ">
+                                            <p style="position:relative; margin-right:10px;">
+                                                {{forloop.counter|to_char }} </p>
+                                            {{ option_form|crispy }}
                                         </div>
-
-                                        <button
-                                            onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
-                                            class="btn btn-sm btn-dark " style="margin-left: 50px;" type="button">
-                                            {% trans 'New Option' %}
-                                        </button>
-
-                                        {% endif %}
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                <div style="text-align:center; padding: 20px;">
-                                    <input class="add-mcq btn btn-secondary" style="float:left" type="button"
-                                        value="{% trans 'New Question' %}" id="add_more_qn">
-                                </div>
-                            </div>
-
-                            <div id="short_que" style="display: none;">
-                                <div class="queContainer">
-                                    {{ questionansinfo_formset.management_form }}
-                                    {{ questionansinfo_formset.non_form_errors }}
-                                    <div class='qnansinfo_dynamic_append'>
-                                        {% for questionansinfo_form in questionansinfo_formset.forms %}
-                                        <p class="d-inline-block" style="position:relative; top:40px;">{{ forloop.counter}}</p>
-                                        {{ questionansinfo_form|crispy }}
                                         {% endfor %}
                                     </div>
+
+                                    <button
+                                        onclick="addOption(event, {{ forloop.counter0 }}, '#emptyOpInfoForm', '#option_dynamic{{ forloop.counter0 }}', 'questioninfo', 'optioninfo')"
+                                        class="btn btn-sm btn-dark " style="margin-left: 50px;" type="button">
+                                        {% trans 'New Option' %}
+                                    </button>
+
+                                    {% endif %}
                                 </div>
-                                <input class="add-mcq btn btn-secondary" style="margin-left:20px;" type="button"
-                                    value="{% trans 'Add Question' %}" id="add_more_sa_qn">
+                                {% endfor %}
                             </div>
-                            <div class="text-danger question_error"></div>
+                            <div class="text-center mt-3">
+                                <input class="add-mcq btn btn-secondary"  type="button"
+                                    value="{% trans 'New Question' %}" id="add_more_qn">
+                            </div>
                         </div>
+
+                        <div id="short_que" style="display: none;">
+                            <div class="queContainer">
+                                {{ questionansinfo_formset.management_form }}
+                                {{ questionansinfo_formset.non_form_errors }}
+                                <div class='qnansinfo_dynamic_append'>
+                                    {% for questionansinfo_form in questionansinfo_formset.forms %}
+                                    <p class="d-inline-block" style="position:relative; top:45px;">{{ forloop.counter}}</p>
+                                    {{ questionansinfo_form|crispy }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input class="add-mcq btn btn-secondary" style="margin-left:20px;" type="button"
+                                value="{% trans 'Add Question' %}" id="add_more_sa_qn">
+                        </div>
+                        <div class="text-danger question_error"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div id="step-2">
-        <div class="row" style="margin-top:40px; text-align:center;">
-
-            <div class="col-md-12 ">
+    <div id="step-2" class="mt-4">
+            <div class="col-12 text-center">
                 <!--                <button class="btn btn-amber-500 text-danger" style="" type="button" data-toggle="collapse"-->
                 <!--                        data-target="#collapseExample"-->
                 <!--                        aria-expanded="false" aria-controls="collapseExample">-->
@@ -184,10 +182,7 @@
 
 
             </div>
-        </div>
-
         <!--        <div class="collapse" id="collapseExample">-->
-
         <!--            <label class="control-label " id="categoryTitle" for="first-name">Category :-->
         <!--                <span class="text text-black">{{ category_name }}</span>-->
         <!--            </label>-->
@@ -199,25 +194,19 @@
         <!--                </div>-->
 
         <!--                <div class="text-danger survey_error"></div>-->
-
         <!--            </div>-->
         <!--        </div>-->
-        <br>
-        <hr>
-        <div class="row">
-            <div class="col-md-12 text-right">
+        
+            <div class="col-12 text-center mt-3">
                 <button id="survey_submit_button" class="btn  btn-md btn-primary" type="submit">
                     {% trans 'Submit' %}
                 </button>
             </div>
-        </div>
-
-
     </div>
 
     </div>
     </div>
-    <lm></lm>
+   
 
 </form>
 
@@ -370,7 +359,7 @@
         $('#abc' + questionId).click();
 
         var counter_el = `<p>${question_counter}</p>`;
-        $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;'></div>`);
+        $(newel_id).wrap(`<div class='new' id='new_que_div${questionId}' style='display:flex;align-items:center'></div>`);
         $('#new_que_div' + questionId).prepend(counter_el);
         questionId++;
         //{#$(newel_id).before(counter_el);       # }

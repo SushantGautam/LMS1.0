@@ -708,6 +708,30 @@ class SAQuestionDetailView(DetailView):
     model = SA_Question
 
 
+class QuizCreateViewSinglePage(AdminAuthMxnCls, CreateView):
+    model = Quiz
+    form_class = QuizBasicInfoForm
+    template_name = 'quiz/quiz_create_single_page.html'
+    success_url = reverse_lazy('quiz_list')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.cent_code = self.request.user.Center_Code
+        cleaned_data = form.cleaned_data
+        mcq = cleaned_data.pop('mcquestion')
+        tfq = cleaned_data.pop('tfquestion')
+        saq = cleaned_data.pop('saquestion')
+        self.object.save()
+        self.object.mcquestion.add(*mcq)
+        self.object.tfquestion.add(*tfq)
+        self.object.saquestion.add(*saq)
+
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(QuizCreateViewSinglePage, self).get_form_kwargs()
+        return dict(kwargs, is_method_post=True if self.request.method == "POST" else False)
+
 def SAQuestionDeleteView(request, pk):
     SA_Question.objects.filter(pk=pk).delete()
     return redirect("essayquestion_list")
@@ -874,10 +898,18 @@ class GetCourseChapter(View):
     def get(self, request):
         my_course = CourseInfo.objects.get(id=request.GET['course_id'])
         resp = {}
+        mcq = {}
+        saq = {}
+        tfq = {}
         for my_dict in my_course.chapterinfos.all().values('id', 'Chapter_Name'):
             resp[my_dict['id']] = my_dict['Chapter_Name']
-        print(resp)
-        return JsonResponse(resp)
+        for mcq_dict in MCQuestion.objects.filter(course_code=my_course).values('id', 'content'):
+            mcq[mcq_dict['id']] = mcq_dict['content']
+        for saq_dict in SA_Question.objects.filter(course_code=my_course).values('id', 'content'):
+            saq[saq_dict['id']] = saq_dict['content']
+        for tfq_dict in TF_Question.objects.filter(course_code=my_course).values('id', 'content'):
+            tfq[tfq_dict['id']] = tfq_dict['content']
+        return JsonResponse({"chapters": resp, "mcq": mcq, "saq": saq, "tfq": tfq})
 
 
 class RemoveMcqLink(View):
@@ -1020,6 +1052,18 @@ class QuizExamListView(ListView):
 
         return old_context
 
+class QuizQuestionListView(ListView):
+    model = Question
+
+    def get_template_names(self):
+        if 'teachers' in self.request.path:
+            return ['teacher_quiz/question_store_list.html']
+        
+        else:
+            return ['quiz/question_store_list.html']
+
+    def get_queryset(self):
+        return Question.objects.select_subclasses('mcquestion', 'tf_question', 'sa_question')
 
 class UpdateQuestions(UpdateView):
     model = Quiz

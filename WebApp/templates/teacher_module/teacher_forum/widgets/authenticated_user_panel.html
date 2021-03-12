@@ -4,35 +4,27 @@
 
 
 <div class="panel panel-default">
-    
-     
-
-      
-
         <div class="panel-body">
-            <div class="card-header text-center">
-                <div class="profile_pic">
-                    <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" style="height: 35px;" />
+            <div class="card-header text-center forum-profile-container">
+                <div class="profile_pic mt-2">
+                    <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" style="height: 5em;border-radius: 50%;" />
+                    <h3 class="mt-2 mb-0 text-primary UserName">{{ request.user.username }}</h3>
                 </div>
-    
-                <a href="{% url 'teacher_info' request.user.pk %}">
-                    <h3 class="btn-white btn-flat UserName">{{ request.user.username }}</h3>
-                </a>
+                <a class="btn btn-primary forum-profile-button" href="{% url 'teacher_info' request.user.pk %}">
+                    <i class="fa fa-user-md m-right-xs"></i> &nbsp; View Profile</a>
              </div>
           </div>
-   
-        <div class="card-body text-center">
-            <ul class="list-unstyled user_data">
-                <li class="text-center" style="padding: 5px 0;"><a class="btn-white btn-flat" href="{% url 'teacher_threads' request.user.pk %}"><i
-                            class="fa fa-question-circle fa-lg"></i> Questions
+        <div class="pt-3 pb-1 text-center">
+            <ul class="list-unstyled user_data mb-0">
+                <li><a class="font-weight-bold text-primary" href="{% url 'teacher_threads' request.user.pk %}"><i
+                            class="fa fa-question-circle fa-lg"></i> &nbsp; Questions
                         Asked: {{ request.user.threads.count }}</a>
                 </li>
-                <li class="text-center" style="padding: 5px 0;"><a class="btn-white btn-flat reply_count" href="{% url 'teacher_posts' request.user.pk %}">
-                        <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.count }}</a>
+                <li><a class="font-weight-bold text-primary reply_count" href="{% url 'teacher_posts' request.user.pk %}">
+                        <i class="fa fa-reply-all fa-lg"></i> &nbsp; Replies: {{ request.user.posts.count }}</a>
                 </li>
-    
-                <li class="text-center" style="padding: 5px 0;">
-                    <p class="user_type"><i class="fa fa-user fa-lg"></i>
+                <li class="font-weight-bold user_type">
+                    <i class="fa fa-user fa-lg"></i> &nbsp; 
                         {% if request.user.is_superuser %}
                         Super User
                         {% elif request.user.Is_Teacher %}
@@ -44,22 +36,7 @@
                         {% elif request.user.Is_Parent %}
                         , Parent
                         {% endif %}
-                    </p>
                 </li>
-    
             </ul>
-            <a class="btn btn-primary" href="{% url 'teacher_info' request.user.pk %}">
-                <i class="fa fa-user-md m-right-xs"></i> &nbsp;&nbsp;View Profile</a>
-            <br>
-    
         </div>
-
-
-
-
-
-
-      
-
-   
 </div>

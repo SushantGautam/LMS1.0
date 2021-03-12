@@ -127,7 +127,9 @@
     <!-- App scripts -->
     <script src="{% static 'js/app.min.js' %}"></script>
     <script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
-
+    
+    <script src="{% static 'js/common.js' %}"></script>
+    
     <!-- For alert message -->
     <script src="{% static 'js/examples/toast.js' %}"></script>
     <script>
@@ -159,6 +161,11 @@
         {% else %}
             $(`a[data-menu-target='#dashboard'] .menu-tab-icon`).click();
         {% endif %}
+    </script>
+    <script>
+        window.onload = function () { 
+            $(".dataTables_length, .dt-buttons, .dataTables_filter").wrapAll('<div class="table_buttons_wrapper"></div>');
+        }
     </script>
 
     <!-- <script>

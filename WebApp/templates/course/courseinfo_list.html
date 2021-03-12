@@ -44,14 +44,30 @@
   </div>
 </div>
 <div class="text-center">
-    <h2 class="text-primary d-inline">{% trans "Courses" %}</h2>
+    <h2 class="text-primary d-inline">
+        {% if 'inactive' in request.path %}
+            {% trans "Inactive Course List" %}
+            {% elif 'active' in request.path %}
+            {% trans "Course List" %}
+            {% endif %}
+    </h2>
     <div class="float-right pt-1">
       {% if 'inactive' in request.path %}
       <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2">View Active Courses</a>
       {% elif 'active' in request.path %}
       <a href="{% url 'courseinfo_grid_inactive' %}" class="btn btn-sm btn-outline-primary mr-2">View Inactive Courses</a>
       {% endif %}
-       <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2" title="Grid"
+      {% if 'inactive' in request.path %}
+      <a href="{% url 'courseinfo_grid_inactive' %}" class="btn btn-sm btn-outline-primary mr-2" title="Grid"
+        data-toggle="tooltip">
+        <i class="fa fa-th-large"></i>
+      </a>
+      <a href="{% url 'courseinfo_list_inactive' %}" class="btn btn-sm btn-outline-primary active" title="List"
+        data-toggle="tooltip">
+        <i class="fa fa-th-list"></i>
+      </a>
+      {% elif 'active' in request.path %}
+      <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2" title="Grid"
         data-toggle="tooltip">
         <i class="fa fa-th-large"></i>
       </a>
@@ -59,6 +75,8 @@
         data-toggle="tooltip">
         <i class="fa fa-th-list"></i>
       </a>
+      {% endif %}
+      
     </div>
 </div>
 <hr/>
@@ -123,7 +141,7 @@
                     {{ object.Course_Cover_File.url }}
                 {% else %}
                     {% static 'media/image/course.jpg' %}
-                {% endif %}" width="200" class="img-fluid rounded img-height-5" alt="Vase" />
+                {% endif %}" width="300" class="img-fluid rounded img-height-7" alt="Vase" />
         </a>
         <div class="px-4" style="width: 100%">
           <h4 class="mb-2">
@@ -140,14 +158,11 @@
             {% endif %} {% endfor %}
           </p>
           <hr class="my-1">
-          <p class="mb-0">
-            {% if object.Course_Description %} {{ object.Course_Description|truncatechars:170 }}
+          <p class="mb-0 height-50">
+            {% if object.Course_Description %} 
+            {{ object.Course_Description|truncatechars:170 }}
             {% else %} No description {% endif %}
           </p>
-          <!-- <div>
-                        <a href="product-detail.html" class="btn btn-primary">View</a>
-                        <button class="btn btn-primary add-to-card ml-2">Add to Cart</button>
-                    </div> -->
         </div>
       </div>
   </div>

@@ -153,7 +153,7 @@ input[type="search"] {
   }
 }
 
-.card {
+/* .card {
   background-color: white;
     border-radius: 1rem;
   box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
@@ -164,7 +164,7 @@ input[type="search"] {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-}
+} */
 /* ======================= LIST VIEW ======================== */
 
 /*img {*/
@@ -369,7 +369,7 @@ form {
   color: #354254;
 }
 
-#pollsQuestions {
+/* #pollsQuestions {
   margin-top: 20px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -377,7 +377,7 @@ form {
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
-}
+} */
 .title {
   font-size: 20px;
   padding-left: 10px;
@@ -398,9 +398,9 @@ form {
   padding-left: 10px;
 }
 
-#pollsQuestions h5 {
+/* #pollsQuestions h5 {
   padding-left: 60px;
-}
+} */
 .radioInputs .optionIndex {
   margin-right: 5px;
 }

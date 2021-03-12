@@ -4,13 +4,11 @@
 {% block title %}{% trans "All Quizzes" %}{% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item active" aria-current="page">QUIZ</li>
+<li class="breadcrumb-item active" aria-current="page">Quiz</li>
 {% endblock %}
 
 {% block content %}
-
 {% include "quiz_base/quiz_list.html" %}
-
 {% endblock %}
 
 
@@ -26,11 +24,9 @@
 <script src="{% static 'vendorsx/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'vendorsx/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
 
-
 <script type="text/javascript">
 
     $(document).ready(function () {
-
         var table_main = $('#QuizTable').DataTable({
             responsive: true,
             dom: 'lBfrtip',

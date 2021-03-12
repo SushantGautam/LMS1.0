@@ -2,9 +2,8 @@
 {% if user.is_authenticated %}
     <form class="js-comment-form" method="post" data-url="{% url 'comment:create' %}">
         {% csrf_token %}
-        <div class="row">
-
-            <div class="{% block text_area_wrapper_cls %}col-sm-9 col-md-9 px-2 m-2 m-sm-0{% endblock text_area_wrapper_cls %}">
+        <div class="row m-0">
+            <div class="{% block text_area_wrapper_cls %}col-sm-9 col-md-9 p-0{% endblock text_area_wrapper_cls %}">
                 {% include 'comment/comments/comment_form.html' with placeholder=placeholder %}
             </div>
             <input name="model_name" value="{% get_model_name model_object %}" hidden>
@@ -15,7 +14,7 @@
             {% if comment %}
                 <input class="form-control" name="parent_id" value="{{ comment.id }}" type="hidden"/>
             {% endif %}
-            <div class="{% block submit_button_wrapper_cls %}col-sm-3 col-md-3 px-2 m-3 m-sm-0 text-left{% endblock submit_button_wrapper_cls %}">
+            <div class="{% block submit_button_wrapper_cls %}col-sm-3 col-md-3 text-left align-self-center{% endblock submit_button_wrapper_cls %}">
                 <button class="js-comment-btn {% block submit_button_cls %}btn btn-outline-primary btn-sm{% endblock submit_button_cls %}"
                         type="submit" name="form_type" data-type="{% if comment %}child{% else %}parent{% endif %}">
                     {% if comment %}Reply{% else %}Comment{% endif %}

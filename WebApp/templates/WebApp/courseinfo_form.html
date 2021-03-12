@@ -18,7 +18,8 @@
 {% include 'course/courseinfo_form.html' %}
 {% endblock content %}
 {% block javascript %}
-<script src="{% static 'vendorsx/jquery-star-rating/simple-rating.js' %}"></script>
+
+<script src="{% static 'vendors/jquery-star-rating/simple-rating.js' %}"></script>
 <script>
     $(document).ready(function () {
         if (!$("#id_Course_Level").val()) $("#id_Course_Level").val(1);

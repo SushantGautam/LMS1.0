@@ -5,14 +5,14 @@
 {% load static %}
 
 {% block breadcrumb %}
-
-<div class="col-md-12 col-sm-12 col-xs-12 " style="background-color: #c3c8e7; border-radius:50px; padding:10px ">
-  <li class="active"><a class="text-white" href="{% url 'forum:index' %}">Forum</a></li>
-</div>
-
+<li class="breadcrumb-item">
+  <a href="{% url 'start' %}">{% trans "Home" %}</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page"><a href="{% url 'forum:index' %}">Forum</a></li>
 {% endblock %}
 
 {% block main_contain %}
 
 {% include 'ForumInclude/homepage.html' %}
+
 {% endblock %}

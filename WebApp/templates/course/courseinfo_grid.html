@@ -44,22 +44,38 @@
         </div>
     </div>
 </div>
+
 <div class="text-center">
-    <h2 class="text-primary d-inline">{% trans "Course List" %}</h2>
+    <h2 class="text-primary d-inline">
+        {% if 'inactive' in request.path %}
+            {% trans "Inactive Course List" %}
+        {% elif 'active' in request.path %}
+            {% trans "Course List" %}
+        {% endif %}
+    </h2>
     <div class="float-right pt-1">
             {% if 'inactive' in request.path %}
             <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2">View Active Courses</a>
             {% elif 'active' in request.path %}
             <a href="{% url 'courseinfo_grid_inactive' %}" class="btn btn-sm btn-outline-primary mr-2">View Inactive Courses</a>
             {% endif %}
+        {% if 'inactive' in request.path %}
+        <a href="{% url 'courseinfo_grid_inactive' %}" class="btn btn-sm btn-outline-primary mr-2 active" title="Grid"
+            data-toggle="tooltip">
+            <i class="fa fa-th-large"></i>
+        </a>
+        <a href="{% url 'courseinfo_list_inactive' %}" class="btn btn-sm btn-outline-primary " title="List" data-toggle="tooltip">
+            <i class="fa fa-th-list"></i>
+        </a>
+        {% elif 'active' in request.path %}
         <a href="{% url 'courseinfo_grid_active' %}" class="btn btn-sm btn-outline-primary mr-2 active" title="Grid"
             data-toggle="tooltip">
             <i class="fa fa-th-large"></i>
         </a>
-        <a href="{% url 'courseinfo_list_active' %}" class="btn btn-sm btn-outline-primary " title="List"
-            data-toggle="tooltip">
+        <a href="{% url 'courseinfo_list_active' %}" class="btn btn-sm btn-outline-primary " title="List" data-toggle="tooltip">
             <i class="fa fa-th-list"></i>
         </a>
+        {% endif %}
     </div>
 </div>
 <hr />
@@ -118,33 +134,39 @@
 
 <div class="row mt-4">
     {% for object in object_list %}
-    <div class="col-lg-3 col-sm-6 col-xs-12">
-        <div class="card">
-            <a href="{{ object.get_absolute_url }}">
-                <img src="{% if object.Course_Cover_File %}
-            {{ object.Course_Cover_File.url }}
-        {% else %}
-            {% static 'media/image/course.jpg' %}
-        {% endif %}" class="card-img-top" alt="image" width="100%" height="180px" style="object-fit: cover">
-            </a>
-            <div class="card-body p-3">
-                <h5><a href="{{ object.get_absolute_url }}" class="text-primary">{{ object.Course_Name }}</a></h5>
-                {% trans "Difficulty" %} :
-                {% for i in '12345'|make_list %}
-                {% if object.Course_Level >= forloop.counter %}
-                <span class="fa fa-fw fa-star text-warning"></span>
-                {% else %}
-                <span class="fa fa-fw fa-star-o text-warning"></span>
-                {% endif %}
-                {% endfor %}
-                <hr>
-                <p class="card-text">
-                    {% if object.Course_Description %}
-                    {{ object.Course_Description|truncatechars:50 }}
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+        <div class="card card-container">
+            <img src="{% if object.Course_Cover_File %}
+                        {{ object.Course_Cover_File.url }}
                     {% else %}
-                    {% trans "No description" %}
+                        {% static 'media/image/course.jpg' %}
+                    {% endif %}" class="card-img-top card-image" alt="image" width="100%" height="230px" />
+            <!-- <div class="card-title-overlay">
+                <h5 class="text-white p-3">{{ object.Course_Name }}</h5>
+            </div> -->
+            <div class="card-overlay text-white">
+                <div class="p-3">
+                    <h5 class="course-title"><a href="{{ object.get_absolute_url }}" class="text-white">{{ object.Course_Name }}</a></h5>
+                    {% trans "Difficulty" %} :
+                    {% for i in '12345'|make_list %}
+                    {% if object.Course_Level >= forloop.counter %}
+                    <span class="fa fa-fw fa-star text-warning"></span>
+                    {% else %}
+                    <span class="fa fa-fw fa-star-o text-warning"></span>
                     {% endif %}
-                </p>
+                    {% endfor %}
+                    <hr>    
+                    <p class="card-text height-50">
+                        {% if object.Course_Description %}
+                        {{ object.Course_Description|truncatechars:60 }}
+                        {% else %}
+                        {% trans "No description" %}
+                        {% endif %}
+                    </p>
+                    <div class="text-center">
+                        <a href="{{ object.get_absolute_url }}" class="btn btn-outline-light text-white">Go to Course</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -154,3 +176,4 @@
     </div>
     {% endfor %}
 </div>
+

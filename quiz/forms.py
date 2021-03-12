@@ -344,6 +344,10 @@ class QuizBasicInfoForm(forms.ModelForm):
                   'random_order', 'single_attempt', 'draft', 'exam_paper', 'duration', 'pass_mark', 'success_text',
                   'fail_text', 'negative_marking', 'negative_percentage']
 
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n/',)
+
     def clean(self):
         cleaned_data = super().clean()
         exam_val = cleaned_data.get("exam_paper")
@@ -352,6 +356,17 @@ class QuizBasicInfoForm(forms.ModelForm):
         time_val = cleaned_data.get("duration")
         pass_val = cleaned_data.get("pass_mark")
 
+        # Question Fields
+        # Check questions if only created.
+        if not self.instance.id:
+            mq = cleaned_data.get("mcquestion")
+            tq = cleaned_data.get("tfquestion")
+            eq = cleaned_data.get("saquestion")
+            if not (mq or tq or eq):
+                raise forms.ValidationError(
+                    "Please Select Atleast One Question"
+                )
+            # ----------------------------------------------------------------
         if exam_val:
             if not time_val:
                 raise forms.ValidationError(
@@ -369,40 +384,72 @@ class QuizBasicInfoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         my_obj = kwargs.pop('current_obj', None)
+        is_method_post = kwargs.pop('is_method_post', None)
+        course_id = kwargs.pop('course_id', None)
         super().__init__(*args, **kwargs)
-        self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
-        if my_obj.exam_paper:
-            # self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
-            self.fields['chapter_code'].widget.attrs['class'] = "readonly-field"
+
+        if not my_obj:
+            if not is_method_post:
+                mcq_qs = MCQuestion.objects.filter(course_code=course_id) if course_id else MCQuestion.objects.none()
+                tfq_qs = TF_Question.objects.filter(course_code=course_id) if course_id else TF_Question.objects.none()
+                saq_qs = SA_Question.objects.filter(course_code=course_id) if course_id else SA_Question.objects.none()
+            else:
+                mcq_qs = MCQuestion.objects.filter(course_code__pk=self.data["course_code"])
+                tfq_qs = TF_Question.objects.filter(course_code=self.data["course_code"])
+                saq_qs = SA_Question.objects.filter(course_code=self.data["course_code"])
+            self.fields['mcquestion'] = forms.ModelMultipleChoiceField(
+                queryset=mcq_qs,
+                required=False,
+                label="Multiple Choice Questions",
+                widget=FilteredSelectMultiple(verbose_name=_("MCQs"), is_stacked=False)
+            )
+            self.fields['saquestion'] = forms.ModelMultipleChoiceField(
+                queryset=saq_qs,
+                required=False,
+                label="Short Answer Type Questions",
+                widget=FilteredSelectMultiple(verbose_name=_("SAQs"), is_stacked=False)
+            )
+            self.fields['tfquestion'] = forms.ModelMultipleChoiceField(
+                queryset=tfq_qs,
+                required=False,
+                label="True/False Questions",
+                widget=FilteredSelectMultiple(verbose_name=_("TFQs"), is_stacked=False)
+            )
+
+        if my_obj:
+            self.fields['course_code'].queryset = CourseInfo.objects.filter(Center_Code=my_obj.cent_code)
+            if my_obj.exam_paper:
+                # self.fields['single_attempt'].widget.attrs['class'] = "readonly-field"
+                self.fields['chapter_code'].widget.attrs['class'] = "readonly-field"
 
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.label_class = 'quiz-add-label'
         self.helper.layout = Layout(
             Row(
-                Column('title', css_class='form-group col-md-4 text-primary mb-0'),
-                Column('course_code', css_class='form-group col-md-4 text-primary mb-0'),
-                Column('chapter_code', css_class='form-group col-md-4 text-primary mb-0'),
-                css_class='form-row'
+                Column('title', css_class='form-group col-lg-4 md-6 sm-12 text-primary mb-0'),
+                Column('course_code', css_class='form-group col-lg-4 md-6 sm-12 text-primary mb-0'),
+                Column('chapter_code', css_class='form-group col-lg-4 md-6 sm-12 text-primary mb-0'),
+                css_class='form-row mb-3'
             ),
             Row(
-                Column(PrependedText('description', '<i class="fa fa-edit"></i>', rows='5'),
-                       css_class='form-group col-md-4 mb-0 text-primary'
+                Column(PrependedText('description', '', rows='5'),
+                       css_class='form-group col-lg-4 md-6 sm-12 mb-0 text-primary'
                        ),
-                Column(PrependedText('success_text', '<i class="fa fa-edit"></i>', rows='2'),
-                       css_class='form-group text-primary col-md-4 mb-0'
+                Column(PrependedText('success_text', '', rows='2'),
+                       css_class='form-group text-primary col-lg-4 md-6 sm-12 mb-0'
                        ),
-                Column(PrependedText('fail_text', '<i class="fa fa-edit"></i>', rows='2'),
-                       css_class='form-group text-primary col-md-4 mb-0'
+                Column(PrependedText('fail_text', '', rows='2'),
+                       css_class='form-group text-primary col-lg-4 md-6 sm-12 mb-0'
                        ),
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
             HTML('''<label class= "quiz-add-label text-primary"> Quiz Type</label>'''),
             Row(
-                Column('pre_test', css_class='form-group col-md-4 mb-0'),
-                Column('post_test', css_class='form-group col-md-4 mb-0'),
-                Column('exam_paper', css_class='form-group col-md-4 mb-0'),
+                Column('pre_test', css_class='form-group col-lg-4 md-6 sm-12 mb-0'),
+                Column('post_test', css_class='form-group col-lg-4 md-6 sm-12 mb-0'),
+                Column('exam_paper', css_class='form-group col-lg-4 md-6 sm-12 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -413,32 +460,46 @@ class QuizBasicInfoForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('duration', css_class='form-group col-md-4 mb-0'),
-                Column('pass_mark', css_class='form-group col-md-4 mb-0'),
-                Column(css_class='form-group col-md-4 mb-0'),
+                Column('duration', css_class='form-group col-lg-4 md-6 sm-12 mb-0'),
+                Column('pass_mark', css_class='form-group col-lg-4 md-6 sm-12 mb-0'),
+                Column(css_class='form-group col-lg-4 md-6 sm-12 mb-0'),
                 css_class='form-row'
             ),
             HTML('''<hr size="10">'''),
             HTML('''<label class= "quiz-add-label text-primary ">Quiz Features</label>'''),
             Row(
-                Column('negative_marking',css_id='negate_per', css_class='form-group col-md-3 mb-0'),
-                Column('random_order', css_class='form-group col-md-3 mb-0'),
-                Column('single_attempt', css_class='form-group col-md-3 mb-0'),
-                Column('draft', css_class='form-group col-md-3 mb-0'),
+                Column('negative_marking',css_id='negate_per', css_class='form-group col-lg-3 col-md-6 col-sm-12 mb-0'),
+                Column('random_order', css_class='form-group col-lg-3 col-md-6 col-sm-12 mb-0'),
+                Column('single_attempt', css_class='form-group col-lg-3 col-md-6 col-sm-12 mb-0'),
+                Column('draft', css_class='form-group col-lg-3 col-md-6 col-sm-12 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('negative_percentage', css_class='form-group col-md-12 mb-0 '),
                 css_class='form-row '
             ),
-            Row(
-                Column(css_class='col-md-4 mb-0'),
-                Column(css_class='col-md-4 mb-0'),
-                Column(
-                    StrictButton('Save', css_class='add-mcq btn btn-light    ripple ', type='submit'),
-                    css_class='col-md-4 mb-0 text-right'
+            Div(
+                Row(
+                    Column('mcquestion', css_class='form-group col-md-12 mb-0 '),
+                    css_class='form-row '
                 ),
-                css_class='form-row'
+                Row(
+                    Column('saquestion', css_class='form-group col-md-12 mb-0 '),
+                    css_class='form-row '
+                ),
+                Row(
+                    Column('tfquestion', css_class='form-group col-md-12 mb-0 '),
+                    css_class='form-row '
+                ),
+            css_class="question_form_div"),
+            Row(
+                # Column(css_class='col-md-4 mb-0'),
+                # Column(css_class='col-md-4 mb-0'),
+                Column(
+                    StrictButton('Save', css_class='add-mcq btn btn-primary ripple ', type='submit'),
+                    css_class='col-12 text-center'
+                ),
+                css_class='form-row my-3'
             ),
         )
 

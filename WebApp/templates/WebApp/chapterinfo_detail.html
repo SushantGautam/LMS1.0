@@ -27,26 +27,25 @@
 {% include 'chapter/chapterinfo_detail.html'%}
 {% include 'inning/inningmapFormModal.html' %}
 
-
 {% endblock %}
-{% block javascript %}
 
+{% block javascript %}
 <!-- <script src="{% static 'vendorsx/jquery/dist/jquery.min.js' %}"></script>
 <script src=" {% static 'vendorsx/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script> -->
 <script>
-    $(".info-text").on('click' ,function(){
-        $('.truncatedDescription').toggleClass('d-block d-none');
-        $('.fullDescription').toggleClass('d-none d-block');
-        $(this).text($(this).text() == 'Read Less' ? 'Read More' : 'Read Less');
-    })
+  $(".info-text").on('click', function () {
+    $('.truncatedDescription').toggleClass('d-block d-none');
+    $('.fullDescription').toggleClass('d-none d-block');
+    $(this).text($(this).text() == 'Read Less' ? 'Read More' : 'Read Less');
+  })
 </script>
 <script>
 
-  $(document).ready(function () {
+  /* $(document).ready(function () {
     {% if not object.is_commentable %}
     $('.js-comment-input').attr('disabled', true);
     {% endif %}
-  });
+  }); */
 </script>
 
 <script>
@@ -82,7 +81,6 @@
         src="/quiz/{{ quiz.url }}/take/"
         frameborder="0px"></iframe>`);
   })
-
   {% endfor %}
 </script>
 

@@ -5,7 +5,7 @@
 {% if user.is_authenticated %}
 <div class="navigation-menu-wrapper">
     <!-- Menu tab -->
-    <div class="navigation-menu-tab">
+    <div class="navigation-menu-tab bg-facebook">
         <ul>
             <li>
                 <a href="#" data-menu-target="#dashboard">
@@ -166,7 +166,7 @@
                 </a>
             </li>
             <li>
-                <a href="{% url 'quiz_exam_list' %}">
+                <a href="{% url 'question_store_list' %}">
                     <span class="nav-link-icon" data-feather="book-open"></span>
                     <span>{% trans 'Question Store' %}</span>
                 </a>

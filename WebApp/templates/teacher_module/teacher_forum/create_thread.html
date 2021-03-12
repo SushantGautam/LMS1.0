@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Home</a></li>
 <li class="breadcrumb-item"><a href="{% url 'teacher_forum' %}">Forum</a></li>
 {% if fixed_nodegroup.0.title %}
 <li class="breadcrumb-item"><a

@@ -261,7 +261,7 @@ class Question(models.Model):
 
     def __str__(self):
         return self.content
-
+    
     def is_saq(self):
         return type(self) is SA_Question
 
