@@ -5,20 +5,170 @@
 <link rel="stylesheet" type="text/css" href="{% static 'duration_picker/bootstrap-duration-picker.css' %}"/>
 
 {% block content %}
-    <div class="col-12 text-center">
+<style>
+    .control-label{
+        color: #5c6bc0;
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+    .help-block{
+        color: #33b5e5;
+        margin-bottom: 0;
+    }
+    .select-div{
+        text-align: center;
+        position: relative;
+        left: 14%;
+    }
+    .select-div-choices{
+        width: auto;
+        padding: 10px;
+        border: 1px solid;
+        cursor: pointer;
+    }
+    .choose-mcq:hover,
+    .choose-saq:hover,
+    .choose-tfq:hover{
+        background-color: #5c6bc0;
+        color: white;
+    }
+
+    .question-selected{
+        visibility: visible;
+        height: auto;
+    }
+    .question-unselected{
+        visibility: hidden;
+        height: 0;
+    }
+    .option-selected{
+        background-color: #5c6bc0;
+        color: white;
+    }
+    .option-unselected{
+        background-color: white;
+        color: black;
+    }
+</style>
+    <!-- <div class="col-12 text-center">
         <h2 class="text-primary">Edit {{ quiz.title }}</h2>
-    </div>
-    <form class="py-3" action="{% url 'quiz_single_page' %}" method="post" onsubmit="return validateForm()">
+    </div> -->
+    <form action="{% url 'quiz_single_page' %}" method="post" onsubmit="return validateForm()">
+        {% csrf_token %}
         {{ form.non_field_errors }}
-        <!-- {#      {{ wizard.form|crispy }}#} -->
-        {% crispy form %}
+        <div class="col-12 p-0 mb-2">
+            {{ form.title|as_crispy_field }}
+        </div>
+        <div class="row">
+            <div class="col-6 mb-2">
+                {{ form.course_code|as_crispy_field }}
+            </div>
+            <div class="col-6 mb-2">
+                {{ form.chapter_code|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 mb-2">
+                <div id="div_id_description" class="form-group">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label for="id_description" class="control-label quiz-add-label">
+                            Description
+                        </label>
+                        <p id="hint_id_description" class="help-block">(A description of the quiz)</p>
+                    </div>
+                    <div class="controls">
+                        <textarea name="description" cols="40" rows="12" class="textarea form-control h-auto"
+                            id="id_description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 mb-2">
+                <div id="div_id_success_text" class="form-group">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label for="id_success_text" class="control-label quiz-add-label">
+                            Success Text
+                        </label>
+                        <p id="hint_id_success_text" class="help-block">(Displayed if user passes)</p>
+                    </div>
+                    <div class="controls">
+                        <textarea name="success_text" cols="40" rows="1" class="textarea form-control h-auto"
+                            id="id_success_text">Congratulations!!!.</textarea>
+                    </div>
+                </div>
+                <hr />
+                <div id="div_id_fail_text" class="form-group">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label for="id_fail_text" class="control-label quiz-add-label">
+                            Fail Text
+                        </label>
+                        <p id="hint_id_fail_text" class="help-block">(Displayed if user fails)</p>
+                    </div>
+                    <div class="controls ">
+                        <textarea name="fail_text" cols="40" rows="1" class="textarea form-control h-auto"
+                            id="id_fail_text">Sorry, You Failed!.</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+       <hr />
+        <div class="row">
+            <label class="control-label col-12 mb-3">
+                Choose Quiz Type
+            <div id="test_error" class="text-danger"></div>
+
+            </label>
+            <div class="col-6">
+                {{ form.pre_test|as_crispy_field }}
+                {{ form.post_test|as_crispy_field }}
+                {{ form.exam_paper|as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ form.duration|as_crispy_field }}
+                {{ form.pass_mark|as_crispy_field }}
+            </div>
+        </div>
+        <hr />
+        <div>
+            <label class="control-label mb-3">
+                Choose Quiz Features
+            </label>
+            <div class="d-flex justify-content-between">
+                <!-- <div id="negate_per"> -->
+                {{ form.negative_marking|as_crispy_field }}
+                <!-- </div> -->
+                {{ form.random_order|as_crispy_field }}
+                {{ form.single_attempt|as_crispy_field }}
+                {{ form.draft|as_crispy_field }}
+            </div>
+            <div>
+                {{ form.negative_percentage|as_crispy_field}}
+            </div>
+        </div>
+        <hr />
+        <div class="mb-5">
+            <label class="control-label mb-2">
+                Choose Type of Question 
+            <div id="select_error" class="text-danger font-weight-bold"></div>
+            </label>
+            <div class="d-flex justify-content-center">
+                <div class="select-div-choices choose-mcq">Multiple Choice Question</div>
+                <div class="select-div-choices choose-saq">Short Answer Question</div>
+                <div class="select-div-choices choose-tfq">True/False Question</div>
+            </div>
+        </div>
+        <div class="d-inline-block select-div mcq-div">
+            {{ form.mcquestion|as_crispy_field }}
+        </div>
+        <div class="d-inline-block select-div saq-div">
+            {{ form.saquestion|as_crispy_field }}
+        </div>
+        <div class="d-inline-block select-div tfq-div">
+            {{ form.tfquestion|as_crispy_field }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
     </form>
-    <style>
-        .custom-background-color {
-            background-color: white;
-            padding: 15px;
-        }
-    </style>
 {% endblock %}
 
 {% block javascript %}
@@ -91,6 +241,16 @@
                 $("#test_error").show();
                 $("#test_error").html("Please select at least one test type.");
                 return false;
+            
+            } else if ($("#id_pre_test").is(':checked') && $("#id_post_test").is(':checked')) {
+                $("#test_error").show();
+                $("#test_error").html("Exam can only be pre test or post test");
+                return false;
+            }
+            if (($('#id_mcquestion_to option').length + $('#id_saquestion_to option').length +$('#id_tfquestion_to option').length) == 0 ){
+                $("#select_error").show();
+                $("#select_error").html("Please Select atleast one question");
+                return false;
             }
         }
 
@@ -104,7 +264,6 @@
                     $.each(data.chapters, function (key, value) {
                         $('#id_chapter_code').append($("<option></option>").attr("value", key).text(value));
                     });
-
 
                     $('#id_mcquestion_from').empty();
                     $('#id_mcquestion_to').empty();
@@ -169,5 +328,41 @@
                 $("#div_id_negative_percentage").hide();
             }
         }
-    </script>
+        
+        $('.mcq-div,.saq-div,.tfq-div').addClass('question-unselected') 
+        $('.choose-mcq,.choose-saq,.choose-tfq').addClass('option-unselected')
+
+        $('.choose-mcq').click(function(){
+        $('.saq-div,.tfq-div').removeClass('question-selected')  
+        $('.saq-div,.tfq-div').addClass('question-unselected')  
+        $('.choose-saq,.choose-tfq').removeClass('option-selected')  
+        $('.choose-saq,.choose-tfq').addClass('option-unselected')  
+        $('.mcq-div').removeClass('question-unselected') 
+        $('.mcq-div').addClass('question-selected') 
+        $('.choose-mcq').removeClass('option-unselected')
+        $('.choose-mcq').addClass('option-selected')
+        });
+
+        $('.choose-saq').click(function(){
+        $('.mcq-div,.tfq-div').removeClass('question-selected')  
+        $('.mcq-div,.tfq-div').addClass('question-unselected')  
+        $('.choose-mcq,.choose-tfq').removeClass('option-selected')  
+        $('.choose-mcq,.choose-tfq').addClass('option-unselected')  
+        $('.saq-div').removeClass('question-unselected') 
+        $('.saq-div').addClass('question-selected') 
+        $('.choose-saq').removeClass('option-unselected')
+        $('.choose-saq').addClass('option-selected')
+        });
+
+        $('.choose-tfq').click(function(){
+        $('.saq-div,.mcq-div').removeClass('question-selected')  
+        $('.saq-div,.mcq-div').addClass('question-unselected')  
+        $('.choose-saq,.choose-mcq').removeClass('option-selected')  
+        $('.choose-saq,.choose-mcq').addClass('option-unselected')  
+        $('.tfq-div').removeClass('question-unselected') 
+        $('.tfq-div').addClass('question-selected') 
+        $('.choose-tfq').removeClass('option-unselected')
+        $('.choose-tfq').addClass('option-selected')
+        });
+   </script>
 {% endblock javascript %}
