@@ -145,7 +145,7 @@
             </div>
         </div>
         <hr />
-        <div class="mb-5">
+        <div class="mb-3">
             <label class="control-label mb-2">
                 Choose Type of Question 
             <div id="select_error" class="text-danger font-weight-bold"></div>
@@ -157,6 +157,10 @@
             </div>
         </div>
         <div class="d-inline-block select-div mcq-div">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_question_modal" id="create_question_modal_btn">
+                <i data-feather="plus"></i>&nbsp;
+                Add MCQ
+            </button>
             {{ form.mcquestion|as_crispy_field }}
         </div>
         <div class="d-inline-block select-div saq-div">
@@ -169,6 +173,23 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
+
+    <div class="modal fade" id="create_question_modal" tabindex="-1" role="dialog" aria-labelledby="create_question_modal_label"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_question_modal_label">Create Question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="create_question_modal_body">
+                
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -364,5 +385,9 @@
         $('.choose-tfq').removeClass('option-unselected')
         $('.choose-tfq').addClass('option-selected')
         });
+
+        $('#create_question_modal_btn').click(function(){
+            $('#create_question_modal').focus()
+        })
    </script>
 {% endblock javascript %}
