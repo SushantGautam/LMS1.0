@@ -30,8 +30,14 @@ class SurveyInfoForm(forms.ModelForm):
         survey_object = kwargs.pop("object", None)
         super(SurveyInfoForm, self).__init__(*args, **kwargs)
         self.fields['Use_Flag'].label = 'Publish'
-        self.fields['Use_Flag'].widget.attrs['style'] = "margin-top:30px"
-        # self.fields['Use_Flag'].widget.attrs['style'] = "text-align:left"
+        # self.fields['Use_Flag'].widget.attrs['style'] = "margin-top:30px"
+        # self.fields['Start_Date'].widget.attrs['style'] = "width:40%"
+        # self.fields['Start_Date'].widget.attrs['style'] = "display:inline-block"
+        # self.fields['End_Date'].widget.attrs['style'] = "width:40%"
+        # self.fields['End_Date'].widget.attrs['style'] = "display:inline-block"
+        
+        self.fields['Publish_Result'].widget.attrs['style'] = "margin-left:20px"
+        self.fields['Use_Flag'].widget.attrs['style'] = "margin-left:20px"
         # self.fields['Publish_Result'].widget.attrs['style'] = "text-align:left"
 
         self.fields['Publish_Result'].label = 'Display Result'

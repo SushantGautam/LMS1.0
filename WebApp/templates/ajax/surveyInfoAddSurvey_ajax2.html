@@ -52,11 +52,19 @@
                     <span class="text text-black ">{{ category_name }}</span>
                 </label>
                 <br>
-                <h5 class="text-center" style="padding: 0em 0 !important; ">{% trans 'Choose Type' %}:</h5>
+
+                <div class="col-md-12">
+                    {{ form|crispy }}
+            
+                </div>
+                
+
                 <div class="col-xs-12">
                     <div class="col-md-12">
                         <div style="text-align: center">
-                            <div class="selectQuestionType">
+                            <div class="selectQuestionType d-flex align-items-center">              
+                                <h5 style="font-size:14px;">{% trans 'Choose Type' %}:</h5>
+
                                 <div class="btn-group" id="switchButtons" data-toggle="buttons"
                                     style="    padding: 10px;">
                                     <label class="mcq_question btn btn-default btn-on btn-md active">
@@ -144,7 +152,7 @@
                 <!--                    Edit More Information-->
                 <!--                </button>-->
 
-
+                    {% comment %}
                 <div class="accordion custom-accordion">
                     <div class="accordion-row ">
                         <a href="#" class="accordion-header ">
@@ -158,18 +166,23 @@
                             <!--            <h2 class="StepTitle text-center" style="padding: 0em 0 !important;-->
                             <!--            ">Survey Information</h2>-->
                             <!--<div class="col-xs-12">-->
-                            <div class="col-md-12">
-                                {{ form|crispy }}
+                             <div class="col-md-12"> 
+                                  {{ form|crispy }}    
                         
-                            </div>
+                               </div> 
                         
-                            <div class="text-danger survey_error"></div>
+                             <div class="text-danger survey_error"></div> 
                         
                             <!--</div>-->
 
                         </div>
                     </div>
                 </div>
+
+                {%endcomment%}
+
+
+
             </div>
         </div>
 
@@ -538,6 +551,15 @@
 <script>
     $("#div_id_Use_Flag").css("text-align", "left");
     $("#div_id_Publish_Result").css("text-align", "left");
+</script>
+
+<script>
+    $("#div_id_Start_Date").addClass('col-md-6');
+    // $("#div_id_Use_Flag").addClass('col-md-6');
+    // $("#div_id_Publish_Result").addClass('col-md-6');
+    $("#div_id_End_Date").addClass('col-md-6');
+    $("#div_id_End_Date , #div_id_Start_Date").wrapAll('<div class="row"></div>');
+    $("#div_id_Use_Flag , #div_id_Publish_Result").wrapAll('<div class="row "></div>');
 </script>
 
 {% endblock %}
