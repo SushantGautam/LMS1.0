@@ -192,7 +192,7 @@
                                     <div class="form-group">
                                         <label for="id_Member_BirthDate">{% trans "Date of Birth" %}</label>
                                         <input name="Member_BirthDate" type="date" class="form-control"
-                                            id="id_Member_BirthDate" max="9999-12-31"
+                                            id="id_Member_BirthDate" max="9999-12-31" min="1111-01-01"
                                             value="{{ object.Member_BirthDate|date:'Y-m-d' }}">
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@
                                     <div class="form-group">
                                         <label for="id_Member_Phone">{% trans "Phone Number" %}</label>
                                         <input type="tel" name="Member_Phone" class="form-control" id="id_Member_Phone"
-                                            value="{{ object.Member_Phone }}">
+                                            value="{{ object.Member_Phone }}" maxlength="13">
                                     </div>
                                 </div>
                             </div>

@@ -1,22 +1,22 @@
-{% extends "base.html" %} {% load static %} {% load i18n %}{% block stylesheets %}
-    <link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet"/>
+{% extends "base.html" %}
+{% load static %} {% load i18n %}
 
-{% endblock stylesheets %} {% block breadcrumb %}
-    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'start' %}" style="font-weight:normal;">{% trans "Home" %}</a></li>
-    <li class="breadcrumb-item" aria-current="page">
-        <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">{% trans "Survey" %}</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
+{% block stylesheets %}
+<link href="{% static 'build/css/studentCustom.css' %}" rel="stylesheet" />
+{% endblock stylesheets %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'start' %}">
+    {% trans "Home" %}</a>
+</li>
+<li class="breadcrumb-item">
+    <a href="{% url 'surveyinfo_list' %}?category_name=all_survey&date_filter=active">{% trans "Survey" %}</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.Survey_Title }}</li>
 {% endblock %}
-<style>
 
-</style>
 {% block content %}
-
-    {% include 'survey/common/new_detail.html' %}
-
-<br><br>
-
+{% include 'survey/common/new_detail.html' %}
 {% endblock %}
 
 {% block javascript %}
@@ -24,21 +24,19 @@
     <script src="{% static 'worldcloud.js' %}"></script>
     <script src="{% static 'js/jspdf.debug.js' %}"></script>
     <script src="{% static 'vendors/jspdf-autotable/dist/jspdf.plugin.autotable.min.js' %}"></script>
+    <!-- <script>
+        let checkbox = $("input[class=custom-control-input]");
+        checkbox.addEventListener( 'change', function() {
+                   if(this.checked) {
 
-    <script>
-       //  let checkbox = $("input[class=custom-control-input]");
-       //  checkbox.addEventListener( 'change', function() {
-       //             if(this.checked) {
+                      $(this).prop('checked', false);
 
-       //                $(this).prop('checked', false);
+                   } else {
+                       $(this).prop('checked', true);
 
-       //             } else {
-        //                $(this).prop('checked', true);
-
-        //            }
-        //    });
-
-    </script>
+                   }
+           });
+    </script> -->
 
     <script>
         var current_progress = 0;
@@ -234,6 +232,7 @@
             });
         });
     </script>
+
      <script>
 
         let lMargin = 15; //left margin in mm
@@ -496,5 +495,4 @@
 
 
     </script>
-
 {% endblock %}

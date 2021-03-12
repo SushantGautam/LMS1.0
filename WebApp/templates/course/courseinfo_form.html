@@ -1,5 +1,15 @@
 {% load static %}
 {% load i18n %}
+<style>
+    .simple-rating i {
+        color: #f5ba00;
+        display: inline-block;
+        padding: 1px 5px;
+        cursor: pointer;
+        font-size: x-large;
+    }
+</style>
+
 
 <div class="page-header">
     <div class="page-title d-block text-center">
@@ -51,9 +61,11 @@
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        <label for="id_Course_Provider">{% trans "Course Rating" %} *</label>
-                        <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
-                            value="{{ object.Course_Level }}" min="1" max="5" required>
+                        <label for="id_Course_Level" class="control-label ">{% trans "Course Rating" %} *</label>
+                        <!-- <input class="form-control" id="id_Course_Level" type="number" name="Course_Level"
+                            value="{{ object.Course_Level }}" min="1" max="5" required> -->
+                            <input class="rating" id="id_Course_Level" type="hidden" name="Course_Level"
+                            value="{{ object.Course_Level }}">
                     </div>
                     <div class="form-group">
                         <label for="id_Syllabus">{% trans "Course Syllabus" %}</label>
@@ -71,3 +83,13 @@
         </div>
     </div>
 </div>
+
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
+
+<script>
+    {% if object.Course_Level %}
+    var rating = parseInt({{ object.Course_Level }});
+    {% else %}
+    var rating = 1;
+    {% endif %}
+</script>

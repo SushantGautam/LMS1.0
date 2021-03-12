@@ -5,28 +5,27 @@
 
 <div class="panel panel-default">
     <div class="panel-body">
-        <div class="card-header text-center">
-            <div class="profile_pic">
-                <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" style="height: 35px;" />
-            </div>
-
-            <a href="{% url 'forum:user_info' request.user.pk %}">
+        <div class="card-header text-center forum-profile-container">
+            <div class="profile_pic mt-2">
+                <img src="{{ request.user.Avatar }}" alt="..." class="img-circle profile_img" style="height: 5em;border-radius: 50%;" />
                 <h3 class="btn-white btn-flat ">{{ request.user.username }}</h3>
-            </a>
+            </div>
+            <a class="btn btn-sm btn-primary forum-profile-button" href="{% url 'forum:user_info' request.user.pk %}">
+                <i class="fa fa-user-md m-right-xs"></i> &nbsp;View Profile</a>
+        </div>
     </div>
-    </div>
-    <div class="card-body text-center">
+    <div class="pt-3 pb-1 text-center">
         <ul class="list-unstyled ">
-            <li class="text-center" style="padding: 5px 0;"><a class="btn-white btn-flat" href="{% url 'forum:user_threads' request.user.pk %}"><i
-                        class="fa fa-question-circle fa-lg"></i> Questions
+            <li><a class="font-weight-bold text-primary" href="{% url 'forum:user_threads' request.user.pk %}"><i
+                        class="fa fa-question-circle fa-lg"></i> &nbsp; Questions
                     Asked: {{ request.user.threads.count }}</a>
             </li>
-            <li class="text-center" style="padding: 5px 0;"><a class="btn-white btn-flat " href="{% url 'forum:user_posts' request.user.pk %}">
-                    <i class="fa fa-reply-all fa-lg"></i> Replies: {{ request.user.posts.count }}</a>
+            <li><a class="font-weight-bold text-primary " href="{% url 'forum:user_posts' request.user.pk %}">
+                    <i class="fa fa-reply-all fa-lg"></i> &nbsp; Replies: {{ request.user.posts.count }}</a>
             </li>
 
-            <li class="text-center" style="padding: 5px 0;" >
-                <p class=""><i class="fa fa-user fa-lg"></i>
+            <li>
+                <p><i class="fa fa-user fa-lg"></i> &nbsp; 
                     {% if request.user.is_superuser %}
                     Super User
                     {% elif request.user.Is_Teacher %}
@@ -40,11 +39,7 @@
                     {% endif %}
                 </p>
             </li>
-
         </ul>
-        <a class="btn btn-primary" href="{% url 'forum:user_info' request.user.pk %}">
-            <i class="fa fa-user-md m-right-xs"></i> &nbsp;&nbsp;View Profile</a>
-        <br>
-
+        
     </div>
 </div>

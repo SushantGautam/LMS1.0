@@ -92,7 +92,7 @@
             {% for object in object_list %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td><b><a href="{{ object.get_absolute_url }}">{{ object.InningGroup_Name }}</a></b></td>
+                <td><a href="{{ object.get_absolute_url }}" class="text-primary font-weight-bold">{{ object.InningGroup_Name }}</a></td>
                 <td>{{ object.Course_Code }}</td>
                 <td>{{ object.Teacher_Code.count }}</td>
                 <td> {% for teachers in object.Teacher_Code.all %}{{ teachers }}<br>{% endfor %}</td>

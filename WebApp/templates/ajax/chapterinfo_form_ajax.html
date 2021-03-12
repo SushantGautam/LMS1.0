@@ -46,9 +46,9 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for="id_mustreadtime" class="font-weight-bold">
-                        {% trans "Running Time" %} ({% trans "in minutes" %})</label>
-                    <input type="number" class="form-control" name="mustreadtime" id="id_mustreadtime" min="0"
-                        max="5000" placeholder="Enter Running Time for Chapter">
+                        {% trans "Running Time" %} ({% trans "in minutes" %}) *</label>
+                    <input type="number" class="form-control" name="mustreadtime" id="id_mustreadtime" min="1"
+                        max="5000" placeholder="Enter Running Time for Chapter" required="true">
                 </div>
             </div>
             <div class="col-lg-6 text-center row">
@@ -56,7 +56,7 @@
                     <div class="form-group">
                         <label for="id_Use_Flag" class="font-weight-bold">{% trans "Publish" %}</label>
                         <br>
-                        <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput">
+                        <input type="checkbox" name="Use_Flag" id="id_Use_Flag" class="checkboxinput" checked>
                     </div>
                 </div>
                 <div class="col-6">

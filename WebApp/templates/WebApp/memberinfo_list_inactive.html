@@ -15,6 +15,7 @@
         <a class="btn btn-primary pull-right" href="{% url 'memberinfo_create' %}">Create new Member</a>
     </div> -->
 </div>
+
 <div class="card px-2 bg-primary-gradient mt-3">
     <div class="row">
         <div class="col-lg-8 col-md-8 col-sm-12 py-3">
@@ -28,116 +29,116 @@
     </div>
 </div>
 
-{# <form method="post" action="{% url 'memberinfo_inactive_delete_checked' %}">  #}
-    {% csrf_token %}
-    <div class="text-right">
-        <nav id="navbar_parent" class="navbar-dark">
-            <button class="btn btn-info btn-floating editCheckedMembers" type="button" data-toggle="modal"
-                data-target="#edit_checked_details_modal">
-                <i class="fa fa-edit"></i>
-            </button>
+<div class="text-right">
+    <nav id="navbar_parent" class="navbar-dark">
+        <button class="btn btn-info btn-floating editCheckedMembers" type="button" data-toggle="modal"
+            data-target="#edit_checked_details_modal">
+            <i class="fa fa-edit"></i>
+        </button>
+        <form method="post" action="{% url 'memberinfo_inactive_delete_checked' %}" class="d-inline">
+            {% csrf_token %}
             <button class="btn btn-danger btn-floating deleteCheckedMembers ml-2" type="submit"
                 onclick="return confirm('Are you sure you want to delete ?')">
                 <i class="fa fa-trash"></i>
             </button>
-        </nav>
-    </div>
+        </form>
+    </nav>
+</div>
 
-    <div class="membertable table-responsive mt-3" id="member_dataTable">
-        <table class="table table-striped no-wrap" cellspacing="0" width="100%" id="members_list_table">
-            <thead class="thead-light">
-                <tr class="tableTitleRow">
-                    <th>
-                        <input type="checkbox" class="memberinfoCheckAll">
-                    </th>
-                    <th class="text-center">{% trans "S. No." %}</th>
-                    <th>{% trans "Username" %}</th>
-                    <th>{% trans "Member ID" %}</th>
-                    <th>{% trans "Full Name" %}</th>
+<div class="membertable table-responsive mt-3" id="member_dataTable">
+    <table class="table table-striped table-bordered no-wrap" cellspacing="0" width="100%" id="members_list_table">
+        <thead class="thead-light">
+            <tr class="tableTitleRow">
+                <th>
+                    <input type="checkbox" class="memberinfoCheckAll">
+                </th>
+                <th class="text-center">{% trans "S. No." %}</th>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "Member ID" %}</th>
+                <th>{% trans "Full Name" %}</th>
 
-                    <th>{% trans "First Name" %}</th>
-                    <th>{% trans "Last Name" %}</th>
+                <th>{% trans "First Name" %}</th>
+                <th>{% trans "Last Name" %}</th>
 
-                    <th>{% trans "Email" %}</th>
-                    <th>{% trans "Department" %}</th>
-                    <th>{% trans "Phone" %}</th>
-                    <th>{% trans "Gender" %}</th>
-                    <th>{% trans "Student" %}</th>
-                    <th>{% trans "Teacher" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Department" %}</th>
+                <th>{% trans "Phone" %}</th>
+                <th>{% trans "Gender" %}</th>
+                <th>{% trans "Student" %}</th>
+                <th>{% trans "Teacher" %}</th>
 
-                    <th>{% trans "Temporary Address" %}</th>
-                    <th>{% trans "Permanent Address" %}</th>
-                    <th>{% trans "Birthdate" %}</th>
+                <th>{% trans "Temporary Address" %}</th>
+                <th>{% trans "Permanent Address" %}</th>
+                <th>{% trans "Birthdate" %}</th>
 
-                    <th>{% trans "Type" %}</th>
-                    <th class="text-center">{% trans "Action" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th class="text-center">{% trans "Action" %}</th>
 
 
-                </tr>
-
-            </thead>
-            {% for object in object_list %}
-            {% if object.id != request.user.id %}
-            <tr>
-                <td><input type="checkbox" class="memberinfoCheckbox" value="{{ object.id }}" name="memberinfo_id[]">
-                </td>
-                <td class="text-center" style="vertical-align: middle;">{{ forloop.counter }}</td>
-                <td style="vertical-align: middle;"><b><a
-                            href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
-                <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
-                <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
-
-                <td> {{ object.first_name }} </td>
-                <td> &nbsp;{{ object.last_name }} </td>
-
-                <td>{{ object.email }}</td>
-                <td>{{ object.Member_Department }}</td>
-                <td>{{ object.Member_Phone }}</td>
-                <td style="vertical-align: middle;">
-                    {{ object.get_Member_Gender_display }}
-                </td>
-                <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
-                <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
-
-                <td> {{ object.Member_Temporary_Address }} </td>
-                <td> &nbsp;{{ object.Member_Permanent_Address }} </td>
-                <td>{{ object.Member_BirthDate|date:"M d, Y" }}</td>
-
-                <td>
-                    {% if object.Is_Teacher == True and object.Is_Student == True %}
-                    {% trans "Teacher" %}, {% trans "Student" %}
-                    {% elif object.Is_Teacher == True %}
-                    {% trans "Teacher" %}
-                    {% elif object.Is_Student == True %}
-                    {% trans "Student" %}
-                    {% else %}
-                    {% trans "Not Assigned" %}
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-success confirm-activate" id="{{ object.pk }}">
-                        {% trans "Activate" %}
-                    </button>
-                    <button class="btn btn-sm btn-danger confirm-delete ml-2" id="{{ object.pk }}">{% trans "Delete" %}
-                    </button>
-                    <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}"id="activateForm-{{ object.pk }}">
-                       {% csrf_token %}
-                        <input type="hidden" value='memberinfo_list_inactive' name='url'>
-                    </form>
-                    <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
-                        id="delete_form-{{ object.pk }}">
-                        {% csrf_token %}
-                        <input type="hidden" name="redirect" value="memberinfo_list_inactive">
-                    </form>
-                </td>
             </tr>
-            {% endif %}
-            {% endfor %}
-        </table>
 
-        <span class="checkboxCheckedLength"></span>
-    </div>
-{# </form> #}
+        </thead>
+        {% for object in object_list %}
+        {% if object.id != request.user.id %}
+        <tr>
+            <td><input type="checkbox" class="memberinfoCheckbox" value="{{ object.id }}" name="memberinfo_id[]">
+            </td>
+            <td class="text-center" style="vertical-align: middle;">{{ forloop.counter }}</td>
+            <td style="vertical-align: middle;"><b><a
+                        href="{{ object.get_absolute_url }}">{{ object.username }}</a></b></td>
+            <td style="vertical-align: middle;">{{ object.Member_ID }}</td>
+            <td style="vertical-align: middle;">{{ object.first_name }}&nbsp;{{ object.last_name }}</td>
+
+            <td> {{ object.first_name }} </td>
+            <td> &nbsp;{{ object.last_name }} </td>
+
+            <td>{{ object.email }}</td>
+            <td>{{ object.Member_Department }}</td>
+            <td>{{ object.Member_Phone }}</td>
+            <td style="vertical-align: middle;">
+                {{ object.get_Member_Gender_display }}
+            </td>
+            <td style="vertical-align: middle;">{{ object.Is_Student }}</td>
+            <td style="vertical-align: middle;">{{ object.Is_Teacher }}</td>
+
+            <td> {{ object.Member_Temporary_Address }} </td>
+            <td> &nbsp;{{ object.Member_Permanent_Address }} </td>
+            <td>{{ object.Member_BirthDate|date:"M d, Y" }}</td>
+
+            <td>
+                {% if object.Is_Teacher == True and object.Is_Student == True %}
+                {% trans "Teacher" %}, {% trans "Student" %}
+                {% elif object.Is_Teacher == True %}
+                {% trans "Teacher" %}
+                {% elif object.Is_Student == True %}
+                {% trans "Student" %}
+                {% else %}
+                {% trans "Not Assigned" %}
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-success confirm-activate" id="{{ object.pk }}">
+                    {% trans "Activate" %}
+                </button>
+                <button class="btn btn-sm btn-danger confirm-delete ml-2" id="{{ object.pk }}">{% trans "Delete" %}
+                </button>
+                <form method="post" action="{% url 'memberinfo_activate'  pk=object.pk %}" id="activateForm-{{ object.pk }}">
+                    {% csrf_token %}
+                    <input type="hidden" value='memberinfo_list_inactive' name='url'>
+                </form>
+                <form method="post" action="{% url 'memberinfo_delete' pk=object.pk %}"
+                    id="delete_form-{{ object.pk }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="redirect" value="memberinfo_list_inactive">
+                </form>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
+    <span class="checkboxCheckedLength"></span>
+</div>
 
 {% include 'WebApp/memberinfo_mass_option_form.html' %}
 
@@ -146,32 +147,15 @@
 {% block javascript%}
 
 <script type="text/javascript">
-  //  $(document).on('click', '.confirm-activate', function (event) {
-  //      var id = event.target.id;
-  //      console.log(id);
-  //      ans = confirm('Are you sure you want to activate this Member?');
-  //      if (ans == true) {
-  //          console.log(ans);
-  //          $(`#activateForm-${id}`).submit();
-  //      } else {
-  //          return false;
-  //      }
-  //  });
-
-
-    $(".confirm-activate").click(function(event){
-
-         var id = event.target.id;
-       // console.log(id);
+    $(document).on('click', '.confirm-activate', function (event) {
+        var id = event.target.id;
         ans = confirm('Are you sure you want to activate this Member?');
         if (ans == true) {
-      //      console.log(ans);
             $(`#activateForm-${id}`).submit();
         } else {
             return false;
         }
     });
-
 
     $(document).on('click', '.confirm-delete', function () {
         ans = confirm('Are you sure you want to delete this Member?');
@@ -181,7 +165,6 @@
             return false;
         }
     });
-
 
     $("#all_button").css("color", "white");
     $("#student_button").css("color", "black");
@@ -194,15 +177,12 @@
     var tab_status = "all"
 
     $(document).ready(function () {
-
         var table_main = $('.table').DataTable({
             dom: 'lBfrtip',
             stateSave: false,
             responsive: true,
-             order: [],
+            order: [],
             buttons: [
-
-
                 {
                     extend: 'csv',
                     title: function(){
@@ -217,20 +197,14 @@
                         }
                         else{
                              return "Blocked Member List";
-
                         }
                     },
-
                     text: '<span class="exportcsv"><i class="fa fa-paper-plane-o"></i> Export to CSV </span>',
                      exportOptions: {
                        // columns: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
                           columns: [1, 2, 3, 5, 6, 7,  9, 10, 11, 12, 13, 14, 15, 8 ]
                     },
-
-
                 },
-
-
                 {
                     extend: 'print',
                     title: function(){
@@ -245,7 +219,6 @@
                         }
                         else{
                              return "Blocked Member List";
-
                         }
                     },
                     text: '<span class="print"><i class="fa fa-print"></i> Print </span>',
@@ -255,35 +228,30 @@
                     },
                     fieldSeparator: '\t'
                 }],
-
-
-             "columnDefs": [
+            "columnDefs": [
                 {
-                    "targets": [4, 5, 9, 10, 11, 12, 13],
+                    "targets": [5, 6, 9, 11, 12, 13 ,14,15],
                     "visible": false,
                     "searchable": true,
                 },
                 {
                     "orderable": false,
-                    "targets": [0, 3, 11, 12, 13, 14, 15]
+                    "targets": [0,7,9, 11, 12, 13, 14, 15 ,16, 17]
                 },
             ]
-
-        /*    "columnDefs": [
-                {
-                    "targets": [9, 10],
-                    "visible": false,
-                    "searchable": true
-                },
-                {
-                    "orderable": false,
-                    "targets": [0, 12]
-                },
-            ]
-
-         */
+                /*    "columnDefs": [
+                        {
+                            "targets": [9, 10],
+                            "visible": false,
+                            "searchable": true
+                        },
+                        {
+                            "orderable": false,
+                            "targets": [0, 12]
+                        },
+                    ]
+                */
         });
-
 
         $("#student_button").bind("click", function () {
             $("#student_button").css("color", "white");
@@ -292,9 +260,8 @@
             table_main.columns().search('').draw();
             table_main.column(11).search("True").draw();
             tab_status = "student"
-
-
         });
+
         $("#teacher_button").bind("click", function () {
 
             $("#student_button").css("color", "black");
@@ -311,146 +278,6 @@
             $("#teacher_button").css("color", "black");
             table_main.columns().search('').draw();
             tab_status = "all"
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        $(".editCheckedMembers").on('click', function () {
-            let seleced_members = []
-            $.each($('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll'), function (index) {
-                seleced_members.push($(this).val())
-            })
-            $('#member_ids').val(seleced_members)
-        });
-
-        $('#id_Member_Department').select2({
-            placeholder: 'Select Department'
-        });
-        $('#id_Member_Position').select2({
-            placeholder: 'Select Position'
-        });
-        $('#id_Member_Gender').select2({
-            placeholder: 'Select Gender'
-        });
-    });
-
-    $('.memberinfoCheckAll').on('click', function () {
-        $('#member_dataTable input:checkbox').not(this).prop('checked', this.checked);
-        checkboxChangeEvent()
-    });
-
-    $('#member_dataTable').on('click', '.memberinfoCheckbox', function () {
-        if ($('.memberinfoCheckbox').length === $('.memberinfoCheckbox:checked').length) {
-            $('.memberinfoCheckAll').prop('checked', 'checked');
-        } else {
-            $('.memberinfoCheckAll').prop('checked', false);
-        }
-        checkboxChangeEvent()
-    });
-
-    function checkboxChangeEvent() {
-        let checkBoxlength = $('#member_dataTable input[type="checkbox"]:checked').not('.memberinfoCheckAll').length
-        if (checkBoxlength > 0) {
-            $('.checkboxCheckedLength').text(checkBoxlength + ' of ' + $('.memberinfoCheckbox').length + ' selected')
-            $('.editCheckedMembers, .deleteCheckedMembers').removeAttr('disabled')
-        } else {
-            $('.checkboxCheckedLength').text('')
-            $('.editCheckedMembers, .deleteCheckedMembers').prop('disabled', 'disabled')
-        }
-    }
-
-    checkboxChangeEvent();
-
-    $('#changedepartment-btn').on('click', function () {
-        toggleInput('#id_Member_Department')
-        $("#changedepartment-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changememberposition-btn').on('click', function () {
-        toggleInput('#id_Member_Position')
-        $("#changememberposition-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changemembergender-btn').on('click', function () {
-        toggleInput('#id_Member_Gender')
-        $("#changemembergender-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changeisteacher-btn').on('click', function () {
-        toggleInput('#id_Is_Teacher')
-        toggleInput('#id_Is_Teacher_hidden')
-        $("#changeisteacher-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changeisstudent-btn').on('click', function () {
-        toggleInput('#id_Is_Student')
-        toggleInput('#id_Is_Student_hidden')
-        $("#changeisstudent-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    $('#changeActive-btn').on('click', function () {
-        toggleInput('#id_Use_Flag')
-        toggleInput('#id_Use_Flag_hidden')
-        $("#changeActive-btn").toggleClass('btn-outline-primary btn-primary')
-    });
-
-    function toggleInput(inputID) {
-        if ($(inputID).is(':disabled')) {
-            $(inputID).removeAttr('disabled');
-        } else {
-            $(inputID).prop('disabled', 'disabled')
-        }
-    }
-
-    $('#editCheckedMembers input, select').not('input[name=csrfmiddlewaretoken], #member_ids').attr('disabled', true)
-
-    $(function () {
-        $('#editCheckedMembers :checkbox').on('change', function () {
-            if (this.checked == true) {
-                $(this).val("1");
-                $(this).parent().find('input[type=hidden]').val("1");
-            } else {
-                $(this).val("0");
-                $(this).parent().find('input[type=hidden]').val("0");
-            }
-        });
-    });
-
-    // Form Submission
-
-    $('#editCheckedMembers').on('submit', function (e) {
-        e.preventDefault()
-        if ($('#id_Member_Department').is(':disabled') && $('#id_Member_Position').is(':disabled') && $('#id_Member_Gender').is(':disabled')
-            && $('#id_Is_Teacher').is(':disabled') && $('#id_Is_Student').is(':disabled') && $('#id_Use_Flag').is(':disabled')
-        ) {
-            alert('Please input data and enable required fields to submit')
-            return false
-        }
-
-        var form = $(this);
-        var url = form.attr('action');
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
-            success: function (data) {
-                location.reload(); // show response from the php script.
-            },
-            error: function (e) {
-                $('.error-div').empty()
-                $('.error-div').css('display', 'block')
-                $('.error-div').append(`
-                        <p style="font-weight: bold; font-size: medium">${e.responseJSON.message}</p>
-                    `)
-                $.each(e.responseJSON.inning_list, function (index) {
-                    $('.error-div').append(`
-                            <p style="font-size: small">${e.responseJSON.inning_list[index]['Inning_Name']}</p>
-                        `)
-                })
-
-            }
         });
     });
 </script>

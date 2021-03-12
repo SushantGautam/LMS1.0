@@ -123,14 +123,14 @@
     <div class="col-lg-6 col-md-12 px-5">
         <div class="card">
             <div class="pt-3 px-4">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-center align-items-start">
                     <h4 class="text-primary">{% trans "List of Teachers" %}</h4>
                     <!-- <a href="#">All Sales</a> -->
                 </div>
             </div>
             <div class="table-responsive mb-2">
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
                         <tr>
                             <th>
                                 {% trans "Course Allocation Name" %}
@@ -148,10 +148,10 @@
                         <tr>
                             <td>
                                 <a href="{% if not '/mysession' in request.path %}
-                                                {{ groups.get_update_url }}
+                                                {{ groups.get_absolute_url }}
                                             {% else %}
                                                 {% url 'teachers_inninggroup_detail' groups.pk %}
-                                            {% endif %}">
+                                            {% endif %}" class="font-weight-bold text-primary">
                                     {{ groups.InningGroup_Name }}
                                 </a>
                                 <a href="{% if not '/mysession' in request.path %}
@@ -182,31 +182,31 @@
             </div>
         </div>
         <div class="card">
-            <div class="pt-3 px-4">
-                <h4 class="text-primary">{% trans "List of Students" %}</h4>
-                <div class="d-flex justify-content-between align-items-start my-3">
-                    <h5 class="text-primary"> <a href="{% if '/mysession' in request.path %}
+            <div class="pt-3">
+                <h4 class="text-primary text-center mx-4">{% trans "List of Students" %}</h4>
+                <div class="d-flex justify-content-between align-items-center p-3 bg-dark">
+                    <h5 class="mb-0"> <a href="{% if '/mysession' in request.path %}
                         {% url 'teacher_groupmapping_detail' object.Groups.pk %}
                     {% else %}
                         {{ object.Groups.get_absolute_url }}
                     {% endif %}
-                    ">
-                            <b>{{ object.Groups }}{% trans "Students" %} &nbsp;
+                    " class="text-white">
+                            {{ object.Groups }}{% trans "Students" %} &nbsp;
                                 ( {{ object.Groups.Students.count }} )
-                            </b>
+                            
                         </a>
                     </h5>
                     <a href="{% if '/mysession' in request.path %}
                                                 {{ object.get_teacher_update_url }}#step-3
                                             {% else %}
                                                 {{ object.get_update_url }}#step-3
-                                            {% endif %}">
+                                            {% endif %}" class="text-white">
                         {% trans "Change Group" %}
                     </a>
                 </div>
             </div>
             <div class="table-responsive mb-2">
-                <table class="table table-striped">
+                <table class="table table-bordered table-striped">
                     <!-- <thead>
                         <tr>
                             <th>
@@ -253,8 +253,8 @@
     </div>
     <div class="table-responsive mb-2">
         {% if SessionSurvey %}
-        <table id="table_survey" class="table table-striped bg-white nowrap">
-            <thead>
+        <table id="table_survey" class="table table-bordered table-striped bg-white nowrap">
+            <thead class="thead-dark">
                 <tr>
                     <th>{% trans "Survey Title" %}</th>
                     <th>{% trans "Start Date" %}</th>

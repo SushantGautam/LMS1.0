@@ -54,7 +54,7 @@
             <tr>
                 <td class="text-center" style=" padding-top: 15px;">{{ forloop.counter }}</td>
                 <td style="vertical-align: middle;"><b><a
-                            href="{% url 'Student_DetailInfo' id=object.pk %}">{{ students }}</a></b>
+                            href="{% url 'Student_DetailInfo' id=students.pk %}">{{ students }}</a></b>
                 </td>
                 <!-- <td style="vertical-align: middle;">{{ students.Member_ID }}</td> -->
                 <!-- <td style="vertical-align: middle;">{{ students.first_name }}&nbsp;{{ students.last_name }}</td> -->

@@ -5,10 +5,10 @@
     <strong class="border-bottom bb"><span class="js-comment-number">{% get_comments_count model_object user %}</span>
         Comments</strong>
     <hr class="hr"/>
-    <div class="js-comment comment mb-5">
+    <div class="js-comment comment mb-3">
         {% include 'comment/comments/create_comment.html' with placeholder="comment on this post..." comment=None %}
     </div>
-    <div class="js-main-comment mt-5">
+    <div class="js-main-comment mt-3">
         {% for comment in comments %}
             {% include 'comment/comments/parent_comment.html' with placeholder='reply to this comment...' %}
         {% endfor %}
