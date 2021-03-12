@@ -835,6 +835,7 @@
                         })
 
                  $(".chapter_dynamic").hide();
+                 $(".ast").hide();
                  $("#id_is_all_day").prop("checked", true);
                  $("#id_participant_type_2").prop("checked", true);
                  $(".participant_dynamic").hide();
@@ -1022,7 +1023,7 @@
                     }
 
 
-                    if (event.pt == 'CH' || event.pt == 'AS')
+                    if (event.pt == 'CH' || event.pt == 'AS' || event.pt == 'AA' )
                     {
                         console.log(event.event_part_list);
                          modal.find('.participant').html("{% trans 'Participants' %}:&nbsp;"+event.event_part_list.length);
@@ -1436,7 +1437,12 @@
                 $("#id_participants").trigger("change");
             }  else if (ch_val === "AS") {
                  $(".participant_dynamic").hide();
-                 $("#id_participants").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
+                 $("#id_participants").val( JSON.parse("{{request.user.get_student}}").map(v => v.toString()));
+                 $("#id_participants").trigger("change");
+                 console.log($("#id_participants").val());
+            }   else if (ch_val === "AA") {
+                 $(".participant_dynamic").hide();
+                 $("#id_participants").val( JSON.parse("{{request.user.related_teacher_and_student}}").map(v => v.toString()));
                  $("#id_participants").trigger("change");
                  console.log($("#id_participants").val());
 
@@ -1455,8 +1461,10 @@
                 console.log("CH_VAL",c_val);
                  if (c_val === "CH") {
                 $(".chapter_dynamic").show();
+                $(".ast").show();
             } else {
                 $(".chapter_dynamic").hide();
+                $(".ast").hide();
                 $("#chapter_list_multiple").val("");
                 $("#chapter_list_multiple").trigger("change");
             }
@@ -1489,6 +1497,13 @@
             if (ch_val === "AS") {
                  $(".participant_dynamic").hide();
                  $("#id_participants").val( JSON.parse("{{ request.user.get_student }}").map(v => v.toString()));
+                 $("#id_participants").trigger("change");
+
+
+            }
+            if (ch_val === "AA") {
+                 $(".participant_dynamic").hide();
+                 $("#id_participants").val( JSON.parse("{{ request.user.get_related_teachers }}").map(v => v.toString()));
                  $("#id_participants").trigger("change");
 
 

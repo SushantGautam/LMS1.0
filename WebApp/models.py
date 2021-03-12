@@ -169,6 +169,8 @@ class MemberInfo(AbstractUser):
         related_name="memberinfos", on_delete=models.DO_NOTHING, null=True
     )
 
+    
+
     def get_student_courses(self):
         innings = InningInfo.objects.filter(Groups__in=GroupMapping.objects.filter(Students__pk=self.pk),
                                             End_Date__gt=datetime.now())
@@ -289,6 +291,35 @@ class MemberInfo(AbstractUser):
     #     return self._create_user(username, email, password, **extra_fields)
 
 
+
+    def get_related_teachers(self):
+       ing_grp = InningGroup.objects.filter(Teacher_Code = self.pk) 
+       course_info = CourseInfo.objects.filter(inninggroups__in=ing_grp).distinct()
+       ingr = InningGroup.objects.filter(Course_Code__in = course_info).distinct()
+    #    teacher_of_teacher = MemberInfo.objects.filter(inninggroup__in =ingr).distinct().values_list('pk',flat=True)
+       teacher_of_teacher = MemberInfo.objects.filter(inninggroup__in =ingr).distinct()
+       print("ASASAS",teacher_of_teacher)
+    #    return list(teacher_of_teacher)
+       return teacher_of_teacher
+
+    def get_related_students(self):
+       ing_grp = InningGroup.objects.filter(Teacher_Code = self.pk) 
+       course_info = CourseInfo.objects.filter(inninggroups__in=ing_grp).distinct()
+       ingr = InningGroup.objects.filter(Course_Code__in = course_info).distinct()
+       iInfo = InningInfo.objects.filter(Course_Group__in=ingr).distinct()
+       grp_info = GroupMapping.objects.filter(inninginfos__in = iInfo).distinct()
+       mm_info = MemberInfo.objects.filter(groupmapping__in = grp_info).distinct()
+       return mm_info
+
+    def related_teacher_and_student(self):
+        total = self.get_related_students() | self.get_related_teachers()
+        return list(total.values_list('pk', flat = True))
+
+
+
+
+
+
 class UserSession(models.Model):
     user = models.ForeignKey(MemberInfo, on_delete=models.CASCADE)
     session = models.OneToOneField(Session, on_delete=models.CASCADE)
@@ -361,6 +392,18 @@ class CourseInfo(models.Model):
         teachers_of_this_course_id = InningGroup.objects.filter(Course_Code=self.pk).values('Teacher_Code')
         teachers_of_this_course = MemberInfo.objects.filter(pk__in=teachers_of_this_course_id)
         return teachers_of_this_course
+
+    def get_students_by_course(self):
+        inng_grp = InningGroup.objects.filter(Course_Code=self.pk)
+        inng_info = InningInfo.objects.filter(Course_Group__in=inng_grp)
+        grp_map = GroupMapping.objects.filter(inninginfos__in=inng_info)
+        students = MemberInfo.objects.filter(groupmapping_set__in=grp_map).distinct()
+        return students
+    
+    def get_calendar_chapter_participants(self):
+        return self.get_students_by_course | self.get_teachers_of_this_course
+
+
 
     # Get All Students from all groups of all innings in which the course is associated with
     def get_students_of_this_course(self):
