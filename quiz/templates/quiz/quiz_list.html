@@ -141,7 +141,7 @@
 {% endif %}
 
 <div class="modal fade" id="create_quiz_modal" tabindex="-1" role="dialog" aria-labelledby="create_quiz_modal_label"
-    aria-hidden="true">
+    aria-hidden="true" style="overflow-y: scroll;">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -157,6 +157,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="create_question_modal" tabindex="-1" role="dialog"
+    aria-labelledby="create_question_modal_label" aria-hidden="true" style="overflow-y: scroll;">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="create_question_modal_label">Create Question
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#create_quiz_modal">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="create_question_modal_body">
+               
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -428,5 +445,7 @@
             }
         });
     });
+
+   
 </script>
 {% endblock %}
